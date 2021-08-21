@@ -1,0 +1,15 @@
+1. select libraries to include in /lib folder
+    - integrate DbBean Utils directly (only used classes and only functions in use from these classes, unless
+      function is related to another one, then include it to)
+    - rewrite DbBeanSQL? (move to Java 11, functional interfaces only, merged with DbBeanSQL Utils?
+      or directly integrated with this rewrite of BeanMaker?)
+    - rewrite HTML Codegen? (move to Java 11 essentially)
+    - rewrite Java Codegen? (move to Java 11)
+    - include: Apache common-io + common-upload (most recent versions)
+    - remove: password maker (replace uses with something that works)
+    - remove: Apache POI (no Excel export from the table; or completely reimplement)
+
+2. copy and adjust version 1 source code
+    - rename packages
+    - remove unwanted code
+    - proceed to code modifications
