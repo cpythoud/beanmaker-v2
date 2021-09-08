@@ -1,0 +1,3 @@
+red = #e65757
+yellow = #d2c126
+green = #0c8412
