@@ -33,20 +33,21 @@
     </target>
 
     <target name="jar" description="Create file beanmaker-v2-(version).jar" depends="cleanup,compile">
-        <manifest file="MANIFEST.MF">
-            <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.codegen"/>
-        </manifest>
         <java classname="org.beanmaker.v2.codegen.Version" classpath="${build.classes}" outputproperty="jar.version" />
-        <jar destfile="${build.dir}/beanmaker-v2-${jar.version}.jar" basedir="${build.classes}" includes="org/beanmaker/v2/codegen/**/*" />
+        <jar destfile="${build.dir}/beanmaker-v2-${jar.version}.jar" basedir="${build.classes}" includes="org/beanmaker/v2/codegen/**/*">
+            <manifest>
+                <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.codegen"/>
+            </manifest>
+        </jar>
         <copy file="${build.dir}/beanmaker-v2-${jar.version}.jar" tofile="${build.dir}/beanmaker-v2-current.jar" />
     </target>
 
     <target name="jar-src" description="Create file beanmaker-v2-(version).jar containing source code" depends="cleanup,compile">
-        <manifest file="MANIFEST.MF">
-            <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.codegen"/>
-        </manifest>
         <java classname="org.beanmaker.v2.codegen.Version" classpath="${build.classes}" outputproperty="jar.version" />
         <jar destfile="${build.dir}/beanmaker-v2-${jar.version}.jar">
+            <manifest>
+                <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.codegen"/>
+            </manifest>
             <fileset dir="${build.classes}" includes="org/beanmaker/v2/codegen/**/*" />
             <fileset dir="${src-ascii.dir}" includes="org/beanmaker/v2/codegen/**/*" />
         </jar>
@@ -54,20 +55,21 @@
     </target>
 
     <target name="jar-rt" description="Create file beanmaker-v2-rt-(version).jar" depends="cleanup,compile">
-        <manifest file="MANIFEST.MF">
-            <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.runtime"/>
-        </manifest>
         <java classname="org.beanmaker.v2.runtime.Version" classpath="${build.classes}" outputproperty="jar.version" />
-        <jar destfile="${build.dir}/beanmaker-v2-rt-${jar.version}.jar" basedir="${build.classes}" includes="org/beanmaker/v2/runtime/**/*" />
+        <jar destfile="${build.dir}/beanmaker-v2-rt-${jar.version}.jar" basedir="${build.classes}" includes="org/beanmaker/v2/runtime/**/*">
+            <manifest>
+                <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.runtime"/>
+            </manifest>
+        </jar>
         <copy file="${build.dir}/beanmaker-v2-rt-${jar.version}.jar" tofile="${build.dir}/beanmaker-v2-rt-current.jar" />
     </target>
 
     <target name="jar-rt-src" description="Create file beanmaker-v2-rt-(version).jar containing source code" depends="cleanup,compile">
-        <manifest file="MANIFEST.MF">
-            <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.runtime"/>
-        </manifest>
         <java classname="org.beanmaker.v2.runtime.Version" classpath="${build.classes}" outputproperty="jar.version" />
         <jar destfile="${build.dir}/beanmaker-v2-rt-${jar.version}.jar">
+            <manifest>
+                <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.runtime"/>
+            </manifest>
             <fileset dir="${build.classes}" includes="org/beanmaker/v2/runtime/**/*" />
             <fileset dir="${src-ascii.dir}" includes="org/beanmaker/v2/runtime/**/*" />
         </jar>
