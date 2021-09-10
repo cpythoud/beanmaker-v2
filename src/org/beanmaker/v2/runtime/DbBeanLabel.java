@@ -8,6 +8,7 @@ public interface DbBeanLabel {
 
     void setId(long id);
     long getId();
+    String getName();
 
     String get(DbBeanLanguage dbBeanLanguage);
     String get(DbBeanLanguage dbBeanLanguage, Object... parameters);
