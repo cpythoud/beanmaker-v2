@@ -76,6 +76,28 @@
         <copy file="${build.dir}/beanmaker-v2-rt-${jar.version}.jar" tofile="${build.dir}/beanmaker-v2-rt-current.jar" />
     </target>
 
+    <target name="jar-util" description="Create file beanmaker-v2-util-(version).jar" depends="cleanup,compile">
+        <java classname="org.beanmaker.v2.util.Version" classpath="${build.classes}" outputproperty="jar.version" />
+        <jar destfile="${build.dir}/beanmaker-v2-util-${jar.version}.jar" basedir="${build.classes}" includes="org/beanmaker/v2/util/**/*">
+            <manifest>
+                <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.util"/>
+            </manifest>
+        </jar>
+        <copy file="${build.dir}/beanmaker-v2-util-${jar.version}.jar" tofile="${build.dir}/beanmaker-v2-util-current.jar" />
+    </target>
+
+    <target name="jar-util-src" description="Create file beanmaker-v2-util-(version).jar containing source code" depends="cleanup,compile">
+        <java classname="org.beanmaker.v2.util.Version" classpath="${build.classes}" outputproperty="jar.version" />
+        <jar destfile="${build.dir}/beanmaker-v2-util-${jar.version}.jar">
+            <manifest>
+                <attribute name="Automatic-Module-Name" value="org.beanmaker.v2.util"/>
+            </manifest>
+            <fileset dir="${build.classes}" includes="org/beanmaker/v2/util/**/*" />
+            <fileset dir="${src-ascii.dir}" includes="org/beanmaker/v2/util/**/*" />
+        </jar>
+        <copy file="${build.dir}/beanmaker-v2-util-${jar.version}.jar" tofile="${build.dir}/beanmaker-v2-util-current.jar" />
+    </target>
+
     <target name="doc" description="Create javadoc for this project" depends="native2ascii">
         <mkdir dir="${javadoc.dir}" />
         <javadoc sourcepath="${src-ascii.dir}" destdir="${javadoc.dir}" />
