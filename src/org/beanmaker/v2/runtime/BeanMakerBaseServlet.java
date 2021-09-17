@@ -1,8 +1,9 @@
 package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.MimeTypes;
-import org.beanmaker.v2.util.Pair;
 import org.beanmaker.v2.util.Strings;
+
+import org.javatuples.Pair;
 
 import javax.servlet.ServletException;
 
@@ -316,7 +317,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         outputStream.close();
     }
 
-    protected <B extends DbBeanInterface> B getBean(
+    protected <B extends DbBeanEditorInterface> B getBean(
             B newBean,
             HttpServletRequest request,
             String idParameterName

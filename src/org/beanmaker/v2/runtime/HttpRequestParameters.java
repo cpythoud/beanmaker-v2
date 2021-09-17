@@ -5,8 +5,9 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import org.beanmaker.v2.util.Pair;
 import org.beanmaker.v2.util.Strings;
+
+import org.javatuples.Pair;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

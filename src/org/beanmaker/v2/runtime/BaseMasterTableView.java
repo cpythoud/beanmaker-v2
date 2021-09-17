@@ -1,8 +1,9 @@
 package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.Money;
-import org.beanmaker.v2.util.Pair;
 import org.beanmaker.v2.util.Strings;
+
+import org.javatuples.Pair;
 
 import org.jcodegen.html.ATag;
 import org.jcodegen.html.CData;
@@ -352,7 +353,7 @@ public abstract class BaseMasterTableView extends TabularView {
 
         select.child(new OptionTag("", "").selected());
         for (Pair<String, String> pair: nameValuePairs)
-            select.child(new OptionTag(pair.e2, pair.e1));
+            select.child(new OptionTag(pair.getValue1(), pair.getValue0()));
 
         return getTableFilterCell().child(select);
     }

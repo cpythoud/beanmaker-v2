@@ -1,5 +1,7 @@
 package org.beanmaker.v2.util;
 
+import org.javatuples.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,42 +34,42 @@ public class SimpleInputDurationFormat {
     }
 
     public boolean validate(String duration) {
-        return validateAndParse(duration).e1;
+        return validateAndParse(duration).getValue0();
     }
 
     private Pair<Boolean, List<String>> validateAndParse(String durationParameter) {
         String duration = Strings.removeWhiteSpace(durationParameter);
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
 
         int offset = 0;
 
         Pair<String, Integer> dayDigitsAndOffset =
                 getDigitsAndOffset(duration, offset, daySymbol, false);
-        if (dayDigitsAndOffset.e2 == null)
+        if (dayDigitsAndOffset.getValue1() == null)
             return returnFalse();
-        results.add(dayDigitsAndOffset.e1);
-        offset = dayDigitsAndOffset.e2;
+        results.add(dayDigitsAndOffset.getValue0());
+        offset = dayDigitsAndOffset.getValue1();
 
         Pair<String, Integer> hourDigitsAndOffset =
                 getDigitsAndOffset(duration, offset, hourSymbol, false);
-        if (hourDigitsAndOffset.e2 == null)
+        if (hourDigitsAndOffset.getValue1() == null)
             return returnFalse();
-        results.add(hourDigitsAndOffset.e1);
-        offset = hourDigitsAndOffset.e2;
+        results.add(hourDigitsAndOffset.getValue0());
+        offset = hourDigitsAndOffset.getValue1();
 
         Pair<String, Integer> minuteDigitsAndOffset =
                 getDigitsAndOffset(duration, offset, minuteSymbol, true);
-        if (minuteDigitsAndOffset.e2 == null)
+        if (minuteDigitsAndOffset.getValue1() == null)
             return returnFalse();
-        results.add(minuteDigitsAndOffset.e1);
-        offset = minuteDigitsAndOffset.e2;
+        results.add(minuteDigitsAndOffset.getValue0());
+        offset = minuteDigitsAndOffset.getValue1();
 
         if (offset != duration.length())
             return returnFalse();
 
         for (String result: results)
             if (!Strings.isEmpty(result))
-                return new Pair<Boolean, List<String>>(true, results);
+                return new Pair<>(true, results);
 
         return returnFalse();
     }
@@ -81,25 +83,25 @@ public class SimpleInputDurationFormat {
         int pos = duration.indexOf(symbol);
         if (pos != -1) {
             if (pos == offset)
-                return new Pair<String, Integer>(null, offset);
+                return new Pair<>(null, offset);
             String digits = duration.substring(offset, pos);
             if (checkDigits(digits))
-                return new Pair<String, Integer>(digits, pos + symbol.length());
+                return new Pair<>(digits, pos + symbol.length());
 
-            return new Pair<String, Integer>(null, offset);
+            return new Pair<>(null, offset);
         }
 
         if (symbolOptional) {
-            String digits = duration.substring(offset, duration.length());
+            String digits = duration.substring(offset);
             if (checkDigits(digits))
-                return new Pair<String, Integer>(digits, duration.length());
+                return new Pair<>(digits, duration.length());
         }
 
-        return new Pair<String, Integer>("", offset);
+        return new Pair<>("", offset);
     }
 
     private Pair<Boolean, List<String>> returnFalse() {
-        return new Pair<Boolean, List<String>>(false, new ArrayList<String>());
+        return new Pair<>(false, new ArrayList<>());
     }
 
     private boolean checkDigits(String digits) {
@@ -108,30 +110,30 @@ public class SimpleInputDurationFormat {
 
     public DurationData parse(String duration) {
         Pair<Boolean, List<String>> parsedData = validateAndParse(duration);
-        if (!parsedData.e1)
+        if (!parsedData.getValue0())
             throw new IllegalArgumentException("Illegal duration format: " + duration);
 
-        String dayStr = parsedData.e2.get(0);
-        String hourStr = parsedData.e2.get(1);
-        String minuteStr = parsedData.e2.get(2);
+        String dayStr = parsedData.getValue1().get(0);
+        String hourStr = parsedData.getValue1().get(1);
+        String minuteStr = parsedData.getValue1().get(2);
 
         int days;
         if (Strings.isEmpty(dayStr))
             days = 0;
         else
-            days = Integer.valueOf(dayStr);
+            days = Integer.parseInt(dayStr);
 
         int hours;
         if (Strings.isEmpty(hourStr))
             hours = 0;
         else
-            hours = Integer.valueOf(hourStr);
+            hours = Integer.parseInt(hourStr);
 
         int minutes;
         if (Strings.isEmpty(minuteStr))
             minutes = 0;
         else
-            minutes = Integer.valueOf(minuteStr);
+            minutes = Integer.parseInt(minuteStr);
 
         return new DurationData(days, hours, minutes);
     }
