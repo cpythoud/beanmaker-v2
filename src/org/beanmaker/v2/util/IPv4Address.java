@@ -61,7 +61,7 @@ public class IPv4Address {
             return false;
 
         for (String part: parts)
-            if (!NUMBERS_ONLY.matcher(part).matches() || !isInRange(Integer.valueOf(part)))
+            if (!NUMBERS_ONLY.matcher(part).matches() || !isInRange(Integer.parseInt(part)))
                 return false;
 
         return true;
@@ -82,7 +82,7 @@ public class IPv4Address {
         int[] bytes = new int[4];
 
         for (int i = 0; i < 4; i++)
-            bytes[i] = Integer.valueOf(parts[i]);
+            bytes[i] = Integer.parseInt(parts[i]);
 
         return new IPv4Address(bytes);
     }

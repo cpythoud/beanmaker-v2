@@ -39,7 +39,7 @@ public class MimeTypes {
     }
 
     static {
-        MIME_TYPE_MAP = new HashMap<String, String>();
+        MIME_TYPE_MAP = new HashMap<>();
 
         // Code below copied from output of get_mime_types.groovy script
         MIME_TYPE_MAP.put("ez", "application/andrew-inset");

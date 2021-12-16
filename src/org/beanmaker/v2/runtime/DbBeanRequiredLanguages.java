@@ -8,32 +8,30 @@ import java.util.Set;
 
 public class DbBeanRequiredLanguages {
 
-    private final Set<Long> languageIds;
+    private final Set<DbBeanLanguage> languages;
 
     public DbBeanRequiredLanguages() {
-        languageIds = new HashSet<Long>();
+        languages = new HashSet<>();
     }
 
     public DbBeanRequiredLanguages(DbBeanLanguage... languages) {
-        this(languages.length == 0 ? Collections.<DbBeanLanguage>emptyList() : Arrays.asList(languages));
+        this(languages.length == 0 ? Collections.emptyList() : Arrays.asList(languages));
     }
 
     public DbBeanRequiredLanguages(Collection<DbBeanLanguage> languages) {
-        languageIds = new HashSet<Long>(Ids.getIdSet(languages));
+        this.languages = new HashSet<>(languages);
     }
 
     public DbBeanRequiredLanguages(DbBeanRequiredLanguages requiredLanguages) {
-        languageIds = new HashSet<Long>(requiredLanguages.languageIds);
+        languages = new HashSet<>(requiredLanguages.languages);
     }
 
     public boolean isRequired(DbBeanLanguage dbBeanLanguage) {
-        return languageIds.contains(dbBeanLanguage.getId());
+        return languages.contains(dbBeanLanguage);
     }
 
-    public void setStatus(DbBeanLanguage dbBeanLanguage, boolean required) {
-        if (required)
-            languageIds.add(dbBeanLanguage.getId());
-        else
-            languageIds.remove(dbBeanLanguage.getId());
+    public Set<DbBeanLanguage> getLanguageSet() {
+        return Collections.unmodifiableSet(languages);
     }
+
 }

@@ -46,7 +46,7 @@ public class Files {
         if (!hasExtension(filename))
             throw new IllegalArgumentException("File has no extension");
 
-        return filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+        return filename.substring(filename.lastIndexOf(".") + 1);
     }
 
     /**

@@ -74,7 +74,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
         return deleteBean(getInstance(getBeanId(request, "id")));
     }
 
-    protected abstract DbBeanInterface getInstance(long id);
+    protected abstract DbBeanEditor getInstance(long id);
 
     protected String changeOrder(HttpServletRequest request) throws ServletException {
         long id = getBeanId(request, "id");

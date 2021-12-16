@@ -14,6 +14,7 @@ import java.util.GregorianCalendar;
  * This class contains static function to help with Dates manipulations in the context of a database application.
  * Only Gregorian calendar dates are supported.
  */
+@SuppressWarnings("MagicConstant")
 public class Dates {
 
     /**
@@ -22,7 +23,7 @@ public class Dates {
      * @return day of month.
      */
     public static int getDay(Date date) {
-        return Integer.valueOf(date.toString().substring(8, 10));
+        return Integer.parseInt(date.toString().substring(8, 10));
     }
 
     /**
@@ -31,7 +32,7 @@ public class Dates {
      * @return month.
      */
     public static int getMonth(Date date) {
-        return Integer.valueOf(date.toString().substring(5, 7));
+        return Integer.parseInt(date.toString().substring(5, 7));
     }
 
     /**
@@ -40,7 +41,7 @@ public class Dates {
      * @return year.
      */
     public static int getYear(Date date) {
-        return Integer.valueOf(date.toString().substring(0, 4));
+        return Integer.parseInt(date.toString().substring(0, 4));
     }
 
     /**
@@ -49,7 +50,7 @@ public class Dates {
      * @return hours.
      */
     public static int getHours(Time time) {
-        return Integer.valueOf(time.toString().substring(0, 2));
+        return Integer.parseInt(time.toString().substring(0, 2));
     }
 
     /**
@@ -58,7 +59,7 @@ public class Dates {
      * @return minutes.
      */
     public static int getMinutes(Time time) {
-        return Integer.valueOf(time.toString().substring(3, 5));
+        return Integer.parseInt(time.toString().substring(3, 5));
     }
 
     /**
@@ -67,7 +68,7 @@ public class Dates {
      * @return seconds.
      */
     public static int getSeconds(Time time) {
-        return Integer.valueOf(time.toString().substring(6, 8));
+        return Integer.parseInt(time.toString().substring(6, 8));
     }
 
     /**
@@ -153,10 +154,10 @@ public class Dates {
      * two the current seconds and the next three the current milliseconds.
      */
     public static long getMeaningfulTimeStamp() {
-        return Long.valueOf(MTS_DATE_FORMAT.format(new java.util.Date()));
+        return Long.parseLong(MTS_DATE_FORMAT.format(new java.util.Date()));
     }
 
-    private static DateFormat MTS_DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    private static final DateFormat MTS_DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     /**
      * Check if a date is correct.
@@ -189,7 +190,7 @@ public class Dates {
     public static boolean isDateOK(String day, String month, String year) {
         boolean result = false;
         try {
-            result = isDateOK(Integer.valueOf(day), Integer.valueOf(month), Integer.valueOf(year));
+            result = isDateOK(Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year));
         } catch (NumberFormatException ex) {
             // result = false !
         }
@@ -221,7 +222,7 @@ public class Dates {
     public static boolean isTimeOK(String hours, String minutes, String seconds) {
         boolean result = false;
         try {
-            result = isTimeOK(Integer.valueOf(hours), Integer.valueOf(minutes), Integer.valueOf(seconds));
+            result = isTimeOK(Integer.parseInt(hours), Integer.parseInt(minutes), Integer.parseInt(seconds));
         } catch (NumberFormatException ex) {
             // result = false !
         }
@@ -330,7 +331,7 @@ public class Dates {
         if (dateSeparator.equals(timeSeparator) || dateSeparator.equals(millisecondsSeparator) || timeSeparator.equals(millisecondsSeparator))
             throw new IllegalArgumentException("Separators must be distincts");
 
-        String parts[] = timestamp.split(millisecondsSeparator);
+        String[] parts = timestamp.split(millisecondsSeparator);
         if (parts.length > 2)
             return false;
         String milliseconds;
@@ -394,7 +395,7 @@ public class Dates {
         if (!isDateOK(parts[2], parts[1], parts[0]))
             throw new IllegalArgumentException("Submitted date (" + string + ") is invalid.");
 
-        Calendar cal = new GregorianCalendar(Integer.valueOf(parts[0]), Integer.valueOf(parts[1]) - 1, Integer.valueOf(parts[2]));
+        Calendar cal = new GregorianCalendar(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) - 1, Integer.parseInt(parts[2]));
         return new Date(cal.getTimeInMillis());
     }
 
@@ -412,7 +413,7 @@ public class Dates {
         if (!isDateOK(parts[0], parts[1], parts[2]))
             throw new IllegalArgumentException("Submitted date (" + string + ") is invalid.");
 
-        Calendar cal = new GregorianCalendar(Integer.valueOf(parts[2]), Integer.valueOf(parts[1]) - 1, Integer.valueOf(parts[0]));
+        Calendar cal = new GregorianCalendar(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]) - 1, Integer.parseInt(parts[0]));
         return new Date(cal.getTimeInMillis());
     }
 
@@ -430,7 +431,7 @@ public class Dates {
         if (!isDateOK(parts[1], parts[0], parts[2]))
             throw new IllegalArgumentException("Submitted date (" + string + ") is invalid.");
 
-        Calendar cal = new GregorianCalendar(Integer.valueOf(parts[2]), Integer.valueOf(parts[0]) - 1, Integer.valueOf(parts[1]));
+        Calendar cal = new GregorianCalendar(Integer.parseInt(parts[2]), Integer.parseInt(parts[0]) - 1, Integer.parseInt(parts[1]));
         return new Date(cal.getTimeInMillis());
     }
 
@@ -449,9 +450,9 @@ public class Dates {
             throw new IllegalArgumentException("Submitted time (" + string + ") is invalid.");
 
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(parts[0]));
-        cal.set(Calendar.MINUTE, Integer.valueOf(parts[1]));
-        cal.set(Calendar.SECOND, Integer.valueOf(parts[2]));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+        cal.set(Calendar.SECOND, Integer.parseInt(parts[2]));
 
         return new Time(cal.getTimeInMillis());
     }
@@ -471,8 +472,8 @@ public class Dates {
             throw new IllegalArgumentException("Submitted time (" + string + ") is invalid.");
 
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(parts[0]));
-        cal.set(Calendar.MINUTE, Integer.valueOf(parts[1]));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
         cal.set(Calendar.SECOND, 0);
 
         return new Time(cal.getTimeInMillis());
@@ -503,7 +504,7 @@ public class Dates {
     public static Timestamp getTimestampFromYYMD(String string, String dateSeparator, String timeSeparator, String millisecondsSeparator) {
         String[] milliParts = string.split(millisecondsSeparator);
         if (milliParts.length > 2)
-            throw new IllegalArgumentException("Format invalide : doit être yyyy" + dateSeparator + "[m]m" + dateSeparator + "[d]d [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s[" + millisecondsSeparator + "mmm], reçu " + string);
+            throw new IllegalArgumentException("Invalid format : must be yyyy" + dateSeparator + "[m]m" + dateSeparator + "[d]d [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s[" + millisecondsSeparator + "mmm], got " + string);
         String milliseconds;
         if (milliParts.length == 1)
             milliseconds = "0";
@@ -512,25 +513,25 @@ public class Dates {
 
         String[] parts = milliParts[0].split("[\\s]+");
         if (parts.length != 2)
-            throw new IllegalArgumentException("Format invalide : doit être yyyy" + dateSeparator + "[m]m" + dateSeparator + "[d]d [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s[" + millisecondsSeparator + "mmm], reçu " + string);
+            throw new IllegalArgumentException("Invalid format : must be yyyy" + dateSeparator + "[m]m" + dateSeparator + "[d]d [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s[" + millisecondsSeparator + "mmm], got " + string);
 
         String[] dateParts = parts[0].split(dateSeparator);
         if (dateParts.length != 3)
-            throw new IllegalArgumentException("Format de date invalide : doit être yyyy" + dateSeparator + "[m]m" + dateSeparator + "[d]d, reçu " + parts[0]);
+            throw new IllegalArgumentException("Invalid date format : must be yyyy" + dateSeparator + "[m]m" + dateSeparator + "[d]d, got " + parts[0]);
         if (!isDateOK(dateParts[2], dateParts[1], dateParts[0]))
             throw new IllegalArgumentException("La date fournie (" + parts[0] + ") est invalide !");
 
         String[] timeParts = parts[1].split(timeSeparator);
         if (timeParts.length != 3)
-            throw new IllegalArgumentException("Format d'heure invalide : doit être [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s, reçu " + parts[1]);
+            throw new IllegalArgumentException("Invalid time format : must be [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s, got " + parts[1]);
         if (!isTimeOK(timeParts[0], timeParts[1], timeParts[2]))
-            throw new IllegalArgumentException("L'heure fournie (" + string + ") est invalide !");
+            throw new IllegalArgumentException("Time passed (" + string + ") is invalid");
 
-        Calendar cal = new GregorianCalendar(Integer.valueOf(dateParts[0]), Integer.valueOf(dateParts[1]) - 1, Integer.valueOf(dateParts[2]));
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(timeParts[0]));
-        cal.set(Calendar.MINUTE, Integer.valueOf(timeParts[1]));
-        cal.set(Calendar.SECOND, Integer.valueOf(timeParts[2]));
-        cal.set(Calendar.MILLISECOND, Integer.valueOf(milliseconds));
+        Calendar cal = new GregorianCalendar(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]) - 1, Integer.parseInt(dateParts[2]));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeParts[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(timeParts[1]));
+        cal.set(Calendar.SECOND, Integer.parseInt(timeParts[2]));
+        cal.set(Calendar.MILLISECOND, Integer.parseInt(milliseconds));
 
         return new Timestamp(cal.getTimeInMillis());
     }

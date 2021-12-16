@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ItemOrders {
 
-    public static <B extends DbBeanWithItemOrderInterface<B>> List<B> getRange(
+    public static <B extends DbBeanWithItemOrder> List<B> getRange(
             long firstItemOrder,
             long lastItemOrder,
             List<B> itemInventory)
@@ -41,7 +41,7 @@ public class ItemOrders {
         return itemsInRange;
     }
 
-    public static <B extends DbBeanWithItemOrderInterface<B>> List<B> getRange(
+    public static <B extends DbBeanWithItemOrder> List<B> getRange(
             B firstItem,
             B lastItem,
             List<B> itemInventory)

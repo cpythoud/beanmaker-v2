@@ -173,7 +173,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return beanName;
     }
 
-    protected String deleteBean(DbBeanInterface bean) {
+    protected String deleteBean(DbBeanEditor bean) {
         bean.delete();
         return getJsonOk();
     }
@@ -193,15 +193,15 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return Strings.getIntVal(direction);
     }
 
-    protected String singleStepItemOrderChangeFor(DbBeanWithItemOrderInterface bean, int direction) {
+    protected String singleStepItemOrderChangeFor(DbBeanEditorWithItemOrder beanEditor, int direction) {
         if (direction == 0)
             throw new IllegalArgumentException(
                     "Illegal direction parameter value: must be a non zero positive or negative integer.");
 
         if (direction > 0)
-            bean.itemOrderMoveUp();
+            beanEditor.itemOrderMoveUp();
         else
-            bean.itemOrderMoveDown();
+            beanEditor.itemOrderMoveDown();
 
         return getJsonOk();
     }
@@ -230,7 +230,32 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return ChangeOrderDirection.valueOf(direction.toUpperCase());
     }
 
-    protected <B extends DbBeanWithItemOrderInterface<B>> String changeOrder(
+    protected String changeOrder(
+            DbBeanEditorWithItemOrder bean,
+            ChangeOrderDirection direction,
+            BasicItemOrderOperations companion)
+    {
+        switch (direction) {
+            case UP:
+                bean.itemOrderMoveUp();
+                break;
+            case DOWN:
+                bean.itemOrderMoveDown();
+                break;
+            case AFTER:
+                bean.itemOrderMoveAfter(companion);
+                break;
+            case BEFORE:
+                bean.itemOrderMoveBefore(companion);
+                break;
+            default:
+                throw new AssertionError("New/unchecked Direction ?");
+        }
+
+        return getJsonOk();
+    }
+
+    /*protected <B extends DbBeanEditorWithItemOrder<B>> String changeOrder(
             B bean,
             ChangeOrderDirection direction,
             B companion)
@@ -253,7 +278,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         }
 
         return getJsonOk();
-    }
+    }*/
 
     protected void changeLocalOrder(
             long itemOrder,
@@ -317,7 +342,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         outputStream.close();
     }
 
-    protected <B extends DbBeanEditorInterface> B getBean(
+    protected <B extends DbBeanEditor> B getBean(
             B newBean,
             HttpServletRequest request,
             String idParameterName

@@ -12,7 +12,7 @@ import java.util.List;
  * <br/>
  * MoneyFormat are created through a {@link MoneyFormat.Builder} object.
  */
-public class MoneyFormat {
+public final class MoneyFormat {
 
     private final int decimals;
 
@@ -40,7 +40,7 @@ public class MoneyFormat {
      * @param val the String to be checked.
      * @return true if the String <code>val</code> can be transformed into a money value, false otherwise.
      */
-    public boolean isValOK(final String val) {
+    public boolean isValOK(String val) {
         return !(hasSeparator() && !separatorOK(val)) && digitsOK(val);
     }
 
@@ -48,20 +48,20 @@ public class MoneyFormat {
         return decimalSeparators.size() > 0;
     }
 
-    private boolean separatorOK(final String val) {
+    private boolean separatorOK(String val) {
         return separatorCountOK(val) && separatorPlaceOK(val);
     }
 
-    private boolean separatorCountOK(final String val) {
+    private boolean separatorCountOK(String val) {
         int count = 0;
-        for (final String separator: decimalSeparators)
+        for (String separator: decimalSeparators)
             count += Strings.occurrenceCount(val, separator);
         return count <= 1;
     }
 
-    private boolean separatorPlaceOK(final String val) {
-        for (final String separator: decimalSeparators) {
-            final int index = val.indexOf(separator);
+    private boolean separatorPlaceOK(String val) {
+        for (String separator: decimalSeparators) {
+            int index = val.indexOf(separator);
             if (index == -1)
                 continue;
             if (index < val.length() - decimals - 1 || index == val.length() - 1)
@@ -71,8 +71,8 @@ public class MoneyFormat {
         return true;
     }
 
-    private boolean digitsOK(final String val) {
-        for (final String digit: Strings.toLetterList(val)) {
+    private boolean digitsOK(String val) {
+        for (String digit: Strings.toLetterList(val)) {
             if (digit.matches("[0-9]"))
                 continue;
             if (decimalSeparators.contains(digit) || decorators.contains(digit))
@@ -89,48 +89,48 @@ public class MoneyFormat {
      * @return money amount.
      * @throws java.lang.IllegalArgumentException if the String cannot be parsed according to the current MoneyFormat.
      */
-    public long getVal(final String string) {
+    public long getVal(String string) {
         if (!isValOK(string))
             throw new IllegalArgumentException("Argument contains invalid characters: " + string);
 
         return calcValue(removeDecorators(string));
     }
 
-    private String removeDecorators(final String s) {
+    private String removeDecorators(String s) {
         if (decorators.isEmpty())
             return s;
 
-        final List<String> digits = Strings.toLetterList(s);
-        final StringBuilder buf = new StringBuilder();
-        for (final String digit: digits)
+        List<String> digits = Strings.toLetterList(s);
+        StringBuilder buf = new StringBuilder();
+        for (String digit: digits)
             if (!decorators.contains(digit))
                 buf.append(digit);
 
         return buf.toString();
     }
 
-    private long calcValue(final String s) {
+    private long calcValue(String s) {
         if (decimals == 0)
             return getUnitValue(s);
 
-        final long unitValue = getUnitValue(s);
-        final long decimalValue = getDecimalValue(s);
+        long unitValue = getUnitValue(s);
+        long decimalValue = getDecimalValue(s);
 
         return unitValue * noDecimalMultiplier + decimalValue;
     }
 
-    private long getUnitValue(final String s) {
+    private long getUnitValue(String s) {
         if (decimals == 0)
-            return Long.valueOf(s);
+            return Long.parseLong(s);
 
-        return Long.valueOf(s.substring(0, getDecimalSymbolIndex(s)));
+        return Long.parseLong(s.substring(0, getDecimalSymbolIndex(s)));
     }
 
-    private int getDecimalSymbolIndex(final String s) {
+    private int getDecimalSymbolIndex(String s) {
         int index = s.length();
 
-        for (final String separator: decimalSeparators) {
-            final int idx = s.indexOf(separator);
+        for (String separator: decimalSeparators) {
+            int idx = s.indexOf(separator);
             if (idx != -1) {
                 index = idx;
                 break;
@@ -140,16 +140,16 @@ public class MoneyFormat {
         return index;
     }
 
-    private long getDecimalValue(final String s) {
-        final int index = getDecimalSymbolIndex(s);
+    private long getDecimalValue(String s) {
+        int index = getDecimalSymbolIndex(s);
         if (index == s.length())
             return 0;
 
-        final String digits = s.substring(index + 1, s.length());
+        String digits = s.substring(index + 1);
         if (digits.length() == decimals)
-            return Long.valueOf(digits);
+            return Long.parseLong(digits);
 
-        long val = Long.valueOf(digits);
+        long val = Long.parseLong(digits);
         for (int i = digits.length(); i < decimals; i++)
             val *= 10;
         return val;
@@ -161,29 +161,29 @@ public class MoneyFormat {
      * @return string representation.
      * @throws java.lang.IllegalArgumentException if <code>amount</code> is negative.
      */
-    public String print(final long amount) {
+    public String print(long amount) {
         if (amount < 0)
             throw new IllegalArgumentException("Amount cannot be negative.");
 
         if (decimals == 0)
             return getDigitsWithSeparator(amount);
 
-        final long unitVal = amount / noDecimalMultiplier;
-        final long decimalVal = amount - unitVal * noDecimalMultiplier;
+        long unitVal = amount / noDecimalMultiplier;
+        long decimalVal = amount - unitVal * noDecimalMultiplier;
 
         return getDigitsWithSeparator(unitVal) + decimalSeparators.get(0) + formatDecimals(decimalVal);
     }
 
-    private String getDigitsWithSeparator(final long val) {
-        final String digits = Long.toString(val);
+    private String getDigitsWithSeparator(long val) {
+        String digits = Long.toString(val);
 
         if (decorators.isEmpty())
             return digits;
 
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
         int count = 0;
         for (int i = digits.length(); i > 0; i--) {
-            buf.append(digits.substring(i - 1, i));
+            buf.append(digits.charAt(i - 1));
             count++;
             if (count == 3) {
                 buf.append(decorators.get(0));
@@ -196,36 +196,22 @@ public class MoneyFormat {
         return buf.reverse().toString();
     }
 
-    private String formatDecimals(final long decimalDigits) {
-        final String ddStr = Long.toString(decimalDigits);
+    private String formatDecimals(long decimalDigits) {
+        String ddStr = Long.toString(decimalDigits);
 
         if (ddStr.length() == decimals)
             return ddStr;
 
-        final StringBuilder buf = new StringBuilder();
-        for (int i = ddStr.length(); i < decimals; i++)
-            buf.append("0");
-        buf.append(ddStr);
-
-        return buf.toString();
+        return "0".repeat(Math.max(0, decimals - ddStr.length())) + ddStr;
     }
 
 
-    private MoneyFormat(final int decimals, final List<String> decimalSeparators, final List<String> decorators) {
+    private MoneyFormat(int decimals, List<String> decimalSeparators, List<String> decorators) {
         this.decimals = decimals;
-        this.decimalSeparators = deepCopy(decimalSeparators);
-        this.decorators = deepCopy(decorators);
+        this.decimalSeparators = new ArrayList<>(decimalSeparators);
+        this.decorators = new ArrayList<>(decorators);
 
         noDecimalMultiplier = calcNoDecimalMultiplier();
-    }
-
-    private List<String> deepCopy(List<String> list) {
-        List<String> copy = new ArrayList<String>();
-
-        for (final String s: list)
-            copy.add(s);
-
-        return copy;
     }
 
     private long calcNoDecimalMultiplier() {
@@ -235,6 +221,39 @@ public class MoneyFormat {
         return mul;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (!(o instanceof MoneyFormat))
+            return false;
+
+        MoneyFormat format = (MoneyFormat) o;
+        if (decimals != format.decimals || noDecimalMultiplier != format.noDecimalMultiplier)
+            return false;
+        if (decimalSeparators.size() != format.decimalSeparators.size() || decorators.size() != format.decorators.size())
+            return false;
+        for (int i = 0; i < decimalSeparators.size(); ++i)
+            if (!decimalSeparators.get(i).equals(format.decimalSeparators.get(i)))
+                return false;
+        for (int i = 0; i < decorators.size(); ++i)
+            if (!decorators.get(i).equals(format.decorators.get(i)))
+                return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Integer.hashCode(decimals);
+        result = 31 * result + Long.hashCode(noDecimalMultiplier);
+        for (String decimalSeparator: decimalSeparators)
+            result = 31 * result + decimalSeparator.hashCode();
+        for (String decorator: decorators)
+            result = 31 * result + decorator.hashCode();
+        return result;
+    }
 
     /**
      * This inner class is used to build instances of MoneyFormats.<br/>
@@ -245,9 +264,9 @@ public class MoneyFormat {
     public static class Builder {
         private int decimals;
 
-        private List<String> decimalSeparators;
+        private final List<String> decimalSeparators;
 
-        private List<String> decorators;
+        private final List<String> decorators;
 
         /**
          * Use this constructor to instantiate a Builder Object.
@@ -255,11 +274,11 @@ public class MoneyFormat {
         public Builder() {
             decimals = 2;
 
-            decimalSeparators = new ArrayList<String>();
+            decimalSeparators = new ArrayList<>();
             decimalSeparators.add(".");
             decimalSeparators.add(",");
 
-            decorators = new ArrayList<String>();
+            decorators = new ArrayList<>();
             decorators.add(" ");
             decorators.add("'");
         }
@@ -269,7 +288,7 @@ public class MoneyFormat {
          * @param decimals the decimal separator character.
          * @return this Builder object.
          */
-        public Builder setDecimals(final int decimals) {
+        public Builder setDecimals(int decimals) {
             if (decimals < 0 || decimals > 5)
                 throw new IllegalArgumentException("Number of decimal positions must be between 0 and 5.");
 
@@ -292,7 +311,7 @@ public class MoneyFormat {
          * @param separator the decimal separator character.
          * @return this Builder object.
          */
-        public Builder addDecimalSeparator(final String separator) {
+        public Builder addDecimalSeparator(String separator) {
             if (!elementOK(separator))
                 throw new IllegalArgumentException("Illegal decimal separator: " + separator);
 
@@ -301,7 +320,7 @@ public class MoneyFormat {
             return this;
         }
 
-        private boolean elementOK(final String element) {
+        private boolean elementOK(String element) {
             return element.length() == 1 && !element.matches("[0-9]");
         }
 
@@ -319,7 +338,7 @@ public class MoneyFormat {
          * @param decorator the thousands decorator character.
          * @return this Builder object.
          */
-        public Builder addDecorator(final String decorator) {
+        public Builder addDecorator(String decorator) {
             if (!elementOK(decorator))
                 throw new IllegalArgumentException("Illegal decorator: " + decorator);
 
@@ -335,7 +354,7 @@ public class MoneyFormat {
          * MoneyFormat (missing decimal separator, decorator identical to separator, etc.)
          */
         public MoneyFormat create() {
-            for (final String sep: decimalSeparators)
+            for (String sep: decimalSeparators)
                 if (decorators.contains(sep))
                     throw new IllegalArgumentException("Decimal Separator " + sep + " is also present in decorators.");
 

@@ -1,5 +1,6 @@
 package org.beanmaker.v2.runtime;
 
+// TODO: évaluer utilité et supprimer si non avérée
 public interface DbBeanWithCode extends DbBeanInterface {
 
     String getCode();

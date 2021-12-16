@@ -58,7 +58,7 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		return disabled;
 	}
 
-	// Assumes only one "please select ..." element with id "0", throws an IllegalStateException otherwise.
+	// ! Assumes only one "please select ..." element with id "0", throws an IllegalStateException otherwise.
 	@Override
 	public int compareTo(IdNamePair idNamePair) {
 		if (id.equals("0") && idNamePair.id.equals("0"))
@@ -72,61 +72,43 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		return name.compareTo(idNamePair.name);
 	}
 
-	public static <T extends IdNamePairBean> List<IdNamePair> getPairs(List<T> beans) {
-		return getPairs(beans, null);
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(List<T> beans, DbBeanLanguage dbBeanLanguage) {
+		return getPairs(beans, dbBeanLanguage, null);
 	}
 
-	public static <T extends IdNamePairBean> List<IdNamePair> getPairs(
-			List<T> beans,
-			String noSelectionText)
-	{
-		return getPairs(beans, noSelectionText, false);
-	}
-
-	public static <T extends IdNamePairBean> List<IdNamePair> getPairs(
-			List<T> beans,
-			String noSelectionText,
-			boolean sortOnName)
-	{
-		List<IdNamePair> pairs = new ArrayList<IdNamePair>();
-
-		for (IdNamePairBean bean: beans)
-			pairs.add(new IdNamePair(bean.getId(), bean.getNameForPair()));
-
-		if (sortOnName)
-			Collections.sort(pairs);
-
-		if (noSelectionText != null)
-			pairs.add(0, new IdNamePair(0, noSelectionText));
-
-		return pairs;
-	}
-
-	public static <T extends MultilingualIdNamePairBean> List<IdNamePair> getMultilingualPairs(
-			List<T> beans,
-			DbBeanLanguage dbBeanLanguage)
-	{
-		return getMultilingualPairs(beans, dbBeanLanguage, null);
-	}
-
-	public static <T extends MultilingualIdNamePairBean> List<IdNamePair> getMultilingualPairs(
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
 			List<T> beans,
 			DbBeanLanguage dbBeanLanguage,
 			String noSelectionText)
 	{
-		return getMultilingualPairs(beans, dbBeanLanguage, noSelectionText, false);
+		return getPairs(beans, dbBeanLanguage, noSelectionText, false);
 	}
 
-	public static <T extends MultilingualIdNamePairBean> List<IdNamePair> getMultilingualPairs(
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
+			List<T> beans,
+			DbBeanLocalization localization)
+	{
+		return getPairs(beans, localization.getLanguage(), null);
+	}
+
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
+			List<T> beans,
+			DbBeanLocalization localization,
+			String noSelectionLabelName)
+	{
+		return getPairs(beans, localization.getLanguage(), localization.getLabel(noSelectionLabelName));
+	}
+
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
 			List<T> beans,
 			DbBeanLanguage dbBeanLanguage,
 			String noSelectionText,
 			boolean sortOnName)
 	{
-		List<IdNamePair> pairs = new ArrayList<IdNamePair>();
+		List<IdNamePair> pairs = new ArrayList<>();
 
-		for (MultilingualIdNamePairBean bean: beans)
-			pairs.add(new IdNamePair(bean.getId(), bean.getNameForPair(dbBeanLanguage)));
+		for (DbBeanInterface bean: beans)
+			pairs.add(new IdNamePair(bean.getId(), bean.getNameForIdNamePairsAndTitles(dbBeanLanguage)));
 
 		if (sortOnName)
 			Collections.sort(pairs);

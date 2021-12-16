@@ -16,6 +16,6 @@ public interface LocalFileManager {
 
     String getDefaultUploadDir();
 
-    DbBeanFileStoredFilenameCalculator getDefaultFileStoredFileNameCalculator();
+    DbBeanFileInternalFilenameCalculator getDefaultFileStoredFileNameCalculator();
 
 }

@@ -2,24 +2,32 @@ package org.beanmaker.v2.runtime;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ToStringMaker {
 
-    private final String beanClass;
-    private final long idBean;
+    private final String javaClass;
+    private final long databaseID;
 
     private final Map<String, String> fields = new LinkedHashMap<String, String>();
 
     public ToStringMaker(DbBeanInterface bean) {
-        beanClass = bean.getClass().getName();
-        idBean = bean.getId();
+        javaClass = bean.getClass().getName();
+        databaseID = bean.getId();
+    }
+
+    public ToStringMaker(DbBeanEditor editor) {
+        javaClass = editor.getClass().getName();
+        databaseID = editor.getId();
+    }
+
+    public ToStringMaker(String javaClassName, long beanID) {
+        javaClass = javaClassName;
+        databaseID = beanID;
     }
 
     public void addField(String name, String value) {
-        if (value == null)
-            fields.put(name, "null");
-        else
-            fields.put(name, value);
+        fields.put(name, Objects.requireNonNullElse(value, "null"));
     }
 
     public void addField(String name, Object value) {
@@ -44,7 +52,7 @@ public class ToStringMaker {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("[").append(beanClass).append(" #").append(idBean);
+        buf.append("[").append(javaClass).append(" #").append(databaseID);
 
         for (Map.Entry mapEntry: fields.entrySet())
             buf.append(", ").append(mapEntry.getKey()).append("=").append(mapEntry.getValue());
@@ -52,4 +60,5 @@ public class ToStringMaker {
         buf.append("]");
         return buf.toString();
     }
+
 }

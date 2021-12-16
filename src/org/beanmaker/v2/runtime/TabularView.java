@@ -2,16 +2,19 @@ package org.beanmaker.v2.runtime;
 
 public class TabularView extends BaseView {
 
-    protected DbBeanLanguage dbBeanLanguage = null;
-    protected boolean languageInfoRequired = false;
-    protected boolean displayAllLanguages = true;
-
-    protected String yesName = "yes";
-    protected String noName = "no";
-
     protected boolean displayId = false;
+    protected boolean displayAllLanguages = true;
+    protected boolean languageInfoRequired = true;
 
-    public TabularView(String resourceBundleName) {
-        super(resourceBundleName);
+    public TabularView(DbBeanLocalization dbBeanLocalization) {
+        super(dbBeanLocalization);
     }
+
+    protected String yesName() {
+        return dbBeanLocalization.getLabel("yes");
+    }
+    protected String noName() {
+        return dbBeanLocalization.getLabel("no");
+    }
+
 }

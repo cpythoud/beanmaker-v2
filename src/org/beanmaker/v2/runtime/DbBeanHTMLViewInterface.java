@@ -3,13 +3,11 @@ package org.beanmaker.v2.runtime;
 import org.jcodegen.html.FormTag;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
-import java.util.Locale;
 
 public interface DbBeanHTMLViewInterface extends DbBeanViewInterface {
-
-    void setLocale(Locale locale);
 
     List<ErrorMessage> getErrorMessages();
 
@@ -19,23 +17,18 @@ public interface DbBeanHTMLViewInterface extends DbBeanViewInterface {
 
     void setAllFields(ServletRequest request);
 
+    void setAllFields(HttpServletRequest request);
+
     void setAllFields(HttpRequestParameters parameters);
 
     boolean isDataOK();
 
     void updateDB();
 
-    void setUpdateDB(String dummy);
-
     void reset();
 
     void fullReset();
 
-    void setReset(String dummy);
-
-    void setFullReset(String dummy);
-
     void delete();
 
-    void setDelete(String dummy);
 }

@@ -33,7 +33,7 @@ import java.util.Map;
 
 public abstract class BaseMasterTableView extends TabularView {
 
-    protected String tableId = "";
+    protected String tableId;
 
     protected String iconLibrary = "glyphicons glyphicons-";
     protected String filetypeIconLibrary = "filetypes filetypes-";
@@ -53,13 +53,20 @@ public abstract class BaseMasterTableView extends TabularView {
     protected String removeFilteringIcon = "remove-circle";
     protected String formElementFilterCssClass = "tb-filter";
     protected String removeFilteringLinkCssClass = "tb-nofilter";
-    protected Tag removeFilteringHtmlTags =
-            new SpanTag().cssClass(iconLibrary + removeFilteringIcon).title("Remove Filtering");
+    protected Tag removeFilteringHtmlTags() {
+        return new SpanTag()
+                .cssClass(iconLibrary + removeFilteringIcon)
+                .title(dbBeanLocalization.getLabel("cct_remove_filtering"));
+    }
 
     protected String yesValue = "A";
     protected String noValue = "Z";
-    protected String yesDisplay = "✔";
-    protected String noDisplay = "";
+    protected String yesDisplay() {
+        return "✔";
+    }
+    protected String noDisplay() {
+        return "";
+    }
 
     protected DateFormat dateFormat = null;
     protected DateFormat timeFormat = null;
@@ -70,11 +77,19 @@ public abstract class BaseMasterTableView extends TabularView {
     protected int zeroFilledMaxDigits = 18;
 
     protected int columnCount = 2;
-    protected String noDataMessage = "NO DATA";
+    protected String noDataMessage() {
+        return dbBeanLocalization.getLabel("cct_no_data");
+    }
 
-    protected String summaryTotalLabel = "items in table,";
-    protected String summaryShownLabel = "items shown,";
-    protected String summaryFilteredOutLabel = "items filtered out.";
+    protected String summaryTotalLabel() {
+        return dbBeanLocalization.getLabel("cct_total");
+    }
+    protected String summaryShownLabel() {
+        return dbBeanLocalization.getLabel("cct_shown");
+    }
+    protected String summaryFilteredOutLabel() {
+        return dbBeanLocalization.getLabel("cct_filtered");
+    }
 
     protected boolean showBeanIdInRowId = true;
 
@@ -82,16 +97,24 @@ public abstract class BaseMasterTableView extends TabularView {
     protected String deleteIcon = "bin";
     protected boolean showEditLinks = false;
 
-    protected String moveUpLabel = "move up";
-    protected String moveDownLabel = "move down";
+    protected String moveUpLabel() {
+        return dbBeanLocalization.getLabel("cct_move_up");
+    }
+    protected String moveDownLabel() {
+        return dbBeanLocalization.getLabel("cct_move_down");
+    }
     protected String moveUpIcon = "chevron-up";
     protected String moveDownIcon = "chevron-down";
     protected boolean showOrderingLinks = false;
 
     protected boolean doDataToggle = false;
     protected boolean showAllData = false;
-    protected String showMoreLabel = "show more";
-    protected String showLessLabel = "show less";
+    protected String showMoreLabel() {
+        return dbBeanLocalization.getLabel("cct_show_more");
+    }
+    protected String showLessLabel() {
+        return dbBeanLocalization.getLabel("cct_show_less");
+    }
     protected String showMoreIcon = "eye-plus";
     protected String showLessIcon = "eye-minus";
     protected String showMoreCssClass = "tb-show-more";
@@ -108,59 +131,30 @@ public abstract class BaseMasterTableView extends TabularView {
     protected TableLocalOrderContext localOrderContext = null;
     protected String localOrderingTable = null;
 
+    // ! Infrastructure exports Excel reste provisoirement en place, mais pas d'implémentation dans la première version
     protected boolean excelExportAvailable = false;
     protected String excelExportIdSuffix = "excel";
     protected String excelExportCssClass = "excel_export";
     protected String excelExportIcon = "xlsx";
-    protected Tag excelExportHtmlTags =
-            new SpanTag().cssClass(filetypeIconLibrary + excelExportIcon).title("Excel Export");
-    protected boolean excelExportDownloadLinkAlreadyShown = false;
-    protected Map<String, String> excelExportExtraParameters = new HashMap<String, String>();
+    protected Tag excelExportHtmlTags() {
+        return new SpanTag()
+                .cssClass(filetypeIconLibrary + excelExportIcon)
+                .title(dbBeanLocalization.getLabel("cct_excel_export"));
+    }
 
-    public BaseMasterTableView(String resourceBundleName, String tableId) {
-        super(resourceBundleName);
+    protected boolean excelExportDownloadLinkAlreadyShown = false;
+    protected Map<String, String> excelExportExtraParameters = new HashMap<>();
+
+    public BaseMasterTableView(String tableId, DbBeanLocalization dbBeanLocalization) {
+        super(dbBeanLocalization);
         this.tableId = tableId;
     }
 
     public String getMasterTable() {
-        if (languageInfoRequired && dbBeanLanguage == null)
-            throw new NullPointerException("Language is not defined.");
-
         excelExportDownloadLinkAlreadyShown = false;
         initExcelExportExtraParameters();
 
         return getMasterTableTag().toString();
-    }
-
-    protected void setLanguage(DbBeanLanguage dbBeanLanguage, Map<String, String> labels) {
-        this.dbBeanLanguage = dbBeanLanguage;
-
-        removeFilteringHtmlTags =
-                new SpanTag()
-                        .cssClass(iconLibrary + removeFilteringIcon)
-                        .title(labels.get("cct_remove_filtering"));
-
-        excelExportHtmlTags =
-                new SpanTag()
-                        .cssClass(filetypeIconLibrary + excelExportIcon)
-                        .title(labels.get("cct_excel_export"));
-
-        yesName = labels.get("yes");
-        noName = labels.get("no");
-
-        noDataMessage = labels.get("cct_no_data");
-
-        summaryTotalLabel = labels.get("cct_total");
-        summaryShownLabel = labels.get("cct_shown");
-        summaryFilteredOutLabel = labels.get("cct_filtered");
-
-        moveUpLabel = labels.get("cct_move_up");
-        moveDownLabel = labels.get("cct_move_down");
-
-        showMoreLabel = labels.get("cct_show_more");
-        showLessLabel = labels.get("cct_show_less");
-
-        setLocale(dbBeanLanguage.getLocale());
     }
 
     public void setShowAllData(boolean showAllData) {
@@ -226,7 +220,7 @@ public abstract class BaseMasterTableView extends TabularView {
     protected abstract long getLineCount();
 
     protected TrTag getNoDataAvailableLine() {
-        return getNoDataAvailableLine(noDataMessage);
+        return getNoDataAvailableLine(noDataMessage());
     }
 
     protected TrTag getNoDataAvailableLine(String message) {
@@ -278,7 +272,7 @@ public abstract class BaseMasterTableView extends TabularView {
         return getRemoveFilteringCell().child(
                 new ATag().href("#")
                         .cssClass(removeFilteringLinkCssClass)
-                        .child(removeFilteringHtmlTags)
+                        .child(removeFilteringHtmlTags())
         );
     }
 
@@ -300,7 +294,7 @@ public abstract class BaseMasterTableView extends TabularView {
                 .href("#")
                 .id(tableId + "_" + excelExportIdSuffix)
                 .cssClass(removeFilteringLinkCssClass + " " + excelExportCssClass)
-                .child(excelExportHtmlTags);
+                .child(excelExportHtmlTags());
 
         for (Map.Entry<String, String> parameter: excelExportExtraParameters.entrySet())
             link.data(parameter.getKey(), parameter.getValue());
@@ -331,9 +325,9 @@ public abstract class BaseMasterTableView extends TabularView {
                 new SelectTag().name("tb-" + name).cssClass(formElementFilterCssClass).child(
                         new OptionTag("", "").selected()
                 ).child(
-                        new OptionTag(yesName, yesValue)
+                        new OptionTag(yesName(), yesValue)
                 ).child(
-                        new OptionTag(noName, noValue)
+                        new OptionTag(noName(), noValue)
                 )
         );
     }
@@ -365,13 +359,17 @@ public abstract class BaseMasterTableView extends TabularView {
         for (IdNamePair pair: pairs)
             select.child(new OptionTag(
                     pair.getName(),
-                    Strings.zeroFill(Long.valueOf(pair.getId()), zeroFilledMaxDigits)));
+                    Strings.zeroFill(Long.parseLong(pair.getId()), zeroFilledMaxDigits)));
 
         return getTableFilterCell().child(select);
     }
 
     protected ThTag getTitleCell(String name) {
-        return getTitleCell(name, resourceBundle.getString(name));
+        return getTitleCell(name, getTitle(name));
+    }
+
+    protected String getTitle(String name) {
+        return dbBeanLocalization.getLabel(name);
     }
 
     protected ThTag getTitleCell(String name,  String adhocTitle) {
@@ -391,13 +389,62 @@ public abstract class BaseMasterTableView extends TabularView {
         return thTitleCssClass + " th-" + name;
     }
 
-    @Deprecated
-    protected TrTag getTableLine() {
-        TrTag line = new TrTag();
+    public <B extends DbBeanInterface> TrTag getTableLine(B bean) {
+        TrTag line;
+        if (showEditLinks)
+            line = getTrTag(bean.getId());
+        else
+            line = getTableLine(bean.getId());
 
-        line.child(getTableCellForRemoveFilteringPlaceholder());
+        if (showEditLinks)
+            line.child(getEditCell(bean));
+        if (displayId)
+            line.child(getIdTableCell(bean));
+        addDataToLine(line, bean);
+        if (showEditLinks && okToDelete(bean))
+            line.child(getDeleteCell(bean));
 
         return line;
+    }
+
+    public <B extends DbBeanWithItemOrder> TrTag getItemOrderTableLine(B bean) {
+        TrTag line;
+        if (showEditLinks || showOrderingLinks || enableDragNDrop)
+            line = getTrTag(bean.getId());
+        else
+            line = getTableLine(bean.getId());
+
+        if (showEditLinks || showOrderingLinks || enableDragNDrop)
+            line.child(getOperationCell(bean));
+        if (displayId)
+            line.child(getIdTableCell(bean));
+        addDataToLine(line, bean);
+        if (showEditLinks && okToDelete(bean))
+            line.child(getDeleteCell(bean));
+
+        return line;
+    }
+
+    protected TdTag getEditCell(DbBeanInterface bean) {
+        return getEditCell(bean, dbBeanLocalization.getBeanVarName(), dbBeanLocalization.getLabel("tooltip_edit"));
+    }
+
+    private TdTag getOperationCell(DbBeanWithItemOrder bean) {
+        return getOperationCell(bean, dbBeanLocalization.getBeanVarName(), dbBeanLocalization.getLabel("tooltip_edit"));
+    }
+
+    protected TdTag getIdTableCell(DbBeanInterface bean) {
+        return getTableCell("id", bean.getId());
+    }
+
+    protected abstract <B extends DbBeanInterface> void addDataToLine(TrTag line, B bean);
+
+    protected  <B extends DbBeanInterface> boolean okToDelete(B bean) {
+        return true;
+    }
+
+    protected TdTag getDeleteCell(DbBeanInterface bean) {
+        return getDeleteCell(bean, dbBeanLocalization.getBeanVarName(), dbBeanLocalization.getLabel("tooltip_delete"));
     }
 
     protected TrTag getTableLine(long id) {
@@ -438,38 +485,37 @@ public abstract class BaseMasterTableView extends TabularView {
         return cell;
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Tag content) {
         return getTableCell(name, content, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Tag content, String extraCssClasses) {
         return new TdTag().child(content).cssClass(getTableCellCssClasses(name, extraCssClasses));
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, String value) {
         return getTableCell(name, value, null);
     }
 
-    protected TdTag getTableCell(String name, String value, String extraCssClasses) {
-        return new TdTag(value).cssClass(getTableCellCssClasses(name, extraCssClasses));
-    }
-
-    private String getTableCellCssClasses(String name, String extraCssClasses) {
-        return "tb-" + name + (extraCssClasses == null ? "" : " " + extraCssClasses);
-    }
-
+    @Deprecated
     protected TdTag getEmptyTableCell(String name) {
         return getEmptyTableCell(name, null);
     }
 
+    @Deprecated
     protected TdTag getEmptyTableCell(String name, String extraCssClasses) {
         return new TdTag().cssClass(getTableCellCssClasses(name, extraCssClasses));
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Date value) {
         return getTableCell(name, value, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Date value, String extraCssClasses) {
         if (value == null)
             return getTableCell(name, "");
@@ -481,10 +527,12 @@ public abstract class BaseMasterTableView extends TabularView {
                 .attribute("data-sort-value", value.toString());
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Time value) {
         return getTableCell(name, value, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Time value, String extraCssClasses) {
         if (value == null)
             return getTableCell(name, "");
@@ -496,10 +544,12 @@ public abstract class BaseMasterTableView extends TabularView {
                 .attribute("data-sort-value", value.toString());
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Timestamp value) {
         return getTableCell(name, value, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Timestamp value, String extraCssClasses) {
         if (value == null)
             return getTableCell(name, "");
@@ -511,21 +561,25 @@ public abstract class BaseMasterTableView extends TabularView {
                 .attribute("data-sort-value", value.toString());
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, boolean value) {
         return getTableCell(name, value, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, boolean value, String extraCssClasses) {
         if (value)
-            return getTableBooleanCell(name, yesDisplay, yesValue, extraCssClasses);
+            return getTableBooleanCell(name, yesDisplay(), yesValue, extraCssClasses);
 
-        return getTableBooleanCell(name, noDisplay, noValue, extraCssClasses);
+        return getTableBooleanCell(name, noDisplay(), noValue, extraCssClasses);
     }
 
+    @Deprecated
     protected TdTag getTableBooleanCell(String name, String value, String sortnfilter) {
         return getTableBooleanCell(name, value, sortnfilter, null);
     }
 
+    @Deprecated
     protected TdTag getTableBooleanCell(
             String name,
             String value,
@@ -535,10 +589,12 @@ public abstract class BaseMasterTableView extends TabularView {
         return decorateBooleanCell(new TdTag(value), name, sortnfilter, extraCssClasses);
     }
 
+    @Deprecated
     protected TdTag getTableBooleanCell(String name, Tag value, String sortnfilter) {
         return getTableBooleanCell(name, value, sortnfilter, null);
     }
 
+    @Deprecated
     protected TdTag getTableBooleanCell(
             String name,
             Tag value,
@@ -548,10 +604,12 @@ public abstract class BaseMasterTableView extends TabularView {
         return decorateBooleanCell(new TdTag().child(value), name, sortnfilter, extraCssClasses);
     }
 
+    @Deprecated
     protected TdTag getTableBooleanCell(String name, HtmlCodeFragment value, String sortnfilter) {
         return getTableBooleanCell(name, value, sortnfilter, null);
     }
 
+    @Deprecated
     protected TdTag getTableBooleanCell(
             String name,
             HtmlCodeFragment value,
@@ -571,41 +629,50 @@ public abstract class BaseMasterTableView extends TabularView {
                 .attribute("data-filter-value", sortnfilter).attribute("data-sort-value", sortnfilter);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, long value) {
         return getTableCell(name, value, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, long value, String extraCssClasses) {
         return getTableCell(name, Long.toString(value), extraCssClasses)
                 .attribute("data-sort-value", Strings.zeroFill(value, zeroFilledMaxDigits));
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Money value) {
         return getTableCell(name, value, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, Money value, String extraCssClasses) {
         return getTableCell(name, value.toString(), extraCssClasses)
                 .attribute("data-sort-value", Strings.zeroFill(value.getVal(), zeroFilledMaxDigits));
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, HtmlCodeFragment content) {
         return getTableCell(name, content, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, HtmlCodeFragment content, String extraCssClasses) {
         return new TdTag().addCodeFragment(content).cssClass(getTableCellCssClasses(name, extraCssClasses));
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, IdNamePair pair) {
         return getTableCell(name, pair, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(String name, IdNamePair pair, String extraCssClasses) {
         return getTableCell(name, pair.getName(), extraCssClasses)
                 .attribute("data-filter-value", Strings.zeroFill(Long.valueOf(pair.getId()), zeroFilledMaxDigits));
     }
 
+    @Deprecated
     protected TdTag getTableCell(
             String name,
             List<IdNamePair> pairs,
@@ -616,6 +683,7 @@ public abstract class BaseMasterTableView extends TabularView {
         return getTableCell(name, pairs, idRow, idSelected, emptyChoice, null);
     }
 
+    @Deprecated
     protected TdTag getTableCell(
             String name,
             List<IdNamePair> pairs,
@@ -637,7 +705,7 @@ public abstract class BaseMasterTableView extends TabularView {
         String sortValue = null;
         for (IdNamePair pair: pairs) {
             OptionTag option =
-                    new OptionTag(pair.getName(), Strings.zeroFill(Long.valueOf(pair.getId()), zeroFilledMaxDigits));
+                    new OptionTag(pair.getName(), Strings.zeroFill(Long.parseLong(pair.getId()), zeroFilledMaxDigits));
             if (pair.getId().equals(Long.toString(idSelected))) {
                 option.selected();
                 sortValue = pair.getName();
@@ -649,6 +717,27 @@ public abstract class BaseMasterTableView extends TabularView {
                 .attribute("data-filter-value", Strings.zeroFill(idSelected, zeroFilledMaxDigits))
                 .attribute("data-sort-value", sortValue == null ? "" : sortValue);
     }
+
+    // ! Start reimplementation of getTableCell()
+
+    protected TdTag getTableCell(MasterTableCellDefinition definition) {
+        TdTag cell = getTableCell(definition.fieldName(), definition.content(), definition.extraCssClasses());
+        if (definition.orderingDefined())
+            cell.attribute("data-sort-value", definition.orderingValue());
+        if (definition.filteringDefined())
+            cell.attribute("data-filter-value", definition.filteringValue());
+        return cell;
+    }
+
+    protected TdTag getTableCell(String name, String value, String extraCssClasses) {
+        return new TdTag(value).cssClass(getTableCellCssClasses(name, extraCssClasses));
+    }
+
+    protected String getTableCellCssClasses(String name, String extraCssClasses) {
+        return "tb-" + name + (extraCssClasses == null ? "" : " " + extraCssClasses);
+    }
+
+    // ! End reimplementation of getTableCell()
 
     protected TheadTag getThreeLineHead() {
         TheadTag head = new TheadTag();
@@ -694,11 +783,11 @@ public abstract class BaseMasterTableView extends TabularView {
 
         return new PTag().cssClass("cctable-summary")
                 .child(getSummarySpan(count, "_total"))
-                .child(new CData(summaryTotalLabel))
+                .child(new CData(summaryTotalLabel()))
                 .child(getSummarySpan(count, "_shown"))
-                .child(new CData(summaryShownLabel))
+                .child(new CData(summaryShownLabel()))
                 .child(getSummarySpan(0, "_filtered_out"))
-                .child(new CData(summaryFilteredOutLabel));
+                .child(new CData(summaryFilteredOutLabel()));
     }
 
     protected SpanTag getSummarySpan(long count, String idPostfix) {
@@ -715,11 +804,11 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected ATag getMoveUpLink(long id, String idPrefix, String cssClass) {
-        return getOperationLink(id, idPrefix, cssClass, moveUpIcon, moveUpLabel);
+        return getOperationLink(id, idPrefix, cssClass, moveUpIcon, moveUpLabel());
     }
 
     protected ATag getMoveDownLink(long id, String idPrefix, String cssClass) {
-        return getOperationLink(id, idPrefix, cssClass, moveDownIcon, moveDownLabel);
+        return getOperationLink(id, idPrefix, cssClass, moveDownIcon, moveDownLabel());
     }
 
     protected ATag getOperationLink(
@@ -749,7 +838,7 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected TdTag getOperationCell(
-            DbBeanWithItemOrderInterface bean,
+            DbBeanWithItemOrder bean,
             String beanName,
             String editTooltip)
     {
@@ -766,13 +855,13 @@ public abstract class BaseMasterTableView extends TabularView {
                     editTooltip));
 
         if (showOrderingLinks) {
-            if (!bean.isFirstItemOrder())
+            if (!bean.isFirstInItemOrder())
                 cell.child(getMoveUpLink(
                         bean.getId(),
                         beanName + "Up",
                         "move_up_" + beanName));
 
-            if (!bean.isLastItemOrder())
+            if (!bean.isLastInItemOrder())
                 cell.child(getMoveDownLink(
                         bean.getId(),
                         beanName + "Down",
@@ -822,7 +911,7 @@ public abstract class BaseMasterTableView extends TabularView {
         SpanTag icon =
                 new SpanTag()
                         .cssClass(iconLibrary + showMoreIcon)
-                        .title(showMoreLabel);
+                        .title(showMoreLabel());
 
         ATag link = new ATag().href("#").id(tableId + "-masking-link-show").child(icon);
         if (showAllData)
@@ -837,7 +926,7 @@ public abstract class BaseMasterTableView extends TabularView {
         SpanTag icon =
                 new SpanTag()
                         .cssClass(iconLibrary + showLessIcon)
-                        .title(showLessLabel);
+                        .title(showLessLabel());
 
         ATag link = new ATag().href("#").id(tableId + "-masking-link-hide").child(icon);
         if (showAllData)

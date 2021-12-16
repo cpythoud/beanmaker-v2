@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * ...
  */
+// TODO: remplacer/supprimer cette monstrosité
 public class DBQueries {
 
     public static int getIntCount(DB db, String table) {

@@ -149,7 +149,6 @@ public class HFHParameters {
             extraParams = new HashMap<String, String>();
     }
 
-    // TODO: change return type into HFHParameters for fluent interface / will requires all clients to recompile
     public HFHParameters setExtra(String name, String value) {
         if (extraParams == null)
             initExtraParamMap();
@@ -276,9 +275,9 @@ public class HFHParameters {
         return readonly;
     }
 
-    // TODO: change return type into HFHParameters for fluent interface / will requires all clients to recompile
-    public void setReadonly(boolean readonly) {
+    public HFHParameters setReadonly(boolean readonly) {
         this.readonly = readonly;
+        return this;
     }
 
     public boolean isAutocomplete() {
@@ -638,4 +637,5 @@ public class HFHParameters {
     public boolean hasTagExtraCssClasses() {
         return !Strings.isEmpty(tagExtraCssClasses);
     }
+
 }

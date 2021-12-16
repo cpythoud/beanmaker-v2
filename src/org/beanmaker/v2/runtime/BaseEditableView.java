@@ -6,13 +6,14 @@ import java.util.List;
 
 public class BaseEditableView extends BaseView {
 
-    protected List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
+    protected List<ErrorMessage> errorMessages = new ArrayList<>();
 
-    public BaseEditableView(final String resourceBundleName) {
-        super(resourceBundleName);
+    public BaseEditableView(DbBeanLocalization dbBeanLocalization) {
+        super(dbBeanLocalization);
     }
 
     public List<ErrorMessage> getErrorMessages() {
         return Collections.unmodifiableList(errorMessages);
     }
+
 }

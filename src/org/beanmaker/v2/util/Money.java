@@ -1,5 +1,8 @@
 package org.beanmaker.v2.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * This class it a trivial implementation of a money representation to be used with values retrieved from a database.
  * It is mostly used, with the companion class {@link MoneyFormat}, in web applications related to sales or
@@ -12,7 +15,12 @@ package org.beanmaker.v2.util;
  * for the currency that interests us (i.e., cents and not dollars).<br/>
  * Objects of the Money class are immutable and therefore thread safe.
  */
-public class Money {
+public final class Money implements Comparable<Money> {
+
+    public static final Money ZERO = new Money(0L);
+
+    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+
     private final long val;
 
     private final MoneyFormat format;
@@ -49,7 +57,7 @@ public class Money {
      * @throws java.lang.IllegalArgumentException if <code>value</code> is negative.
      */
     public Money(double value, MoneyFormat format) {
-        this((long) (value + 0.5), format);
+        this(value, format, 2);
     }
 
     /**
@@ -59,7 +67,26 @@ public class Money {
      *              or down if necessary (.5 goes up).
      */
     public Money(double value) {
-        this(value, MoneyFormat.getDefault());
+        this(value, MoneyFormat.getDefault(), 2);
+    }
+
+    /**
+     * Creates a Money object with the appropriate value and associate a printing format to it.
+     * @param value in the main unit of the currency (i.e., dollars). The value will be stored as a long,
+     *              representing the smallest unit of the currency (i.e., cents). The value will be rounded up
+     *              or down if necessary (.5 goes up).
+     * @param format used to print the value.
+     * @param scale how many decimals the currency uses. For currencies not using the default 2 decimals. Of course
+     *              the default MoneyFormatter is not appropriate for this type of currency and you should provide
+     *              your own.
+     * @throws java.lang.IllegalArgumentException if <code>value</code> is negative.
+     */
+    public Money(double value, MoneyFormat format, int scale) {
+        this(convertToLong(value, scale), format);
+    }
+
+    private static long convertToLong(double value, int scale) {
+        return BigDecimal.valueOf(value).multiply(BigDecimal.TEN.pow(scale)).setScale(0, RoundingMode.HALF_UP).longValue();
     }
 
     /**
@@ -109,10 +136,12 @@ public class Money {
      * that expect a double value. Using this value to do any sort of calculation in your code
      * defeats the purpose of the Money class.
      * @return he internal representation of the value of this MoneyFormat.
-     * @throws java.lang.IllegalArgumentException if the value is too big to fit in an int.
      */
     public double getDoubleVal() {
-        return Double.valueOf((val / 100) + "." + (val % 100));
+        return BigDecimal.valueOf(val)
+                .divide(ONE_HUNDRED, RoundingMode.HALF_UP)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
     /**
@@ -125,7 +154,7 @@ public class Money {
 
     /**
      * Returns the internal representation of the value of this MoneyFormat as a String.
-     * @return he internal representation of the value of this MoneyFormat.
+     * @return the internal representation of the value of this MoneyFormat.
      */
     public String toString() {
         return format.print(val);
@@ -141,7 +170,61 @@ public class Money {
         if (percentage < 0 || percentage > 100)
             throw new IllegalArgumentException("Percentage must be comprised between 0 and 100. Incorrect value: " + percentage);
 
-        double result = val * ((float) percentage / 100);
-        return new Money(Math.round(result), format);
+        BigDecimal percent = BigDecimal.valueOf(percentage).divide(ONE_HUNDRED, RoundingMode.HALF_UP);
+        long result = BigDecimal.valueOf(val).multiply(percent).setScale(2, RoundingMode.HALF_UP).longValue();
+
+        return new Money(result, format);
+    }
+
+    /**
+     * Test equality of two Monwy objects. This function compares the amount AND the MoneyFormat in use. So two
+     * Money object representing the same amount might not be equal if their MoneyFormat differ.
+     * To assess amount equality, either pre-assess that MoneyFormat objects are identical or, preferably, use
+     * compareTo()
+     * @param o object to be compared to.
+     * @return true if the two objects are considered equal.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (!(o instanceof Money))
+            return false;
+
+        Money money = (Money) o;
+        return val == money.val && format.equals(money.format);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Long.hashCode(val);
+        result = 31 * result + format.hashCode();
+        return result;
+    }
+
+    /**
+     * Compares two Money objects based on the amount they hold. Unlike equals(), this comparison doesn't take into
+     * account the associated MoneyFormat.
+     * @param money amount to compare
+     * @return a negative number if this object contains a smaller amount than the money parameter; a positive
+     * number if this object contains a greater amount than the money parameter; 0 if this object and the
+     * money parameter contain the same amount.
+     */
+    @Override
+    public int compareTo(Money money) {
+        return Long.compare(val, money.val);
+    }
+
+    /**
+     * Create a Money object with the same amount as this object and a different format.
+     * @param format to be used
+     * @return a Money object with the same amount as this object associated to the new MoneyFormat
+     */
+    public Money withFormat(MoneyFormat format) {
+        if (this.format.equals(format))
+            return this;
+
+        return new Money(val, format);
     }
 }
