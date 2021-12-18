@@ -4,28 +4,116 @@ import org.dbbeans.sql.DBTransaction;
 
 import java.util.List;
 
-public interface DbBeanEditor {
+public abstract class DbBeanEditor {
 
-    long getId();
-    void setId(long id);
+    protected final DbBeanLocalization dbBeanLocalization;
+    private final String tableName;
 
-    void resetId();
+    protected long id = 0;
 
-    void updateDB();
-    long updateDB(DBTransaction transaction);
+    protected DbBeanEditor(DbBeanParameters parameters) {
+        dbBeanLocalization = parameters.getLocalization();
+        tableName = parameters.getDatabaseTableName();
+    }
 
-    void preUpdateConversions();
+    public abstract void setId(long id);
 
-    boolean isDataOK();
+    public void resetId() {
+        id = 0;
+    }
 
-    List<ErrorMessage> getErrorMessages();
+    protected void refreshFromDataBase() {
+        if (id == 0)
+            throw new IllegalArgumentException("Cannot refresh bean not yet commited to database");
 
-    void reset();
+        setId(id);
+    }
 
-    void fullReset();
+    public long getId() {
+        return id;
+    }
 
-    void delete();
+    public void updateDB() {
+        DBTransaction transaction = createDBTransaction();
+        updateDB(transaction);
+        transaction.commit();
+    }
 
-    void setCurrentDbBeanLanguage(DbBeanLanguage language);
+    public long updateDB(DBTransaction transaction) {
+        preUpdateConversions(transaction);
+
+        if (id == 0) {
+            id = createRecord(transaction);
+            return id;
+        }
+
+        if (id > 0) {
+            updateRecord(transaction);
+            return id;
+        }
+
+        throw new IllegalStateException("id < 0");
+    }
+
+    protected abstract long createRecord(DBTransaction transaction);
+
+    protected abstract void updateRecord(DBTransaction transaction);
+
+    public void preUpdateConversions() {
+        preUpdateConversions(null);
+    }
+
+    protected void preUpdateConversions(DBTransaction transaction) {
+        if (!isDataOK(transaction))
+            throw new IllegalArgumentException(ErrorMessage.toStrings(getErrorMessages()));
+    }
+
+    public boolean isDataOK() {
+        return isDataOK(null);
+    }
+
+    protected abstract boolean isDataOK(DBTransaction transaction);
+
+    public List<ErrorMessage> getErrorMessages() {
+        return dbBeanLocalization.getErrorMessages();
+    }
+
+    public abstract void reset();
+
+    public void fullReset() {
+        reset();
+        id = 0;
+    }
+
+    public void delete() {
+        DBTransaction transaction = createDBTransaction();
+        delete(transaction);
+        transaction.commit();
+        fullReset();
+    }
+
+    protected void delete(DBTransaction transaction) {
+        preDeleteExtraDbActions(transaction);
+        transaction.addUpdate("DELETE FROM " + tableName + " WHERE id=?", stat -> stat.setLong(1, id));
+        deleteExtraDbActions(transaction);
+    }
+
+    protected void preDeleteExtraDbActions(DBTransaction transaction) { }
+
+    protected void deleteExtraDbActions(DBTransaction transaction) { }
+
+    protected void preCreateExtraDbActions(DBTransaction transaction) { }
+
+    protected void createExtraDbActions(DBTransaction transaction, long id) { }
+
+    protected void preUpdateExtraDbActions(DBTransaction transaction) { }
+
+    protected void updateExtraDbActions(DBTransaction transaction) { }
+
+    public void setCurrentDbBeanLanguage(DbBeanLanguage language) {
+        dbBeanLocalization.setLanguage(language);
+    }
+
+    protected abstract DBTransaction createDBTransaction();
 
 }

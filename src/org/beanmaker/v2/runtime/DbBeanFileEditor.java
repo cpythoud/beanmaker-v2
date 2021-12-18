@@ -2,25 +2,29 @@ package org.beanmaker.v2.runtime;
 
 import java.io.File;
 
-public interface DbBeanFileEditor extends DbBeanEditor {
+public abstract class DbBeanFileEditor extends DbBeanEditor {
 
-    String getCode();
-    String getFilename();
-    String getInternalFilename();
-    String getAltDir();
+    protected DbBeanFileEditor(DbBeanParameters parameters) {
+        super(parameters);
+    }
 
-    void setCode(final String code);
-    void setFilename(final String origFilename);
-    void setInternalFilename(final String storedFilename);
-    void setAltDir(final String altDir);
+    public abstract String getCode();
+    public abstract String getFilename();
+    public abstract String getInternalFilename();
+    public abstract String getAltDir();
 
-    boolean isAltDirEmpty();
+    public abstract void setCode(final String code);
+    public abstract void setFilename(final String origFilename);
+    public abstract void setInternalFilename(final String storedFilename);
+    public abstract void setAltDir(final String altDir);
 
-    DbBeanFile getDbBeanFile();
+    public abstract boolean isAltDirEmpty();
 
-    File getFile();
+    public abstract DbBeanFile getDbBeanFile();
 
-    void makeSureFileExists();
+    public abstract File getFile();
+
+    public abstract void makeSureFileExists();
 
     /*String getFileUrl();
 
