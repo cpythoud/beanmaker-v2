@@ -192,6 +192,70 @@ public class Strings {
     }
 
     /**
+     * Insert quotes around a String.
+     * <br/>This function insert the specified quote characters around a String. It also escape any such character
+     * found inside the String by having preceded by the character '\'.
+     * @param string to quote.
+     * @param openingChar to use for the opening quote character.
+     * @param closingChar to use for the closing quote character.
+     * @return the quoted String
+     * @throws java.lang.NullPointerException if <code>string</code> is <code>null</code>.
+     * @see Strings#quickQuote(String, String, String)
+     * @see Strings#quickQuote(String)
+     */
+    public static String quote(String string, int openingChar, int closingChar) {
+        if (string == null)
+            throw new NullPointerException("String to quote cannot be null.");
+
+        int c;
+        int l = string.length();
+        StringBuilder buf = new StringBuilder();
+
+        buf.appendCodePoint(openingChar);
+        for (int i = 0; i < l; i++) {
+            c = string.codePointAt(i);
+            if (c == openingChar || c == closingChar)
+                buf.append("\\");
+            buf.appendCodePoint(c);
+        }
+        buf.appendCodePoint(closingChar);
+
+        return buf.toString();
+    }
+
+    /**
+     * Insert quotes around a String.
+     * <br/>This function insert the specified quote characters around a String. It assumes those characters are not
+     * present inside the String and makes no attempt to escape them. If you expect quoting characters to be present
+     * inside the String and need them escaped, you should use {@link Strings#quote(String, int, int)} instead.
+     * @param string to quote.
+     * @param openingQuote to use for the opening quote character(s).
+     * @param closingQuote to use for the closing quote character(s).
+     * @return the quoted String
+     * @throws java.lang.NullPointerException if <code>string</code> is <code>null</code>.
+     * @see Strings#quote(String, int, int)
+     * @see Strings#quickQuote(String)
+     */
+    public static String quickQuote(String string, String openingQuote, String closingQuote) {
+        return openingQuote + string + closingQuote;
+    }
+
+    /**
+     * Insert quotes (") around a String.
+     * <br/>This function inserts quotes (") around a String. It assumes there are no quotes (") present
+     * inside the String and makes no attempt to escape them. If you expect quotes to be present inside the
+     * String and need them escaped, you should use {@link Strings#quote(String, int, int)} instead.
+     * @param string to quote.
+     * @return the quoted String
+     * @throws java.lang.NullPointerException if <code>string</code> is <code>null</code>.
+     * @see Strings#quote(String, int, int)
+     * @see Strings#quickQuote(String, String, String)
+     */
+    public static String quickQuote(String string) {
+        return quickQuote(string, "\"", "\"");
+    }
+
+    /**
      * Takes a long or compatible value and returns a string representing that value that starts with as many zeros
      * as necessary to reach the count of characters specified by the digits parameter.
      * @param value to be displayed with leading zeros.

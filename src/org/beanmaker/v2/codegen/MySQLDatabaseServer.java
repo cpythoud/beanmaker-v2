@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -157,7 +158,7 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
                                         }
                                     }
                                     if (idJavaType != null)
-                                        relationships.add(new OneToManyRelationship(suggestBeanClass(table), suggestJavaName(table), table, idJavaType, sqlName, true));
+                                        relationships.add(new OneToManyRelationship(suggestBeanClass(table), suggestJavaName(table), table, sqlName));
                                     break;
                                 }
                             }

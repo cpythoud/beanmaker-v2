@@ -23,6 +23,9 @@ import java.util.Map;
 
 public abstract class BeanMakerBaseServlet extends HttpServlet {
 
+    private static final List<String> BOOLEAN_TRUE_VALUES = List.of("true", "yes", "on");
+    private static final List<String> BOOLEAN_FALSE_VALUES = List.of("false", "no", "off");
+
     public enum Operation {
         GET_FORM(1, "get"),
         SUBMIT_FORM(2, "submit"),
@@ -386,4 +389,14 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
             throw new ServletException(nex);
         }
     }
+
+    protected boolean getExpectedBooleanParameter(HttpServletRequest request, String parameterName) throws ServletException {
+        String value = getExpectedStringParameter(request, parameterName);
+        if (BOOLEAN_TRUE_VALUES.contains(value))
+            return true;
+        if (BOOLEAN_FALSE_VALUES.contains(value))
+            return false;
+        throw new ServletException("Value cannot be interpreted as boolean: " + value);
+    }
+
 }
