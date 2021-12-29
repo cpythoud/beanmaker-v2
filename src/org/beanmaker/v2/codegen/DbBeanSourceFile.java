@@ -25,24 +25,16 @@ public class DbBeanSourceFile extends BaseCode {
         createSourceCode();
     }
 
-    private void createSourceCode() {
-        sourceFile.setStartComment(SourceFiles.getCommentAndVersion());
-
-        addImports();
-        javaClass.markAsAbstract();
-        addProperties();
-        addStaticInitialization();
-        addTransactionGetter();
-    }
-
-    private void addImports() {
+    @Override
+    protected void addImports() {
         importsManager.addImport("org.dbbeans.sql.DB");
         importsManager.addImport("org.dbbeans.sql.DBAccess");
         importsManager.addImport("org.dbbeans.sql.DBFromDataSource");
         importsManager.addImport("org.dbbeans.sql.DBTransaction");
     }
 
-    private void addProperties() {
+    @Override
+    protected void addStaticProperties() {
         javaClass
                 .addContent(new VarDeclaration("DB", "db").markAsStatic().markAsFinal())
                 .addContent(new VarDeclaration("DBAccess", "dbAccess").markAsStatic().markAsFinal())
@@ -52,7 +44,8 @@ public class DbBeanSourceFile extends BaseCode {
                 .addContent(EMPTY_LINE);
     }
 
-    private void addStaticInitialization() {
+    @Override
+    protected void addStaticInitialization() {
         javaClass
                 .addContent(new StaticBlock()
                         .addContent(new Assignment("db", new ObjectCreation("DBFromDataSource").addArgument("DATA_SOURCE")))
@@ -60,7 +53,8 @@ public class DbBeanSourceFile extends BaseCode {
                 .addContent(EMPTY_LINE);
     }
 
-    private void addTransactionGetter() {
+    @Override
+    protected void addCoreFunctionality() {
         javaClass
                 .addContent(new FunctionDeclaration("createDBTransaction", "DBTransaction")
                         .markAsStatic()

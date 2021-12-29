@@ -1,6 +1,7 @@
 package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
+
 import org.jcodegen.java.EmptyLine;
 import org.jcodegen.java.ExceptionThrow;
 import org.jcodegen.java.FunctionArgument;
@@ -32,6 +33,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
 
         sourceFile = new SourceFile(packageName, className);
         javaClass = sourceFile.getJavaClass();
+        javaClass.addContent(EMPTY_LINE);
         importsManager = sourceFile.getImportsManager();
 
         this.className = className;
@@ -46,6 +48,29 @@ public abstract class BaseCode implements BeanMakerSourceFile {
     public String getFilename() {
         return sourceFile.getFilename();
     }
+
+
+    protected void createSourceCode() {
+        sourceFile.setStartComment(SourceFiles.getCommentAndVersion());
+
+        addImports();
+        addStaticProperties();
+        addStaticInitialization();
+        addProperties();
+        addCoreFunctionality();
+
+        javaClass.addContent(EMPTY_LINE);
+    }
+
+    protected void addImports() { }
+
+    protected void addStaticProperties() { }
+
+    protected void addStaticInitialization() { }
+
+    protected void addProperties() { }
+
+    protected abstract void addCoreFunctionality();
 
 
     protected void newLine() {
