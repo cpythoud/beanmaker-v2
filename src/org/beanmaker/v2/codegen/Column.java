@@ -9,7 +9,8 @@ import java.util.Map;
 
 public class Column {
 
-    public static final List<String> JAVA_TYPES = Arrays.asList("boolean", "int", "long", "String", "Date", "Time", "Timestamp", "Money");
+    public static final List<String> JAVA_TYPES =
+            Arrays.asList("long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money");
 
     private static final List<String> SPECIAL_CASES = Arrays.asList("id", "last_update", "modified_by", "item_order");
     private static final Map<String, List<String>> SPECIAL_CASE_TYPES;
@@ -215,6 +216,10 @@ public class Column {
         return bad;
     }
 
+    public boolean isBeanReference() {
+        return isId() || sqlName.startsWith("id_");
+    }
+
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
@@ -258,10 +263,10 @@ public class Column {
 
         if (type.endsWith("INT")) {
             if (type.equals("BIGINT") || (type.equals("INT") && (sqlTypeName.contains("UNSIGNED"))))
-                return "long";
+                return "Long";
             if (sqlTypeName.equals("TINYINT UNSIGNED") && precision == 1)
-                return "boolean";
-            return "int";
+                return "Boolean";
+            return "Integer";
         }
 
         if (type.equals("DATE"))

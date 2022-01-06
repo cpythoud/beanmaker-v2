@@ -233,7 +233,7 @@ public class Columns {
 
     public boolean containsNumericalData() {
         for (Column column: columns)
-            if (column.getJavaType().equals("int") || column.getJavaType().equals("long"))
+            if (column.getJavaType().equals("Integer") || column.getJavaType().equals("Long"))
                 if (!column.isSpecial() && !column.getJavaName().startsWith("id"))
                     return true;
 
@@ -249,7 +249,7 @@ public class Columns {
     }
 
     public Set<String> getSqlTypes() {
-        Set<String> types = new HashSet<String>();
+        Set<String> types = new HashSet<>();
 
         for (Column column: columns)
             types.add(column.getSqlTypeName());
@@ -258,7 +258,7 @@ public class Columns {
     }
 
     public List<String> getJavaFieldNames() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         for (Column column: columns)
             names.add(column.getJavaName());

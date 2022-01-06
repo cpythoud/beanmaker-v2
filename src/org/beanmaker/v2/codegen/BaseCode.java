@@ -8,10 +8,14 @@ import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.JavaClass;
-import org.jcodegen.java.ObjectCreation;
 import org.jcodegen.java.SourceFile;
 import org.jcodegen.java.VarDeclaration;
 import org.jcodegen.java.Visibility;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.beanmaker.v2.util.Strings.capitalize;
 
 public abstract class BaseCode implements BeanMakerSourceFile {
 
@@ -54,21 +58,25 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         sourceFile.setStartComment(SourceFiles.getCommentAndVersion());
 
         addImports();
+        decorateJavaClass();
         addStaticProperties();
         addStaticInitialization();
         addProperties();
+        addConstructors();
         addCoreFunctionality();
-
-        javaClass.addContent(EMPTY_LINE);
     }
 
     protected void addImports() { }
+
+    protected void decorateJavaClass() { }
 
     protected void addStaticProperties() { }
 
     protected void addStaticInitialization() { }
 
     protected void addProperties() { }
+
+    protected void addConstructors() { }
 
     protected abstract void addCoreFunctionality();
 
@@ -77,8 +85,32 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         javaClass.addContent(EMPTY_LINE);
     }
 
+    @SafeVarargs
+    protected final void addImports(List<String>... importLists) {
+        for (var importList: importLists)
+            for (String importname : importList)
+                importsManager.addImport(importname);
+    }
 
-    protected void addProperty(VarDeclaration property) {
+    protected static List<String> createImportList(String packageName, String... classes) {
+        var importList = new ArrayList<String>();
+        for (String className: classes)
+            importList.add(packageName + "." + className);
+        return importList;
+    }
+
+    protected void addProperty(String type, String name, boolean isFinal, Visibility visibility) {
+        var varDeclaration = new VarDeclaration(type, name).visibility(visibility);
+        if (isFinal)
+            varDeclaration.markAsFinal();
+        javaClass.addContent(varDeclaration);
+    }
+
+    protected String getIsEmptyFunctionName(Column column) {
+        return "is" + capitalize(column.getJavaName()) + "Empty";
+    }
+
+    /*protected void addProperty(VarDeclaration property) {
         javaClass.addContent(property.visibility(Visibility.PRIVATE));
     }
 
@@ -104,7 +136,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
 
     protected void addInheritableProperty(String type, String var, ObjectCreation object) {
         addInheritableProperty(new VarDeclaration(type, var, object));
-    }
+    }*/
 
     protected String getVarNameForClass(String className) {
         String[] parts = className.split("\\.");
