@@ -20,7 +20,6 @@ import org.jcodegen.java.WhileBlock;
 import java.util.List;
 import java.util.Set;
 
-import static org.beanmaker.v2.util.Strings.capitalize;
 import static org.beanmaker.v2.util.Strings.quickQuote;
 
 public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
@@ -90,7 +89,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void addProperties() {
         for (var column: columns.getList())
-            addProperty(column.getJavaType(), column.getJavaName(), true, Visibility.PRIVATE);
+            addProperty(column.getJavaType(), column.getJavaName(), true, null);
 
         newLine();
     }
@@ -176,7 +175,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         addToStringFunction();
         addGetters();
         addEmptyChecks();
-        addListAndCountOfBeansInRelationshipFunctions();
+        addListAndCountOfBeansInRelationshipFunctions(Visibility.PUBLIC);
         addNamingFunction();
         addInventoriesAndCountFunctions();
         addIDCheckFunctions();
@@ -237,41 +236,11 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
 
-    private void addGetters() {
-        for (Column column: columns.getList())
-            addGetter(column);
-    }
+    @Override
+    protected void addStrGetter(Column column) { }
 
-    private void addGetter(Column column) {
-        String type = (column.isId() || column.isItemOrder()) ? "long" : column.getJavaType();
-        String fieldName = column.getJavaName();
-        String getterPrefix = (type.equals("Boolean") || type.equals("boolean")) ? "is" : "get";
-
-        var getter = new FunctionDeclaration(getterPrefix + capitalize(column.getJavaName()), type)
-                .visibility(Visibility.PUBLIC);
-        if (column.isId() || column.isItemOrder() || fieldName.equals("idLabel"))
-            getter.annotate("@Override");
-        if (TEMPORAL_TYPES.contains(type))
-            getter.addContent(new ReturnStatement(new FunctionCall("copy", "DBUtil").addArgument(fieldName)));
-        else
-            getter.addContent(new ReturnStatement(fieldName));
-
-        javaClass.addContent(getter).addContent(EMPTY_LINE);
-
-        if (column.isBeanReference()) {
-            if (column.isLabelReference())
-                addLabelSpecificGetterFunctions(column);
-            else if (column.isFileReference())
-                addFileGetterFunction(column);
-            else if (!column.isId())
-                addBeanGetterFunction(column);
-        }
-
-        if (column.isItemOrder())
-            addItemOrderEdgeStatusCheckFunctions();
-    }
-
-    private void addLabelSpecificGetterFunctions(Column column) {
+    @Override
+    protected void addLabelSpecificGetterFunctions(Column column) {
         String name = column.getJavaName();
         FunctionDeclaration labelFunction =
                 new FunctionDeclaration("get" + chopID(name), "DbBeanLabel")
@@ -300,42 +269,9 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
-    private void addFileGetterFunction(Column column) {
-        String name = column.getJavaName();
-        javaClass
-                .addContent(new FunctionDeclaration("get" + chopID(name), "DbBeanFile")
-                        .visibility(Visibility.PUBLIC)
-                        .addContent(new ReturnStatement(new FunctionCall("get", "LocalFileManager")
-                                .addArgument(name))))
-                .addContent(EMPTY_LINE);
-    }
-
-    private void addBeanGetterFunction(Column column) {
-        String type = column.getAssociatedBeanClass();
-        String name = column.getJavaName();
-        javaClass
-                .addContent(new FunctionDeclaration("get" + chopID(name), type)
-                        .visibility(Visibility.PUBLIC)
-                        .addContent(new ReturnStatement(new ObjectCreation(type).addArgument(name))))
-                .addContent(EMPTY_LINE);
-    }
-
-    private void addItemOrderEdgeStatusCheckFunctions() {
-        javaClass
-                .addContent(new FunctionDeclaration("isFirstInItemOrder", "boolean")
-                        .visibility(Visibility.PUBLIC)
-                        .annotate("@Override")
-                        .addContent(new ReturnStatement(
-                                new FunctionCall("isFirstInItemOrder", itemManagerRetrievalCall)
-                                        .addArgument("this"))))
-                .addContent(EMPTY_LINE)
-                .addContent(new FunctionDeclaration("isLastInItemOrder", "boolean")
-                        .visibility(Visibility.PUBLIC)
-                        .annotate("@Override")
-                        .addContent(new ReturnStatement(
-                                new FunctionCall("isLastInItemOrder", itemManagerRetrievalCall)
-                                        .addArguments("this", "dbAccess"))))
-                .addContent(EMPTY_LINE);
+    private void addGetters() {
+        for (Column column: columns.getList())
+            addGetter(column, true);
     }
 
     private void addEmptyChecks() {
@@ -378,40 +314,6 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(getIsEmptyFunctionDeclaration(column)
                         .addContent(new ReturnStatement(column.getJavaName() + " == null")))
-                .addContent(EMPTY_LINE);
-    }
-
-    private void addListAndCountOfBeansInRelationshipFunctions() {
-        for (OneToManyRelationship relationship: columns.getOneToManyRelationships()) {
-            addListOfBeansInRelationshipFunction(relationship);
-            addCountOfBeansInRelationshipFunction(relationship);
-        }
-    }
-
-    private void addListOfBeansInRelationshipFunction(OneToManyRelationship relationship) {
-        String type = relationship.getBeanClass();
-        javaClass
-                .addContent(new FunctionDeclaration("get" + capitalize(relationship.getJavaName()), "List<" + type + ">")
-                        .visibility(Visibility.PUBLIC)
-                        .addContent(new ReturnStatement(new FunctionCall("getInventory", "DBUtil")
-                                .addArgument(getParametersInstanceExpression(type))
-                                .addArgument(quickQuote(relationship.getIdSqlName()))
-                                .addArgument(new FunctionCall("getId"))
-                                .addArgument(type + "::getList")
-                                .addArgument("dbAccess"))))
-                .addContent(EMPTY_LINE);
-    }
-
-    private void addCountOfBeansInRelationshipFunction(OneToManyRelationship relationship) {
-        String type = relationship.getBeanClass();
-        javaClass
-                .addContent(new FunctionDeclaration("getCountFor" + capitalize(relationship.getJavaName()), "long")
-                        .visibility(Visibility.PUBLIC)
-                        .addContent(new ReturnStatement(new FunctionCall("getInventorySize", "DBUtil")
-                                .addArgument(getParametersInstanceExpression(type))
-                                .addArgument(quickQuote(relationship.getIdSqlName()))
-                                .addArgument(new FunctionCall("getId"))
-                                .addArgument("dbAccess"))))
                 .addContent(EMPTY_LINE);
     }
 

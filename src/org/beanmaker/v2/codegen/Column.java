@@ -367,6 +367,13 @@ public class Column {
         }
     }
 
+    public boolean hasItemOrderAssociatedField() {
+        if (!isItemOrder())
+            throw new IllegalArgumentException("Not an item_order column");
+
+        return !Strings.isEmpty(itemOrderAssociatedField);
+    }
+
     public boolean shouldBeRequired() {
         return shouldBeRequired;
     }

@@ -5,6 +5,7 @@ import org.beanmaker.v2.util.Strings;
 import org.jcodegen.java.EmptyLine;
 import org.jcodegen.java.ExceptionThrow;
 import org.jcodegen.java.FunctionArgument;
+import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.JavaClass;
@@ -97,13 +98,6 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         for (String className: classes)
             importList.add(packageName + "." + className);
         return importList;
-    }
-
-    protected void addProperty(String type, String name, boolean isFinal, Visibility visibility) {
-        var varDeclaration = new VarDeclaration(type, name).visibility(visibility);
-        if (isFinal)
-            varDeclaration.markAsFinal();
-        javaClass.addContent(varDeclaration);
     }
 
     protected String getIsEmptyFunctionName(Column column) {

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class Columns {
@@ -164,6 +165,15 @@ public class Columns {
         }
 
         return false;
+    }
+
+    public Optional<Column> getItemOrderColumn() {
+        for (Column column: columns) {
+            if (column.isItemOrder())
+                return Optional.of(column);
+        }
+
+        return Optional.empty();
     }
 
     public boolean hasDuplicatedSpecialField() {
@@ -415,6 +425,16 @@ public class Columns {
                 return true;
 
         return false;
+    }
+
+    public List<Column> getLabels() {
+        var columns = new ArrayList<Column>();
+
+        for (Column column: getList())
+            if (column.isLabelReference())
+                columns.add(column);
+
+        return columns;
     }
 
 }
