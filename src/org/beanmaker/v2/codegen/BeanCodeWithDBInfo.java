@@ -76,9 +76,15 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
             addItemOrderEdgeStatusCheckFunctions();
     }
 
-    protected abstract void addStrGetter(Column column);
+    // ! Must be implemented in super class
+    protected void addStrGetter(Column column) {
+        throw new UnsupportedOperationException();
+    }
 
-    protected abstract void addLabelSpecificGetterFunctions(Column column);
+    // ! Must be implemented in super class
+    protected void addLabelSpecificGetterFunctions(Column column) {
+        throw new UnsupportedOperationException();
+    }
 
     protected void addFileGetterFunction(Column column, boolean isPublic) {
         String name = column.getJavaName();
