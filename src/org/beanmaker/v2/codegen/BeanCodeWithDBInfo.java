@@ -40,21 +40,6 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         if (isFinal)
             varDeclaration.markAsFinal();
 
-        /*VarDeclaration varDeclaration;
-        if (type.equals("String") && !isFinal)
-            varDeclaration = new VarDeclaration("String", name, "\"\"");
-        else if (type.equals("Money") && !isFinal)
-            varDeclaration = new VarDeclaration(
-                    "Money",
-                    name,
-                    new FunctionCall("withFormat", "Money.ZERO")
-                            .addArgument(beanName + "Formatter.INSTANCE.getDefaultMoneyFormat()"));
-        else {
-            varDeclaration = new VarDeclaration(type, name);
-            if (isFinal)
-                varDeclaration.markAsFinal();
-        }*/
-
         javaClass.addContent(varDeclaration.visibility(Visibility.PRIVATE));
     }
 
@@ -168,24 +153,5 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                                 .addArgument("dbAccess"))))
                 .addContent(EMPTY_LINE);
     }
-
-    /*protected IfBlock ifNotDataOK() {
-        return ifNotDataOK(false);
-    }
-
-    protected IfBlock ifNotDataOK(boolean fromBean) {
-        FunctionCall functionCall;
-        if (fromBean)
-            functionCall = new FunctionCall("isDataOK", beanVarName);
-        else
-            functionCall = new FunctionCall("isDataOK");
-
-        return new IfBlock(new Condition(functionCall, true));
-    }
-
-    protected FunctionCall getFilenameFunctionCall(String bean, String field) {
-        return new FunctionCall("getFilename", "LocalFiles")
-                .addArgument(new FunctionCall("get" + Strings.capitalize(field), bean));
-    }*/
 
 }

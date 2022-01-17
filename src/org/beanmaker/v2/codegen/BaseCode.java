@@ -5,12 +5,10 @@ import org.beanmaker.v2.util.Strings;
 import org.jcodegen.java.EmptyLine;
 import org.jcodegen.java.ExceptionThrow;
 import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.JavaClass;
 import org.jcodegen.java.SourceFile;
-import org.jcodegen.java.VarDeclaration;
 import org.jcodegen.java.Visibility;
 
 import java.util.ArrayList;
