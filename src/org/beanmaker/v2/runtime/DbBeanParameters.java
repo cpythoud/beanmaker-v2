@@ -1,5 +1,7 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.util.Strings;
+
 import java.util.List;
 
 public interface DbBeanParameters {
@@ -20,6 +22,8 @@ public interface DbBeanParameters {
 
     List<String> getOrderingFields();
 
-    String getOrderByFields();
+    default String getOrderByFields() {
+        return Strings.concatWithSeparator(", ", getOrderingFields());
+    }
 
 }
