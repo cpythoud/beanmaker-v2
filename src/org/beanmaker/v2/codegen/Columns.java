@@ -337,17 +337,24 @@ public class Columns {
     public String getNamingField() {
         for (String candidate: NAMING_CANDIDATE_FIELDS)
             for (Column col: columns)
-                if (col.getSqlName().toLowerCase().equals(candidate.toLowerCase()))
+                if (col.getSqlName().equalsIgnoreCase(candidate))
                     return candidate;
 
         return "id";
     }
 
-    public String getOrderByField() {
-        if (hasItemOrder())
-            return "item_order";
+    public List<String> getOrderByFields() {
+        var list = new ArrayList<String>();
 
-        return getNamingField();
+        if (hasItemOrder()) {
+            var itemOrder = getItemOrderField();
+            if (!itemOrder.isUnique())
+                list.add(itemOrder.getItemOrderAssociatedField());
+            list.add("item_order");
+        } else
+            list.add(getNamingField());
+
+        return list;
     }
 
     public Column getItemOrderField() {
