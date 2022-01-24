@@ -49,7 +49,7 @@ public abstract class BeanCode extends BaseCode {
         return "\"No " + beanName + " with ID #\" + id";
     }
 
-    protected String chopID(String varName) {
+    public static String chopID(String varName) {
         if (varName == null || varName.length() < 3 || !varName.startsWith("id"))
             throw new IllegalArgumentException("Illegal chop ID operation on variable name: " + varName);
 

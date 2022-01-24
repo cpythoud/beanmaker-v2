@@ -2,13 +2,13 @@ package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
 
+import org.jcodegen.java.ClassSourceFile;
 import org.jcodegen.java.EmptyLine;
 import org.jcodegen.java.ExceptionThrow;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.JavaClass;
-import org.jcodegen.java.SourceFile;
 import org.jcodegen.java.Visibility;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import static org.beanmaker.v2.util.Strings.capitalize;
 
 public abstract class BaseCode implements BeanMakerSourceFile {
 
-    protected final SourceFile sourceFile;
+    protected final ClassSourceFile sourceFile;
     protected final JavaClass javaClass;
     protected final ImportsManager importsManager;
 
@@ -34,7 +34,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         if (Strings.isEmpty(packageName))
             throw new IllegalArgumentException("packageName empty");
 
-        sourceFile = new SourceFile(packageName, className);
+        sourceFile = new ClassSourceFile(packageName, className);
         javaClass = sourceFile.getJavaClass();
         javaClass.addContent(EMPTY_LINE);
         importsManager = sourceFile.getImportsManager();
