@@ -7,7 +7,6 @@ import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ReturnStatement;
 import org.jcodegen.java.VarDeclaration;
-import org.jcodegen.java.Visibility;
 
 import static org.beanmaker.v2.util.Strings.capitalize;
 import static org.beanmaker.v2.util.Strings.quickQuote;
@@ -74,7 +73,6 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
     private void addBeanGetter() {
         javaClass
                 .addContent(new FunctionDeclaration("get" + beanName, beanName)
-                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(beanVarName)))
                 .addContent(EMPTY_LINE);
     }
@@ -91,7 +89,6 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration(functionName, "String")
-                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(
                                 new FunctionCall("getFormatted" + capName, "formatter")
                                         .addArguments(beanVarName, "localization"))))
@@ -100,7 +97,6 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
         if (column.isLabelReference())
             javaClass
                     .addContent(new FunctionDeclaration(functionName, "String")
-                            .visibility(Visibility.PUBLIC)
                             .addArgument(new FunctionArgument("DbBeanLanguage", "language"))
                             .addContent(new ReturnStatement(
                                     new FunctionCall("getFormatted" + capName, "formatter")
@@ -109,7 +105,6 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
         else if (column.isFileReference())
             javaClass
                     .addContent(new FunctionDeclaration(functionName + "Link", "String")
-                            .visibility(Visibility.PUBLIC)
                             .addContent(new ReturnStatement(
                                     new FunctionCall("get" + capName + "Link", "formatter")
                                             .addArguments(beanVarName, "localization"))))
@@ -127,7 +122,6 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration("get" + capitalize(name) + "Label", "String")
-                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new FunctionCall("getLabel", "localization")
                                 .addArgument(quickQuote(name)))))
                 .addContent(EMPTY_LINE);
