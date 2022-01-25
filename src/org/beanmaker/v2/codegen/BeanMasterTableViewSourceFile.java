@@ -5,7 +5,7 @@ import org.jcodegen.java.Visibility;
 public class BeanMasterTableViewSourceFile extends BeanCode {
 
     public BeanMasterTableViewSourceFile(String beanName, String packageName) {
-        super(beanName, packageName, "MasterTableView");
+        super(beanName, packageName, null, "MasterTableView");
 
         createSourceCode();
     }

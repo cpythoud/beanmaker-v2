@@ -12,7 +12,7 @@ public class BeanHTMLViewSourceFile extends BeanCode {
     private final String editorObject;
 
     public BeanHTMLViewSourceFile(String beanName, String packageName) {
-        super(beanName, packageName, "HTMLView");
+        super(beanName, packageName, null, "HTMLView");
 
         editorClass = beanName + "Editor";
         editorObject = uncapitalize(editorClass);

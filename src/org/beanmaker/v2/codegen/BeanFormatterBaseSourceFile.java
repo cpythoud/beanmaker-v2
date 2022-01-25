@@ -11,7 +11,7 @@ import static org.beanmaker.v2.util.Strings.capitalize;
 public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
 
     public BeanFormatterBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, "FormatterBase", columns);
+        super(beanName, packageName, null, "FormatterBase", columns);
 
         createSourceCode();
     }

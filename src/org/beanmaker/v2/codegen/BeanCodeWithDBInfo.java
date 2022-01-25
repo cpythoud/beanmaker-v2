@@ -16,8 +16,8 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
     protected final Columns columns;
     protected final String tableName;
 
-    public BeanCodeWithDBInfo(String beanName, String packageName, String nameExtension, Columns columns) {
-        super(beanName, packageName, nameExtension);
+    public BeanCodeWithDBInfo(String beanName, String packageName, String namePrefix, String nameSuffix, Columns columns) {
+        super(beanName, packageName, namePrefix, nameSuffix);
 
         if (!columns.isOK())
             throw new IllegalArgumentException("columns not ok");

@@ -7,7 +7,7 @@ import org.jcodegen.java.Visibility;
 public class BeanParametersSourceFile extends BeanCode {
 
     public BeanParametersSourceFile(String beanName, String packageName) {
-        super(beanName, packageName, "Parameters");
+        super(beanName, packageName, null, "Parameters");
 
         createSourceCode();
     }

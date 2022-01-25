@@ -6,7 +6,7 @@ import org.jcodegen.java.FunctionCall;
 public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
 
     public BeanEditorSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, "Editor", columns);
+        super(beanName, packageName, null, "Editor", columns);
 
         createSourceCode();
     }
