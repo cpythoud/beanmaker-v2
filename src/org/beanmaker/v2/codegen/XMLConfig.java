@@ -201,10 +201,12 @@ public class XMLConfig implements BeanMakerSourceFile {
         throw new IllegalStateException("Cannot find detected relationship for table: " + oneToManyRelationship.getTable());
     }
 
+    @Override
     public String getFilename() {
         return beanName + ".xml";
     }
 
+    @Override
     public String getSourceCode() {
         return XML_CONFIG_PREFIX + getFullConfigXMLElement().toString();
     }
