@@ -12,7 +12,7 @@ public class BeanMasterTableViewSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.visibility(Visibility.PUBLIC).extendsClass(beanName + "MasterTableViewBase");
+        javaClass.visibility(Visibility.PUBLIC).markAsFinal().extendsClass(beanName + "MasterTableViewBase");
     }
 
     @Override

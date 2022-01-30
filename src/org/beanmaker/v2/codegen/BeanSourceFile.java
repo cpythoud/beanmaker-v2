@@ -19,7 +19,7 @@ public class BeanSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.visibility(Visibility.PUBLIC).extendsClass(beanName + "Base");
+        javaClass.visibility(Visibility.PUBLIC).markAsFinal().extendsClass(beanName + "Base");
     }
 
     @Override

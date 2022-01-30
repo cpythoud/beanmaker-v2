@@ -50,6 +50,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void decorateJavaClass() {
         javaClass.markAsAbstract().extendsClass("HTMLView");
+        applySealedModifier(beanName + "HTMLView");
     }
 
     @Override

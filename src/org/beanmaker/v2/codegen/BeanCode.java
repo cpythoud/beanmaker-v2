@@ -18,7 +18,11 @@ public abstract class BeanCode extends BaseCode {
     protected final String formatterInstanceExpression;
 
     public BeanCode(String beanName, String packageName, String namePrefix, String nameSuffix) {
-        super((namePrefix == null ? "" : namePrefix) + beanName + (nameSuffix == null ? "" : nameSuffix),  packageName);
+        this(beanName, packageName, namePrefix, nameSuffix, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanCode(String beanName, String packageName, String namePrefix, String nameSuffix, ProjectParameters projectParameters) {
+        super((namePrefix == null ? "" : namePrefix) + beanName + (nameSuffix == null ? "" : nameSuffix),  packageName, projectParameters);
         this.beanName = beanName;
         this.packageName = packageName;
         beanVarName = getBeanVarName(beanName);
@@ -58,6 +62,11 @@ public abstract class BeanCode extends BaseCode {
 
     protected static String getFormatterInstanceExpression(String beanName) {
         return beanName + "Formatter.INSTANCE";
+    }
+
+    protected void applySealedModifier(String permittedClass) {
+        if (projectParameters.createSealedClasses())
+            javaClass.permitExtension(permittedClass);
     }
 
 }

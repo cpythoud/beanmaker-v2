@@ -76,6 +76,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void decorateJavaClass() {
         javaClass.markAsAbstract();
+        applySealedModifier(beanName);
 
         if (columns.hasItemOrder())
             javaClass.implementsInterface("DbBeanWithItemOrder");

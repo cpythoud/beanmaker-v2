@@ -19,7 +19,7 @@ public class FormattedBeanDataSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.extendsClass(className + "Base");
+        javaClass.markAsFinal().extendsClass(className + "Base");
     }
 
     @Override

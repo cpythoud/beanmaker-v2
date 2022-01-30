@@ -27,7 +27,7 @@ public class BeanHTMLViewSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.visibility(Visibility.PUBLIC).extendsClass(beanName + "HTMLViewBase");
+        javaClass.visibility(Visibility.PUBLIC).markAsFinal().extendsClass(beanName + "HTMLViewBase");
     }
 
     @Override

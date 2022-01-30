@@ -92,6 +92,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void decorateJavaClass() {
         javaClass.markAsAbstract();
+        applySealedModifier(beanName + "Editor");
 
         columns.getItemOrderColumn().ifPresentOrElse(column -> {
             if (column.hasItemOrderAssociatedField()) {

@@ -18,17 +18,23 @@ import static org.beanmaker.v2.util.Strings.capitalize;
 
 public abstract class BaseCode implements BeanMakerSourceFile {
 
+    protected static final ProjectParameters DEFAULT_PROJECT_PARAMETERS = new DefaultProjectParameters();
+
+    protected static final EmptyLine EMPTY_LINE = new EmptyLine();
+    protected static final String EMPTY_STRING = "\"\"";
+
     protected final ClassSourceFile sourceFile;
     protected final JavaClass javaClass;
     protected final ImportsManager importsManager;
 
     protected final String className;
-
-    protected static final EmptyLine EMPTY_LINE = new EmptyLine();
-    protected static final String EMPTY_STRING = "\"\"";
-
+    protected final ProjectParameters projectParameters;
 
     public BaseCode(String className, String packageName) {
+        this(className, packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BaseCode(String className, String packageName, ProjectParameters projectParameters) {
         if (Strings.isEmpty(className))
             throw new IllegalArgumentException("className empty");
         if (Strings.isEmpty(packageName))
@@ -40,6 +46,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         importsManager = sourceFile.getImportsManager();
 
         this.className = className;
+        this.projectParameters = projectParameters;
     }
 
     @Override

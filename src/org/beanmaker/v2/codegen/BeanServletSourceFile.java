@@ -12,7 +12,7 @@ public class BeanServletSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.visibility(Visibility.PUBLIC).extendsClass(beanName + "ServletBase");
+        javaClass.visibility(Visibility.PUBLIC).markAsFinal().extendsClass(beanName + "ServletBase");
     }
 
     @Override

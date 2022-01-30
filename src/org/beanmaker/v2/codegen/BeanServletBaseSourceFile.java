@@ -38,6 +38,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void decorateJavaClass() {
         javaClass.markAsAbstract().extendsClass("BaseServlet");
+        applySealedModifier(beanName + "Servlet");
     }
 
     @Override

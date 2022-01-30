@@ -38,6 +38,7 @@ public class BeanParametersBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void decorateJavaClass() {
         javaClass.markAsAbstract().implementsInterface("DbBeanParameters");
+        applySealedModifier(beanName + "Parameters");
     }
 
     @Override

@@ -14,7 +14,7 @@ public class BeanFormatterSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.extendsClass(beanName  + "FormatterBase");
+        javaClass.markAsFinal().extendsClass(beanName  + "FormatterBase");
     }
 
     @Override

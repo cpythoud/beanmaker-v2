@@ -14,7 +14,7 @@ public class BeanParametersSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.extendsClass(beanName  + "ParametersBase");
+        javaClass.markAsFinal().extendsClass(beanName  + "ParametersBase");
     }
 
     @Override

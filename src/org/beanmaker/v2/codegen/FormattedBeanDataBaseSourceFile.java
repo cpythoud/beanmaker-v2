@@ -30,6 +30,7 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void decorateJavaClass() {
         javaClass.markAsAbstract();
+        applySealedModifier("Formatted" + beanName + "Data");
     }
 
     @Override

@@ -26,7 +26,7 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.extendsClass(beanName + "EditorBase");
+        javaClass.markAsFinal().extendsClass(beanName + "EditorBase");
     }
 
     @Override

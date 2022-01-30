@@ -33,6 +33,8 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
                 .markAsAbstract()
                 .extendsClass("LocalDbBeanFormatter")
                 .implementsInterface(beanName + "FormatterInterface");
+
+        applySealedModifier(beanName + "Formatter");
     }
 
     @Override
