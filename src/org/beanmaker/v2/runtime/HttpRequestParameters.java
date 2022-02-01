@@ -7,8 +7,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import org.beanmaker.v2.util.Strings;
 
-import org.javatuples.Pair;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -201,7 +199,9 @@ public class HttpRequestParameters {
         return buf.toString();
     }
 
-    public Pair<String, Long> getSubmittedFormAndId() {
+    public record SubmittedFormAndId(String form, long id) { }
+
+    public SubmittedFormAndId getSubmittedFormAndId() {
         String form = null;
         long id = 0;
 
@@ -217,6 +217,7 @@ public class HttpRequestParameters {
                 foundFormName = true;
             }
 
-        return new Pair<String, Long>(form, id);
+        return new SubmittedFormAndId(form, id);
     }
+
 }

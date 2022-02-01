@@ -12,7 +12,7 @@
 
     <target name="compile" description="Compile code" depends="native2ascii">
         <mkdir dir="${build.classes}" />
-        <javac includeantruntime="false" srcdir="${src-ascii.dir}" destdir="${build.classes}" source="11" target="11" compiler="javac10+">
+        <javac includeantruntime="false" srcdir="${src-ascii.dir}" destdir="${build.classes}">
             <classpath>
                 <fileset dir="${build.lib}">
                     <include name="**/*.jar"/>

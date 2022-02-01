@@ -1,8 +1,8 @@
 package org.beanmaker.v2.util;
 
-import org.javatuples.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import java.util.regex.Pattern;
@@ -34,47 +34,50 @@ public class SimpleInputDurationFormat {
     }
 
     public boolean validate(String duration) {
-        return validateAndParse(duration).getValue0();
+        return validateAndParse(duration).ok();
     }
 
-    private Pair<Boolean, List<String>> validateAndParse(String durationParameter) {
+    private static record ValidationResults(boolean ok, List<String> results) { }
+    private static record DigitsAndOffset(String digits, int offset) { }
+
+    private ValidationResults validateAndParse(String durationParameter) {
         String duration = Strings.removeWhiteSpace(durationParameter);
         List<String> results = new ArrayList<>();
 
         int offset = 0;
 
-        Pair<String, Integer> dayDigitsAndOffset =
+        DigitsAndOffset dayDigitsAndOffset =
                 getDigitsAndOffset(duration, offset, daySymbol, false);
-        if (dayDigitsAndOffset.getValue1() == null)
+        if (dayDigitsAndOffset.digits() == null)
             return returnFalse();
-        results.add(dayDigitsAndOffset.getValue0());
-        offset = dayDigitsAndOffset.getValue1();
+        results.add(dayDigitsAndOffset.digits());
+        offset = dayDigitsAndOffset.offset();
 
-        Pair<String, Integer> hourDigitsAndOffset =
+        DigitsAndOffset hourDigitsAndOffset =
                 getDigitsAndOffset(duration, offset, hourSymbol, false);
-        if (hourDigitsAndOffset.getValue1() == null)
+        if (hourDigitsAndOffset.digits() == null)
             return returnFalse();
-        results.add(hourDigitsAndOffset.getValue0());
-        offset = hourDigitsAndOffset.getValue1();
+        results.add(hourDigitsAndOffset.digits());
+        offset = hourDigitsAndOffset.offset();
 
-        Pair<String, Integer> minuteDigitsAndOffset =
+        DigitsAndOffset minuteDigitsAndOffset =
                 getDigitsAndOffset(duration, offset, minuteSymbol, true);
-        if (minuteDigitsAndOffset.getValue1() == null)
+        if (minuteDigitsAndOffset.digits() == null)
             return returnFalse();
-        results.add(minuteDigitsAndOffset.getValue0());
-        offset = minuteDigitsAndOffset.getValue1();
+        results.add(minuteDigitsAndOffset.digits());
+        offset = minuteDigitsAndOffset.offset();
 
         if (offset != duration.length())
             return returnFalse();
 
         for (String result: results)
             if (!Strings.isEmpty(result))
-                return new Pair<>(true, results);
+                return new ValidationResults(true, results);
 
         return returnFalse();
     }
 
-    private Pair<String, Integer> getDigitsAndOffset(
+    private DigitsAndOffset getDigitsAndOffset(
             String duration,
             int offset,
             String symbol,
@@ -83,25 +86,25 @@ public class SimpleInputDurationFormat {
         int pos = duration.indexOf(symbol);
         if (pos != -1) {
             if (pos == offset)
-                return new Pair<>(null, offset);
+                return new DigitsAndOffset(null, offset);
             String digits = duration.substring(offset, pos);
             if (checkDigits(digits))
-                return new Pair<>(digits, pos + symbol.length());
+                return new DigitsAndOffset(digits, pos + symbol.length());
 
-            return new Pair<>(null, offset);
+            return new DigitsAndOffset(null, offset);
         }
 
         if (symbolOptional) {
             String digits = duration.substring(offset);
             if (checkDigits(digits))
-                return new Pair<>(digits, duration.length());
+                return new DigitsAndOffset(digits, duration.length());
         }
 
-        return new Pair<>("", offset);
+        return new DigitsAndOffset("", offset);
     }
 
-    private Pair<Boolean, List<String>> returnFalse() {
-        return new Pair<>(false, new ArrayList<>());
+    private ValidationResults returnFalse() {
+        return new ValidationResults(false, Collections.emptyList());
     }
 
     private boolean checkDigits(String digits) {
@@ -109,13 +112,13 @@ public class SimpleInputDurationFormat {
     }
 
     public DurationData parse(String duration) {
-        Pair<Boolean, List<String>> parsedData = validateAndParse(duration);
-        if (!parsedData.getValue0())
+        ValidationResults parsedData = validateAndParse(duration);
+        if (!parsedData.ok())
             throw new IllegalArgumentException("Illegal duration format: " + duration);
 
-        String dayStr = parsedData.getValue1().get(0);
-        String hourStr = parsedData.getValue1().get(1);
-        String minuteStr = parsedData.getValue1().get(2);
+        String dayStr = parsedData.results().get(0);
+        String hourStr = parsedData.results().get(1);
+        String minuteStr = parsedData.results().get(2);
 
         int days;
         if (Strings.isEmpty(dayStr))

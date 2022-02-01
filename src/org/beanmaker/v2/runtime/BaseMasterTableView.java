@@ -3,8 +3,6 @@ package org.beanmaker.v2.runtime;
 import org.beanmaker.v2.util.Money;
 import org.beanmaker.v2.util.Strings;
 
-import org.javatuples.Pair;
-
 import org.jcodegen.html.ATag;
 import org.jcodegen.html.CData;
 import org.jcodegen.html.HtmlCodeFragment;
@@ -342,12 +340,14 @@ public abstract class BaseMasterTableView extends TabularView {
         return getTableFilterCell().child(select);
     }
 
-    protected ThTag getPairBasedSelectFilterCell(String name, List<Pair<String, String>> nameValuePairs) {
+    protected static record FilterNameValuePair(String name, String value) { }
+
+    protected ThTag getPairBasedSelectFilterCell(String name, List<FilterNameValuePair> nameValuePairs) {
         SelectTag select = new SelectTag().name("tb-" + name).cssClass(formElementFilterCssClass);
 
         select.child(new OptionTag("", "").selected());
-        for (Pair<String, String> pair: nameValuePairs)
-            select.child(new OptionTag(pair.getValue1(), pair.getValue0()));
+        for (var pair: nameValuePairs)
+            select.child(new OptionTag(pair.name(), pair.value()));
 
         return getTableFilterCell().child(select);
     }

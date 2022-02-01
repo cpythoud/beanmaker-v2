@@ -3,8 +3,6 @@ package org.beanmaker.v2.runtime;
 import org.beanmaker.v2.util.MimeTypes;
 import org.beanmaker.v2.util.Strings;
 
-import org.javatuples.Pair;
-
 import javax.servlet.ServletException;
 
 import javax.servlet.http.HttpServlet;
@@ -116,7 +114,9 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return "{ \"status\": \"errors\", ";
     }
 
-    protected Pair<String, Long> getSubmittedFormAndId(HttpServletRequest request) throws ServletException {
+    protected static record NameIDPair(String name, long id) { }
+
+    protected NameIDPair getSubmittedFormAndId(HttpServletRequest request) throws ServletException {
         String form = null;
         long id = 0;
 
@@ -134,7 +134,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         if (count > 1)
             throw new ServletException("More than one submittedXXX parameter.");
 
-        return new Pair<String, Long>(form, id);
+        return new NameIDPair(form, id);
     }
 
     protected String processBean(HttpServletRequest request, DbBeanHTMLViewInterface htmlView) {
@@ -148,24 +148,28 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return getStartJsonErrors() + ErrorMessage.toJson(htmlView.getErrorMessages()) + " }";
     }
 
-    protected Pair<String, Long> getBeanAndId(HttpServletRequest request) throws ServletException {
+    protected record BeanIDPair(String beanName, long id) { }
+
+    protected BeanIDPair getBeanAndId(HttpServletRequest request) throws ServletException {
         String beanName = getBeanName(request);
 
         long id = getBeanId(request, "id");
         if (id == 0)
             throw new ServletException("Missing id parameter or id == 0");
 
-        return new Pair<String, Long>(beanName, id);
+        return new BeanIDPair(beanName, id);
     }
 
-    protected Pair<String, String> getBeanAndCode(HttpServletRequest request) throws ServletException {
+    protected record BeanCodePair(String beanName, String code) { }
+
+    protected BeanCodePair getBeanAndCode(HttpServletRequest request) throws ServletException {
         String beanName = getBeanName(request);
 
         String code = request.getParameter("id");
         if (code == null)
             throw new ServletException("Missing id parameter");
 
-        return new Pair<String, String>(beanName, code);
+        return new BeanCodePair(beanName, code);
     }
 
     private String getBeanName(HttpServletRequest request) throws ServletException {
