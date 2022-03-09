@@ -1,4 +1,3 @@
-build/
-javadoc/
-src-ascii/
-MANIFEST.MF
+.idea/
+*.iml
+target/

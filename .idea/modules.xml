@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/beanmaker2-runtime/beanmaker2 (2).iml" filepath="$PROJECT_DIR$/beanmaker2-runtime/beanmaker2 (2).iml" />
+      <module fileurl="file://$PROJECT_DIR$/beanmaker2-util/beanmaker2 (3).iml" filepath="$PROJECT_DIR$/beanmaker2-util/beanmaker2 (3).iml" />
+      <module fileurl="file://$PROJECT_DIR$/beanmaker2-codegen/beanmaker2-codegen.iml" filepath="$PROJECT_DIR$/beanmaker2-codegen/beanmaker2-codegen.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-v2.iml" filepath="$PROJECT_DIR$/lib-v2.iml" />
     </modules>
   </component>

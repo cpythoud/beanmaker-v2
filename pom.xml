@@ -1,0 +1,59 @@
+<project xmlns = "http://maven.apache.org/POM/4.0.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.beanmaker</groupId>
+    <artifactId>beanmaker2</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>BeanMaker V2</name>
+    <description>
+        BeanMaker Framework Version 2
+    </description>
+    <url>https://github.com/cpythoud/beanmaker-v2</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>cpythoud</id>
+            <name>Christophe Pythoud</name>
+            <organization>ABCIS</organization>
+            <organizationUrl>https://github.com/abcis-ch</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git://github.com/cpythoud/beanmaker-v2.git</connection>
+        <developerConnection>scm:git://github.com/cpythoud/beanmaker-v2.git</developerConnection>
+        <url>https://github.com/cpythoud/beanmaker-v2</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <modules>
+        <module>beanmaker2-util</module>
+        <module>beanmaker2-runtime</module>
+        <module>beanmaker2-codegen</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
