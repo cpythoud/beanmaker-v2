@@ -6,6 +6,7 @@ module org.beanmaker.v2.runtime {
     requires org.beanmaker.v2.util;
     requires org.dbbeans.sql;
     requires org.jcodegen.html;
+    requires rodeo.password.pgencheck;
 
     requires commons.fileupload;
 

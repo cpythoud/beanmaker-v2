@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.util.PasswordMakerCharacterSets;
+import rodeo.password.pgencheck.CharacterGroups;
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +12,7 @@ public class DbBeanFileDefaultInternalFilenameCalculator implements DbBeanFileIn
 
     static {
         ACCEPTABLE_FILENAME_CHARACTERS = new HashSet<>();
-        for (String charList: List.of(PasswordMakerCharacterSets.LOWER_CASES, PasswordMakerCharacterSets.UPPER_CASES, PasswordMakerCharacterSets.DIGITS))
+        for (String charList: List.of(CharacterGroups.LOWER_CASE, CharacterGroups.UPPER_CASE, CharacterGroups.DIGITS))
             for (char character: charList.toCharArray())
                 ACCEPTABLE_FILENAME_CHARACTERS.add(character);
     }
@@ -21,15 +21,15 @@ public class DbBeanFileDefaultInternalFilenameCalculator implements DbBeanFileIn
     private static final char FILLER_CHARACTER = 'x';
 
     @Override
-    public String calc(String orginalFilename) {
-        return extractMainName(orginalFilename) + extractExtension(orginalFilename);
+    public String calc(String originalFilename) {
+        return extractMainName(originalFilename) + extractExtension(originalFilename);
     }
 
-    private String extractMainName(String orginalFilename) {
+    private String extractMainName(String originalFilename) {
         StringBuilder mainName = new StringBuilder();
 
         int count = 0;
-        for (char character: orginalFilename.toCharArray()) {
+        for (char character: originalFilename.toCharArray()) {
             if (count == MAX_FILENAME_LENGTH)
                 return mainName.toString();
             if (ACCEPTABLE_FILENAME_CHARACTERS.contains(character)) {
@@ -44,11 +44,12 @@ public class DbBeanFileDefaultInternalFilenameCalculator implements DbBeanFileIn
         return mainName.toString();
     }
 
-    private String extractExtension(String orginalFilename) {
-        var parts = orginalFilename.split("\\.");
+    private String extractExtension(String originalFilename) {
+        var parts = originalFilename.split("\\.");
         if (parts.length < 2)
             return "";
 
         return "." + parts[parts.length - 1];
     }
+
 }
