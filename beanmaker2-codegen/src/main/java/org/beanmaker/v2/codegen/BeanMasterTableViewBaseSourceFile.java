@@ -44,7 +44,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.markAsAbstract().extendsClass("MasterTableView");
+        javaClass.markAsAbstract().extendsClass("LocalMasterTableView");
         applySealedModifier(beanName + "MasterTableView");
     }
 

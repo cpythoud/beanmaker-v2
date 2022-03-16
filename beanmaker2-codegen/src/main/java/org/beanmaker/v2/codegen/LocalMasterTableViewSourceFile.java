@@ -3,10 +3,10 @@ package org.beanmaker.v2.codegen;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
 
-public class MasterTableViewSourceFile extends BaseCode {
+public class LocalMasterTableViewSourceFile extends BaseCode {
 
-    public MasterTableViewSourceFile(String packageName) {
-        super("MasterTableView", packageName);
+    public LocalMasterTableViewSourceFile(String packageName) {
+        super("LocalMasterTableView", packageName);
 
         createSourceCode();
     }
