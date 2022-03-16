@@ -7,7 +7,13 @@ public interface DbBeanLanguage extends DbBeanInterface {
     String getName();
 
     String getIso();
-    String getCapIso();
 
-    Locale getLocale();
+    default String getCapIso() {
+        return getIso().toUpperCase();
+    }
+
+    default Locale getLocale() {
+        return new Locale(getIso());
+    }
+
 }
