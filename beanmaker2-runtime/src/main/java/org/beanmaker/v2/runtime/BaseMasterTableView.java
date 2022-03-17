@@ -74,7 +74,8 @@ public abstract class BaseMasterTableView extends TabularView {
 
     protected int zeroFilledMaxDigits = 18;
 
-    protected int columnCount = 2;
+    protected int columnCount = 0;
+
     protected String noDataMessage() {
         return dbBeanLocalization.getLabel("cct_no_data");
     }
@@ -149,6 +150,8 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     public String getMasterTable() {
+        columnCount = 0;
+
         excelExportDownloadLinkAlreadyShown = false;
         initExcelExportExtraParameters();
 
@@ -373,12 +376,14 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected ThTag getTitleCell(String name,  String adhocTitle) {
+        ++columnCount;
         return new ThTag(adhocTitle)
                 .cssClass(getTitleCellCssClasses(name))
                 .attribute("data-sort-class", "tb-" + name);
     }
 
     protected ThTag getTitleCell(String name, Tag adhocTitle) {
+        ++columnCount;
         return new ThTag()
                 .cssClass(getTitleCellCssClasses(name))
                 .attribute("data-sort-class", "tb-" + name)
