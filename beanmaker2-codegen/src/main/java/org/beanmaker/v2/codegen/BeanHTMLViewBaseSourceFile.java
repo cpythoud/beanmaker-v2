@@ -93,6 +93,9 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                                 .addArgument(editorObject)
                                 .addArgument(new FunctionCall("getLocalization", beanName + "Parameters.INSTANCE")
                                         .addArgument("dbBeanLanguage")))
+                        .addContent(new FunctionCall("setCurrentDbBeanLanguage", editorObject)
+                                .byItself()
+                                .addArgument("dbBeanLanguage"))
                         .addContent(new Assignment("this." + editorObject, editorObject)))
                 .addContent(EMPTY_LINE);
     }
