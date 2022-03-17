@@ -1,5 +1,6 @@
 package org.beanmaker.v2.runtime;
 
+import org.jcodegen.html.ButtonTag;
 import org.jcodegen.html.FormTag;
 import org.jcodegen.html.Tag;
 
@@ -21,5 +22,7 @@ public interface HtmlFormHelper {
     Tag getFileField(HFHParameters params);
 
     Tag getSubmitButton(HFHParameters params);
+
+    ButtonTag getSubmitButtonTag(HFHParameters params);
 
 }
