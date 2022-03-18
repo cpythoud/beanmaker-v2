@@ -17,26 +17,10 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import java.util.function.Function;
 
 public final class DBUtil {
-
-    public static Optional<ResultSet> getInitResultSet(long id, DbBeanParameters parameters, DBAccess dbAccess) {
-        return Optional.ofNullable(
-                dbAccess.processQuery(
-                        "SELECT " + parameters.getDatabaseFieldList() + " FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
-                        stat -> stat.setLong(1, id),
-                        rs -> {
-                            if (rs.next())
-                                return rs;
-
-                            return null;
-                        }
-                )
-        );
-    }
 
     public static Boolean getBoolean(ResultSet rs, int index) {
         try {

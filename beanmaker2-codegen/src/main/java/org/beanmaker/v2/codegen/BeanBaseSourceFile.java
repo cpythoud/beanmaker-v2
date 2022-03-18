@@ -1,5 +1,6 @@
 package org.beanmaker.v2.codegen;
 
+import org.jcodegen.java.ArrayInitialization;
 import org.jcodegen.java.Assignment;
 import org.jcodegen.java.CatchBlock;
 import org.jcodegen.java.Condition;
@@ -9,7 +10,7 @@ import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.IfBlock;
-import org.jcodegen.java.LambdaExpression;
+import org.jcodegen.java.Lambda;
 import org.jcodegen.java.ObjectCreation;
 import org.jcodegen.java.ReturnStatement;
 import org.jcodegen.java.TryBlock;
@@ -27,7 +28,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     private static final List<String> JAVA_SQL_IMPORTS = createImportList("java.sql", "ResultSet", "SQLException");
     private static final List<String> JAVA_UTIL_IMPORTS = createImportList("java.util", "ArrayList", "List");
     private static final List<String> BM_RUNTIME_IMPORTS =
-            createImportList("org.beanmaker.v2.runtime", "DBUtil", "DbBeanLanguage", "ToStringMaker");
+            createImportList("org.beanmaker.v2.runtime", "DBUtil", "DbBeanLanguage", "ToStringMaker", "DbBeanInitializer");
     private static final List<String> SQL_IMPORTS =
             createImportList("org.dbbeans.sql", "DBQuerySetup", "DBTransaction", "SQLRuntimeException");
 
@@ -103,19 +104,48 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addIDConstructor() {
-        javaClass
-                .addContent(javaClass.createConstructor()
-                        .addArgument(new FunctionArgument("long", "id"))
-                        .addContent(new FunctionCall("this")
-                                .byItself()
-                                .addArgument(new FunctionCall(
-                                        "orElseThrow",
-                                        new FunctionCall("getInitResultSet", "DBUtil")
-                                                .addArguments("id", parametersInstanceExpression, "dbAccess"))
-                                        .addArgument(new LambdaExpression()
-                                                .addContent(new ObjectCreation("IllegalArgumentException")
-                                                        .addArgument(badIDExceptionMessage))))))
-                .addContent(EMPTY_LINE);
+        var constructor = javaClass.createConstructor()
+                .addArgument(new FunctionArgument("long", "id"));
+
+        for (Column column: columns.getList()) {
+            if (!column.isId()) {
+                String type = column.getJavaType();
+                String fieldName = column.getJavaName();
+                constructor.addContent(new VarDeclaration(
+                        type + "[]", fieldName,
+                        new ArrayInitialization(type, 1))
+                        .markAsFinal());
+            }
+        }
+
+        var initializer = new Lambda().addLambdaParameter("rs");
+        int index = 1;
+        for (Column column: columns.getList()) {
+            if (!column.isId()) {
+                String fieldName = column.getJavaName();
+                initializer.addContent(new Assignment(
+                        fieldName + "[0]",
+                        getEncapsulatedDBUtilRSFunctionCall(column, ++index)));
+            }
+        }
+
+        constructor.addContent(new FunctionCall("initialize", "DbBeanInitializer")
+                .byItself()
+                .addArgument("id")
+                .addArgument(beanName + "Parameters.INSTANCE")
+                .addArgument("dbAccess")
+                .addArgument(initializer));
+
+        for (Column column: columns.getList()) {
+            if (column.isId())
+                constructor.addContent(new Assignment("this.id", "id"));
+            else {
+                String fieldName = column.getJavaName();
+                constructor.addContent(new Assignment("this." + fieldName, fieldName + "[0]"));
+            }
+        }
+
+        javaClass.addContent(constructor).addContent(EMPTY_LINE);
     }
 
     private void addFieldsConstructor() {
@@ -148,7 +178,6 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
-    // TODO: déplacer cette classe dans la sous-classe appropriée !!!
     private FunctionCall getEncapsulatedDBUtilRSFunctionCall(Column column, int index) {
         String type = column.getJavaType();
         String functionName;
