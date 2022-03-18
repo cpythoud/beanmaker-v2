@@ -20,7 +20,7 @@ public interface DbBeanLabelBasicFunctions {
     }
 
     default String missingLabelErrorPrefix() {
-        return "MISSING LABEL: ";
+        return "MISSING LABEL(S): ";
     }
 
     default String missingLanguageErrorPrefix() {
@@ -37,7 +37,8 @@ public interface DbBeanLabelBasicFunctions {
         return processContent(
                 getPossibleLabel(labelName).map(label -> label.get(language)).orElse(null),
                 labelName,
-                language
+                language,
+                null
         );
     }
 
@@ -45,13 +46,32 @@ public interface DbBeanLabelBasicFunctions {
         return processContent(
                 getPossibleLabel(labelName).map(label -> label.get(language, parameters)).orElse(null),
                 labelName,
-                language
+                language,
+                null
         );
     }
 
-    private String processContent(String content, String labelName, DbBeanLanguage language) {
+    default String get(String labelName, DbBeanLanguage language, String fullyQualifiedLabel) {
+        return processContent(
+                getPossibleLabel(labelName).map(label -> label.get(language)).orElse(null),
+                labelName,
+                language,
+                fullyQualifiedLabel
+        );
+    }
+
+    default String get(String labelName, DbBeanLanguage language, List<Object> parameters, String fullyQualifiedLabel) {
+        return processContent(
+                getPossibleLabel(labelName).map(label -> label.get(language, parameters)).orElse(null),
+                labelName,
+                language,
+                fullyQualifiedLabel
+        );
+    }
+
+    private String processContent(String content, String labelName, DbBeanLanguage language, String fullyQualifiedLabel) {
         if (content == null) {
-            String errorMessage = missingLabelErrorPrefix() + labelName;
+            String errorMessage = missingLabelErrorPrefix() + (fullyQualifiedLabel == null ? "" : fullyQualifiedLabel + ", ") + labelName;
             if (lenient())
                 return errorMessage;
             throw new IllegalArgumentException(errorMessage);
@@ -72,7 +92,7 @@ public interface DbBeanLabelBasicFunctions {
         if (isNameOK(fullName) || !lookForGlobalLabel())
             return get(fullName, language);
 
-        return get(getGlobalName(labelName), language);
+        return get(getGlobalName(labelName), language, fullName);
     }
 
     default String get(String prefix, String labelName, DbBeanLanguage language, List<Object> parameters) {
@@ -88,6 +108,6 @@ public interface DbBeanLabelBasicFunctions {
             return labelName;
 
         return globalPrefix() + "_" + labelName;
-    };
+    }
 
 }
