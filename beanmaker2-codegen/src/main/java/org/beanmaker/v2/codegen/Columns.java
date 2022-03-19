@@ -228,6 +228,14 @@ public class Columns {
         return false;
     }
 
+    public boolean hasOtherBeanReference() {
+        for (Column column: columns)
+            if (column.isBeanReference() && !(column.isId() || column.isLabelReference() || column.isFileReference()))
+                return true;
+
+        return false;
+    }
+
     public boolean isOK() {
         return hasId() && !hasBadField() && !hasDuplicatedSpecialField();
     }

@@ -60,6 +60,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         importsManager.addImport("java.util.function.Function");
         importsManager.addImport("org.beanmaker.v2.util.Strings");
 
+        if (types.contains("Integer") || types.contains("Long"))
+            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
         if (types.contains("Date")) {
             importsManager.addImport("java.sql.Date");
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
@@ -85,6 +87,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanFile");
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
         }
+
+        if (columns.hasOtherBeanReference())
+            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
