@@ -10,8 +10,8 @@ public class FieldValidator {
 
     private final DbBeanLocalization dbBeanLocalization;
     private final long id;
-    private final String fieldLabel;
     private final String fieldName;
+    private final String fieldLabel;
     private final boolean empty;
     private final boolean required;
     private final boolean shouldBeUnique;
@@ -20,8 +20,8 @@ public class FieldValidator {
     public FieldValidator(
             DbBeanLocalization dbBeanLocalization,
             long id,
-            String fieldLabel,
             String fieldName,
+            String fieldLabel,
             boolean empty,
             boolean required,
             boolean shouldBeUnique,
@@ -29,8 +29,8 @@ public class FieldValidator {
     {
         this.dbBeanLocalization = dbBeanLocalization;
         this.id = id;
-        this.fieldLabel = fieldLabel;
         this.fieldName = fieldName;
+        this.fieldLabel = fieldLabel;
         this.empty = empty;
         this.required = required;
         this.shouldBeUnique = shouldBeUnique;
@@ -90,4 +90,5 @@ public class FieldValidator {
         }
         return true;
     }
+
 }
