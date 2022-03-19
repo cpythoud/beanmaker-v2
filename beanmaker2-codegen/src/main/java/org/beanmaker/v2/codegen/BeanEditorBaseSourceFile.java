@@ -425,12 +425,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addBeanSetterFunctions(Column column) {
         String beanClass = column.getAssociatedBeanClass();
-        String beanVar = uncapitalize(beanClass);
+        String beanVar = uncapitalize(chopID(column.getJavaName()));
 
         javaClass
                 .addContent(getStandardSetterFunction(column))
                 .addContent(EMPTY_LINE)
-                .addContent(new FunctionDeclaration("set" + beanClass)
+                .addContent(new FunctionDeclaration("set" + beanVar)
                         .addArgument(new FunctionArgument(beanClass, beanVar))
                         .addContent(checkNonZeroID(beanVar, beanClass))
                         .addContent(EMPTY_LINE)
