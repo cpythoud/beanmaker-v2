@@ -435,7 +435,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(getStandardSetterFunction(column))
                 .addContent(EMPTY_LINE)
-                .addContent(new FunctionDeclaration("set" + beanVar)
+                .addContent(new FunctionDeclaration("set" + capitalize(beanVar))
                         .addArgument(new FunctionArgument(beanClass, beanVar))
                         .addContent(checkNonZeroID(beanVar, beanClass))
                         .addContent(EMPTY_LINE)
