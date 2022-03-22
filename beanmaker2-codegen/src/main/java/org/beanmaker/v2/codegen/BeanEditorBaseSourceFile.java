@@ -8,6 +8,7 @@ import org.jcodegen.java.Condition;
 import org.jcodegen.java.ConstructorDeclaration;
 import org.jcodegen.java.ElseBlock;
 import org.jcodegen.java.ExceptionThrow;
+import org.jcodegen.java.Expression;
 import org.jcodegen.java.ForEach;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
@@ -748,25 +749,33 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         switch (type) {
             case "Integer":
-                return new Assignment(name, new FunctionCall("getIntVal", "Strings").addArgument(nameStr));
+                return new Assignment(name, getNumericConversion("getIntVal", nameStr));
             case "Long":
-                return new Assignment(name, new FunctionCall("getLongVal", "Strings").addArgument(nameStr));
+                return new Assignment(name, getNumericConversion("getLongVal", nameStr));
             case "Date":
             case "Time":
             case "Timestamp":
-                return new Assignment(
-                        name,
-                        new FunctionCall("convertStringTo" + type, beanName + "Formatter.INSTANCE")
-                                .addArgument(nameStr));
+                return new Assignment(name, getTemporalConversion(type, nameStr));
             case "Money":
-                return new Assignment(
-                        name,
-                        new ObjectCreation("Money")
-                                .addArgument(nameStr)
-                                .addArgument(new FunctionCall("getDefaultMoneyFormat", beanName + "Formatter.INSTANCE")));
+                return new Assignment(name, getMoneyConversion(nameStr));
         }
 
         throw new AssertionError("No processing defined for type: " + type);
+    }
+
+    private FunctionCall getNumericConversion(String conversionFunction, String nameStr) {
+        return new FunctionCall(conversionFunction, "Strings").addArgument(nameStr);
+    }
+
+    private FunctionCall getTemporalConversion(String type, String nameStr) {
+        return new FunctionCall("convertStringTo" + type, beanName + "Formatter.INSTANCE")
+                .addArgument(nameStr);
+    }
+
+    private ObjectCreation getMoneyConversion(String nameStr) {
+        return new ObjectCreation("Money")
+                .addArgument(nameStr)
+                .addArgument(new FunctionCall("getDefaultMoneyFormat", beanName + "Formatter.INSTANCE"));
     }
 
     private void addDataValidationFunctions() {
@@ -1099,9 +1108,25 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new ReturnStatement(new FunctionCall("checkUnicity", "DBUtil")
                 .addArgument(beanName + "Parameters.INSTANCE")
                 .addArgument(quickQuote(column.getSqlName()))
-                .addArgument(column.getJavaName())
+                .addArgument(getUnicityCheckValue(column))
                 .addArgument("id")
                 .addArgument(transaction ? "transaction" : "dbAccess"));
+    }
+
+    private String getUnicityCheckValue(Column column) {
+        StringOrCode<Expression> value;
+        String type = column.getJavaType();
+        String nameStr = column.getJavaName() + "Str";
+
+        value = switch (type) {
+            case "Integer" -> new StringOrCode<>(getNumericConversion("getIntVal", nameStr));
+            case "Long" -> new StringOrCode<>(getNumericConversion("getLongVal", nameStr));
+            case "Date", "Time", "Timestamp" -> new StringOrCode<>(getTemporalConversion(type, nameStr));
+            case "Money" -> new StringOrCode<>(getMoneyConversion(nameStr));
+            default -> new StringOrCode<>(column.getJavaName());
+        };
+
+        return value.toString();
     }
 
     private void addResetFunctions() {
