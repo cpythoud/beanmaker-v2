@@ -5,4 +5,7 @@ public interface DbBeanViewInterface {
     void resetId();
 
     void setId(long id);
+
+    long getId();
+
 }

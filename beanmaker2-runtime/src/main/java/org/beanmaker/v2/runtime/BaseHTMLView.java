@@ -48,6 +48,11 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
         editor.setId(id);
     }
 
+    @Override
+    public long getId() {
+        return editor.getId();
+    }
+
     public void setFormName(String formName) {
         this.formName = formName;
     }
