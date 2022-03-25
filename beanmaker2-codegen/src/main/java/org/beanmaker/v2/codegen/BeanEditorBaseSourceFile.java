@@ -834,11 +834,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
+    // !! Commented code below = code before label validation modification
     private FunctionDeclaration getCheckDataFunction(Column column) {
         String field = column.getJavaName();
         String functionName = "checkDataFor" + capitalize(field);
 
-        var function = new FunctionDeclaration(functionName, "boolean")
+        /*var function = new FunctionDeclaration(functionName, "boolean")
                 .addArgument(new FunctionArgument("DBTransaction", "transaction"))
                 .addContent(new VarDeclaration(
                         "FieldValidator",
@@ -853,14 +854,34 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 .addArgument(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"))
                                 .addArgument(new Condition(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"), true)
                                                 .orCondition(new Condition(getCheckDataFunctionFunctionCall(field, "is", "Unique")
-                                                        .addArgument("transaction"))))));
+                                                        .addArgument("transaction"))))));*/
+
+        var function = new FunctionDeclaration(functionName, "boolean")
+                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        if (!column.isLabelReference())
+            function.addContent(new VarDeclaration(
+                    "FieldValidator",
+                    "validator",
+                    new ObjectCreation("FieldValidator")
+                            .addArgument("dbBeanLocalization")
+                            .addArgument("id")
+                            .addArgument(quickQuote(field))
+                            .addArgument(getCheckDataFunctionFunctionCall(field, "get", "Label"))
+                            .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Empty"))
+                            .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Required"))
+                            .addArgument(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"))
+                            .addArgument(new Condition(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"), true)
+                                    .orCondition(new Condition(getCheckDataFunctionFunctionCall(field, "is", "Unique")
+                                            .addArgument("transaction"))))));
+
 
         String validationFunctionsFunctionName = "get" + capitalize(field) + "ValidationFunctions";
         var validationCall = new FunctionCall("validate", "validator")
                 .addArgument(new FunctionCall(validationFunctionsFunctionName))
                 .addArgument("transaction");
 
-        if (column.isLabelReference()) {
+        /*if (column.isLabelReference()) {
             function
                     .addContent(new VarDeclaration("boolean", "ok", validationCall))
                     .addContent(new IfBlock(new Condition("ok"))
@@ -898,6 +919,49 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                                                     .addArgument("dbBeanLanguage"))
                                                             .addArgument("transaction"))
                                                     .andCondition(new Condition("ok"))))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new ReturnStatement("ok"));
+        } else
+            function.addContent(new ReturnStatement(validationCall));*/
+
+        if (column.isLabelReference()) {
+            function
+                    .addContent(new VarDeclaration("boolean", "ok", "true"))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new ForEach(
+                            "DbBeanLanguage",
+                            "dbBeanLanguage",
+                            new FunctionCall("getAllActiveLanguages", "LabelManager"))
+                            .addContent(new VarDeclaration(
+                                    "String",
+                                    "iso",
+                                    new FunctionCall("getCapIso", "dbBeanLanguage")))
+                            .addContent(new VarDeclaration(
+                                    "FieldValidator",
+                                    "contentValidator",
+                                    new ObjectCreation("FieldValidator")
+                                            .addArgument("dbBeanLocalization")
+                                            .addArgument("id")
+                                            .addArgument("\"" + field + "\" + iso")
+                                            .addArgument(new OperatorExpression(
+                                                    getCheckDataFunctionFunctionCall(field, "get", "Label"),
+                                                    "\" \" + iso",
+                                                    OperatorExpression.Operator.ADD))
+                                            .addArgument(new FunctionCall("isEmpty", "Strings")
+                                                    .addArgument(new FunctionCall("get", uncapitalize(chopID(field)))
+                                                            .addArgument("dbBeanLanguage")))
+                                            .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Required")
+                                                    .addArgument("dbBeanLanguage"))
+                                            .addArgument("false")
+                                            .addArgument("true")))
+                            .addContent(new Assignment(
+                                    "ok",
+                                    new Condition(
+                                            new FunctionCall("validate", "contentValidator")
+                                                    .addArgument(new FunctionCall(validationFunctionsFunctionName)
+                                                            .addArgument("dbBeanLanguage"))
+                                                    .addArgument("transaction"))
+                                            .andCondition(new Condition("ok")))))
                     .addContent(EMPTY_LINE)
                     .addContent(new ReturnStatement("ok"));
         } else
@@ -940,7 +1004,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         String name = column.getJavaName();
         var functionDeclaration = getValidationFunctionListFunctionDeclaration(name);
 
-        if (column.isLabelReference() || column.isFileReference() || column.hasAssociatedBean())
+        if (column.isLabelReference())
+            functionDeclaration.addContent(getLabelValidationFunctionList(column));
+        else if (column.isFileReference() || column.hasAssociatedBean())
             functionDeclaration.addContent(getBeanReferenceValidationFunctionList(column));
         else if (TEMPORAL_TYPES.contains(type))
             functionDeclaration.addContent(getTemporalValidationFunctionList(column));
@@ -971,14 +1037,35 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 "List<Function<DBTransaction, FieldValidationResult>>");
     }
 
+    private ReturnStatement getLabelValidationFunctionList(Column column) {
+        var lambda = createValidationFunctionLambda();
+
+        String name = column.getJavaName();
+        String idOKObject = "LabelManager";  // TODO: inline
+
+        lambda
+                .addContent(new VarDeclaration("boolean", "ok", "true"))
+                .addContent(new IfBlock(new Condition("id > 0"))
+                        .forceBrackets(true)
+                        .addContent(new IfBlock(new Condition("transaction == null"))
+                                .addContent(new Assignment("ok", getBaseIDOKFunctionCall(idOKObject, name)))
+                                .elseClause(new ElseBlock()
+                                        .addContent(new Assignment("ok", getBaseIDOKFunctionCall(idOKObject, name).addArgument("transaction"))))))
+                .addContent(EMPTY_LINE)
+                .addContent(new IfBlock(new Condition("ok"))
+                        .addContent(new ReturnStatement("FieldValidationResult.OK")))
+                .addContent(EMPTY_LINE)
+                .addContent(getDefaultFieldValidationErrorMessage(name));
+
+        return getValidationFunctionsListOfLambdas(lambda);
+    }
+
     private ReturnStatement getBeanReferenceValidationFunctionList(Column column) {
         var lambda = createValidationFunctionLambda();
 
         String name = column.getJavaName();
         String idOKObject;
-        if (column.isLabelReference())
-            idOKObject = "LabelManager";
-        else if (column.isFileReference())
+        if (column.isFileReference())
             idOKObject = "LocalFileManager";
         else
             idOKObject = column.getAssociatedBeanClass();
