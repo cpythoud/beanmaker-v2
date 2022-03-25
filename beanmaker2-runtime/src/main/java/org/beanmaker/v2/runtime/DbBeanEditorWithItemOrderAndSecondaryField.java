@@ -15,8 +15,8 @@ public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanE
         tableName = parameters.getDatabaseTableName();
     }
 
-    public void itemOrderReassociateWith(long idInvoice) {
-        dbBeanItemOrderManager.itemOrderReassociateWith(this, idInvoice, db);
+    public void itemOrderReassociateWith(long idAssociatedBean) {
+        dbBeanItemOrderManager.itemOrderReassociateWith(this, idAssociatedBean, db);
     }
 
     @Override

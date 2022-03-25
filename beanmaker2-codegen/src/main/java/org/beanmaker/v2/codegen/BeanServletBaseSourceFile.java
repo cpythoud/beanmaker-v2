@@ -105,16 +105,27 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                 .visibility(Visibility.PROTECTED)
                 .addArgument(new FunctionArgument("long", "id"))
                 .addArgument(new FunctionArgument("ChangeOrderDirection", "direction"))
-                .addArgument(new FunctionArgument("long", "companionId"));
+                .addArgument(new FunctionArgument("long", "companionId"))
+                .addArgument(new FunctionArgument("HttpServletRequest", "request"));
 
         if (columns.hasItemOrder())
-            functionDeclaration.addContent(new ReturnStatement(new FunctionCall("changeOrder")
-                    .addArgument(new ObjectCreation(beanName + "Editor").addArgument("id"))
-                    .addArgument("direction")
-                    .addArgument(new TernaryOperator(
-                            new Condition("companionId > 0"),
-                            new ObjectCreation(beanName).addArgument("companionId"),
-                            "null"))));
+            functionDeclaration
+                    .addContent(new VarDeclaration(
+                            "var",
+                            "editor",
+                            new ObjectCreation(beanName + "Editor").addArgument("id")))
+                    .addContent(new FunctionCall("setCurrentDbBeanLanguage", "editor")
+                            .byItself()
+                            .addArgument(new FunctionCall("getLanguage")
+                                    .addArgument(new FunctionCall("getSession", "request"))))
+                    .addContent(new ReturnStatement(new FunctionCall("changeOrder")
+                            .addArgument("editor")
+                            .addArgument("direction")
+                            .addArgument(new TernaryOperator(
+                                    new Condition("companionId > 0"),
+                                    new ObjectCreation(beanName).addArgument("companionId"),
+                                    "null"))));
+
         else
             functionDeclaration.addContent(new ExceptionThrow("UnsupportedOperationException")
                     .addArgument(quickQuote(beanName + " beans have no ordering. (No itemOrder field present.)")));

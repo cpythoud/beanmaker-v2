@@ -82,9 +82,9 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
         ChangeOrderDirection direction = getChangeOrderDirection(request);
         long companionId = Strings.getLongVal(request.getParameter("companionId"));
 
-        return changeOrder(id, direction, companionId);
+        return changeOrder(id, direction, companionId, request);
     }
 
-    protected abstract String changeOrder(long id, ChangeOrderDirection direction, long companionId);
+    protected abstract String changeOrder(long id, ChangeOrderDirection direction, long companionId, HttpServletRequest request);
 
 }

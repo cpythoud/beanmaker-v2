@@ -286,7 +286,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall(
                                 "collect",
                                 new FunctionCall("map", new FunctionCall("stream", new FunctionCall("get" + beanName + "Inventory")))
-                                        .addArgument("this::getTableLine"))
+                                        .addArgument(columns.hasItemOrder() ? "this::getItemOrderTableLine" : "this::getTableLine"))
                                 .addArgument(new FunctionCall("toList", "Collectors")))))
                 .addContent(EMPTY_LINE);
     }

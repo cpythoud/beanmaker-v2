@@ -4,6 +4,8 @@ import org.dbbeans.sql.DB;
 import org.dbbeans.sql.DBAccess;
 import org.dbbeans.sql.DBTransaction;
 
+import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
+
 public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements BasicItemOrderOperations {
 
     private final DBAccess dbAccess;
@@ -62,16 +64,17 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
     }
 
     public void setItemOrderSecondaryFieldID(long secondaryFieldID) {
-        checkCaller();
+        if (!StackWalker.getInstance(RETAIN_CLASS_REFERENCE).getCallerClass().getName().equals("org.beanmaker.v2.runtime.ItemOrderManager"))
+            throw new IllegalCallerException("Only org.beanmaker.v2.runtime.ItemOrderManager should call updateRecordForItemOrder()");
+
+        // TODO: implement operations ?!?
     }
 
     public void updateRecordForItemOrder(DBTransaction transaction) {
-        checkCaller();
-    }
-
-    private void checkCaller() {
-        if (!StackWalker.getInstance().getCallerClass().getName().equals("org.beanmaker.v2.runtime.ItemOrderManager"))
+        if (!StackWalker.getInstance(RETAIN_CLASS_REFERENCE).getCallerClass().getName().equals("org.beanmaker.v2.runtime.ItemOrderManager"))
             throw new IllegalCallerException("Only org.beanmaker.v2.runtime.ItemOrderManager should call updateRecordForItemOrder()");
+
+        updateDB(transaction);
     }
 
     @Override
