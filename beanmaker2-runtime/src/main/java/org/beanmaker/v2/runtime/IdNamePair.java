@@ -72,7 +72,36 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		return name.compareTo(idNamePair.name);
 	}
 
-	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(List<T> beans, DbBeanLanguage dbBeanLanguage) {
+	// * DbBeanLocalization & label name based functions
+
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
+			List<T> beans,
+			DbBeanLocalization localization)
+	{
+		return getPairs(beans, localization.getLanguage());
+	}
+
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
+			List<T> beans,
+			DbBeanLocalization localization,
+			String noSelectionLabelName)
+	{
+		return getPairs(beans, localization.getLanguage(), localization.getLabel(noSelectionLabelName));
+	}
+
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
+			List<T> beans,
+			DbBeanLocalization localization,
+			String noSelectionLabelName,
+			boolean sortOnName)
+	{
+		return getPairs(beans, localization.getLanguage(), localization.getLabel(noSelectionLabelName), sortOnName);
+	}
+
+	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
+			List<T> beans,
+			DbBeanLanguage dbBeanLanguage)
+	{
 		return getPairs(beans, dbBeanLanguage, null);
 	}
 
@@ -82,21 +111,6 @@ public class IdNamePair implements Comparable<IdNamePair> {
 			String noSelectionText)
 	{
 		return getPairs(beans, dbBeanLanguage, noSelectionText, false);
-	}
-
-	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
-			List<T> beans,
-			DbBeanLocalization localization)
-	{
-		return getPairs(beans, localization.getLanguage(), null);
-	}
-
-	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
-			List<T> beans,
-			DbBeanLocalization localization,
-			String noSelectionLabelName)
-	{
-		return getPairs(beans, localization.getLanguage(), localization.getLabel(noSelectionLabelName));
 	}
 
 	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
@@ -119,4 +133,3 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		return pairs;
 	}
 }
-
