@@ -123,7 +123,7 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
     public List<OneToManyRelationship> getDetectedOneToManyRelationship(String dbName, String tableName) {
         int tableNameLength = tableName.length();
 
-        List<String> likes = new ArrayList<String>();
+        List<String> likes = new ArrayList<>();
         likes.add(tableName);
         for (int i = 1; i < 4; i++) {
             if (tableNameLength > i)

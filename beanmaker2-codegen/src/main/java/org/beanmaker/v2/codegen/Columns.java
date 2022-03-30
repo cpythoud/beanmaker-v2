@@ -30,8 +30,12 @@ public class Columns {
         this.db = db;
         this.table = table;
         columns = server.getColumns(db, table);
-        detectedOneToManyRelationships = server.getDetectedOneToManyRelationship(db, table);
-        oneToManyRelationships = new ArrayList<OneToManyRelationship>(detectedOneToManyRelationships);
+        // ! For now, we deactivate detection of possible one-to-many relationship
+        // ! because the feature is a nuisance on large table sets and should probably be abandoned
+        /*detectedOneToManyRelationships = server.getDetectedOneToManyRelationship(db, table);
+        oneToManyRelationships = new ArrayList<>(detectedOneToManyRelationships);*/
+        detectedOneToManyRelationships = Collections.emptyList();
+        oneToManyRelationships = new ArrayList<>();
     }
 
     public DatabaseServer getServer() {
