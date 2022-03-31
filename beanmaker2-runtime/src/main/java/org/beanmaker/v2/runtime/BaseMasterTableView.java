@@ -371,27 +371,39 @@ public abstract class BaseMasterTableView extends TabularView {
         return getTitleCell(name, getTitle(name));
     }
 
+    protected ThTag getStyledTitleCell(String name, String extraCssClasses) {
+        return getStyledTitleCell(name, getTitle(name), extraCssClasses);
+    }
+
     protected String getTitle(String name) {
         return dbBeanLocalization.getLabel(name);
     }
 
-    protected ThTag getTitleCell(String name,  String adhocTitle) {
-        ++columnCount;
-        return new ThTag(adhocTitle)
-                .cssClass(getTitleCellCssClasses(name))
-                .attribute("data-sort-class", "tb-" + name);
+    protected ThTag getTitleCell(String name, String adhocTitle) {
+        return getStyledTitleCell(name, adhocTitle, null);
     }
 
     protected ThTag getTitleCell(String name, Tag adhocTitle) {
+        return getStyledTitleCell(name, adhocTitle, null);
+    }
+
+    protected ThTag getStyledTitleCell(String name, String adhocTitle, String extraCssClasses) {
+        ++columnCount;
+        return new ThTag(adhocTitle)
+                .cssClass(getTitleCellCssClasses(name, extraCssClasses))
+                .attribute("data-sort-class", "tb-" + name);
+    }
+
+    protected ThTag getStyledTitleCell(String name, Tag adhocTitle, String extraCssClasses) {
         ++columnCount;
         return new ThTag()
-                .cssClass(getTitleCellCssClasses(name))
+                .cssClass(getTitleCellCssClasses(name, extraCssClasses))
                 .attribute("data-sort-class", "tb-" + name)
                 .child(adhocTitle);
     }
 
-    protected String getTitleCellCssClasses(String name) {
-        return thTitleCssClass + " th-" + name;
+    protected String getTitleCellCssClasses(String name, String extraCssClasses) {
+        return thTitleCssClass + " th-" + name + (Strings.isEmpty(extraCssClasses) ? "" : " " + extraCssClasses);
     }
 
     public <B extends DbBeanInterface> TrTag getTableLine(B bean) {
