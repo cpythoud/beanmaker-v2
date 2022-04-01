@@ -41,9 +41,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     public abstract boolean isNameOK(String labelName);
 
-    public DbBeanLanguage getDefaultLanguage() {
-        return null;
-    }
+    public abstract DbBeanLanguage getDefaultLanguage();
 
     protected boolean lenient() {
         return true;

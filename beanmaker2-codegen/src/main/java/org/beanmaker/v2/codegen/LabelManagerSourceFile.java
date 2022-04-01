@@ -123,7 +123,13 @@ public class LabelManagerSourceFile extends BaseCode {
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("String", "name"))
                         .addContent(new ReturnStatement(new FunctionCall("isNameOK", "LabelManager")
-                                .addArgument("name"))));
+                                .addArgument("name"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getDefaultLanguage", "DbBeanLanguage")
+                        .annotate("@Override")
+                        .visibility(Visibility.PUBLIC)
+                        .addContent(new ReturnStatement(new FunctionCall("getDefaultLanguage", "LabelManager"))));
+
         var declaration = new VarDeclaration("DbBeanLabelBasicFunctions", "basicFunctions", anonymousClass)
                 .visibility(Visibility.PRIVATE)
                 .markAsStatic()
