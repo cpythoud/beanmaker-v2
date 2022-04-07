@@ -126,6 +126,7 @@ public abstract class BaseMasterTableView extends TabularView {
     protected boolean enableDragNDrop = false;
     protected String sortableCssClass = "tb-sortable";
     protected String dragNDropActiveIcon = "resize-vertical";
+    protected String dragNDropDragElementCssClass = "tb-reorder";
 
     protected TableLocalOrderContext localOrderContext = null;
     protected String localOrderingTable = null;
@@ -862,7 +863,7 @@ public abstract class BaseMasterTableView extends TabularView {
         TdTag cell = new TdTag().cssClass(tdResetCssClass);
 
         if (enableDragNDrop)
-            cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon));
+            cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon + " " + dragNDropDragElementCssClass));
 
         if (showEditLinks)
             cell.child(getEditLineLink(
