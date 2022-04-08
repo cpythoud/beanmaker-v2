@@ -1,0 +1,19 @@
+.tb-filtered {
+    display: none;
+}
+
+.tb-sort {
+    cursor: pointer;
+}
+
+.tb-masked {
+    display: none;
+}
+
+.tb-sortable {
+    cursor: auto;
+}
+
+.tb-reorder {
+    cursor: grab;
+}
