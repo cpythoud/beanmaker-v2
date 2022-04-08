@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.log("CCTABLE2: build #38");
+        console.log("CCTABLE2: build #52");
 
         // * FILTERING *
 
@@ -37,7 +37,7 @@ let CCTable2 = (function () {
             clearFilters(instance);
         });
 
-        readCookies(instance);
+        readCookies(instance);  // * Will also produce an updateSums() call
 
 
         // * SORTING *
@@ -90,16 +90,18 @@ let CCTable2 = (function () {
             const filterVal = filterField.value.trim().toLowerCase();
             if (filterVal !== '') {
                 instance._table.querySelectorAll('td.' + filterName).forEach(function (cell) {
-                    let content;
-                    if (cell.dataset.filterValue)
-                        content = cell.dataset.filterValue.toLowerCase();
-                    else
-                        content = cell.textContent.toLowerCase();
-                    if (content.indexOf(filterVal) > -1) {
-                        if (!didFilter)
-                            cell.parentElement.classList.remove(instance._settings.filteredCssClass);
-                    } else {
-                        cell.parentElement.classList.add(instance._settings.filteredCssClass);
+                    if (!cell.parentElement.classList.contains(instance._settings.sumLineCssClass)) {
+                        let content;
+                        if (cell.dataset.filterValue)
+                            content = cell.dataset.filterValue.toLowerCase();
+                        else
+                            content = cell.textContent.toLowerCase();
+                        if (content.indexOf(filterVal) > -1) {
+                            if (!didFilter)
+                                cell.parentElement.classList.remove(instance._settings.filteredCssClass);
+                        } else {
+                            cell.parentElement.classList.add(instance._settings.filteredCssClass);
+                        }
                     }
                 });
                 didFilter = true;
@@ -109,6 +111,7 @@ let CCTable2 = (function () {
         if (!didFilter)
             removeFiltering(instance);
         updateFilteringCounters(instance);
+        updateSums(instance);
     }
 
     function setCookie($table, col, value) {
@@ -123,6 +126,7 @@ let CCTable2 = (function () {
             ++count;
         });
         updateFilteringCounters(instance);
+        updateSums(instance);
     }
 
     function updateFilteringCounters(instance) {
@@ -152,42 +156,47 @@ let CCTable2 = (function () {
         if (keywordList.length > 0) {
             if (andModality) {
                 instance._table.querySelectorAll('td.' + filterName).forEach(function (cell) {
-                    let content;
-                    if (cell.dataset.filterValue)
-                        content = cell.dataset.filterValue.toLowerCase();
-                    else
-                        content = cell.textContent.toLowerCase();
-                    let foundAll = true;
-                    for (let i = 0; i < keywordList.length; ++i) {
-                        if (content.indexOf(keywordList[i]) === -1) {
-                            foundAll = false;
-                            break;
+                    if (!cell.parentElement.classList.contains(instance._settings.sumLineCssClass)) {
+                        let content;
+                        if (cell.dataset.filterValue)
+                            content = cell.dataset.filterValue.toLowerCase();
+                        else
+                            content = cell.textContent.toLowerCase();
+                        let foundAll = true;
+                        for (let i = 0; i < keywordList.length; ++i) {
+                            if (content.indexOf(keywordList[i]) === -1) {
+                                foundAll = false;
+                                break;
+                            }
                         }
+                        if (!foundAll)
+                            cell.parentElement.classList.add(instance._settings.filteredCssClass);
                     }
-                    if (!foundAll)
-                        cell.parentElement.classList.add(instance._settings.filteredCssClass);
                 });
             } else {
                 instance._table.querySelectorAll('td.' + filterName).forEach(function (cell) {
-                    let content;
-                    if (cell.dataset.filterValue)
-                        content = cell.dataset.filterValue.toLowerCase();
-                    else
-                        content = cell.textContent.toLowerCase();
-                    let missing = true;
-                    for (let i = 0; i < keywordList.length; ++i) {
-                        if (content.indexOf(keywordList[i]) > -1) {
-                            missing = false;
-                            break;
+                    if (!cell.parentElement.classList.contains(instance._settings.sumLineCssClass)) {
+                        let content;
+                        if (cell.dataset.filterValue)
+                            content = cell.dataset.filterValue.toLowerCase();
+                        else
+                            content = cell.textContent.toLowerCase();
+                        let missing = true;
+                        for (let i = 0; i < keywordList.length; ++i) {
+                            if (content.indexOf(keywordList[i]) > -1) {
+                                missing = false;
+                                break;
+                            }
                         }
+                        if (missing)
+                            cell.parentElement.classList.add(instance._settings.filteredCssClass);
                     }
-                    if (missing)
-                        cell.parentElement.classList.add(instance._settings.filteredCssClass);
                 });
             }
         }
 
         updateFilteringCounters(instance);
+        updateSums(instance);
         instance._settings.hideAdvancedSearchModale();
     }
 
@@ -217,10 +226,9 @@ let CCTable2 = (function () {
                 const filterField = instance._table.querySelector('.' + instance._settings.formElementFilterCssClass + '[name="' + field + '"]');
                 if (filterField)
                     filterField.value = value;
-
-                filter(instance);
             }
         }
+        filter(instance);
     }
 
 
@@ -233,18 +241,24 @@ let CCTable2 = (function () {
         const sortVals = [];
         const tds = { };
 
+        let sumLine = undefined;
+
         let index = 0;
         instance._table.querySelectorAll('td.' + sortColumn).forEach(function (cell) {
-            let val;
-            if (cell.dataset.sortValue)
-                val = cell.dataset.sortValue;
-            else
-                val = cell.textContent;
-            val += '~' + index;
-            sortVals.push(val);
-            tds[val] = cell.parentElement;
+            if (cell.parentElement.classList.contains(instance._settings.sumLineCssClass))
+                sumLine = cell.parentElement;
+            else {
+                let val;
+                if (cell.dataset.sortValue)
+                    val = cell.dataset.sortValue;
+                else
+                    val = cell.textContent;
+                val += '~' + index;
+                sortVals.push(val);
+                tds[val] = cell.parentElement;
 
-            ++index;
+                ++index;
+            }
         })
 
         sortVals.sort();
@@ -257,6 +271,8 @@ let CCTable2 = (function () {
         for (let i = 0; i < length; ++i) {
             $content.append(tds[sortVals[i]]);
         }
+        if (sumLine)
+            $content.append(sumLine);
 
         if (instance._sortingDirection[sortColumn] === 'asc')
             instance._sortingDirection[sortColumn] = 'desc';
@@ -317,6 +333,55 @@ let CCTable2 = (function () {
     }
 
 
+    // * SUM *
+
+    function updateSums(instance) {
+        //console.log('updateSums() called')
+        if (hasSummationRow(instance)) {
+            for (const sumFieldClass of getSumFieldClasses(instance))
+                updateSum(instance, sumFieldClass);
+        }
+    }
+
+    function hasSummationRow(instance) {
+        return !!instance._table.querySelector('tr.' + instance._settings.sumLineCssClass);
+    }
+
+    function getSumFieldClasses(instance) {
+        const sumFieldClasses = [ ];
+        for (const cell of instance._table.querySelector('tr.' + instance._settings.sumLineCssClass).children) {
+            const cssClasses = cell.classList;
+            if (cssClasses.contains(instance._settings.sumCellCssClass)) {
+                for (const cssClass of cssClasses) {
+                    if (cssClass.startsWith('tb-') && cssClass !== instance._settings.sumCellCssClass)
+                        sumFieldClasses.push(cssClass);
+                }
+            }
+        }
+        return sumFieldClasses;
+    }
+
+    function updateSum(instance, sumFieldClass) {
+        let sum = 0;
+
+        instance._table.querySelectorAll('tbody tr td.' + sumFieldClass).forEach(function (cell) {
+            if (!cell.classList.contains(instance._settings.sumCellCssClass) && !cell.parentElement.classList.contains(instance._settings.filteredCssClass)) {
+                let value;
+                if (cell.dataset.sumValue)
+                    value = cell.dataset.sumValue;
+                else
+                    value = cell.textContent;
+                const numericValue = Number(value);
+                if (!isNaN(numericValue))
+                    sum += numericValue;
+            }
+        });
+
+        instance._table.querySelector('tr.' + instance._settings.sumLineCssClass + ' td.' + sumFieldClass).textContent =
+            instance._settings.sumFormat(sum, instance._settings.sumShowZeroes);
+    }
+
+
     // * CONSTRUCTOR *
 
     let Constructor = function (tableRef, options = { }) {
@@ -356,8 +421,14 @@ let CCTable2 = (function () {
             },
 
             // * SUM
-            sumLineCssClass: "tb-summation"
-
+            sumLineCssClass: "tb-summation-line",
+            sumCellCssClass: "tb-summation-data",
+            sumShowZeroes: false,
+            sumFormat: function (sum, showZeroes) {
+                if (sum === 0 && !showZeroes)
+                    return '';
+                return sum;
+            }
         }, options);
         Object.freeze(settings);
 

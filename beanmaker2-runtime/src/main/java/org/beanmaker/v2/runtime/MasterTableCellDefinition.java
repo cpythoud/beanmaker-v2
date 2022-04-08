@@ -16,6 +16,7 @@ public class MasterTableCellDefinition {
     private final String content;
     private String orderingValue = null;
     private String filteringValue = null;
+    private String sumValue = null;
     private String extraCssClasses = null;
 
     public MasterTableCellDefinition(String fieldName, String content) {
@@ -152,6 +153,24 @@ public class MasterTableCellDefinition {
 
     public MasterTableCellDefinition filteringValue(boolean filteringValue, String yesValue, String noValue) {
         this.filteringValue = filteringValue ? yesValue : noValue;
+        return this;
+    }
+
+    public String sumValue() {
+        return sumValue;
+    }
+
+    public boolean sumDefined() {
+        return sumValue != null;
+    }
+
+    public MasterTableCellDefinition sumValue(String sumValue) {
+        this.sumValue = sumValue;
+        return this;
+    }
+
+    public MasterTableCellDefinition sumValue(Money sumValue) {
+        this.sumValue = Double.toString(sumValue.getDoubleVal());
         return this;
     }
 

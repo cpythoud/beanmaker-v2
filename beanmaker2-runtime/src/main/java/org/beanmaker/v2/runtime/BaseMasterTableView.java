@@ -131,6 +131,9 @@ public abstract class BaseMasterTableView extends TabularView {
     protected TableLocalOrderContext localOrderContext = null;
     protected String localOrderingTable = null;
 
+    protected String sumLineCssClass = "tb-summation-line";
+    protected String sumCellCssClass = "tb-summation-data";
+
     // ! Infrastructure exports Excel reste provisoirement en place, mais pas d'implémentation dans la première version
     protected boolean excelExportAvailable = false;
     protected String excelExportIdSuffix = "excel";
@@ -268,6 +271,14 @@ public abstract class BaseMasterTableView extends TabularView {
             titleRow.cssClass(trTitleCssClass);
 
         return titleRow;
+    }
+
+    protected TrTag getDefaultStartOfSummationRow() {
+        TrTag summationRow = new TrTag().cssClass(sumLineCssClass);
+
+        summationRow.child(getTableCellForRemoveFilteringPlaceholder());
+
+        return summationRow;
     }
 
     protected ThTag getRemoveFilteringCellWithLink() {
@@ -519,16 +530,6 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     @Deprecated
-    protected TdTag getEmptyTableCell(String name) {
-        return getEmptyTableCell(name, null);
-    }
-
-    @Deprecated
-    protected TdTag getEmptyTableCell(String name, String extraCssClasses) {
-        return new TdTag().cssClass(getTableCellCssClasses(name, extraCssClasses));
-    }
-
-    @Deprecated
     protected TdTag getTableCell(String name, Date value) {
         return getTableCell(name, value, null);
     }
@@ -744,6 +745,8 @@ public abstract class BaseMasterTableView extends TabularView {
             cell.attribute("data-sort-value", definition.orderingValue());
         if (definition.filteringDefined())
             cell.attribute("data-filter-value", definition.filteringValue());
+        if (definition.sumDefined())
+            cell.attribute("data-sum-value", definition.sumValue());
         return cell;
     }
 
@@ -753,6 +756,18 @@ public abstract class BaseMasterTableView extends TabularView {
 
     protected String getTableCellCssClasses(String name, String extraCssClasses) {
         return "tb-" + name + (extraCssClasses == null ? "" : " " + extraCssClasses);
+    }
+
+    protected TdTag getEmptySummationCell(String name) {
+        return getTableCell(MasterTableCellDefinition.createTextCellDefinition(name, "").extraCssClasses(sumCellCssClass));
+    }
+
+    protected TdTag getEmptyTableCell(String name) {
+        return getTableCell(MasterTableCellDefinition.createTextCellDefinition(name, ""));
+    }
+
+    protected TdTag getEmptyTableCell(String name, String extraCssClasses) {
+        return getTableCell(MasterTableCellDefinition.createTextCellDefinition(name, "").extraCssClasses(extraCssClasses));
     }
 
     // ! End reimplementation of getTableCell()
