@@ -11,4 +11,5 @@ module org.beanmaker.v2.runtime {
     requires commons.fileupload;
 
     exports org.beanmaker.v2.runtime;
+    exports org.beanmaker.v2.runtime.dbutil;
 }
