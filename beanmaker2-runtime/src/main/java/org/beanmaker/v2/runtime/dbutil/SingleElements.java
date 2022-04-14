@@ -1,10 +1,15 @@
 package org.beanmaker.v2.runtime.dbutil;
 
 import org.beanmaker.v2.runtime.DbBeanEditor;
+import org.beanmaker.v2.runtime.DbBeanInterface;
 
 import org.dbbeans.sql.DBAccess;
 import org.dbbeans.sql.DBQuerySetup;
 import org.dbbeans.sql.DBTransaction;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +17,39 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class SingleElements {
+
+    private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+    private static final MethodType BEAN_CONSTRUCTOR = MethodType.methodType(void.class, long.class);
+
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            String query,
+            DBQuerySetup querySetup,
+            Class<? extends DbBeanInterface> beanClass,
+            DBAccess dbAccess)
+    {
+        return Optional.ofNullable(
+                dbAccess.processQuery(
+                        query,
+                        querySetup,
+                        rs -> {
+                            return getSingleBean(beanClass, rs);
+                        }
+                )
+        );
+    }
+
+    private static <B extends DbBeanInterface> B getSingleBean(Class<? extends DbBeanInterface> beanClass, ResultSet rs) throws SQLException {
+        long id = getSingleID(rs);
+        if (id == 0)
+            return null;
+
+        try {
+            MethodHandle constructorHandle = LOOKUP.findConstructor(beanClass, BEAN_CONSTRUCTOR);
+            return (B) constructorHandle.invokeWithArguments(id);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
 
     public static <E extends DbBeanEditor> Optional<E> getEditor(
             String query,
