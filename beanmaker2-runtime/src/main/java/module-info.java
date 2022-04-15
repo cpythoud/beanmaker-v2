@@ -12,4 +12,5 @@ module org.beanmaker.v2.runtime {
 
     exports org.beanmaker.v2.runtime;
     exports org.beanmaker.v2.runtime.dbutil;
+    exports org.beanmaker.v2.runtime.util;
 }
