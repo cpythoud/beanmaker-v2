@@ -758,16 +758,16 @@ public abstract class BaseMasterTableView extends TabularView {
         return "tb-" + name + (extraCssClasses == null ? "" : " " + extraCssClasses);
     }
 
-    protected TdTag getEmptySummationCell(String name) {
-        return getTableCell(MasterTableCellDefinition.createTextCellDefinition(name, "").extraCssClasses(sumCellCssClass));
+    protected TdTag getBasicTableCell(String name, String value) {
+        return getTableCell(name, value, null);
     }
 
     protected TdTag getEmptyTableCell(String name) {
-        return getTableCell(MasterTableCellDefinition.createTextCellDefinition(name, ""));
+        return getTableCell(MasterTableCellDefinition.createEmptyCellDefinition(name));
     }
 
-    protected TdTag getEmptyTableCell(String name, String extraCssClasses) {
-        return getTableCell(MasterTableCellDefinition.createTextCellDefinition(name, "").extraCssClasses(extraCssClasses));
+    protected TdTag getSummationTableCell(String name) {
+        return getTableCell(MasterTableCellDefinition.createEmptyCellDefinition(name).extraCssClasses(sumCellCssClass));
     }
 
     // ! End reimplementation of getTableCell()

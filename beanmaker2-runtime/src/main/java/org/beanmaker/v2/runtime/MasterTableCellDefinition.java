@@ -78,6 +78,10 @@ public class MasterTableCellDefinition {
         return new MasterTableCellDefinition(fieldName, text).orderingValue(value, zeroFilledMaxDigits);
     }
 
+    public static MasterTableCellDefinition createEmptyCellDefinition(String fieldName) {
+        return new MasterTableCellDefinition(fieldName, "");
+    }
+
     public String fieldName() {
         return fieldName;
     }
