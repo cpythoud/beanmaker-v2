@@ -1,7 +1,8 @@
 package org.beanmaker.v2.runtime;
 
+import java.text.Collator;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class IdNamePair implements Comparable<IdNamePair> {
@@ -125,11 +126,12 @@ public class IdNamePair implements Comparable<IdNamePair> {
 			pairs.add(new IdNamePair(bean.getId(), bean.getNameForIdNamePairsAndTitles(dbBeanLanguage)));
 
 		if (sortOnName)
-			Collections.sort(pairs);
+			pairs.sort(Collator.getInstance(dbBeanLanguage.getLocale()));
 
 		if (noSelectionText != null)
 			pairs.add(0, new IdNamePair(0, noSelectionText));
 
 		return pairs;
 	}
+
 }
