@@ -14,13 +14,15 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void addImports() {
         importsManager.addImport("java.sql.ResultSet");
-        for (Column column: columns.getList()) {
-            if (column.getJavaType().equals("Date"))
-                importsManager.addImport("java.sql.Date");
-            if (column.getJavaType().equals("Time"))
-                importsManager.addImport("java.sql.Time");
-            if (column.getJavaType().equals("Timestamp"))
-                importsManager.addImport("java.sql.Timestamp");
+        if (projectParameters.createEditorFieldsConstructor()) {
+            for (Column column: columns.getList()) {
+                if (column.getJavaType().equals("Date"))
+                    importsManager.addImport("java.sql.Date");
+                if (column.getJavaType().equals("Time"))
+                    importsManager.addImport("java.sql.Time");
+                if (column.getJavaType().equals("Timestamp"))
+                    importsManager.addImport("java.sql.Timestamp");
+            }
         }
     }
 
@@ -34,7 +36,8 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
         addNoParamConstructor();
         addIDConstructor();
         addBeanConstructor();
-        addFieldsConstructor();
+        if (projectParameters.createEditorFieldsConstructor())
+            addFieldsConstructor();
         addRSConstructor();
     }
 
