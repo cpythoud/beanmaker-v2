@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.log("CCTABLE2: build #55");
+        console.log("CCTABLE2: build #60");
 
         // * FILTERING *
 
@@ -37,7 +37,7 @@ let CCTable2 = (function () {
             clearFilters(instance);
         });
 
-        readCookies(instance);  // * Will also produce an updateSums() call
+        readCookies(instance);  // * Will also produce updateSums() & zebra() calls
 
 
         // * SORTING *
@@ -75,6 +75,7 @@ let CCTable2 = (function () {
                         instance._settings.moveBeforeFunction(event.item.id, event.item.nextElementSibling.id);
                     else
                         instance._settings.moveAfterFunction(event.item.id, event.item.previousElementSibling.id);
+                    zebra(instance);
                 }
             });
         }
@@ -112,6 +113,7 @@ let CCTable2 = (function () {
             removeFiltering(instance);
         updateFilteringCounters(instance);
         updateSums(instance);
+        zebra(instance);
     }
 
     function setCookie($table, col, value) {
@@ -127,6 +129,7 @@ let CCTable2 = (function () {
         });
         updateFilteringCounters(instance);
         updateSums(instance);
+        zebra(instance);
     }
 
     function updateFilteringCounters(instance) {
@@ -197,6 +200,7 @@ let CCTable2 = (function () {
 
         updateFilteringCounters(instance);
         updateSums(instance);
+        zebra(instance);
         instance._settings.hideAdvancedSearchModale();
     }
 
@@ -278,6 +282,8 @@ let CCTable2 = (function () {
             instance._sortingDirection[sortColumn] = 'desc';
         else
             instance._sortingDirection[sortColumn] = 'asc';
+
+        zebra(instance);
     }
 
 
@@ -336,7 +342,6 @@ let CCTable2 = (function () {
     // * SUM *
 
     function updateSums(instance) {
-        //console.log('updateSums() called')
         if (hasSummationRow(instance)) {
             for (const sumFieldClass of getSumFieldClasses(instance))
                 updateSum(instance, sumFieldClass);
@@ -382,11 +387,34 @@ let CCTable2 = (function () {
     }
 
 
+    // * ZEBRA *
+
+    function zebra(instance) {
+        if (instance._settings.zebraActive) {
+            let index = 0;
+            instance._table.querySelectorAll('tbody tr').forEach(function (line) {
+                if (!line.classList.contains(instance._settings.filteredCssClass)) {
+                    ++index;
+                    if (index % 2 === 0) {
+                        line.classList.add(instance._settings.zebraCssClass);
+                        //console.log("zebra add: " + line.id);
+                    } else {
+                        line.classList.remove(instance._settings.zebraCssClass);
+                        //console.log("zebra remove: " + line.id);
+                    }
+                } else {
+                    //console.log("zebra ignored: " + line.id);
+                }
+            });
+        }
+    }
+
+
     // * CONSTRUCTOR *
 
     let Constructor = function (tableRef, options = { }) {
         let settings = Object.assign({
-            // * FILTERING
+            // * FILTERING *
             formElementFilterCssClass: 'tb-filter',
             removeFilteringLinkCssClass: 'tb-nofilter',
             filteredCssClass: 'tb-filtered',
@@ -398,17 +426,17 @@ let CCTable2 = (function () {
                 console.log("HIDE ADVANCED SEARCH MODALE");
             },
 
-            // * SORTING
+            // * SORTING *
             thSortableTitleCssClass: 'tb-sort',
 
-            // * COLUMNS MASKING
+            // * COLUMNS MASKING *
             maskedCssClass: 'tb-masked',
             showMoreCssClass: 'tb-show-more',
             showLessCssClass: 'tb-show-less',
             maskableCssClass: 'tb-maskable',
             maskingLinkCssClass: 'tb-masking-link',
 
-            // * DRAG & DROP REORDERING
+            // * DRAG & DROP REORDERING *
             sortableCssClass: "tb-sortable",
             sortHandleCssClass: "tb-reorder",
             moveAfterFunction: function (itemId, moveAfterItemId) {
@@ -420,7 +448,7 @@ let CCTable2 = (function () {
                 console.log('To be moved before element with ID = ' + moveBeforeItemId);
             },
 
-            // * SUM
+            // * SUM *
             sumLineCssClass: "tb-summation-line",
             sumCellCssClass: "tb-summation-data",
             sumShowZeroes: false,
@@ -428,7 +456,11 @@ let CCTable2 = (function () {
                 if (sum === 0 && !showZeroes)
                     return '';
                 return sum;
-            }
+            },
+
+            // * ZEBRA *
+            zebraActive: true,
+            zebraCssClass: 'alternate'
         }, options);
         Object.freeze(settings);
 
