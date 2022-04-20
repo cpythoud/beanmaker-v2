@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.log("CCTABLE2: build #60");
+        console.info("CCTABLE2: build #61");
 
         // * FILTERING *
 
