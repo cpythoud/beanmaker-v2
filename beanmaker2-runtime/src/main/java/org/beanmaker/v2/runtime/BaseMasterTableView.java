@@ -379,6 +379,10 @@ public abstract class BaseMasterTableView extends TabularView {
         return getTableFilterCell().child(select);
     }
 
+    protected ThTag getEmptyFilterCell() {
+        return new ThTag();
+    }
+
     protected ThTag getTitleCell(String name) {
         return getTitleCell(name, getTitle(name));
     }
