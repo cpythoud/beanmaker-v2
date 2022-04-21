@@ -1,8 +1,11 @@
 package org.beanmaker.v2.codegen;
 
+import org.jcodegen.java.Comparison;
+import org.jcodegen.java.Condition;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
+import org.jcodegen.java.IfBlock;
 import org.jcodegen.java.ReturnStatement;
 import org.jcodegen.java.Visibility;
 
@@ -60,13 +63,23 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
     private void addLabelFormattingFunctions(Column column) {
         javaClass
                 .addContent(getDefaultFormattingFunctionDeclaration(column)
+                        .addContent(getNoDataTestForReferencedBeanInFormatter(column))
+                        .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(getLabelFunction(column)
                                 .addArgument(new FunctionCall("getLanguage", "localization")))))
                 .addContent(EMPTY_LINE)
                 .addContent(getFormattingFunctionDeclarationWithLangugae(column)
+                        .addContent(getNoDataTestForReferencedBeanInFormatter(column))
+                        .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(getLabelFunction(column)
                                 .addArgument("language"))))
                 .addContent(EMPTY_LINE);
+    }
+
+    private IfBlock getNoDataTestForReferencedBeanInFormatter(Column column) {
+        return new IfBlock(new Condition(
+                new Comparison(new FunctionCall("get" + capitalize(column.getJavaName()), beanVarName), "0")))
+                .addContent(new ReturnStatement(EMPTY_STRING));
     }
 
     private FunctionCall getLabelFunction(Column column) {
@@ -79,6 +92,8 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(getDefaultFormattingFunctionDeclaration(column)
+                        .addContent(getNoDataTestForReferencedBeanInFormatter(column))
+                        .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(new FunctionCall("getFilename", functionCall))))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("get" + capName + "Link", "String")
@@ -86,6 +101,8 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument(beanName, beanVarName))
                         .addArgument(new FunctionArgument("DbBeanLocalization", "localization"))
+                        .addContent(getNoDataTestForReferencedBeanInFormatter(column))
+                        .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(new FunctionCall(
                                 "toString",
                                 new FunctionCall("getLink", "DbBeanFile").addArgument(functionCall)))))
@@ -97,6 +114,8 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(getDefaultFormattingFunctionDeclaration(column)
+                        .addContent(getNoDataTestForReferencedBeanInFormatter(column))
+                        .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(
                                 new FunctionCall("getNameForIdNamePairsAndTitles", functionCall)
                                         .addArgument(new FunctionCall("getLanguage", "localization")))))
@@ -107,7 +126,8 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(getDefaultFormattingFunctionDeclaration(column)
                         .addContent(new ReturnStatement(
-                                new FunctionCall("get" + capitalize(column.getJavaName()), beanVarName))))
+                                new FunctionCall("formatString")
+                                        .addArgument(new FunctionCall("get" + capitalize(column.getJavaName()), beanVarName)))))
                 .addContent(EMPTY_LINE);
     }
 

@@ -16,7 +16,17 @@ import java.text.DateFormat;
 
 public abstract class DbBeanFormatter {
 
+    public String formatString(String text) {
+        if (text == null)
+            return "";
+
+        return text;
+    }
+
     public String formatDate(Date date, DbBeanLocalization dbBeanLocalization) {
+        if (date == null)
+            return "";
+
         return DateFormat.getDateInstance(DateFormat.LONG, dbBeanLocalization.getLocale()).format(date);
     }
 
