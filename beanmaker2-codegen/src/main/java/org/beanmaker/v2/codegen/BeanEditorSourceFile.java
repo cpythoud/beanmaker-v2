@@ -2,6 +2,7 @@ package org.beanmaker.v2.codegen;
 
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
+import org.jcodegen.java.Visibility;
 
 public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
 
@@ -28,7 +29,7 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.markAsFinal().extendsClass(beanName + "EditorBase");
+        javaClass.visibility(Visibility.PUBLIC).markAsFinal().extendsClass(beanName + "EditorBase");
     }
 
     @Override
@@ -43,13 +44,14 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
 
     private void addNoParamConstructor() {
         javaClass
-                .addContent(javaClass.createConstructor())
+                .addContent(javaClass.createConstructor().visibility(Visibility.PUBLIC))
                 .addContent(EMPTY_LINE);
     }
 
     private void addIDConstructor() {
         javaClass
                 .addContent(javaClass.createConstructor()
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("long", "id"))
                         .addContent(new FunctionCall("super").byItself().addArgument("id")))
                 .addContent(EMPTY_LINE);
@@ -58,6 +60,7 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
     private void addBeanConstructor() {
         javaClass
                 .addContent(javaClass.createConstructor()
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument(beanName, beanVarName))
                         .addContent(new FunctionCall("super").byItself().addArgument(beanVarName)))
                 .addContent(EMPTY_LINE);

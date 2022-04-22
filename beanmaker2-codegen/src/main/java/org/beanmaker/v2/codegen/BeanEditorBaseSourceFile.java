@@ -405,6 +405,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 .byItself()))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("set" + labelName)
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLabel", "label"))
                         .addContent(checkNonZeroID("label", "DbBeanLabel"))
                         .addContent(EMPTY_LINE)
@@ -422,6 +423,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(getStandardSetterFunction(column))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("set" + fileName)
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanFile", "file"))
                         .addContent(checkNonZeroID("file", "DbBeanFile"))
                         .addContent(EMPTY_LINE)
@@ -437,6 +439,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(getStandardSetterFunction(column))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("set" + capitalize(beanVar))
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument(beanClass, beanVar))
                         .addContent(checkNonZeroID(beanVar, beanClass))
                         .addContent(EMPTY_LINE)
@@ -485,6 +488,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration("set" + capitalize(field))
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument(column.getJavaType(), field))
                         .addContent(new Assignment("this." + field, field))
                         .addContent(new IfBlock(new Condition(field + " == null"))
@@ -503,6 +507,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration("set" + capitalize(field))
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument(type, field))
                         .addContent(new Assignment(
                                 "this." + field,
@@ -522,6 +527,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration("set" + capitalize(field))
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("Money", field))
                         .addContent(new IfBlock(new Condition(field + " == null"))
                                 .addContent(new Assignment("this." + field, "null"))
@@ -557,6 +563,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private FunctionDeclaration getStandardSetterFunction(String type, String name) {
         return new FunctionDeclaration("set" + capitalize(name))
+                .visibility(Visibility.PUBLIC)
                 .addArgument(new FunctionArgument(type, name))
                 .addContent(new Assignment("this." + name, name));
     }
@@ -564,7 +571,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private void addGetters() {
         for (Column column: columns.getList())
             if (!column.isId() && !column.isItemOrder())
-                addGetter(column, false);
+                addGetter(column);
 
         columns.getItemOrderColumn().ifPresent(column -> {
             if (!Strings.isEmpty(column.getItemOrderAssociatedField()))
@@ -584,6 +591,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration("get" + capitalize(name), "String")
+                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(name)))
                 .addContent(EMPTY_LINE);
     }
@@ -596,6 +604,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         FunctionDeclaration labelFunction =
                 new FunctionDeclaration("get" + chopID(idName), "DbBeanLabel")
+                        .visibility(Visibility.PUBLIC)
                         .addContent(new VarDeclaration(
                                 "DbBeanLabel",
                                 "dbBeanLabel",
@@ -610,18 +619,15 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         FunctionDeclaration perLanguageLabelFunction =
                 new FunctionDeclaration("get" + labelNameCap, "String")
+                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addContent(new FunctionCall("init" + labelNameCap).byItself())
                         .addContent(new ReturnStatement(
                                 new FunctionCall("get", labelName).addArgument("dbBeanLanguage")));
 
         if (idName.equals("idLabel")) {
-            labelFunction
-                    .annotate("@Override")
-                    .visibility(Visibility.PUBLIC);
-            perLanguageLabelFunction
-                    .annotate("@Override")
-                    .visibility(Visibility.PUBLIC);
+            labelFunction.annotate("@Override");
+            perLanguageLabelFunction.annotate("@Override");
         }
 
         javaClass
@@ -642,6 +648,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration("get" + capitalize(field) + "Label", "String")
+                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new FunctionCall("getLabel", "dbBeanLocalization")
                                 .addArgument(quickQuote(field)))))
                 .addContent(EMPTY_LINE);
@@ -834,27 +841,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
-    // !! Commented code below = code before label validation modification
     private FunctionDeclaration getCheckDataFunction(Column column) {
         String field = column.getJavaName();
         String functionName = "checkDataFor" + capitalize(field);
-
-        /*var function = new FunctionDeclaration(functionName, "boolean")
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
-                .addContent(new VarDeclaration(
-                        "FieldValidator",
-                        "validator",
-                        new ObjectCreation("FieldValidator")
-                                .addArgument("dbBeanLocalization")
-                                .addArgument("id")
-                                .addArgument(quickQuote(field))
-                                .addArgument(getCheckDataFunctionFunctionCall(field, "get", "Label"))
-                                .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Empty"))
-                                .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Required"))
-                                .addArgument(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"))
-                                .addArgument(new Condition(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"), true)
-                                                .orCondition(new Condition(getCheckDataFunctionFunctionCall(field, "is", "Unique")
-                                                        .addArgument("transaction"))))));*/
 
         var function = new FunctionDeclaration(functionName, "boolean")
                 .addArgument(new FunctionArgument("DBTransaction", "transaction"));
@@ -880,49 +869,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         var validationCall = new FunctionCall("validate", "validator")
                 .addArgument(new FunctionCall(validationFunctionsFunctionName))
                 .addArgument("transaction");
-
-        /*if (column.isLabelReference()) {
-            function
-                    .addContent(new VarDeclaration("boolean", "ok", validationCall))
-                    .addContent(new IfBlock(new Condition("ok"))
-                            .addContent(new ForEach(
-                                    "DbBeanLanguage",
-                                    "dbBeanLanguage",
-                                    new FunctionCall("getAllActiveLanguages", "LabelManager"))
-                                    .addContent(new VarDeclaration(
-                                            "String",
-                                            "iso",
-                                            new FunctionCall("getCapIso", "dbBeanLanguage")))
-                                    .addContent(new VarDeclaration(
-                                            "FieldValidator",
-                                            "contentValidator",
-                                            new ObjectCreation("FieldValidator")
-                                                    .addArgument("dbBeanLocalization")
-                                                    .addArgument("id")
-                                                    .addArgument("\"" + field + "\" + iso")
-                                                    .addArgument(new OperatorExpression(
-                                                            getCheckDataFunctionFunctionCall(field, "get", "Label"),
-                                                            "\" \" + iso",
-                                                            OperatorExpression.Operator.ADD))
-                                                    .addArgument(new FunctionCall("isEmpty", "Strings")
-                                                            .addArgument(new FunctionCall("get", uncapitalize(chopID(field)))
-                                                                    .addArgument("dbBeanLanguage")))
-                                                    .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Required")
-                                                            .addArgument("dbBeanLanguage"))
-                                                    .addArgument("false")
-                                                    .addArgument("true")))
-                                    .addContent(new Assignment(
-                                            "ok",
-                                            new Condition(
-                                                    new FunctionCall("validate", "contentValidator")
-                                                            .addArgument(new FunctionCall(validationFunctionsFunctionName)
-                                                                    .addArgument("dbBeanLanguage"))
-                                                            .addArgument("transaction"))
-                                                    .andCondition(new Condition("ok"))))))
-                    .addContent(EMPTY_LINE)
-                    .addContent(new ReturnStatement("ok"));
-        } else
-            function.addContent(new ReturnStatement(validationCall));*/
 
         if (column.isLabelReference()) {
             function
@@ -977,6 +923,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private void addEmptyCheckFunction(Column column) {
         javaClass
                 .addContent(new FunctionDeclaration("is" + capitalize(column.getJavaName()) + "Empty", "boolean")
+                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(getEmptyFieldTest(column))))
                 .addContent(EMPTY_LINE);
     }

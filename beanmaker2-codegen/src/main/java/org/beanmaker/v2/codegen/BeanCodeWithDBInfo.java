@@ -47,14 +47,12 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         javaClass.addContent(varDeclaration.visibility(Visibility.PRIVATE));
     }
 
-    protected void addGetter(Column column, boolean isPublic) {
+    protected void addGetter(Column column) {
         String type = column.getJavaType();
         String name = column.getJavaName();
         String getterPrefix = (type.equals("Boolean") || type.equals("boolean")) ? "is" : "get";
 
-        var getter = new FunctionDeclaration(getterPrefix + capitalize(name), type);
-        if (isPublic || name.equals("idLabel"))
-            getter.visibility(Visibility.PUBLIC);
+        var getter = new FunctionDeclaration(getterPrefix + capitalize(name), type).visibility(Visibility.PUBLIC);
         if (column.isId() || column.isItemOrder() || name.equals("idLabel"))
             getter.annotate("@Override");
         if (TEMPORAL_TYPES.contains(type))
@@ -71,9 +69,9 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
             if (column.isLabelReference())
                 addLabelSpecificGetterFunctions(column);
             else if (column.isFileReference())
-                addFileGetterFunction(column, isPublic);
+                addFileGetterFunction(column);
             else if (!column.isId())
-                addBeanGetterFunction(column, isPublic);
+                addBeanGetterFunction(column);
         }
 
         if (column.isItemOrder())
@@ -90,24 +88,22 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         throw new UnsupportedOperationException();
     }
 
-    protected void addFileGetterFunction(Column column, boolean isPublic) {
+    protected void addFileGetterFunction(Column column) {
         String name = column.getJavaName();
-        var visibility = isPublic ? Visibility.PUBLIC : Visibility.PACKAGE_PRIVATE;
         javaClass
                 .addContent(new FunctionDeclaration("get" + chopID(name), "DbBeanFile")
-                        .visibility(visibility)
+                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new FunctionCall("get", "LocalFileManager")
                                 .addArgument(name))))
                 .addContent(EMPTY_LINE);
     }
 
-    protected void addBeanGetterFunction(Column column, boolean isPublic) {
+    protected void addBeanGetterFunction(Column column) {
         String type = column.getAssociatedBeanClass();
         String name = column.getJavaName();
-        var visibility = isPublic ? Visibility.PUBLIC : Visibility.PACKAGE_PRIVATE;
         javaClass
                 .addContent(new FunctionDeclaration("get" + chopID(name), type)
-                        .visibility(visibility)
+                        .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new ObjectCreation(type).addArgument(name))))
                 .addContent(EMPTY_LINE);
     }
