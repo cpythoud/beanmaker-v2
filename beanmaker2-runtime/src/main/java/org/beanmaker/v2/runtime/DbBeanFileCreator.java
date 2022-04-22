@@ -64,7 +64,7 @@ public class DbBeanFileCreator {
             fileItem.write(new File(getOrCreateUploadDirectory(dbBeanFileEditor), internalFilename));
         } catch (Exception ex) {  // function write() is actually marked as throwing Exception !!!
             if (newRecord)
-                dbBeanFileEditor.delete();
+                dbBeanFileEditor.getAssociatedEditor().delete();
             throw new RuntimeException(ex);
         }
 
@@ -80,11 +80,11 @@ public class DbBeanFileCreator {
         if (alternateUploadDir != null)
             dbBeanFileEditor.setAltDir(alternateUploadDir);
 
-        if (dbBeanFileEditor.getId() == 0) {
+        if (dbBeanFileEditor.getAssociatedEditor().getId() == 0) {
             if (transaction == null)
-                dbBeanFileEditor.updateDB();
+                dbBeanFileEditor.getAssociatedEditor().updateDB();
             else
-                dbBeanFileEditor.updateDB(transaction);
+                dbBeanFileEditor.getAssociatedEditor().updateDB(transaction);
             newRecord = true;
         }
 
@@ -106,9 +106,9 @@ public class DbBeanFileCreator {
     private DbBeanFile getActualDbBeanFile(DbBeanFileEditor dbBeanFileEditor, boolean newRecord, DBTransaction transaction) {
         if (!newRecord) {
             if (transaction == null)
-                dbBeanFileEditor.updateDB();
+                dbBeanFileEditor.getAssociatedEditor().updateDB();
             else
-                dbBeanFileEditor.updateDB(transaction);
+                dbBeanFileEditor.getAssociatedEditor().updateDB(transaction);
         }
 
         return dbBeanFileEditor.getDbBeanFile();
@@ -171,12 +171,11 @@ public class DbBeanFileCreator {
             if (newUploadSubDirFileCountThreshold == 0)
                 baseDir = new File(defaultUploadDir);
             else
-                baseDir = new File(defaultUploadDir, SUBDIR_PREFIX + (dbBeanFileEditor.getId() / newUploadSubDirFileCountThreshold));
-            return new File(baseDir, Long.toString(dbBeanFileEditor.getId()));
+                baseDir = new File(defaultUploadDir, SUBDIR_PREFIX + (dbBeanFileEditor.getAssociatedEditor().getId() / newUploadSubDirFileCountThreshold));
+            return new File(baseDir, Long.toString(dbBeanFileEditor.getAssociatedEditor().getId()));
         }
 
-        return new File(dbBeanFileEditor.getAltDir(), Long.toString(dbBeanFileEditor.getId()));
+        return new File(dbBeanFileEditor.getAltDir(), Long.toString(dbBeanFileEditor.getAssociatedEditor().getId()));
     }
-
 
 }
