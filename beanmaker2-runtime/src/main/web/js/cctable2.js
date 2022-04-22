@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #61");
+        console.info("CCTABLE2: build #62");
 
         // * FILTERING *
 
@@ -335,7 +335,7 @@ let CCTable2 = (function () {
             return;
         }
 
-        throw "Masking operation called on table that doesn't support masking";
+        throw Error("Masking operation called on table that doesn't support masking");
     }
 
 
