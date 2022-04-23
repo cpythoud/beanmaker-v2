@@ -16,7 +16,7 @@ import java.sql.SQLException;
 
 import java.util.Optional;
 
-public class SingleElements {
+public final class SingleElements {
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final MethodType BEAN_CONSTRUCTOR = MethodType.methodType(void.class, long.class);

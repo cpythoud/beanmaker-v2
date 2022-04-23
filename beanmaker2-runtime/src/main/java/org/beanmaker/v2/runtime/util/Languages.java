@@ -6,7 +6,7 @@ import org.beanmaker.v2.runtime.DbBeanLocalization;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Languages {
+public final class Languages {
 
     private static final DateTimeFormatter MONTH_NAMES = DateTimeFormatter.ofPattern("MMMM");
 
