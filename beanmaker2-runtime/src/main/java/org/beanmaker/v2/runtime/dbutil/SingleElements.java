@@ -38,6 +38,21 @@ public final class SingleElements {
         );
     }
 
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            String query,
+            Class<? extends DbBeanInterface> beanClass,
+            DBAccess dbAccess)
+    {
+        return Optional.ofNullable(
+                dbAccess.processQuery(
+                        query,
+                        rs -> {
+                            return getSingleBean(beanClass, rs);
+                        }
+                )
+        );
+    }
+
     private static <B extends DbBeanInterface> B getSingleBean(Class<? extends DbBeanInterface> beanClass, ResultSet rs) throws SQLException {
         long id = getSingleID(rs);
         if (id == 0)
