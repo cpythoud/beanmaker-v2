@@ -22,9 +22,9 @@ import java.util.Map;
 
 public class HttpRequestParameters {
 
-    private final Map<String, String> parameters = new HashMap<String, String>();
-    private final Map<String, List<String>> multiValueParameters = new HashMap<String, List<String>>();
-    private final Map<String, FileItem> files = new HashMap<String, FileItem>();
+    private final Map<String, String> parameters = new HashMap<>();
+    private final Map<String, List<String>> multiValueParameters = new HashMap<>();
+    private final Map<String, FileItem> files = new HashMap<>();
 
     private final HttpServletRequest request;
     private final boolean multipartRequest;
@@ -41,7 +41,7 @@ public class HttpRequestParameters {
                     recordFile(item);
             }
         } else {
-            for (Map.Entry<String, String[]> entry: request.getParameterMap().entrySet()) {
+            for (var entry: request.getParameterMap().entrySet()) {
                 String[] vals = entry.getValue();
                 if (vals.length == 1)
                     parameters.put(entry.getKey(), vals[0]);
@@ -49,11 +49,6 @@ public class HttpRequestParameters {
                     multiValueParameters.put(entry.getKey(), Arrays.asList(vals));
             }
         }
-
-        for (Map.Entry<String, String> entry: parameters.entrySet())
-            System.out.println(entry.getKey() + " = " + entry.getValue());
-        for (Map.Entry<String, FileItem> entry: files.entrySet())
-            System.out.println(entry.getKey() + " = " + entry.getValue().getName());
     }
 
     private List<FileItem> parseRequest(HttpServletRequest request) {
@@ -218,6 +213,14 @@ public class HttpRequestParameters {
             }
 
         return new SubmittedFormAndId(form, id);
+    }
+
+    public void setParameter(String key, String value) {
+        parameters.put(key, value);
+    }
+
+    public void setParameters(String key, List<String> values) {
+        multiValueParameters.put(key, new ArrayList<>(values));
     }
 
 }
