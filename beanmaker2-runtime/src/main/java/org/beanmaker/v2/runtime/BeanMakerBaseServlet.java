@@ -262,31 +262,6 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return getJsonOk();
     }
 
-    /*protected <B extends DbBeanEditorWithItemOrder<B>> String changeOrder(
-            B bean,
-            ChangeOrderDirection direction,
-            B companion)
-    {
-        switch (direction) {
-            case UP:
-                bean.itemOrderMoveUp();
-                break;
-            case DOWN:
-                bean.itemOrderMoveDown();
-                break;
-            case AFTER:
-                bean.itemOrderMoveAfter(companion);
-                break;
-            case BEFORE:
-                bean.itemOrderMoveBefore(companion);
-                break;
-            default:
-                throw new AssertionError("New/unchecked Direction ?");
-        }
-
-        return getJsonOk();
-    }*/
-
     protected void changeLocalOrder(
             long itemOrder,
             ChangeOrderDirection direction,
@@ -317,7 +292,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
             HttpServletResponse response
     ) throws IOException
     {
-        writeFileToServletOutputStream(dbBeanFile.getFile(), dbBeanFile.getInternalFilename(), response);
+        writeFileToServletOutputStream(dbBeanFile.getFile(), dbBeanFile.getFilename(), response);
     }
 
     protected void writeFileToServletOutputStream(File file, HttpServletResponse response) throws IOException {
