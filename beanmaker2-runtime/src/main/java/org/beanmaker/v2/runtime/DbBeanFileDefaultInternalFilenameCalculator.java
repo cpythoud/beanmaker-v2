@@ -26,10 +26,17 @@ public class DbBeanFileDefaultInternalFilenameCalculator implements DbBeanFileIn
     }
 
     private String extractMainName(String originalFilename) {
+        String mainPart;
+        int lastDotIndex = originalFilename.lastIndexOf(".");
+        if (lastDotIndex == -1)
+            mainPart = originalFilename;
+        else
+            mainPart = originalFilename.substring(0, lastDotIndex);
+
         StringBuilder mainName = new StringBuilder();
 
         int count = 0;
-        for (char character: originalFilename.toCharArray()) {
+        for (char character: mainPart.toCharArray()) {
             if (count == MAX_FILENAME_LENGTH)
                 return mainName.toString();
             if (ACCEPTABLE_FILENAME_CHARACTERS.contains(character)) {
