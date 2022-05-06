@@ -21,6 +21,8 @@ public final class SingleElements {
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final MethodType BEAN_CONSTRUCTOR = MethodType.methodType(void.class, long.class);
 
+    private SingleElements() { }
+
     public static <B extends DbBeanInterface> Optional<B> getBean(
             String query,
             DBQuerySetup querySetup,
@@ -64,6 +66,38 @@ public final class SingleElements {
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
+    }
+
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            String query,
+            DBQuerySetup querySetup,
+            Class<? extends DbBeanInterface> beanClass,
+            DBTransaction transaction)
+    {
+        return Optional.ofNullable(
+                transaction.addQuery(
+                        query,
+                        querySetup,
+                        rs -> {
+                            return getSingleBean(beanClass, rs);
+                        }
+                )
+        );
+    }
+
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            String query,
+            Class<? extends DbBeanInterface> beanClass,
+            DBTransaction transaction)
+    {
+        return Optional.ofNullable(
+                transaction.addQuery(
+                        query,
+                        rs -> {
+                            return getSingleBean(beanClass, rs);
+                        }
+                )
+        );
     }
 
     public static <E extends DbBeanEditor> Optional<E> getEditor(
@@ -138,7 +172,5 @@ public final class SingleElements {
                 SingleElements::getSingleID
         );
     }
-
-    private SingleElements() { }
     
 }
