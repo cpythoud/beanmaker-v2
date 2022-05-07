@@ -60,6 +60,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                                 .visibility(Visibility.PROTECTED)
                                 .addArgument(new FunctionArgument("long", "id"))
                                 .addArgument(new FunctionArgument("HttpServletRequest", "request"))
+                                .addException("ServletException")
                                 .addContent(VarDeclaration.declareAndInit(editorClass, editorObject))
                                 .addContent(EMPTY_LINE)
                                 .addContent(new IfBlock(new Condition("id > 0"))
