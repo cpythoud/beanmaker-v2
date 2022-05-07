@@ -1325,6 +1325,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return formGroup;
     }
 
+    @Override
     public Tag getHiddenInfo(final String field, final long idBean, final String value) {
         return new InputTag(InputTag.InputType.HIDDEN)
                 .name(field)

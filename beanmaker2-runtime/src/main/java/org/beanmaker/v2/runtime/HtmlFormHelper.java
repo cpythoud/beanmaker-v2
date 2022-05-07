@@ -25,4 +25,6 @@ public interface HtmlFormHelper {
 
     ButtonTag getSubmitButtonTag(HFHParameters params);
 
+    Tag getHiddenInfo(String field, long idBean, String value);
+
 }

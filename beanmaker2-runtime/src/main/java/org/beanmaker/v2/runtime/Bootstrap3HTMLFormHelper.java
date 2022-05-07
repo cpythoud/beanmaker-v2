@@ -914,6 +914,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return formGroup;
     }
 
+    @Override
     public Tag getHiddenInfo(String field, long idBean, String value) {
         return new InputTag(InputTag.InputType.HIDDEN)
                 .name(field)
