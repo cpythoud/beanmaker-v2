@@ -45,7 +45,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
         return "";
     }
 
-    private String getFormSuffix(HttpServletRequest request) {
+    protected String getFormSuffix(HttpServletRequest request) {
         return "";
     }
 
