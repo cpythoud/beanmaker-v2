@@ -78,6 +78,10 @@ public class DbBeanLocalization {
         errorMessages.add(new ErrorMessage(beanId, fieldName, fieldLabel, message));
     }
 
+    public void addErrorMessage(long beanId, String message) {
+        errorMessages.add(new ErrorMessage(beanId, message));
+    }
+
     public List<ErrorMessage> getErrorMessages() {
         return Collections.unmodifiableList(errorMessages);
     }

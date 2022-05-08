@@ -39,7 +39,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private static final List<String> JAVA_SQL_IMPORTS =
             createImportList("java.sql", "PreparedStatement", "ResultSet", "SQLException");
     private static final List<String> BM_RUNTIME_IMPORTS =
-            createImportList("org.beanmaker.v2.runtime", "DBUtil", "FieldValidationResult", "FieldValidator", "ToStringMaker");
+            createImportList("org.beanmaker.v2.runtime", "DBUtil", "FieldValidationResult",
+                    "FieldValidator", "GlobalValidator", "ToStringMaker");
     private static final List<String> SQL_IMPORTS =
             createImportList("org.dbbeans.sql", "DBQuerySetup", "DBTransaction");
 
@@ -791,6 +792,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addDataOKFunction(columns);
         for (Column column: columns)
             addCheckDataFunctions(column);
+        addGlobalCheckDataFunction();
         for (Column column: columns)
             addEmptyCheckFunction(column);
         for (Column column: columns)
@@ -807,7 +809,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new FunctionCall("clearErrorMessages", "dbBeanLocalization").byItself())
                 .addContent(EMPTY_LINE);
 
-        var labels = columns.stream().filter(Column::isLabelReference).collect(Collectors.toList());
+        var labels = columns.stream().filter(Column::isLabelReference).toList();
         for (Column label: labels)
             function.addContent(new FunctionCall("init" + chopID(label.getJavaName())).byItself());
         if (!labels.isEmpty())
@@ -817,7 +819,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         for (Column column: columns)
             function.addContent(getDataCheckCall(column, ++index));
 
+        function.addContent(EMPTY_LINE).addContent(getGlobalDataCheckCall());
+
         function.addContent(EMPTY_LINE).addContent(new ReturnStatement("ok"));
+
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
 
@@ -830,6 +835,13 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new Assignment("ok", functionName + "(transaction) && ok");
     }
 
+    private JavaCodeBlock getGlobalDataCheckCall() {
+        return new IfBlock(new Condition("ok"))
+                .addContent(new Assignment(
+                        "ok",
+                        new FunctionCall("checkGlobalData").addArgument("transaction")));
+    }
+
     private void addCheckDataFunctions(Column column) {
         String functionName = "checkDataFor" + capitalize(column.getJavaName());
 
@@ -838,6 +850,21 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall(functionName).addArgument("null"))))
                 .addContent(EMPTY_LINE)
                 .addContent(getCheckDataFunction(column))
+                .addContent(EMPTY_LINE);
+    }
+
+    private void addGlobalCheckDataFunction() {
+        javaClass
+                .addContent(new FunctionDeclaration("checkGlobalData", "boolean")
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new VarDeclaration(
+                                "GlobalValidator",
+                                "validator",
+                                new ObjectCreation("GlobalValidator").addArguments("dbBeanLocalization", "id")))
+                        .addContent(new ReturnStatement(
+                                new FunctionCall("validate", "validator")
+                                        .addArgument(new FunctionCall("getDbBeanGlobalValidationFunctions"))
+                                        .addArgument("transaction"))))
                 .addContent(EMPTY_LINE);
     }
 

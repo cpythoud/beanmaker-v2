@@ -42,8 +42,12 @@ BEANMAKER.showErrorMessages = function(idContainer, errors, stylesToAdd, stylesT
 
     const errorList = $('<ul>');
     const errorCount = errors.length;
-    for (let i = 0; i < errorCount; i++)
-        errorList.append('<li>' + errors[i].fieldLabel + ' : ' + errors[i].message + '</li>');
+    for (let i = 0; i < errorCount; i++) {
+        if (errors[i].fieldLabel === '__GLOBAL__')
+            errorList.append('<li>' + errors[i].message + '</li>');
+        else
+            errorList.append('<li>' + errors[i].fieldLabel + ' : ' + errors[i].message + '</li>');
+    }
     errorList.appendTo($container);
 };
 

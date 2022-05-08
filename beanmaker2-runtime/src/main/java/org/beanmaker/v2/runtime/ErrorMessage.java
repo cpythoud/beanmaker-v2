@@ -4,12 +4,26 @@ import java.util.List;
 
 public class ErrorMessage {
 
-	public ErrorMessage(final long beanId, final String fieldName, final String fieldLabel, final String message) {
+    public static final String GLOBAL_MESSAGE_MARKER = "__GLOBAL__";
+
+    private final long beanId;
+    private final String fieldName;
+    private final String fieldLabel;
+    private final String message;
+
+	public ErrorMessage(long beanId, String fieldName, String fieldLabel, String message) {
 		this.beanId = beanId;
 		this.fieldName = fieldName;
 		this.fieldLabel = fieldLabel;
 		this.message = message;
 	}
+
+    public ErrorMessage(long beanId, String message) {
+        this.beanId = beanId;
+        fieldName = GLOBAL_MESSAGE_MARKER;
+        fieldLabel = GLOBAL_MESSAGE_MARKER;
+        this.message = message;
+    }
 	
 	public long getBeanId() {
 		return beanId;
@@ -41,8 +55,8 @@ public class ErrorMessage {
                 '}';
     }
 
-    public static String toStrings(final List<ErrorMessage> errorMessages) {
-        final StringBuilder buf = new StringBuilder();
+    public static String toStrings(List<ErrorMessage> errorMessages) {
+        StringBuilder buf = new StringBuilder();
 
         for (ErrorMessage errorMessage: errorMessages)
             buf.append(errorMessage).append("\n");
@@ -50,11 +64,11 @@ public class ErrorMessage {
         return buf.toString();
     }
 
-    public static String toJson(final List<ErrorMessage> errorMessages) {
+    public static String toJson(List<ErrorMessage> errorMessages) {
         if (errorMessages.isEmpty())
             throw new IllegalArgumentException("List of error messages is empty.");
 
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append("\"errors\": [ ");
 
@@ -66,9 +80,5 @@ public class ErrorMessage {
 
         return buf.toString();
     }
-	
-	private final long beanId;
-	private final String fieldName;
-	private final String fieldLabel;
-	private final String message;
+
 }

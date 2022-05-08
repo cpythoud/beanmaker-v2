@@ -2,7 +2,10 @@ package org.beanmaker.v2.runtime;
 
 import org.dbbeans.sql.DBTransaction;
 
+import java.util.Collections;
 import java.util.List;
+
+import java.util.function.Function;
 
 public abstract class DbBeanEditor {
 
@@ -73,6 +76,10 @@ public abstract class DbBeanEditor {
     }
 
     protected abstract boolean isDataOK(DBTransaction transaction);
+
+    protected List<Function<DBTransaction, FieldValidationResult>> getDbBeanGlobalValidationFunctions() {
+        return Collections.emptyList();
+    }
 
     public List<ErrorMessage> getErrorMessages() {
         return dbBeanLocalization.getErrorMessages();
