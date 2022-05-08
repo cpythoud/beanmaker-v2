@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 
 public final class Transactions {
 
+    private Transactions() { }
+
     public static void wrap(Consumer<DBTransaction> transactedFunction, DBTransaction transaction) {
         wrap(transactedFunction, transaction, null);
     }
