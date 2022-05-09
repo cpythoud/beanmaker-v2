@@ -32,6 +32,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
     protected void addImports() {
         addImports(BM_RUNTIME_IMPORTS);
 
+        importsManager.addImport("javax.servlet.ServletException");
         importsManager.addImport("javax.servlet.http.HttpServletRequest");
     }
 
