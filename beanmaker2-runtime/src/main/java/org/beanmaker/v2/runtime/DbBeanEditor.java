@@ -1,5 +1,6 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.runtime.dbutil.Transactions;
 import org.dbbeans.sql.DBTransaction;
 
 import java.util.Collections;
@@ -37,9 +38,10 @@ public abstract class DbBeanEditor {
     }
 
     public void updateDB() {
-        DBTransaction transaction = createDBTransaction();
-        updateDB(transaction);
-        transaction.commit();
+        Transactions.wrap(
+                this::updateDB,
+                createDBTransaction()
+        );
     }
 
     public long updateDB(DBTransaction transaction) {
