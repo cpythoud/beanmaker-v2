@@ -14,7 +14,11 @@ import static org.beanmaker.v2.util.Strings.quickQuote;
 public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
 
     public FormattedBeanDataBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, "Formatted", "DataBase", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public FormattedBeanDataBaseSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, "Formatted", "DataBase", columns, projectParameters);
 
         createSourceCode();
     }

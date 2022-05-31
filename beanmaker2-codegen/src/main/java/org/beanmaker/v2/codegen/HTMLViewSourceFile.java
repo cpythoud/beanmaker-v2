@@ -13,7 +13,11 @@ public class HTMLViewSourceFile extends BaseCode {
                     "BaseHTMLView", "DbBeanEditor", "DbBeanHTMLViewInterface", "DbBeanLocalization");
 
     public HTMLViewSourceFile(String packageName) {
-        super("HTMLView", packageName);
+        this(packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public HTMLViewSourceFile(String packageName, ProjectParameters projectParameters) {
+        super("HTMLView", packageName, projectParameters);
 
         createSourceCode();
     }

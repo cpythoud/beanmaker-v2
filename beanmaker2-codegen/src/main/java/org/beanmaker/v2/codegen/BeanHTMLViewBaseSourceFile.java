@@ -34,7 +34,11 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
     private final String editorObject;
 
     public BeanHTMLViewBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, null, "HTMLViewBase", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanHTMLViewBaseSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "HTMLViewBase", columns, projectParameters);
 
         editorClass = beanName + "Editor";
         editorObject = uncapitalize(editorClass);

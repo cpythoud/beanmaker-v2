@@ -7,7 +7,11 @@ import org.jcodegen.java.FunctionCall;
 public class FormattedBeanDataSourceFile extends BeanCode {
 
     public FormattedBeanDataSourceFile(String beanName, String packageName) {
-        super(beanName, packageName, "Formatted", "Data");
+        this(beanName, packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public FormattedBeanDataSourceFile(String beanName, String packageName, ProjectParameters projectParameters) {
+        super(beanName, packageName, "Formatted", "Data", projectParameters);
 
         createSourceCode();
     }

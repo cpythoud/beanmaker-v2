@@ -23,7 +23,11 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
             createImportList("org.beanmaker.v2.runtime", "ChangeOrderDirection", "DbBeanEditor", "DbBeanHTMLViewInterface");
 
     public BeanServletBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, null, "ServletBase", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanServletBaseSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "ServletBase", columns, projectParameters);
 
         createSourceCode();
     }

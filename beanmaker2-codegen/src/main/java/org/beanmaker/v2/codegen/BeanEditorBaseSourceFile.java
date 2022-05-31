@@ -47,7 +47,11 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private final Set<String> types;
 
     public BeanEditorBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, null, "EditorBase", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanEditorBaseSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "EditorBase", columns, projectParameters);
 
         types = columns.getJavaTypes();
 

@@ -26,7 +26,11 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
             createImportList("org.jcodegen.html", "TdTag", "ThTag", "TrTag");
 
     public BeanMasterTableViewBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, null, "MasterTableViewBase", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanMasterTableViewBaseSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "MasterTableViewBase", columns, projectParameters);
 
         createSourceCode();
     }

@@ -29,7 +29,11 @@ public class LabelManagerSourceFile extends BaseCode {
     private static final FunctionArgument LABEL_ARG = new FunctionArgument("DbBeanLabel", "dbBeanLabel");
 
     public LabelManagerSourceFile(String packageName) {
-        super("LabelManager", packageName);
+        this(packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public LabelManagerSourceFile(String packageName, ProjectParameters projectParameters) {
+        super("LabelManager", packageName, projectParameters);
 
         createSourceCode();
     }

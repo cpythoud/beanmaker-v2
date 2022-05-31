@@ -6,7 +6,11 @@ import org.jcodegen.java.FunctionCall;
 public class LocalMasterTableViewSourceFile extends BaseCode {
 
     public LocalMasterTableViewSourceFile(String packageName) {
-        super("LocalMasterTableView", packageName);
+        this(packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public LocalMasterTableViewSourceFile(String packageName, ProjectParameters projectParameters) {
+        super("LocalMasterTableView", packageName, projectParameters);
 
         createSourceCode();
     }

@@ -15,7 +15,11 @@ public class LocalFileManagerSourceFile extends BaseCode {
     private static final FunctionArgument TRANSACTION_ARG = new FunctionArgument("DBTransaction", "transaction");
 
     public LocalFileManagerSourceFile(String packageName) {
-        super("LocalFileManager", packageName);
+        this(packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public LocalFileManagerSourceFile(String packageName, ProjectParameters projectParameters) {
+        super("LocalFileManager", packageName, projectParameters);
 
         createSourceCode();
     }

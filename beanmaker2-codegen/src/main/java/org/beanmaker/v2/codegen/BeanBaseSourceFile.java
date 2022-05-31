@@ -35,7 +35,11 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     private final Set<String> types;
 
     public BeanBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, null, "Base", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanBaseSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "Base", columns, projectParameters);
 
         types = columns.getJavaTypes();
 

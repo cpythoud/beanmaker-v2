@@ -16,7 +16,7 @@
       <module name="beanmaker2 (2)" target="17" />
       <module name="beanmaker2 (3)" target="17" />
       <module name="beanmaker2-codegen" target="17" />
-      <module name="lib-v2" target="17" />
+      <module name="lib-v2" target="1.5" />
       <module name="test" target="17" />
     </bytecodeTargetLevel>
   </component>

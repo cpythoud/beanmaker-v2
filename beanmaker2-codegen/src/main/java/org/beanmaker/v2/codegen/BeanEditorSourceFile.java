@@ -7,7 +7,11 @@ import org.jcodegen.java.Visibility;
 public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
 
     public BeanEditorSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, null, "Editor", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanEditorSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "Editor", columns, projectParameters);
 
         createSourceCode();
     }

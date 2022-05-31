@@ -5,7 +5,11 @@ import org.jcodegen.java.Visibility;
 public class LocalDbBeanFormatterSourceFile extends BaseCode {
 
     public LocalDbBeanFormatterSourceFile(String packageName) {
-        super("LocalDbBeanFormatter", packageName);
+        this(packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public LocalDbBeanFormatterSourceFile(String packageName, ProjectParameters projectParameters) {
+        super("LocalDbBeanFormatter", packageName, projectParameters);
 
         createSourceCode();
     }

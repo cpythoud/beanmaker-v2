@@ -15,7 +15,11 @@ public class BaseServletSourceFile extends BaseCode {
             createImportList("org.beanmaker.v2.runtime", "DbBeanLanguage", "MissingImplementationException", "OperationsBaseServlet");
 
     public BaseServletSourceFile(String packageName) {
-        super("BaseServlet", packageName);
+        this(packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BaseServletSourceFile(String packageName, ProjectParameters projectParameters) {
+        super("BaseServlet", packageName, projectParameters);
 
         createSourceCode();
     }

@@ -16,10 +16,6 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
     protected final Columns columns;
     protected final String tableName;
 
-    public BeanCodeWithDBInfo(String beanName, String packageName, String namePrefix, String nameSuffix, Columns columns) {
-        this(beanName, packageName, namePrefix, nameSuffix, columns, DEFAULT_PROJECT_PARAMETERS);
-    }
-
     public BeanCodeWithDBInfo(String beanName, String packageName, String namePrefix, String nameSuffix, Columns columns, ProjectParameters projectParameters) {
         super(beanName, packageName, namePrefix, nameSuffix, projectParameters);
 

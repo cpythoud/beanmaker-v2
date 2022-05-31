@@ -7,7 +7,11 @@ import org.jcodegen.java.Visibility;
 public class BeanFormatterSourceFile extends BeanCode {
 
     public BeanFormatterSourceFile(String beanName, String packageName) {
-        super(beanName, packageName, null, "Formatter");
+        this(beanName, packageName, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanFormatterSourceFile(String beanName, String packageName, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "Formatter", projectParameters);
 
         createSourceCode();
     }

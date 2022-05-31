@@ -18,7 +18,11 @@ public class BeanParametersBaseSourceFile extends BeanCodeWithDBInfo {
             createImportList("org.beanmaker.v2.runtime", "DbBeanLanguage", "DbBeanLocalization", "DbBeanParameters");
 
     public BeanParametersBaseSourceFile(String beanName, String packageName, Columns columns) {
-        super(beanName, packageName, null, "ParametersBase", columns);
+        this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
+    }
+
+    public BeanParametersBaseSourceFile(String beanName, String packageName, Columns columns, ProjectParameters projectParameters) {
+        super(beanName, packageName, null, "ParametersBase", columns, projectParameters);
 
         createSourceCode();
     }
