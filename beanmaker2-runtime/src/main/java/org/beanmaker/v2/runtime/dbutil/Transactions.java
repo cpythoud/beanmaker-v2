@@ -19,16 +19,11 @@ public final class Transactions {
     {
         try {
             transactedFunction.accept(transaction);
-        } catch (RuntimeException rtex) {
+        } catch (Throwable t) {
             transaction.rollback();
-            if (errorProcessor != null)
-                errorProcessor.accept(rtex);
-            throw rtex;
-        } catch (Exception ex) {
-            transaction.rollback();
-            if (errorProcessor != null)
-                errorProcessor.accept(ex);
-            throw new RuntimeException(ex);
+            if (errorProcessor == null)
+                throw new RuntimeException(t);
+            errorProcessor.accept(t);
         }
 
         transaction.commit();
