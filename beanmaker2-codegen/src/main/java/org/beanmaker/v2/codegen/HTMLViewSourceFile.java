@@ -39,7 +39,6 @@ public class HTMLViewSourceFile extends BaseCode {
     protected void addConstructors() {
         javaClass
                 .addContent(javaClass.createConstructor()
-                        .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanEditor", "editor"))
                         .addArgument(new FunctionArgument("DbBeanLocalization", "dbBeanLocalization"))
                         .addContent(new FunctionCall("super").byItself().addArguments("editor", "dbBeanLocalization")))
