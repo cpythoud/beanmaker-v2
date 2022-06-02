@@ -1,7 +1,5 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.Visibility;
-
 public class LocalDbBeanFormatterSourceFile extends BaseCode {
 
     public LocalDbBeanFormatterSourceFile(String packageName) {
@@ -21,7 +19,7 @@ public class LocalDbBeanFormatterSourceFile extends BaseCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.visibility(Visibility.PUBLIC).extendsClass("DbBeanFormatter");
+        javaClass.extendsClass("DbBeanFormatter");
     }
 
     @Override
