@@ -32,6 +32,7 @@ public class Columns {
         columns = server.getColumns(db, table);
         // ! For now, we deactivate detection of possible one-to-many relationship
         // ! because the feature is a nuisance on large table sets and should probably be abandoned
+        // ? To be reintroduced in ProjectParameters ?
         /*detectedOneToManyRelationships = server.getDetectedOneToManyRelationship(db, table);
         oneToManyRelationships = new ArrayList<>(detectedOneToManyRelationships);*/
         detectedOneToManyRelationships = Collections.emptyList();
@@ -51,12 +52,16 @@ public class Columns {
     }
 
     public List<Column> getList() {
-        List<Column> copy = new ArrayList<Column>();
+        List<Column> copy = new ArrayList<>();
 
         for (Column column: columns)
             copy.add(new Column(column));
 
         return copy;
+    }
+
+    public int getCount() {
+        return columns.size();
     }
 
     public Column getColumn(int index) {

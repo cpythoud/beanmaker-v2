@@ -20,7 +20,11 @@ public abstract class DbBeanEditor {
         tableName = parameters.getDatabaseTableName();
     }
 
-    public abstract void setId(long id);
+    public void setId(long id) {
+        setId(id, null);
+    }
+
+    public abstract void setId(long id,  DBTransaction transaction);
 
     public void resetId() {
         id = 0;

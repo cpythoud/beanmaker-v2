@@ -18,6 +18,7 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addImports() {
+        importsManager.addImport("org.dbbeans.sql.DBTransaction");
         importsManager.addImport("java.sql.ResultSet");
         if (projectParameters.createEditorFieldsConstructor()) {
             for (Column column: columns.getList()) {
@@ -40,6 +41,7 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
     protected void addConstructors() {
         addNoParamConstructor();
         addIDConstructor();
+        addIDAndTransactionConstructor();
         addBeanConstructor();
         if (projectParameters.createEditorFieldsConstructor())
             addFieldsConstructor();
@@ -58,6 +60,16 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("long", "id"))
                         .addContent(new FunctionCall("super").byItself().addArgument("id")))
+                .addContent(EMPTY_LINE);
+    }
+
+    private void addIDAndTransactionConstructor() {
+        javaClass
+                .addContent(javaClass.createConstructor()
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("long", "id"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new FunctionCall("super").byItself().addArguments("id", "transaction")))
                 .addContent(EMPTY_LINE);
     }
 

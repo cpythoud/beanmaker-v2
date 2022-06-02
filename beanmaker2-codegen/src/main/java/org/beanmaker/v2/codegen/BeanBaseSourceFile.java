@@ -5,6 +5,7 @@ import org.jcodegen.java.Assignment;
 import org.jcodegen.java.CatchBlock;
 import org.jcodegen.java.Condition;
 import org.jcodegen.java.ConstructorDeclaration;
+import org.jcodegen.java.ElseBlock;
 import org.jcodegen.java.ExceptionThrow;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
@@ -103,6 +104,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void addConstructors() {
         addIDConstructor();
+        addIDAndTransactionConstructor();
         addFieldsConstructor();
         addRSConstructor();
     }
@@ -111,6 +113,37 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         var constructor = javaClass.createConstructor()
                 .addArgument(new FunctionArgument("long", "id"));
 
+        if (columns.getCount() > 2) {
+            constructor.addContent(new FunctionCall("this").byItself().addArguments("id", "null"));
+        } else {
+            // ! this() call above would be ambiguous with only 2 fields (id & an other in the bean) !
+            addLocalVariablesToConstructor(constructor);
+            constructor.addContent(getInitializerFunctionCallForConstructor(getInitializerForConstructor(), false));
+            addFieldsInitializationToConstructor(constructor);
+        }
+
+        javaClass.addContent(constructor).addContent(EMPTY_LINE);
+    }
+
+    private void addIDAndTransactionConstructor() {
+        var constructor = javaClass.createConstructor()
+                .addArgument(new FunctionArgument("long", "id"))
+                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        addLocalVariablesToConstructor(constructor);
+
+        var initializer = getInitializerForConstructor();
+
+        constructor.addContent(new IfBlock(new Condition("transaction == null"))
+                .addContent(getInitializerFunctionCallForConstructor(initializer, false))
+                .elseClause(new ElseBlock().addContent(getInitializerFunctionCallForConstructor(initializer, true))));
+
+        addFieldsInitializationToConstructor(constructor);
+
+        javaClass.addContent(constructor).addContent(EMPTY_LINE);
+    }
+
+    private void addLocalVariablesToConstructor(ConstructorDeclaration constructor) {
         for (Column column: columns.getList()) {
             if (!column.isId()) {
                 String type = column.getJavaType();
@@ -121,7 +154,9 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .markAsFinal());
             }
         }
+    }
 
+    private Lambda getInitializerForConstructor() {
         var initializer = new Lambda().addLambdaParameter("rs");
         int index = 1;
         for (Column column: columns.getList()) {
@@ -133,13 +168,19 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
             }
         }
 
-        constructor.addContent(new FunctionCall("initialize", "DbBeanInitializer")
+        return initializer;
+    }
+
+    private FunctionCall getInitializerFunctionCallForConstructor(Lambda initializer, boolean transactionBased) {
+        return new FunctionCall("initialize", "DbBeanInitializer")
                 .byItself()
                 .addArgument("id")
                 .addArgument(beanName + "Parameters.INSTANCE")
-                .addArgument("dbAccess")
-                .addArgument(initializer));
+                .addArgument(transactionBased ? "transaction" : "dbAccess")
+                .addArgument(initializer);
+    }
 
+    private void addFieldsInitializationToConstructor(ConstructorDeclaration constructor) {
         for (Column column: columns.getList()) {
             if (column.isId())
                 constructor.addContent(new Assignment("this.id", "id"));
@@ -148,8 +189,6 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                 constructor.addContent(new Assignment("this." + fieldName, fieldName + "[0]"));
             }
         }
-
-        javaClass.addContent(constructor).addContent(EMPTY_LINE);
     }
 
     private void addFieldsConstructor() {

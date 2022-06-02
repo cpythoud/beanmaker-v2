@@ -170,6 +170,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     protected void addConstructors() {
         addNoParamConstructor();
         addIDConstructor();
+        addIDAndTransactionConstructor();
         addBeanConstructor();
         addFieldsConstructor();
         addRSConstructor();
@@ -190,6 +191,15 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(createConstructor()
                         .addArgument(new FunctionArgument("long", "id"))
                         .addContent(new FunctionCall("setId").byItself().addArgument("id")))
+                .addContent(EMPTY_LINE);
+    }
+
+    private void addIDAndTransactionConstructor() {
+        javaClass
+                .addContent(createConstructor()
+                        .addArgument(new FunctionArgument("long", "id"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new FunctionCall("setId").byItself().addArguments("id", "transaction")))
                 .addContent(EMPTY_LINE);
     }
 
@@ -318,9 +328,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("long", "id"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
                         .addContent(new FunctionCall("init")
                                 .byItself()
-                                .addArgument(new ObjectCreation(beanName).addArgument("id"))
+                                .addArgument(new ObjectCreation(beanName).addArguments("id", "transaction"))
                                 .addArgument("false")))
                 .addContent(EMPTY_LINE);
     }
