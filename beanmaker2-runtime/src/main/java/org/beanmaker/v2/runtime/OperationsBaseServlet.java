@@ -14,24 +14,23 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         switch (getOperation(request)) {
-            case GET_FORM:
+            case GET_FORM -> {
                 response.setContentType("text/html; charset=UTF-8");
                 response.getWriter().println(getForm(request));
-                break;
-            case SUBMIT_FORM:
+            }
+            case SUBMIT_FORM -> {
                 response.setContentType("text/json; charset=UTF-8");
                 response.getWriter().println(submitForm(request));
-                break;
-            case DELETE_BEAN:
+            }
+            case DELETE_BEAN -> {
                 response.setContentType("text/json; charset=UTF-8");
                 response.getWriter().println(deleteBean(request));
-                break;
-            case CHANGE_ORDER:
+            }
+            case CHANGE_ORDER -> {
                 response.setContentType("text/json; charset=UTF-8");
                 response.getWriter().println(changeOrder(request));
-                break;
-            default:
-                throw new AssertionError("Unidentified operation: " + getOperation(request));
+            }
+            default -> throw new AssertionError("Unidentified operation: " + getOperation(request));
         }
     }
 

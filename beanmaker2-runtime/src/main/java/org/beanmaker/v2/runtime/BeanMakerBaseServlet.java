@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,7 +46,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         private static final Map<String, Operation> OPERATION_MAP = initOperationMap();
 
         private static Map<String, Operation> initOperationMap() {
-            Map<String, Operation> map = new LinkedHashMap<String, Operation>();
+            Map<String, Operation> map = new LinkedHashMap<>();
             for (Operation operation: values())
                 map.put(operation.paramValue, operation);
             return map;
@@ -114,7 +115,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return "{ \"status\": \"errors\", ";
     }
 
-    protected static record NameIDPair(String name, long id) { }
+    protected record NameIDPair(String name, long id) { }
 
     protected NameIDPair getSubmittedFormAndId(HttpServletRequest request) throws ServletException {
         String form = null;
@@ -126,7 +127,7 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
             String param = params.nextElement();
             if (param.startsWith("submitted")) {
                 ++count;
-                form = param.substring(9, param.length());
+                form = param.substring(9);
                 id = Strings.getLongVal(request.getParameter(param));
             }
         }
@@ -243,20 +244,11 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
             BasicItemOrderOperations companion)
     {
         switch (direction) {
-            case UP:
-                bean.itemOrderMoveUp();
-                break;
-            case DOWN:
-                bean.itemOrderMoveDown();
-                break;
-            case AFTER:
-                bean.itemOrderMoveAfter(companion);
-                break;
-            case BEFORE:
-                bean.itemOrderMoveBefore(companion);
-                break;
-            default:
-                throw new AssertionError("New/unchecked Direction ?");
+            case UP -> bean.itemOrderMoveUp();
+            case DOWN -> bean.itemOrderMoveDown();
+            case AFTER -> bean.itemOrderMoveAfter(companion);
+            case BEFORE -> bean.itemOrderMoveBefore(companion);
+            default -> throw new AssertionError("New/unchecked Direction ?");
         }
 
         return getJsonOk();
@@ -270,20 +262,11 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
             String orderingTable)
     {
         switch (direction) {
-            case UP:
-                TableLocalOrderUtil.itemOrderMoveUp(itemOrder, context, orderingTable);
-                break;
-            case DOWN:
-                TableLocalOrderUtil.itemOrderMoveDown(itemOrder, context, orderingTable);
-                break;
-            case AFTER:
-                TableLocalOrderUtil.itemOrderMoveAfter(itemOrder, companionItemOrder, context, orderingTable);
-                break;
-            case BEFORE:
-                TableLocalOrderUtil.itemOrderMoveBefore(itemOrder, companionItemOrder, context, orderingTable);
-                break;
-            default:
-                throw new AssertionError("New/unchecked Direction ?");
+            case UP -> TableLocalOrderUtil.itemOrderMoveUp(itemOrder, context, orderingTable);
+            case DOWN -> TableLocalOrderUtil.itemOrderMoveDown(itemOrder, context, orderingTable);
+            case AFTER -> TableLocalOrderUtil.itemOrderMoveAfter(itemOrder, companionItemOrder, context, orderingTable);
+            case BEFORE -> TableLocalOrderUtil.itemOrderMoveBefore(itemOrder, companionItemOrder, context, orderingTable);
+            default -> throw new AssertionError("New/unchecked Direction ?");
         }
     }
 
@@ -376,6 +359,15 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         if (BOOLEAN_FALSE_VALUES.contains(value))
             return false;
         throw new ServletException("Value cannot be interpreted as boolean: " + value);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <B extends DbBeanInterface> B getSessionBean(String attributeName, HttpSession session) throws ServletException {
+        Object attribute = session.getAttribute(attributeName);
+        if (attribute == null)
+            throw new ServletException("No attribute " + attributeName + " in session");
+
+        return (B) attribute;
     }
 
 }
