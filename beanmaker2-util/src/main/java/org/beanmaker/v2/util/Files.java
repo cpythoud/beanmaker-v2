@@ -1,6 +1,10 @@
 package org.beanmaker.v2.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import java.util.List;
 
@@ -86,6 +90,51 @@ public class Files {
      */
     public static boolean isFileExtensionOK(File file, List<String> extensions) {
         return isFileExtensionOK(file.getName(), extensions);
+    }
+
+    /**
+     * Use a String to create an UTF-8 text file
+     * @param s text to be written to file.
+     * @param file into which the text is to be written
+     * @see Files#write(String, File, String)
+     */
+    public static void write(String s, File file) {
+        write(s, file, "UTF-8");
+    }
+
+    /**
+     * Use a String to create an text file
+     * @param s text to be written to file.
+     * @param file into which the text is to be written
+     * @param encoding of the resulting file
+     * @see Files#write(String, File)
+     */
+    public static void write(String s, File file, String encoding) {
+        try (
+                var fos = new FileOutputStream(file);
+                var osw = new OutputStreamWriter(fos, encoding);
+                var out = new BufferedWriter(osw)
+        ) {
+            out.write(s);
+        } catch (IOException ioex) {
+            throw new RuntimeException(ioex);
+        }
+    }
+
+    /**
+     * Create an empty file or replace an existing file with an empty file
+     * @param file to be created or made empty.
+     */
+    public static void createEmptyFile(File file) {
+        if (file.exists() && !file.delete())
+            throw new IllegalStateException("Could not delete preexisting file");
+
+        try {
+            if (!file.createNewFile())
+                throw new IllegalStateException("Could not create file");
+        } catch (IOException ioex) {
+            throw new RuntimeException(ioex);
+        }
     }
 
 }
