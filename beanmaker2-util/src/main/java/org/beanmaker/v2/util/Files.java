@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import java.util.List;
 
 public class Files {
@@ -135,6 +138,48 @@ public class Files {
         } catch (IOException ioex) {
             throw new RuntimeException(ioex);
         }
+    }
+
+    /**
+     * Downloads a file from a URL
+     * @param fileURL HTTP URL of the file to be downloaded
+     * @param destinationDir path of the directory to save the file
+     * @throws IOException if something goes wrong
+     */
+    public static void downloadFile(String fileURL, String destinationDir) throws IOException {
+        var connection = (HttpURLConnection) new URL(fileURL).openConnection();
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            String fileName;
+            String dispositionHeader = connection.getHeaderField("Content-Disposition");
+
+            if (dispositionHeader != null) {
+                // * extracts file name from header field
+                int index = dispositionHeader.indexOf("filename=");
+                if (index != -1)
+                    fileName = dispositionHeader.substring(index + 10, dispositionHeader.length() - 1);
+                else
+                    throw new IOException("Content-Disposition header does not contain filename information");
+            } else {
+                // * extracts file name from URL
+                fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1);
+            }
+
+            try (
+                    var in = connection.getInputStream();
+                    var out = new FileOutputStream(new File(destinationDir, fileName))
+            ) {
+                int bytesRead;
+                byte[] buffer = new byte[4096];
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            }
+        } else
+            throw new IOException("File download failed. HTTP code: " + responseCode);
+
+        connection.disconnect();
     }
 
 }
