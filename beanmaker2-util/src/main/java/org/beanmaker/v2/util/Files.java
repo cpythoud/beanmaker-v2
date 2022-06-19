@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.nio.file.Path;
+
 import java.util.List;
 
 public class Files {
@@ -140,13 +142,17 @@ public class Files {
         }
     }
 
+    public static void downloadFile(String fileURL, String destinationDir) throws IOException {
+        downloadFile(fileURL, Path.of(destinationDir));
+    }
+
     /**
      * Downloads a file from a URL
      * @param fileURL HTTP URL of the file to be downloaded
      * @param destinationDir path of the directory to save the file
      * @throws IOException if something goes wrong
      */
-    public static void downloadFile(String fileURL, String destinationDir) throws IOException {
+    public static void downloadFile(String fileURL, Path destinationDir) throws IOException {
         var connection = (HttpURLConnection) new URL(fileURL).openConnection();
 
         int responseCode = connection.getResponseCode();
@@ -168,7 +174,7 @@ public class Files {
 
             try (
                     var in = connection.getInputStream();
-                    var out = new FileOutputStream(new File(destinationDir, fileName))
+                    var out = new FileOutputStream(new File(destinationDir.toFile(), fileName))
             ) {
                 int bytesRead;
                 byte[] buffer = new byte[4096];
