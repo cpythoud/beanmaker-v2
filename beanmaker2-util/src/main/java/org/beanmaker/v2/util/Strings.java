@@ -14,7 +14,7 @@ public class Strings {
      * @param string to be checked.
      * @return true if string is empty as per the above definition, false otherwise.
      */
-    public static boolean isEmpty(final String string) {
+    public static boolean isEmpty(String string) {
         return string == null || string.matches("\\s*");
     }
 
@@ -26,7 +26,7 @@ public class Strings {
      * @return capitalized String.
      */
     public static String capitalize(String string) {
-        return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
     /**
@@ -37,7 +37,7 @@ public class Strings {
      * @return uncapitalized String.
      */
     public static String uncapitalize(String string) {
-        return string.substring(0, 1).toLowerCase() + string.substring(1, string.length());
+        return string.substring(0, 1).toLowerCase() + string.substring(1);
     }
 
     /**
@@ -50,7 +50,7 @@ public class Strings {
      * the String starts or ends with an underscore characters, or the String contains two consecutive underscore
      * characters.
      */
-    public static String camelize(final String string) {
+    public static String camelize(String string) {
         if (!string.matches("^[a-zA-Z0-9_]+$"))
             throw new IllegalArgumentException("Illegal identifier character");
         if (string.startsWith("_"))
@@ -75,7 +75,7 @@ public class Strings {
      * @return uncamelized String.
      * @throws java.lang.IllegalArgumentException if the String contains anything but alphanumeric ASCII characters.
      */
-    public static String uncamelize(final String string) {
+    public static String uncamelize(String string) {
         if (!string.matches("^[a-zA-Z0-9]+$"))
             throw new IllegalArgumentException("Illegal identifier character");
         List<String> parts = new ArrayList<String>();
@@ -104,11 +104,11 @@ public class Strings {
      * @param string to be converted.
      * @return the int value represented by the String or 0 if the value cannot be extracted.
      */
-    public static int getIntVal(final String string) {
+    public static int getIntVal(String string) {
         int val = 0;
         try {
             val = Integer.valueOf(string);
-        } catch (final NumberFormatException nfex) {
+        } catch (NumberFormatException nfex) {
             // val = 0 !
         }
         return val;
@@ -119,11 +119,11 @@ public class Strings {
      * @param string to be converted.
      * @return the long value represented by the String or 0 if the value cannot be extracted.
      */
-    public static long getLongVal(final String string) {
+    public static long getLongVal(String string) {
         long val = 0;
         try {
             val = Long.valueOf(string);
-        } catch (final NumberFormatException nfex) {
+        } catch (NumberFormatException nfex) {
             // val = 0 !
         }
         return val;
@@ -134,11 +134,11 @@ public class Strings {
      * @param string to be converted.
      * @return the float value represented by the String or 0 if the value cannot be extracted.
      */
-    public static float getFloatVal(final String string) {
+    public static float getFloatVal(String string) {
         float val = 0.0f;
         try {
             val = Float.valueOf(string);
-        } catch (final NumberFormatException nfex) {
+        } catch (NumberFormatException nfex) {
             // val = 0 !
         }
         return val;
@@ -149,11 +149,11 @@ public class Strings {
      * @param string to be converted.
      * @return the double value represented by the String or 0 if the value cannot be extracted.
      */
-    public static double getDoubleVal(final String string) {
+    public static double getDoubleVal(String string) {
         double val = 0.0d;
         try {
             val = Double.valueOf(string);
-        } catch (final NumberFormatException nfex) {
+        } catch (NumberFormatException nfex) {
             // val = 0 !
         }
         return val;
@@ -165,7 +165,7 @@ public class Strings {
      * @param substring which occurrences are to be counted.
      * @return the number of occurrences of <code>substring</code> in <code>string</code>.
      */
-    public static int occurrenceCount(final String string, final String substring) {
+    public static int occurrenceCount(String string, String substring) {
         int count = 0;
         int index = 0;
         while (string.indexOf(substring, index) != -1) {
@@ -183,7 +183,7 @@ public class Strings {
      * @param string which letters should be enumerated.
      * @return list of <code>string</code> letters.
      */
-    public static List<String> toLetterList(final String string) {
+    public static List<String> toLetterList(String string) {
         List<String> letterList = new ArrayList<String>();
 
         for (int i = 0; i < string.length(); i++)
@@ -202,7 +202,7 @@ public class Strings {
      * @see Strings#replaceMany(String, java.util.Map)
      * @see Strings#regexReplace(String, String, String)
      */
-    public static String replace(final String content, final String target, final String replacement) {
+    public static String replace(String content, String target, String replacement) {
         CharSequence a	= target.subSequence(0, target.length());
         CharSequence b	= replacement.subSequence(0, replacement.length());
         return content.replace(a, b);
@@ -217,7 +217,7 @@ public class Strings {
      * @see Strings#replace(String, String, String)
      * @see Strings#regexReplaceMany(String, Map)
      */
-    public static String replaceMany(final String content, Map<String, String> replacements) {
+    public static String replaceMany(String content, Map<String, String> replacements) {
         String result = content;
         for (String target: replacements.keySet())
             result = replace(result, target, replacements.get(target));
@@ -234,7 +234,7 @@ public class Strings {
      * @see Strings#replace(String, String, String)
      * @see Strings#regexReplaceMany(String, java.util.Map)
      */
-    public static String regexReplace(final String content, final String regex, final String replacement) {
+    public static String regexReplace(String content, String regex, String replacement) {
         return content.replaceAll(regex, replacement);
     }
 
@@ -247,7 +247,7 @@ public class Strings {
      * @see Strings#regexReplace(String, String, String)
      * @see Strings#replaceMany(String, Map)
      */
-    public static String regexReplaceMany(final String content, Map<String, String> replacements) {
+    public static String regexReplaceMany(String content, Map<String, String> replacements) {
         String result = content;
         for (String target: replacements.keySet())
             result = regexReplace(result, target, replacements.get(target));
@@ -327,7 +327,7 @@ public class Strings {
      * @throws java.lang.IllegalArgumentException if value is negative, or if value cannot be represented
      * with the number of digits specified by <code>digits</code> or less.
      */
-    public static String zeroFill(final long value, final int digits) {
+    public static String zeroFill(long value, int digits) {
         if (value < 0)
             throw new IllegalArgumentException("Illegal value " + value + " < 1");
         if (digits < 2 || digits > 18)
@@ -336,12 +336,12 @@ public class Strings {
         if (value == 0)
             return repeatString("0", digits);
 
-        final long maxVal = pow10(digits);
+        long maxVal = pow10(digits);
 
         if (value > maxVal)
             throw new IllegalArgumentException("Illegal value " + value + " > " + maxVal);
 
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
         long curMax = maxVal;
         for (int i = digits; i >= 0; i--) {
             curMax = curMax / 10;
@@ -361,11 +361,11 @@ public class Strings {
      * @param times how many times to repeat the String
      * @return s repeated times times
      */
-    public static String repeatString(final String s, final int times) {
+    public static String repeatString(String s, int times) {
         if (times < 0)
             throw new IllegalArgumentException("Multiplier must be >= 0");
 
-        final StringBuilder repeated = new StringBuilder();
+        StringBuilder repeated = new StringBuilder();
         for (int i = 0; i < times; ++i)
             repeated.append(s);
 
@@ -373,11 +373,11 @@ public class Strings {
     }
 
     // TODO: replace these 2 functions by a proper call to the appropriate java.math function
-    private static long pow10(final int power) {
+    private static long pow10(int power) {
         return recursivePow10(10, power);
     }
 
-    private static long recursivePow10(final long base, final int power) {
+    private static long recursivePow10(long base, int power) {
         if (power == 1)
             return base;
 
@@ -389,7 +389,7 @@ public class Strings {
      * @param string
      * @return string without any whitespace
      */
-    public static String removeWhiteSpace(final String string) {
+    public static String removeWhiteSpace(String string) {
         return string.replaceAll("\\s+", "").trim();
     }
 
@@ -399,7 +399,7 @@ public class Strings {
      * @param strings to be concatenated.
      * @return the result of the concatenation.
      */
-    public static String concatWithSeparator(final String separator, final String... strings) {
+    public static String concatWithSeparator(String separator, String... strings) {
         return concatWithSeparator(separator, Arrays.asList(strings));
     }
 
@@ -409,7 +409,7 @@ public class Strings {
      * @param strings a list of Strings to be concatenated together.
      * @return the result of the concatenation.
      */
-    public static String concatWithSeparator(final String separator, final List<String> strings) {
+    public static String concatWithSeparator(String separator, List<String> strings) {
         return concatStringCollectionWithSeparator(separator, strings);
     }
 
@@ -419,15 +419,15 @@ public class Strings {
      * @param strings a list of Strings to be concatenated together.
      * @return the result of the concatenation.
      */
-    public static String concatWithSeparator(final String separator, final Collection<String> strings) {
+    public static String concatWithSeparator(String separator, Collection<String> strings) {
         return concatStringCollectionWithSeparator(separator, strings);
     }
 
-    private static String concatStringCollectionWithSeparator(final String separator, final Collection<String> strings) {
+    private static String concatStringCollectionWithSeparator(String separator, Collection<String> strings) {
         if (strings.isEmpty())
             return "";
 
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         for (String s: strings) {
             buf.append(s);
@@ -446,8 +446,8 @@ public class Strings {
      * @param <T> any java Object
      * @return a List of Strings
      */
-    public static <T> List<String> asListOfStrings(final List<T> objects) {
-        final List<String> strings = new ArrayList<String>();
+    public static <T> List<String> asListOfStrings(List<T> objects) {
+        List<String> strings = new ArrayList<String>();
 
         for (T object: objects)
             strings.add(object.toString());
