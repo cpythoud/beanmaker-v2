@@ -455,4 +455,20 @@ public class Strings {
         return strings;
     }
 
+    public static String removeAccents(String text) {
+        StringBuilder unaccentedText = new StringBuilder();
+        int length = text.length();
+
+        for(int i = 0; i < length; ++i) {
+            char c = text.charAt(i);
+            int pos = "ÀàÈèÌìÒòÙùÁáÉéÍíÓóÚúÝýÂâÊêÎîÔôÛûŶŷÃãÕõÑñÄäËëÏïÖöÜüŸÿÅåÇçŐőŰű".indexOf(c);
+            if (pos > -1)
+                unaccentedText.append("AaEeIiOoUuAaEeIiOoUuYyAaEeIiOoUuYyAaOoNnAaEeIiOoUuYyAaCcOoUu".charAt(pos));
+            else
+                unaccentedText.append(c);
+        }
+
+        return unaccentedText.toString();
+    }
+
 }
