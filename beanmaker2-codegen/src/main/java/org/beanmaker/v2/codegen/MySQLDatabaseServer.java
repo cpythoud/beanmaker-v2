@@ -58,9 +58,9 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
     @Override
     public List<String> getTables(String dbName) {
         if (!getAvailableDatabases().contains(dbName))
-            throw new IllegalArgumentException("La base de données " + dbName + " est introuvable sur ce serveur.");
+            throw new IllegalArgumentException("No " + dbName + " database on this server");
 
-        List<String> tableList = new ArrayList<String>();
+        var tableList = new ArrayList<String>();
 
         Connection conn = null;
         try {
@@ -88,12 +88,12 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
     @Override
     public List<Column> getColumns(String dbName, String tableName) {
         if (!getAvailableDatabases().contains(dbName))
-            throw new IllegalArgumentException("La base de données " + dbName + " est introuvable sur ce serveur.");
+            throw new IllegalArgumentException("No " + dbName + " database available on this server");
 
         if (!getTables(dbName).contains(tableName))
-            throw new IllegalArgumentException("La base de données " + dbName + " ne contient pas de table " + tableName + ".");
+            throw new IllegalArgumentException("No table " +  tableName + " in database " + dbName);
 
-        List<Column> cols = new ArrayList<Column>();
+        var cols = new ArrayList<Column>();
 
         Connection conn = null;
         try {
@@ -132,7 +132,7 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
 
         List<String> tables = getTables(dbName);
 
-        List<OneToManyRelationship> relationships = new ArrayList<OneToManyRelationship>();
+        var relationships = new ArrayList<OneToManyRelationship>();
 
         Connection conn = null;
         try {
