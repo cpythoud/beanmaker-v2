@@ -70,7 +70,8 @@ public abstract class AbstractDatabaseServer implements DatabaseServer {
     }
 
     private String getURL(String databaseName) {
-        return "jdbc:" + engineName + "://" + serverFQDN + ":" + serverPort + "/" + databaseName + "?user=" + username + "&password=" + password;
+        return "jdbc:" + engineName + "://" + serverFQDN + ":" + serverPort + "/" + databaseName
+                + "?user=" + username + "&password=" + password + "&useSSL=false";
     }
 
 }
