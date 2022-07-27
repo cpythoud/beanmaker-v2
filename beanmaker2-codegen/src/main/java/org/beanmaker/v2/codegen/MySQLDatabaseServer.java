@@ -29,7 +29,7 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
 
     @Override
     public List<String> getAvailableDatabases() {
-        List<String> dbList = new ArrayList<String>();
+        var dbList = new ArrayList<String>();
 
         Connection conn = null;
         try {
