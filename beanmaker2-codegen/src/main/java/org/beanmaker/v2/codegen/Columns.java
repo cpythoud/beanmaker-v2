@@ -71,6 +71,14 @@ public class Columns {
         return new Column(columns.get(index - 1));
     }
 
+    public Optional<Column> getColumn(String dbFieldName) {
+        for (Column column: getList())
+            if (column.getSqlName().equals(dbFieldName))
+                return Optional.of(column);
+
+        return Optional.empty();
+    }
+
     public void setJavaName(int index, String name) {
         if (index < 1 || index > columns.size())
             throw new IndexOutOfBoundsException("There is no column number " + index);
