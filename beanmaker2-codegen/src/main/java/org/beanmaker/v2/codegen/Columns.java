@@ -469,4 +469,12 @@ public class Columns {
         return columns;
     }
 
+    public boolean hasSQLField(String sqlField) {
+        for (Column column: columns)
+            if (column.getSqlName().equals(sqlField))
+                return true;
+
+        return false;
+    }
+
 }
