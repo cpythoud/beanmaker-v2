@@ -58,7 +58,8 @@ public class DbBeanSourceFile extends BaseCode {
         javaClass
                 .addContent(new FunctionDeclaration("createDBTransaction", "DBTransaction")
                         .markAsStatic()
-                        .addContent(new ReturnStatement(new ObjectCreation("DBTransaction").addArgument("db"))));
+                        .addContent(new ReturnStatement(new ObjectCreation("DBTransaction").addArgument("db"))))
+                .addContent(EMPTY_LINE);
     }
 
 }
