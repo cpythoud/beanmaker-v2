@@ -17,6 +17,7 @@ import org.jcodegen.java.IfBlock;
 import org.jcodegen.java.JavaClass;
 import org.jcodegen.java.JavaCodeBlock;
 import org.jcodegen.java.Lambda;
+import org.jcodegen.java.LineOfCode;
 import org.jcodegen.java.ObjectCreation;
 import org.jcodegen.java.OperatorExpression;
 import org.jcodegen.java.ReturnStatement;
@@ -164,6 +165,15 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         }
 
         newLine();
+
+        if (columns.hasExtraFields()) {
+            for (var extraField: columns.getExtraFields()) {
+                javaClass.addContent(new LineOfCode(extraField.toString()));
+                for (var importData: extraField.getRequiredImports())
+                    importsManager.addImport(importData);
+            }
+            newLine();
+        }
     }
 
     @Override

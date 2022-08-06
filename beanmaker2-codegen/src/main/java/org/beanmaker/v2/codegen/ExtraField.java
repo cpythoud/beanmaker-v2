@@ -1,64 +1,84 @@
 package org.beanmaker.v2.codegen;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 public class ExtraField {
 
     private final String type;
     private final String name;
     private final String initializationExpression;
     private final boolean isFinal;
-    private final String requiredImport;
-    private final String secondaryRequiredImport;
-    private final String ternaryRequiredImport;
+    private final List<String> requiredImports;
 
-    public ExtraField(
-            String type,
-            String name,
-            String initializationExpression,
-            boolean isFinal,
-            String requiredImport,
-            String secondaryRequiredImport,
-            String ternaryRequiredImport)
-    {
+    public static class Builder {
+        private final String type;
+        private final String name;
+        private String initializationExpression;
+        private boolean isFinal;
+        private final Set<String> requiredImports = new LinkedHashSet<>();
+
+        private Builder(String type, String name) {
+            this.type = type;
+            this.name = name;
+        }
+
+        private Builder(ExtraField extraField) {
+            type = extraField.type;
+            name = extraField.name;
+            initializationExpression = extraField.initializationExpression;
+            isFinal = extraField.isFinal;
+            requiredImports.addAll(extraField.requiredImports);
+        }
+
+        public Builder initializationExpression(String initializationExpression) {
+            this.initializationExpression = initializationExpression;
+            return this;
+        }
+
+        public Builder isFinal(boolean isFinal) {
+            this.isFinal = isFinal;
+            return this;
+        }
+
+        public Builder addImports(String... imports) {
+            return addImports(Arrays.asList(imports));
+        }
+
+        public Builder addImports(List<String> imports) {
+            requiredImports.addAll(imports);
+            return this;
+        }
+
+        public Builder addImport(String importData) {
+            if (importData != null)
+                requiredImports.add(importData);
+            return this;
+        }
+
+        public ExtraField create() {
+            return new ExtraField(type, name, initializationExpression, isFinal, requiredImports);
+        }
+    }
+
+    private ExtraField(String type, String name, String initializationExpression, boolean isFinal, Set<String> requiredImports) {
         this.type = type;
         this.name = name;
         this.initializationExpression = initializationExpression;
         this.isFinal = isFinal;
-        this.requiredImport = requiredImport;
-        this.secondaryRequiredImport = secondaryRequiredImport;
-        this.ternaryRequiredImport = ternaryRequiredImport;
+        this.requiredImports = new ArrayList<>(requiredImports);
     }
 
-    public ExtraField(
-            String type,
-            String name,
-            String initializationExpression,
-            boolean isFinal,
-            String requiredImport,
-            String secondaryRequiredImport)
-    {
-        this(type, name, initializationExpression, isFinal, requiredImport, secondaryRequiredImport, null);
+    public static Builder builder(String type, String name) {
+        return new Builder(type, name);
     }
 
-    public ExtraField(
-            String type,
-            String name,
-            String initializationExpression,
-            boolean isFinal,
-            String requiredImport)
-    {
-        this(type, name, initializationExpression, isFinal, requiredImport, null);
-    }
-
-    public ExtraField(String type, String name, String initializationExpression, boolean isFinal) {
-        this(type, name, initializationExpression, isFinal, null);
-    }
-
-    public ExtraField(String type, String name,  boolean isFinal) {
-        this(type, name, null, isFinal, null);
-    }
-
-    public ExtraField(String type, String name) {
-        this(type, name, false);
+    public static Builder builder(ExtraField extraField) {
+        return new Builder(extraField);
     }
 
     public String getType() {
@@ -77,32 +97,51 @@ public class ExtraField {
         return isFinal;
     }
 
+    public List<String> getRequiredImports() {
+        return Collections.unmodifiableList(requiredImports);
+    }
+
+    @Deprecated
     public String getRequiredImport() {
-        return requiredImport;
+        if (requiredImports.isEmpty())
+            return null;
+
+        return requiredImports.get(0);
     }
 
     public boolean requiresImport() {
-        return requiredImport != null;
+        return !requiredImports.isEmpty();
     }
 
+    @Deprecated
     public String getSecondaryRequiredImport() {
-        return secondaryRequiredImport;
+        if (requiredImports.size() < 2)
+            return null;
+
+        return requiredImports.get(1);
     }
 
+    @Deprecated
     public boolean requiresSecondaryImport() {
-        return secondaryRequiredImport != null;
+        return requiredImports.size() > 1;
     }
 
+    @Deprecated
     public String getTernaryRequiredImport() {
-        return ternaryRequiredImport;
+        if (requiredImports.size() < 3)
+            return null;
+
+        return requiredImports.get(2);
     }
 
+    @Deprecated
     public boolean requiresTernaryImport() {
-        return ternaryRequiredImport != null;
+        return requiredImports.size() > 2;
     }
 
+    @Deprecated
     public boolean requiresAnyImport() {
-        return requiresImport() || requiresSecondaryImport() || requiresTernaryImport();
+        return !requiredImports.isEmpty();
     }
 
     @Override
