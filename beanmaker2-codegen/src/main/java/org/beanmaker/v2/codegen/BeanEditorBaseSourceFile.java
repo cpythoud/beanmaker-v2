@@ -95,6 +95,16 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
         }
 
+        if (columns.hasLabels()) {
+            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLabel");
+            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLabelEditor");
+            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLanguage");
+            if (columns.hasLabelField()) {
+                importsManager.addImport("org.beanmaker.v2.runtime.DbBeanMultilingual");
+                javaClass.implementsInterface("DbBeanMultilingual");
+            }
+        }
+
         if (columns.hasOtherBeanReference())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
 
@@ -119,15 +129,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditor");
             javaClass.extendsClass("DbBeanEditor");
         });
-
-        if (columns.hasLabels()) {
-            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLabel");
-            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLanguage");
-            if (columns.hasLabelField()) {
-                importsManager.addImport("org.beanmaker.v2.runtime.DbBeanMultilingual");
-                javaClass.implementsInterface("DbBeanMultilingual");
-            }
-        }
     }
 
     @Override
@@ -161,7 +162,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type))
                 addProperty("String", name + "Str", false, new StringOrCode<>(EMPTY_STRING));
             if (column.isLabelReference())
-                addProperty("DbBeanLabel", uncapitalize(chopID(name)), false, null);
+                addProperty("DbBeanLabelEditor", uncapitalize(chopID(name)), false, null);
         }
 
         newLine();
@@ -632,16 +633,16 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 new FunctionDeclaration("get" + chopID(idName), "DbBeanLabel")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new VarDeclaration(
-                                "DbBeanLabel",
-                                "dbBeanLabel",
-                                new FunctionCall("get", "LabelManager").addArgument(idName)))
+                                "DbBeanLabelEditor",
+                                "dbBeanLabelEditor",
+                                new FunctionCall("getEditor", "LabelManager").addArgument(idName)))
                         .addContent(EMPTY_LINE)
                         .addContent(new IfBlock(new Condition(labelName + " == null"))
-                                .addContent(new ReturnStatement("dbBeanLabel")))
+                                .addContent(new ReturnStatement("dbBeanLabelEditor")))
                         .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(
                                 new FunctionCall("replaceData", "LabelManager")
-                                        .addArguments("dbBeanLabel", labelName)));
+                                        .addArguments("dbBeanLabelEditor", labelName)));
 
         FunctionDeclaration perLanguageLabelFunction =
                 new FunctionDeclaration("get" + labelNameCap, "String")
@@ -738,7 +739,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new FunctionDeclaration("init" + labelName)
                         .visibility(Visibility.PRIVATE)
                         .addContent(new IfBlock(new Condition(labelBean + " == null"))
-                                .addContent(new Assignment(labelBean, new FunctionCall("createInstance", "LabelManager")))
+                                .addContent(new Assignment(labelBean, new FunctionCall("createEditorInstance", "LabelManager")))
                                 .addContent(new IfBlock(new Condition(fieldName + " > 0"))
                                         .addContent(new FunctionCall("setId", labelBean).byItself().addArgument(fieldName))
                                         .addContent(new FunctionCall("cacheLabelsFromDB", labelBean).byItself()))))

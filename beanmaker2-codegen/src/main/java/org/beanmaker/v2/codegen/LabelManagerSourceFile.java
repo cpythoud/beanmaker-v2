@@ -19,7 +19,7 @@ public class LabelManagerSourceFile extends BaseCode {
             createImportList("java.util", "List", "Optional");
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DbBeanLabel", "DbBeanLabelBasicFunctions",
-                    "DbBeanLanguage", "MissingImplementationException");
+                    "DbBeanLabelEditor", "DbBeanLanguage", "MissingImplementationException");
 
     private static final FunctionArgument ID_ARG = new FunctionArgument("long", "id");
     private static final FunctionArgument NAME_ARG = new FunctionArgument("String", "name");
@@ -52,6 +52,7 @@ public class LabelManagerSourceFile extends BaseCode {
     @Override
     protected void addCoreFunctionality() {
         addNonImplementedStaticFunction("DbBeanLabel", "get", ID_ARG);
+        addNonImplementedStaticFunction("DbBeanLabelEditor", "getEditor", ID_ARG);
         addNonImplementedStaticFunction("DbBeanLabel", "get", NAME_ARG);
         addNonImplementedStaticFunction("boolean", "isIdOK", ID_ARG);
         addNonImplementedStaticFunction("boolean", "isIdOK", ID_ARG, TRANSACTION_ARG);
@@ -62,7 +63,7 @@ public class LabelManagerSourceFile extends BaseCode {
         addNonImplementedStaticFunction("String", "get", NAME_ARG, LANG_ARG);
         addNonImplementedStaticFunction("String", "get", NAME_ARG, LANG_ARG, PARAMETERS_ARG);
 
-        addNonImplementedStaticFunction("DbBeanLabel", "createInstance");
+        addNonImplementedStaticFunction("DbBeanLabelEditor", "createEditorInstance");
         addNonImplementedStaticFunction("DbBeanLabel", "duplicate", LABEL_ARG);
         addNonImplementedStaticFunction("DbBeanLanguage", "getDefaultLanguage");
         addNonImplementedStaticFunction("List<DbBeanLanguage>", "getAllActiveLanguages");
@@ -75,10 +76,10 @@ public class LabelManagerSourceFile extends BaseCode {
 
     private void addReplaceDataFunction() {
         javaClass
-                .addContent(new FunctionDeclaration("replaceData", "DbBeanLabel")
+                .addContent(new FunctionDeclaration("replaceData", "DbBeanLabelEditor")
                         .visibility(Visibility.PUBLIC)
                         .markAsStatic()
-                        .addArgument(new FunctionArgument("DbBeanLabel", "into"))
+                        .addArgument(new FunctionArgument("DbBeanLabelEditor", "into"))
                         .addArgument(new FunctionArgument("DbBeanLabel", "from"))
                         .addContent(new FunctionCall("clearCache", "into")
                                 .byItself())
