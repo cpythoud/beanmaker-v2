@@ -16,7 +16,7 @@ import java.util.List;
 public class LabelManagerSourceFile extends BaseCode {
 
     private static final List<String> JAVA_UTIL_IMPORTS =
-            createImportList("java.util", "List", "Optional");
+            createImportList("java.util", "List", "Map", "Optional");
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DbBeanLabel", "DbBeanLabelBasicFunctions",
                     "DbBeanLabelEditor", "DbBeanLanguage", "MissingImplementationException");
@@ -26,6 +26,8 @@ public class LabelManagerSourceFile extends BaseCode {
     private static final FunctionArgument TRANSACTION_ARG = new FunctionArgument("DBTransaction", "transaction");
     private static final FunctionArgument LANG_ARG = new FunctionArgument("DbBeanLanguage", "dbBeanLanguage");
     private static final FunctionArgument PARAMETERS_ARG = new FunctionArgument("Object...", "parameters");
+    private static final FunctionArgument PARAMETERS_ARG_LIST = new FunctionArgument("List<Object>", "parameters");
+    private static final FunctionArgument PARAMETERS_ARG_MAP = new FunctionArgument("Map<String, Object>", "parameters");
     private static final FunctionArgument LABEL_ARG = new FunctionArgument("DbBeanLabel", "dbBeanLabel");
 
     public LabelManagerSourceFile(String packageName) {
@@ -60,8 +62,12 @@ public class LabelManagerSourceFile extends BaseCode {
         addNonImplementedStaticFunction("boolean", "isNameOK", NAME_ARG, TRANSACTION_ARG);
         addNonImplementedStaticFunction("String", "get", ID_ARG, LANG_ARG);
         addNonImplementedStaticFunction("String", "get", ID_ARG, LANG_ARG, PARAMETERS_ARG);
+        addNonImplementedStaticFunction("String", "get", ID_ARG, LANG_ARG, PARAMETERS_ARG_LIST);
+        addNonImplementedStaticFunction("String", "get", ID_ARG, LANG_ARG, PARAMETERS_ARG_MAP);
         addNonImplementedStaticFunction("String", "get", NAME_ARG, LANG_ARG);
         addNonImplementedStaticFunction("String", "get", NAME_ARG, LANG_ARG, PARAMETERS_ARG);
+        addNonImplementedStaticFunction("String", "get", NAME_ARG, LANG_ARG, PARAMETERS_ARG_LIST);
+        addNonImplementedStaticFunction("String", "get", NAME_ARG, LANG_ARG, PARAMETERS_ARG_MAP);
 
         addNonImplementedStaticFunction("DbBeanLabelEditor", "createEditorInstance");
         addNonImplementedStaticFunction("DbBeanLabel", "duplicate", LABEL_ARG);

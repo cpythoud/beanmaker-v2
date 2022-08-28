@@ -3,6 +3,7 @@ package org.beanmaker.v2.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -453,6 +454,31 @@ public class Strings {
             strings.add(object.toString());
 
         return strings;
+    }
+
+    /**
+     * Given a String, use a name/value map to replace parameters in that string. Parameter format
+     * must be ${parameter-name}, à la JSP.
+     *
+     * This is a very simple facility for quick resolution of parameterized Strings.
+     * @param target the String containing the parameters.
+     * @param parameters a Map of String parameter names to Object. The parameter names should not contain
+     *                   the ${} characters
+     * @return String with replaced parameters
+     * @throws NullPointerException if the parameter map does not contain a required value or if this value
+     * is null.
+     */
+    public static String replaceWithParameters(final String target, final Map<String, Object> parameters) {
+        return replaceMany(target, getParameterReplacementMap(parameters));
+    }
+
+    private static Map<String, String> getParameterReplacementMap(final Map<String, Object> parameters) {
+        final Map<String, String> replacementMap = new HashMap<String, String>();
+
+        for (String key: parameters.keySet())
+            replacementMap.put("${" + key + "}", parameters.get(key).toString());
+
+        return replacementMap;
     }
 
     public static String removeAccents(String text) {
