@@ -20,10 +20,12 @@ import java.util.Objects;
 public class LabelHelper {
 
     private final String idBasedDataQuery;
+    private final String checkNameQuery;
 
 
-    public LabelHelper(String labelDataTable) {
+    public LabelHelper(String labelTable, String labelDataTable) {
         idBasedDataQuery = "SELECT `data` FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
+        checkNameQuery = "SELECT id FROM " + labelTable + " WHERE `name`=?";
     }
 
     public String get(DBAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
@@ -141,6 +143,22 @@ public class LabelHelper {
         return transaction.addQuery(
                 idBasedDataQuery,
                 setProcessingParameters(id, dbBeanLanguage),
+                ResultSet::next
+        );
+    }
+
+    public boolean isNameOK(DBAccess dbAccess, String name) {
+        return dbAccess.processQuery(
+                checkNameQuery,
+                stat -> stat.setString(1, name),
+                ResultSet::next
+        );
+    }
+
+    public boolean isNameOK(DBTransaction transaction, String name) {
+        return transaction.addQuery(
+                checkNameQuery,
+                stat -> stat.setString(1, name),
                 ResultSet::next
         );
     }
