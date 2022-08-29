@@ -20,12 +20,12 @@ import java.util.Objects;
 public class LabelHelper {
 
     private final String idBasedDataQuery;
-    private final String checkNameQuery;
+    private final String idFromNameQuery;
 
 
     public LabelHelper(String labelTable, String labelDataTable) {
         idBasedDataQuery = "SELECT `data` FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
-        checkNameQuery = "SELECT id FROM " + labelTable + " WHERE `name`=?";
+        idFromNameQuery = "SELECT id FROM " + labelTable + " WHERE `name`=?";
     }
 
     public String get(DBAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
@@ -139,6 +139,20 @@ public class LabelHelper {
         );
     }
 
+    public String get(DBTransaction transaction, long id, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
+        return processParameters(
+                processResult(
+                        transaction.addQuery(
+                                idBasedDataQuery,
+                                setProcessingParameters(id, dbBeanLanguage),
+                                getResult()),
+                        id,
+                        dbBeanLanguage
+                ),
+                parameters
+        );
+    }
+
     public boolean hasDataFor(DBTransaction transaction, long id, DbBeanLanguage dbBeanLanguage) {
         return transaction.addQuery(
                 idBasedDataQuery,
@@ -149,7 +163,7 @@ public class LabelHelper {
 
     public boolean isNameOK(DBAccess dbAccess, String name) {
         return dbAccess.processQuery(
-                checkNameQuery,
+                idFromNameQuery,
                 stat -> stat.setString(1, name),
                 ResultSet::next
         );
@@ -157,9 +171,58 @@ public class LabelHelper {
 
     public boolean isNameOK(DBTransaction transaction, String name) {
         return transaction.addQuery(
-                checkNameQuery,
+                idFromNameQuery,
                 stat -> stat.setString(1, name),
                 ResultSet::next
+        );
+    }
+
+    public String get(DBAccess dbAccess, String name, DbBeanLanguage dbBeanLanguage, Object... parameters) {
+        return get(dbAccess, getLabelID(dbAccess, name), dbBeanLanguage, parameters);
+    }
+
+    public String get(DBAccess dbAccess, String name, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
+        return get(dbAccess, getLabelID(dbAccess, name), dbBeanLanguage, parameters);
+    }
+
+    public String get(DBAccess dbAccess, String name, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
+        return get(dbAccess, getLabelID(dbAccess, name), dbBeanLanguage, parameters);
+    }
+
+    public long getLabelID(DBAccess dbAccess, String name) {
+        return dbAccess.processQuery(
+                idFromNameQuery,
+                stat -> stat.setString(1, name),
+                getIdOrThrow(name)
+        );
+    }
+
+    private DBQueryRetrieveData<Long> getIdOrThrow(String name) {
+        return rs -> {
+            if (rs.next())
+                return rs.getLong(1);
+
+            throw new IllegalArgumentException("No label with name: " + name);
+        };
+    }
+
+    public String get(DBTransaction transaction, String name, DbBeanLanguage dbBeanLanguage, Object... parameters) {
+        return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
+    }
+
+    public String get(DBTransaction transaction, String name, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
+        return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
+    }
+
+    public String get(DBTransaction transaction, String name, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
+        return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
+    }
+
+    public long getLabelID(DBTransaction transaction, String name) {
+        return transaction.addQuery(
+                idFromNameQuery,
+                stat -> stat.setString(1, name),
+                getIdOrThrow(name)
         );
     }
 
