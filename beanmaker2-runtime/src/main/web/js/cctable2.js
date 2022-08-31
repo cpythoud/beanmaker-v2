@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #62");
+        console.info("CCTABLE2: build #63");
 
         // * FILTERING *
 
@@ -32,10 +32,12 @@ let CCTable2 = (function () {
             });
         });
 
-        instance._table.querySelector('a.' + instance._settings.removeFilteringLinkCssClass).addEventListener('click', function (event) {
-            event.preventDefault();
-            clearFilters(instance);
-        });
+        instance._table.querySelectorAll('a.' + instance._settings.removeFilteringLinkCssClass).forEach(function (filterResetLink) {
+            filterResetLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                clearFilters(instance);
+            });
+        });  // * There are very few cases where more than one such link is present, but for when it's the case we need a loop
 
         readCookies(instance);  // * Will also produce updateSums() & zebra() calls
 
