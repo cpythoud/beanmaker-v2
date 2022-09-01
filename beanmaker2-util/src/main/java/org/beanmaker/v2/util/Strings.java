@@ -497,4 +497,80 @@ public class Strings {
         return unaccentedText.toString();
     }
 
+    /**
+     * Shorten a String to a maximum length while respecting word boundaries. I.e., the String will be shortened
+     * so that no word is cut in the middle.
+     * @param text, to be shortened
+     * @param maxLength, of the string to be returned
+     * @return the shortened String
+     */
+    public static String getShortenedText(String text, int maxLength) {
+        if (maxLength < 10)
+            throw new IllegalArgumentException("Max length must be at least 10 characters");
+
+        if (maxLength > text.length())
+            return text;
+
+        String workingString = text.substring(0, maxLength);
+        int lastSpace = workingString.lastIndexOf(" ");
+        if (lastSpace == -1)
+            workingString = workingString + " ...";
+        else
+            workingString = workingString.substring(0, lastSpace) + " ...";
+
+        return workingString;
+    }
+
+    /**
+     * Splits a long String in a List of lines. The lines are created on word boundaries. New lines
+     * are considered to indicate a new paragraph being started, therefore the current line will end
+     * at the newline character. Newlines are removed from the output.
+     * @param text to be decomposed in lines
+     * @param maxLength a line can reach
+     * @return a List of lines
+     */
+    public static List<String> splitIntoLines(String text, int maxLength) {
+        if (maxLength < 10)
+            throw new IllegalArgumentException("Max length must be at least 10 characters");
+
+        String[] paragraphs = text.split("\n");
+        List<String> lines = new ArrayList<>();
+        for (String paragraph: paragraphs) {
+            StringBuilder buf = new StringBuilder(paragraph);
+            while (buf.length() > maxLength) {
+                String workingString = buf.substring(0, maxLength);
+                int lastSpace = workingString.lastIndexOf(" ");
+                if (lastSpace == -1)
+                    throw new IllegalStateException("Could not split line on word boundary. Found a word at least "
+                            + maxLength + " characters long.");
+                lines.add(putOnOneLine(buf.substring(0, lastSpace)));
+                buf.delete(0, lastSpace + 1);
+            }
+            if (buf.length() > 0)
+                lines.add(putOnOneLine(buf.toString()));
+        }
+
+        return lines;
+    }
+
+    /**
+     * Takes one String and return it after removing all new line (whatever the platform your program is running on)
+     * and tab characters. This function was added to facilitate string related unit test in a multi platform
+     * context.
+     * @param string to be stripped of new lines and tabs
+     * @return same string without new lines and tabs
+     */
+    public static String putOnOneLineNoTabs(String string) {
+        return string.replaceAll("\\n|\\r\\n|\\r|\\t", "");
+    }
+
+    /**
+     * Takes one String and return it after removing all new line (whatever the platform your program is running on).
+     * @param string to be stripped of new lines
+     * @return same string without new lines
+     */
+    public static String putOnOneLine(String string) {
+        return string.replaceAll("\\n|\\r\\n|\\r", "");
+    }
+
 }
