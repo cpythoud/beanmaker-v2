@@ -1,11 +1,18 @@
 package org.beanmaker.v2.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Strings {
 
@@ -571,6 +578,18 @@ public class Strings {
      */
     public static String putOnOneLine(String string) {
         return string.replaceAll("\\n|\\r\\n|\\r", "");
+    }
+
+    public static String getFromResourceFile(String path) {
+        try (
+                InputStream in = Strings.class.getResourceAsStream(path);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+        )
+        {
+            return reader.lines().collect(Collectors.joining("\n"));
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
     }
 
 }
