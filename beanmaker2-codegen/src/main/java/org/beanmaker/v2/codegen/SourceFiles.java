@@ -11,7 +11,7 @@ public class SourceFiles {
         buf.append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.ENGLISH).format(new java.util.Date()));
         buf.append("\n");
         buf.append("// Library Version #");
-        buf.append(Version.get());
+        buf.append(Version.get(false));
         buf.append("\n\n");
     }
 
@@ -29,7 +29,7 @@ public class SourceFiles {
         if (!nameWithId.startsWith("id"))
             throw new IllegalArgumentException(nameWithId + " does not start with 'id'");
 
-        return nameWithId.substring(2, nameWithId.length());
+        return nameWithId.substring(2);
     }
 
 }

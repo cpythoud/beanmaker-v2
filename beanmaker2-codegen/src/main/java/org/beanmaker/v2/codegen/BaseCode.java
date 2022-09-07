@@ -11,6 +11,8 @@ import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.JavaClass;
 import org.jcodegen.java.Visibility;
 
+import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
 
     @Override
     public String getSourceCode() {
+        addGeneratedAnnotation();
         return sourceFile.toString();
     }
 
@@ -108,34 +111,6 @@ public abstract class BaseCode implements BeanMakerSourceFile {
     protected String getIsEmptyFunctionName(Column column) {
         return "is" + capitalize(column.getJavaName()) + "Empty";
     }
-
-    /*protected void addProperty(VarDeclaration property) {
-        javaClass.addContent(property.visibility(Visibility.PRIVATE));
-    }
-
-    protected void addProperty(String type, String var) {
-        addProperty(new VarDeclaration(type, var));
-    }
-
-    protected void addProperty(String type, String var, String val) {
-        addProperty(new VarDeclaration(type, var, val));
-    }
-
-    protected void addInheritableProperty(VarDeclaration property) {
-        javaClass.addContent(property.visibility(Visibility.PROTECTED));
-    }
-
-    protected void addInheritableProperty(String type, String var) {
-        addInheritableProperty(new VarDeclaration(type, var));
-    }
-
-    protected void addInheritableProperty(String type, String var, String val) {
-        addInheritableProperty(new VarDeclaration(type, var, val));
-    }
-
-    protected void addInheritableProperty(String type, String var, ObjectCreation object) {
-        addInheritableProperty(new VarDeclaration(type, var, object));
-    }*/
 
     protected String getVarNameForClass(String className) {
         String[] parts = className.split("\\.");
@@ -200,6 +175,27 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         );
 
         javaClass.addContent(functionDeclaration).addContent(EMPTY_LINE);
+    }
+
+    protected void addGeneratedAnnotation() {
+        importsManager.addImport("javax.annotation.processing.Generated");
+
+        var annotation = new StringBuilder();
+        annotation
+                .append("@Generated(value = \"")
+                .append(getClass().getName())
+                .append("\", date = \"")
+                .append(Instant.now().toString())
+                .append("\", comments = \"");
+
+        if (className.endsWith("Base"))
+            annotation.append("DO-NOT-EDIT");
+        else
+            annotation.append("EDITABLE");
+
+        annotation.append(",").append(Version.get(true)).append("\")");
+
+        javaClass.annotate(annotation.toString());
     }
 
 }
