@@ -67,7 +67,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         importsManager.addImport("java.util.function.Function");
         importsManager.addImport("org.beanmaker.v2.util.Strings");
 
-        if (types.contains("Integer") || types.contains("Long"))
+        if (types.contains("Integer") || types.contains("Long") || types.contains("String"))
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
         if (types.contains("Date")) {
             importsManager.addImport("java.sql.Date");
@@ -1012,7 +1012,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             functionDeclaration.addContent(getTemporalValidationFunctionList(column));
         else if (type.equals("Integer") || type.equals("Long"))
             functionDeclaration.addContent(getNumericValidationFunctionList(column));
-        else if (type.equals("String") || type.equals("Boolean"))
+        else if (type.equals("String"))
+            functionDeclaration.addContent(getStringValidationFunctionList(column));
+        else if (type.equals("Boolean"))
             functionDeclaration.addContent(getEmptyValidationFunctionList());
         else if (type.equals("Money"))
             functionDeclaration.addContent(getMoneyValidationFunctionList(column));
@@ -1133,6 +1135,22 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return getValidationFunctionsListOfLambdas(lambda);
     }
 
+    private ReturnStatement getStringValidationFunctionList(Column column) {
+        var lambda = createValidationFunctionLambda();
+
+        String name = column.getJavaName();
+        String length = Integer.toString(column.getDisplaySize());
+
+        lambda
+                .addContent(new IfBlock(new Condition(
+                        new Comparison(new FunctionCall("length", name), length, Comparison.Comparator.LT_EQUAL)))
+                        .addContent(new ReturnStatement("FieldValidationResult.OK")))
+                .addContent(EMPTY_LINE)
+                .addContent(getFieldValidationErrorMessage(name, "TOO_LONG_EXT", length));
+
+        return getValidationFunctionsListOfLambdas(lambda);
+    }
+
     private ReturnStatement getEmptyValidationFunctionList() {
         importsManager.addImport("java.util.Collections");
         return new ReturnStatement(new FunctionCall("emptyList", "Collections"));
@@ -1159,11 +1177,20 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private ReturnStatement getDefaultFieldValidationErrorMessage(String name) {
-        return new ReturnStatement(new FunctionCall("create", "FieldValidationResult")
+        return getFieldValidationErrorMessage(name, "BAD_FORMAT_EXT", null);
+    }
+
+    private ReturnStatement getFieldValidationErrorMessage(String name, String errorLabelExtension, String errorMessageArguments) {
+        var functionCall = new FunctionCall("create", "FieldValidationResult")
                 .addArgument(new OperatorExpression(
                         quickQuote(name),
-                        "DbBeanLocalization.BAD_FORMAT_EXT",
-                        OperatorExpression.Operator.ADD)));
+                        "DbBeanLocalization." + errorLabelExtension,
+                        OperatorExpression.Operator.ADD));
+
+        if (errorMessageArguments != null)
+            functionCall.addArgument(errorMessageArguments);
+
+        return new ReturnStatement(functionCall);
     }
 
     private ReturnStatement getValidationFunctionsListOfLambdas(Lambda lambda) {

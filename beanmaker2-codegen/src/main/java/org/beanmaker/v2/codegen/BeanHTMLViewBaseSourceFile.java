@@ -275,8 +275,12 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
 
         parametersFunction
                 .addContent(getParamSetterExpression("Required", new FunctionCall("is" + capName + "RequiredInHtmlForm")))
-                .addContent(getParamSetterExpression("Readonly", "readonly"))
-                .addContent(new ReturnStatement("params"));
+                .addContent(getParamSetterExpression("Readonly", "readonly"));
+
+        if (type.equals("String"))
+            parametersFunction.addContent(getParamSetterExpression("MaxLength", Integer.toString(column.getDisplaySize())));
+
+        parametersFunction.addContent(new ReturnStatement("params"));
 
         javaClass.addContent(parametersFunction).addContent(EMPTY_LINE);
 

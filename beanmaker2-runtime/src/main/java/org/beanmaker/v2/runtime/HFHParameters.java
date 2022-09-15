@@ -26,6 +26,7 @@ public class HFHParameters {
     private String helpText;
     private boolean readonly;
     private boolean autocomplete = true;
+    private int maxLength = 0;
 
     // selects
     private String selected;
@@ -88,6 +89,7 @@ public class HFHParameters {
         helpText = params.helpText;
         readonly = params.readonly;
         autocomplete = params.autocomplete;
+        maxLength = params.maxLength;
 
         // selects
         selected = params.selected;
@@ -286,6 +288,16 @@ public class HFHParameters {
 
     public HFHParameters setAutocomplete(boolean autocomplete) {
         this.autocomplete = autocomplete;
+
+        return this;
+    }
+
+    public int getMaxLength() {
+        return maxLength;
+    }
+
+    public HFHParameters setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
 
         return this;
     }

@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Locale;
 
 public class DbBeanLocalization {
-    private static final String REQUIRED_EXT = "_required";
+
     public static final String BAD_FORMAT_EXT = "_bad_format";
-    private static final String NOT_UNIQUE_EXT = "_not_unique";
+    public static final String NOT_UNIQUE_EXT = "_not_unique";
+    public static final String REQUIRED_EXT = "_required";
+    public static final String TOO_LONG_EXT = "_too_long";
 
     private final DbBeanLabelBasicFunctions dbBeanLabelBasicFunctions;
     private final String labelNamePrefix;

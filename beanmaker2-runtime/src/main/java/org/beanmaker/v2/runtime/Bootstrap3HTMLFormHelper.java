@@ -471,6 +471,8 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
             input.readonly();
         if (!params.isAutocomplete())
             input.attribute("autocomplete", "off");
+        if (params.getMaxLength() > 0)
+            input.maxlength(params.getMaxLength());
 
         return getFormGroup(label, input, params.getHelpText(), params.getGroupExtraCssClasses());
     }
@@ -754,6 +756,8 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
             textarea.disabled();
         if (params.isReadonly())
             textarea.readonly();
+        if (params.getMaxLength() > 0)
+            textarea.maxlength(params.getMaxLength());
 
         return getFormGroup(label, textarea, params.getHelpText(), params.getGroupExtraCssClasses());
     }
