@@ -1426,7 +1426,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 "long",
                 "id",
                 new FunctionCall("addRecordCreation", "transaction")
-                        .addArgument(quickQuote(getBeanCreationQuery()))
+                        .addArgument(getBeanCreationQuery())
                         .addArgument(new ObjectCreation("RecordCreationSetup"))));
 
         if (!labels.isEmpty())
@@ -1450,7 +1450,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         function.addContent(new FunctionCall("addUpdate", "transaction")
                 .byItself()
-                .addArgument(quickQuote(getBeanUpdateQuery()))
+                .addArgument(getBeanUpdateQuery())
                 .addArgument(new ObjectCreation("RecordUpdateSetup")));
 
         if (!labels.isEmpty())
@@ -1515,9 +1515,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private String getBeanCreationQuery() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("INSERT INTO ");
-        buf.append(tableName);
-        buf.append(" (");
+        buf.append("\"INSERT INTO \" + ");
+        buf.append(beanName);
+        buf.append("Parameters.INSTANCE.getDatabaseTableName() + \" (");
 
         int count = 0;
         for (Column column: columns.getList()) {
@@ -1535,7 +1535,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         buf.append("?, ".repeat(count));
         buf.delete(buf.length() - 2, buf.length());
 
-        buf.append(")");
+        buf.append(")\"");
 
         return buf.toString();
     }
@@ -1543,9 +1543,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private String getBeanUpdateQuery() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("UPDATE ");
-        buf.append(tableName);
-        buf.append(" SET ");
+        buf.append("\"UPDATE \" + ");
+        buf.append(beanName);
+        buf.append("Parameters.INSTANCE.getDatabaseTableName() + \" SET ");
 
         for (Column column: columns.getList()) {
             final String name = column.getSqlName();
@@ -1558,8 +1558,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         buf.append(" WHERE id=?");
 
-        if (columns.hasLastUpdate())
+        if (columns.hasLastUpdate())  // TODO: to be actually reimplemented or removed
             buf.append(" AND last_update=?");
+
+        buf.append("\"");
 
         return buf.toString();
     }
