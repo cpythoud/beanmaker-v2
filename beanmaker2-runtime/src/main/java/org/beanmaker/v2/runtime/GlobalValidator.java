@@ -27,7 +27,10 @@ public class GlobalValidator {
                         id,
                         dbBeanLocalization.getBadFormatErrorMessage(result.getLabelName(), result.getLabelParameters())
                 );
-                ok = false;
+                if (result.continueOnError())
+                    ok = false;
+                else
+                    return false;
             }
         }
         return ok;
