@@ -786,6 +786,19 @@ public abstract class BaseMasterTableView extends TabularView {
         return head;
     }
 
+    protected TheadTag getNoFilterAndSuperTitleHead() {
+        TheadTag head = new TheadTag();
+
+        head.child(getSuperTitleRow());
+        head.child(getTitleRow());
+
+        return head;
+    }
+
+    protected TheadTag getTitleOnlyHead() {
+        return new TheadTag().child(getTitleRow());
+    }
+
     protected TrTag getSuperTitleRow() {
         return getDefautStartSuperTitleRow();
     }
