@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #63");
+        console.info("CCTABLE2: build #64");
 
         // * FILTERING *
 
@@ -136,12 +136,15 @@ let CCTable2 = (function () {
 
     function updateFilteringCounters(instance) {
         const idTable = instance._table.id;
-        const total = document.querySelector('#' + idTable + "_total").textContent;
-        const filteredOut = instance._table.querySelectorAll('tr.' + instance._settings.filteredCssClass).length;
-        const shown = total - filteredOut;
+        const totalElement = document.querySelector('#' + idTable + "_total");
+        if (totalElement) {  // * no need to do any update if summary is not displayed
+            const total = totalElement.textContent;
+            const filteredOut = instance._table.querySelectorAll('tr.' + instance._settings.filteredCssClass).length;
+            const shown = total - filteredOut;
 
-        document.querySelector('#' + idTable + "_shown").textContent = shown.toString();
-        document.querySelector('#' + idTable + "_filtered_out").textContent = filteredOut.toString();
+            document.querySelector('#' + idTable + "_shown").textContent = shown.toString();
+            document.querySelector('#' + idTable + "_filtered_out").textContent = filteredOut.toString();
+        }
     }
 
     function advancedSearch(instance) {
