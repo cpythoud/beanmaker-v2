@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #64");
+        console.info("CCTABLE2: build #65");
 
         // * FILTERING *
 
@@ -120,7 +120,7 @@ let CCTable2 = (function () {
 
     function setCookie($table, col, value) {
         const name = "cctable|" + $table.id + '|' + col;
-        document.cookie = name + "=" + encodeURIComponent(value) + '; secure';
+        document.cookie = name + "=" + encodeURIComponent(value) + '; SameSite=None; Secure';
     }
 
     function removeFiltering(instance) {
