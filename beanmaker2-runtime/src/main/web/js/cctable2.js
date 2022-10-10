@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #65");
+        console.info("CCTABLE2: build #66");
 
         // * FILTERING *
 
@@ -478,6 +478,7 @@ let CCTable2 = (function () {
         });
 
         createEventListeners(this);
+        zebra(this);
     }
 
     return Constructor;
