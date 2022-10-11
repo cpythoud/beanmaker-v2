@@ -50,6 +50,7 @@ public abstract class BaseMasterTableView extends TabularView {
 
     protected String removeFilteringIcon = "remove-circle";
     protected String formElementFilterCssClass = "tb-filter";
+    protected int inputTagSize = 0;
     protected String removeFilteringLinkCssClass = "tb-nofilter";
     protected Tag removeFilteringHtmlTags() {
         return new SpanTag()
@@ -325,12 +326,15 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected ThTag getStringFilterCell(String name) {
-        return getTableFilterCell().child(
-                new InputTag(InputTag.InputType.TEXT)
-                        .name("tb-" + name)
-                        .cssClass(formElementFilterCssClass)
-                        .attribute("autocomplete", "off")
-        );
+        var filter = new InputTag(InputTag.InputType.TEXT)
+                .name("tb-" + name)
+                .cssClass(formElementFilterCssClass)
+                .attribute("autocomplete", "off");
+
+        if (inputTagSize > 0)
+            filter.size(inputTagSize);
+
+        return getTableFilterCell().child(filter);
     }
 
     protected ThTag getBooleanFilterCell(String name) {
