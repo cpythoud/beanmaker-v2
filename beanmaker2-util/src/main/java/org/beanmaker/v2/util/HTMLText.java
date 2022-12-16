@@ -120,4 +120,20 @@ public class HTMLText {
         return result.toString();
     }
 
+    /**
+     * Replace all newlines in a string by the html tag &lt;br&gt;
+     * @param string to be converted
+     * @return a string with all new lines replaced by the &lt;br&gt; tag
+     */
+    public static String linefeed2br(String string) {
+        String[] lines = string.split("\\\n");
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < lines.length - 1; i++) {
+            buf.append(lines[i]);
+            buf.append("<br/>");
+        }
+        buf.append(lines[lines.length - 1]);
+        return buf.toString();
+    }
+
 }
