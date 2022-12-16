@@ -776,16 +776,23 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             javaClass.addContent(conversionFunction).addContent(EMPTY_LINE);
     }
 
-    private Assignment getConversionOperation(Column column) {
+    private JavaCodeBlock getConversionOperation(Column column) {
         String type = column.getJavaType();
         String name = column.getJavaName();
         String nameStr = name + "Str";
+        boolean required = column.isRequired();
 
         switch (type) {
             case "Integer":
-                return new Assignment(name, getNumericConversion("getIntVal", nameStr));
+                var intAssignment = new Assignment(name, getNumericConversion("getIntVal", nameStr));
+                if (required)
+                    return intAssignment;
+                return nullIfEmptyOrValueAssignmentTest(name, nameStr, intAssignment);
             case "Long":
-                return new Assignment(name, getNumericConversion("getLongVal", nameStr));
+                var longAssignment =  new Assignment(name, getNumericConversion("getLongVal", nameStr));
+                if (required)
+                    return longAssignment;
+                return nullIfEmptyOrValueAssignmentTest(name, nameStr, longAssignment);
             case "Date":
             case "Time":
             case "Timestamp":
@@ -795,6 +802,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         }
 
         throw new AssertionError("No processing defined for type: " + type);
+    }
+
+    private IfBlock nullIfEmptyOrValueAssignmentTest(String name, String nameStr, Assignment valueAssignement) {
+        return new IfBlock(new Condition(new FunctionCall("isEmpty", "Strings").addArgument(nameStr)))
+                .addContent(new Assignment(name, "null"))
+                .elseClause(new ElseBlock().addContent(valueAssignement));
     }
 
     private FunctionCall getNumericConversion(String conversionFunction, String nameStr) {
