@@ -367,13 +367,14 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
             if (!column.isSpecial()) {
                 String name = column.getJavaName();
                 String capName = capitalize(name);
+                String choppedIdName = name.substring(2);
                 if (column.isLabelReference())
                     allFieldsSetterFunction.addContent(new ForEach(
                             "DbBeanLanguage",
                             "dbBeanLanguage",
                             new FunctionCall("getAllActiveLanguages", "LabelManager"))
                             .addContent(new VarDeclaration("String", "iso", new FunctionCall("getCapIso", "dbBeanLanguage")))
-                            .addContent(new FunctionCall("setLabel", editorObject)
+                            .addContent(new FunctionCall("set" + choppedIdName, editorObject)
                                     .byItself()
                                     .addArgument("dbBeanLanguage")
                                     .addArgument(new FunctionCall("getValue", "parameters")
@@ -382,7 +383,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                     allFieldsSetterFunction
                             .addContent(
                                     new IfBlock(new Condition(new FunctionCall("hasFileItem", "parameters").addArgument(quickQuote(name))))
-                                            .addContent(new FunctionCall("setFile", editorObject)
+                                            .addContent(new FunctionCall("set" + choppedIdName, editorObject)
                                                     .byItself()
                                                     .addArgument(new FunctionCall("create", "dbBeanFileCreator")
                                                             .addArgument(new FunctionCall("getOrCreateEditor", "LocalFileManager")
