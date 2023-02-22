@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Ids {
@@ -25,15 +24,15 @@ public class Ids {
     }
 
     public static long getIdFromParameterName(String parameterName) {
-        return Long.valueOf(getProtectionCodeFromParameterName(parameterName));
+        return Long.parseLong(getProtectionCodeFromParameterName(parameterName));
     }
 
     public static long getIdFromParameterName(String parameterName, String separatorRegex) {
-        return Long.valueOf(getProtectionCodeFromParameterName(parameterName, separatorRegex));
+        return Long.parseLong(getProtectionCodeFromParameterName(parameterName, separatorRegex));
     }
 
     public static <T extends DbBeanInterface> Set<Long> getIdSet(Collection<T> beans) {
-        return getIdSet(beans, new HashSet<Long>());
+        return getIdSet(beans, new HashSet<>());
     }
 
     public static <T extends DbBeanInterface> Set<Long> getIdSet(Collection<T> beans, Set<Long> set) {
@@ -47,8 +46,7 @@ public class Ids {
             Collection<T> beans,
             String separator)
     {
-
-        List<Long> ids = new ArrayList<Long>(getIdSet(beans));
+        var ids = new ArrayList<>(getIdSet(beans));
 
         Collections.sort(ids);
 
@@ -56,7 +54,7 @@ public class Ids {
     }
 
     public static Set<Long> getIdSet(String aggregatedIds, String separator, boolean lenient) {
-        Set<Long> set = new HashSet<Long>();
+        var set = new HashSet<Long>();
 
         int index = 0;
         for (String val: aggregatedIds.split(separator)) {
@@ -75,4 +73,5 @@ public class Ids {
 
         return set;
     }
+
 }
