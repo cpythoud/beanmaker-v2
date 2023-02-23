@@ -42,7 +42,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
         importsManager.addImport("java.util.List");
         importsManager.addImport("java.util.stream.Collectors");
 
-        if (columns.hasLabelField())
+        if (columns.hasLabels())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLanguage");
     }
 
