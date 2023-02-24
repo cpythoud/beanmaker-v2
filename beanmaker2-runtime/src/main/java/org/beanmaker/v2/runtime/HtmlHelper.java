@@ -11,7 +11,7 @@ public class HtmlHelper {
         if (beans.isEmpty())
             throw new IllegalArgumentException("Cannot create HTML list from empty list of beans");
 
-        final UlTag list = new UlTag();
+        var list = new UlTag();
 
         for (B bean: beans)
             list.child(new LiTag(bean.getDisplayName()));
@@ -26,11 +26,26 @@ public class HtmlHelper {
         if (beans.isEmpty())
             throw new IllegalArgumentException("Cannot create HTML list from empty list of beans");
 
-        final UlTag list = new UlTag();
+        var list = new UlTag();
 
         for (B bean: beans)
             list.child(new LiTag(bean.getDisplayName(dbBeanLanguage)));
 
         return list;
     }
+
+    public static int nullToZeroConversion(Integer intValue) {
+        if (intValue == null)
+            return 0;
+
+        return intValue;
+    }
+
+    public static long nullToZeroConversion(Long longValue) {
+        if (longValue == null)
+            return 0L;
+
+        return longValue;
+    }
+
 }
