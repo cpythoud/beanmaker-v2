@@ -349,6 +349,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addCoreFunctionality() {
+        addToBeanFunctions();
         addToStringFunction();
         addSetters();
         addGetters();
@@ -361,6 +362,28 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addDataValidationFunctions();
         addResetFunctions();
         addDatabaseFunctions();
+    }
+
+    private void addToBeanFunctions() {
+        String functionName = "to" + beanName;
+        javaClass.addContent(
+                new FunctionDeclaration(functionName, beanName)
+                        .visibility(Visibility.PUBLIC)
+                        .addContent(new ReturnStatement(new FunctionCall(functionName).addArgument("null")))
+        ).addContent(EMPTY_LINE).addContent(
+                new FunctionDeclaration(functionName, beanName)
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(
+                                new IfBlock(new Condition("id == 0"))
+                                        .addContent(ExceptionThrow.getThrowExpression(
+                                                "IllegalStateException",
+                                                "Cannot create bean from uncommited data"))
+                        )
+                        .addContent(EMPTY_LINE)
+                        .addContent(new ReturnStatement(new ObjectCreation(beanName)
+                                .addArguments("id", "transaction")))
+        ).addContent(EMPTY_LINE);
     }
 
     private void addToStringFunction() {
