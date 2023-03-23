@@ -4,6 +4,7 @@ import org.beanmaker.v2.util.Strings;
 
 import org.jcodegen.html.ButtonTag;
 import org.jcodegen.html.InputTag;
+import org.jcodegen.html.SpanTag;
 import org.jcodegen.html.Tag;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class HFHParameters {
 
@@ -48,6 +50,7 @@ public class HFHParameters {
     private String functionName;
     private String cssClasses;
     private String buttonLabel;
+    private String buttonActionSpanClass;
 
     // yes/no radio buttons
     private String yesLabel;
@@ -118,6 +121,7 @@ public class HFHParameters {
         functionName = params.functionName;
         cssClasses = params.cssClasses;
         buttonLabel = params.buttonLabel;
+        buttonActionSpanClass = params.buttonActionSpanClass;
 
         // yes/no radio buttons
         yesLabel = params.yesLabel;
@@ -464,6 +468,23 @@ public class HFHParameters {
         this.buttonLabel = buttonLabel;
 
         return this;
+    }
+
+    public String getButtonActionSpanClass() {
+        return buttonActionSpanClass;
+    }
+
+    public HFHParameters setButtonActionSpanClass(String buttonActionSpanClass) {
+        this.buttonActionSpanClass = buttonActionSpanClass;
+
+        return this;
+    }
+
+    public Optional<SpanTag> getButtonActionSpan() {
+        if (buttonActionSpanClass == null)
+            return Optional.empty();
+
+        return Optional.of(new SpanTag().cssClass(buttonActionSpanClass));
     }
 
     public String getYesLabel() {

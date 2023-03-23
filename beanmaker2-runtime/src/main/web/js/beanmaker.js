@@ -1,4 +1,4 @@
-// beanmaker.js -- v0.7.0 -- 2022-05-07
+// beanmaker.js -- v0.7.1 -- 2023-02-23
 
 $.ajaxSetup({cache : false});
 
@@ -63,13 +63,13 @@ BEANMAKER.showErrorMessage = function (idContainer, message, stylesToAdd, styles
 };
 
 BEANMAKER.setLoadingStatus = function ($form) {
-    $form.find('span.loading').addClass('glyphicon glyphicon-refresh spinning');
-    $form.find('button [type="submit"]').disabled = true;
+    $form.find('span.beanmaker_loading').addClass('glyphicons glyphicons-refresh beanmaker_spinning');
+    $form.find('button[type="submit"]').prop('disabled', true);
 };
 
 BEANMAKER.removeLoadingStatus = function ($form) {
-    $form.find('span.loading').removeClass('glyphicon glyphicon-refresh spinning');
-    $form.find('button [type="submit"]').disabled = false;
+    $form.find('span.beanmaker_loading').removeClass('glyphicons glyphicons-refresh beanmaker_spinning');
+    $form.find('button[type="submit"]').prop('disabled', false);
 };
 
 BEANMAKER.ajaxSubmitDefaults = {

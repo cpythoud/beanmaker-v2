@@ -649,10 +649,14 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
     }
 
     public ButtonTag getButtonTag(HFHParameters params) {
-        return new ButtonTag(params.getButtonType())
-                .child(new CData(params.getButtonLabel()))
+        var button = new ButtonTag(params.getButtonType())
                 .id(getHtmlId(params.getBeanName() + "_" + params.getFunctionName(), params.getIdBean()))
                 .cssClass(params.getCssClasses());
+
+        params.getButtonActionSpan().ifPresent(button::child);
+        button.child(new CData(params.getButtonLabel()));
+
+        return button;
     }
 
     @Override

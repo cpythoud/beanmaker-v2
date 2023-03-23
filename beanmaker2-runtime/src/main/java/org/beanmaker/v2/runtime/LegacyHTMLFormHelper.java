@@ -749,11 +749,15 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setCssClasses(cssClasses));
     }
 
-    public ButtonTag getButtonTag(final HFHParameters params) {
-        return new ButtonTag(params.getButtonType())
-                .child(new CData(params.getButtonLabel()))
+    public ButtonTag getButtonTag(HFHParameters params) {
+        var button = new ButtonTag(params.getButtonType())
                 .id(getHtmlId(params.getBeanName() + "_" + params.getFunctionName(), params.getIdBean()))
                 .cssClass(params.getCssClasses());
+
+        params.getButtonActionSpan().ifPresent(button::child);
+        button.child(new CData(params.getButtonLabel()));
+
+        return button;
     }
 
     public Tag getSubmitButton(final String beanName, final long id, final String buttonLabel) {
