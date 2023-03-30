@@ -3,6 +3,7 @@ package org.beanmaker.v2.runtime;
 import java.text.Collator;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class IdNamePair implements Comparable<IdNamePair> {
@@ -126,12 +127,40 @@ public class IdNamePair implements Comparable<IdNamePair> {
 			pairs.add(new IdNamePair(bean.getId(), bean.getNameForIdNamePairsAndTitles(dbBeanLanguage)));
 
 		if (sortOnName)
-			pairs.sort(Collator.getInstance(dbBeanLanguage.getLocale()));
+			pairs.sort(new IdNamePairLocalizedComparator(dbBeanLanguage));
 
 		if (noSelectionText != null)
 			pairs.add(0, new IdNamePair(0, noSelectionText));
 
 		return pairs;
+	}
+
+	static class IdNamePairLocalizedComparator implements Comparator<IdNamePair> {
+
+		private final Collator collator;
+
+		IdNamePairLocalizedComparator(DbBeanLanguage dbBeanLanguage) {
+			collator = Collator.getInstance(dbBeanLanguage.getLocale());
+		}
+
+		@Override
+		public int compare(IdNamePair pair1, IdNamePair pair2) {
+			// ! Assumes only one "please select ..." element with id "0", throws an IllegalStateException otherwise.
+
+			if (pair1 == pair2)
+				return 0;
+
+			if (pair1.id.equals("0") && pair2.id.equals("0"))
+				throw new IllegalStateException("More than one 'please select' field in IdNamePair collection.");
+
+			if (pair1.id.equals("0"))
+				return -1;
+			if (pair2.id.equals("0"))
+				return 1;
+
+			return collator.compare(pair1.name, pair2.name);
+		}
+
 	}
 
 }
