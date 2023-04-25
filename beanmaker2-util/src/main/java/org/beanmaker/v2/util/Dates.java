@@ -663,4 +663,18 @@ public class Dates {
                 + " " + getHours(time) + ":" + getMinutes(time) + ":" + getSeconds(time);
         return getTimestampFromYYMD(timeString, "-", ":");
     }
+
+    public static Date changeYear(Date date, int year) {
+        String monthDayPart = date.toString().substring(4);
+        if (monthDayPart.equals("-02-29") && !isLeapYear(year))
+            monthDayPart = "-02-28";
+        return getDateFromYYMD(year + monthDayPart, "-");
+    }
+
+    public static boolean isLeapYear(int year) {
+        if (year % 400 == 0)
+            return true;
+        return year % 4 == 0 && !(year % 100 == 0);
+    }
+
 }
