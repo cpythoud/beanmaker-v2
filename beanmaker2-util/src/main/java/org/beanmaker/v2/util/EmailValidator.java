@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
  * Restrictions: the legitimate e-mail addresses with the following characteristics will not validate using
  * this class: any e-mail comprising unicode characters, any e-mail with quoted or escaped characters.
  */
+@Deprecated
 public class EmailValidator {
 
     /**
