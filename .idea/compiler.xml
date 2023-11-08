@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="beanmaker2-runtime" />
         <module name="beanmaker2-util" />
+        <module name="beanmaker2-console" />
         <module name="beanmaker2-codegen" />
       </profile>
     </annotationProcessing>
