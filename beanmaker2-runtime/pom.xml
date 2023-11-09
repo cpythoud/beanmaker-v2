@@ -50,6 +50,10 @@
             <groupId>rodeo.password</groupId>
             <artifactId>password-rodeo</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -9,6 +9,7 @@ module org.beanmaker.v2.runtime {
     requires rodeo.password.pgencheck;
 
     requires commons.fileupload;
+    requires org.apache.commons.csv;
 
     exports org.beanmaker.v2.runtime;
     exports org.beanmaker.v2.runtime.dbutil;
