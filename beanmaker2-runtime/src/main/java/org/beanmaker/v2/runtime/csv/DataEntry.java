@@ -16,11 +16,15 @@ public class DataEntry {
         return lineNumber;
     }
 
-    public String getStringData(String header) {
+    public String getStringValue(String header) {
         String result = data.get(header);
         if (result == null)
             throw new IllegalArgumentException("No such column: " + header);
         return result;
+    }
+
+    public long getLongValue(String header) {
+        return Long.parseLong(getStringValue(header));
     }
 
     // TODO: code other data types (numeric, bean reference, etc.)
