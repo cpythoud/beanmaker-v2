@@ -146,8 +146,16 @@ public class Column {
         return javaType;
     }
 
+    public String getCapitalizedJavaType() {
+        return Strings.capitalize(javaType);
+    }
+
     public String getJavaName() {
         return javaName;
+    }
+
+    public String getCapitalizedJavaName() {
+        return Strings.capitalize(javaName);
     }
 
     public boolean isRequired() {
