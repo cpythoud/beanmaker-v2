@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class Columns {
+public class Columns implements Iterable<Column> {
 
     private final DatabaseServer server;
     private final String db;
@@ -475,6 +476,11 @@ public class Columns {
                 return true;
 
         return false;
+    }
+
+    @Override
+    public Iterator<Column> iterator() {
+        return columns.iterator();
     }
 
 }
