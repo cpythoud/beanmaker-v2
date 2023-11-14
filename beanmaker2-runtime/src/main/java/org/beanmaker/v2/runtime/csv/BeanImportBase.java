@@ -21,7 +21,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         this.dataFile = dataFile;
         dataEntries = dataFile.parseFile();
         fieldToHeaderMap = createDefaultFieldToHeaderMap(fields);
-        editor = getEditor(editorClass);
+        editor = createEditor(editorClass);
     }
 
     private Map<String, String> createDefaultFieldToHeaderMap(String... fields) {
@@ -31,7 +31,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         return map;
     }
 
-    private DbBeanEditor getEditor(Class<?> editorClass) {
+    private DbBeanEditor createEditor(Class<?> editorClass) {
         DbBeanEditor editor;
         try {
             var constructor = editorClass.getConstructor();
@@ -52,6 +52,10 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     protected Map<String, String> getFieldToHeaderMap() {
         return fieldToHeaderMap;
+    }
+
+    protected DbBeanEditor getEditor() {
+        return editor;
     }
 
     public void importData(DBTransaction dbTransaction) {
