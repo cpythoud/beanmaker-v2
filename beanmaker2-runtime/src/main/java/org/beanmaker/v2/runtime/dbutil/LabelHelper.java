@@ -1,7 +1,10 @@
 package org.beanmaker.v2.runtime.dbutil;
 
+import org.beanmaker.v2.runtime.DbBeanLabel;
+import org.beanmaker.v2.runtime.DbBeanLabelEditor;
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
+import org.beanmaker.v2.util.Dates;
 import org.beanmaker.v2.util.Strings;
 
 import org.dbbeans.sql.DBAccess;
@@ -9,7 +12,12 @@ import org.dbbeans.sql.DBQueryRetrieveData;
 import org.dbbeans.sql.DBQuerySetup;
 import org.dbbeans.sql.DBTransaction;
 
+import rodeo.password.pgencheck.PasswordMaker;
+
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import java.sql.SQLException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,15 +25,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static rodeo.password.pgencheck.CharacterGroups.DIGITS;
+import static rodeo.password.pgencheck.CharacterGroups.LOWER_CASE;
+import static rodeo.password.pgencheck.CharacterGroups.UPPER_CASE;
+
 public class LabelHelper {
+
+    private static final String DEFAULT_AUTO_LABEL_NAME_PREFIX = "XXX-";
+
+    private static final PasswordMaker LABEL_CODE_EXTRA_CHARS = PasswordMaker
+            .factory()
+            .addCharGroup(LOWER_CASE, 1)
+            .addCharGroup(UPPER_CASE, 1)
+            .addCharGroup(DIGITS, 1)
+            .setLength(6)
+            .create();
+
+    private final String labelTable;
+    private final String labelDataTable;
+    private final String labelAutoNamePrefix;
 
     private final String idBasedDataQuery;
     private final String idFromNameQuery;
-
+    private final String labelDataQuery;
 
     public LabelHelper(String labelTable, String labelDataTable) {
+        this(labelTable, labelDataTable, DEFAULT_AUTO_LABEL_NAME_PREFIX);
+    }
+
+    public LabelHelper(String labelTable, String labelDataTable, String labelAutoNamePrefix) {
+        this.labelTable = labelTable;
+        this.labelDataTable = labelDataTable;
+        this.labelAutoNamePrefix = labelAutoNamePrefix;
+
         idBasedDataQuery = "SELECT `data` FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
         idFromNameQuery = "SELECT id FROM " + labelTable + " WHERE `name`=?";
+        labelDataQuery = "SELECT data FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
     }
 
     public String get(DBAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
@@ -49,7 +84,14 @@ public class LabelHelper {
         );
     }
 
-    private String processParameters(String text, List<Object> parameters) {
+    public String processParameters(String text, Object... parameters) {
+        if (parameters == null || parameters.length == 0)
+            return text;
+
+        return processParameters(text, Arrays.asList(parameters));
+    }
+
+    public String processParameters(String text, List<Object> parameters) {
         if (text == null)
             return null;
         if (parameters.isEmpty())
@@ -101,7 +143,7 @@ public class LabelHelper {
         );
     }
 
-    private String processParameters(String text, Map<String, Object> parameters) {
+    public String processParameters(String text, Map<String, Object> parameters) {
         if (text == null)
             return null;
         if (parameters.isEmpty())
@@ -224,6 +266,175 @@ public class LabelHelper {
                 stat -> stat.setString(1, name),
                 getIdOrThrow(name)
         );
+    }
+
+    public void updateValues(DBTransaction transaction, DbBeanLabel label, Map<DbBeanLanguage, String> values) {
+        for (var value: values.entrySet())
+            transaction.addUpdate(
+                    "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
+                    stat -> {
+                        stat.setLong(1, label.getId());
+                        stat.setLong(2, value.getKey().getId());
+                        stat.setString(3, value.getValue());
+                    }
+            );
+    }
+
+    public long createLabel(DBTransaction transaction, Map<DbBeanLanguage, String> values) {
+        long id = transaction.addRecordCreation(
+                "INSERT INTO " + labelTable + " (name) VALUES (?)",
+                stat -> {
+                    stat.setString(1, createUniqueLabelName());
+                }
+        );
+        for (var value: values.entrySet()) {
+            transaction.addUpdate(
+                    "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
+                    stat -> {
+                        stat.setLong(1, id);
+                        stat.setLong(2, value.getKey().getId());
+                        stat.setString(3, value.getValue());
+                    }
+            );
+        }
+        return id;
+    }
+
+    public void quickUpdate(DBAccess dbAccess, DbBeanLabel label, DbBeanLanguage language, String value) {
+        int count = dbAccess.processUpdate(
+                "UPDATE " + labelDataTable + " SET data=? WHERE id_label=? AND id_language=?",
+                stat -> {
+                    stat.setString(1, value);
+                    stat.setLong(2, label.getId());
+                    stat.setLong(3, language.getId());
+                }
+        );
+
+        if (count == 0)
+            dbAccess.processUpdate(
+                    "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
+                    stat -> {
+                        stat.setLong(1, label.getId());
+                        stat.setLong(2, language.getId());
+                        stat.setString(3, value);
+                    }
+            );
+    }
+
+    public void quickUpdate(DBTransaction transaction, DbBeanLabel label, DbBeanLanguage language, String value) {
+        int count = transaction.addUpdate(
+                "UPDATE " + labelDataTable + " SET data=? WHERE id_label=? AND id_language=?",
+                stat -> {
+                    stat.setString(1, value);
+                    stat.setLong(2, label.getId());
+                    stat.setLong(3, language.getId());
+                }
+        );
+
+        if (count == 0)
+            transaction.addUpdate(
+                    "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
+                    stat -> {
+                        stat.setLong(1, label.getId());
+                        stat.setLong(2, language.getId());
+                        stat.setString(3, value);
+                    }
+            );
+    }
+
+    public long quickCreate(DBTransaction transaction, DbBeanLanguage language, String value) {
+        long id = transaction.addRecordCreation(
+                "INSERT INTO " + labelTable + " (name) VALUES (?)",
+                stat -> {
+                    stat.setString(1, createUniqueLabelName());
+                }
+        );
+        transaction.addUpdate(
+                "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
+                stat -> {
+                    stat.setLong(1, id);
+                    stat.setLong(2, language.getId());
+                    stat.setString(3, value);
+                }
+        );
+        return id;
+    }
+
+    public String createUniqueLabelName() {
+        return labelAutoNamePrefix + Dates.getMeaningfulTimeStamp() + "-" + LABEL_CODE_EXTRA_CHARS.create();
+    }
+
+    public void cacheLabelsFromDB(
+            DBAccess dbAccess,
+            DbBeanLabelEditor labelEditor,
+            List<DbBeanLanguage> languages,
+            Map<DbBeanLanguage,String> cache)
+    {
+        if (labelEditor.getId() == 0)
+            throw new IllegalArgumentException("Cannot cache labels for a record not yet in the database.");
+
+        cache.clear();
+
+        dbAccess.processQueries(
+                labelDataQuery,
+                stat -> {
+                    updateCache(stat, labelEditor, languages, cache);
+                });
+    }
+
+    public void cacheLabelsFromDB(
+            DBTransaction transaction,
+            DbBeanLabelEditor labelEditor,
+            List<DbBeanLanguage> languages,
+            Map<DbBeanLanguage,String> cache)
+    {
+        if (labelEditor.getId() == 0)
+            throw new IllegalArgumentException("Cannot cache labels for a record not yet in the database.");
+
+        cache.clear();
+
+        transaction.addQueries(
+                labelDataQuery,
+                stat -> {
+                    updateCache(stat, labelEditor, languages, cache);
+                });
+    }
+
+    private void updateCache(
+            PreparedStatement stat,
+            DbBeanLabelEditor labelEditor,
+            List<DbBeanLanguage> languages,
+            Map<DbBeanLanguage,String> cache)
+            throws SQLException
+    {
+        stat.setLong(1, labelEditor.getId());
+        for (var language: languages) {
+            stat.setLong(2, language.getId());
+            ResultSet rs = stat.executeQuery();
+            if (rs.next())
+                cache.put(language, rs.getString(1));
+        }
+    }
+
+    public void updateTextValues(DBTransaction transaction, long idLabel, Map<DbBeanLanguage, String> values) {
+        transaction.addUpdate(
+                "DELETE FROM " + labelDataTable + " WHERE id_label=?",
+                stat -> stat.setLong(1, idLabel)
+        );
+
+        if (!values.isEmpty()) {
+            transaction.addUpdates(
+                    "INSERT INTO " + labelDataTable + " (id_label, id_language, `data`) VALUES (?, ?, ?)",
+                    stat -> {
+                        stat.setLong(1, idLabel);
+                        for (var language : values.keySet()) {
+                            stat.setLong(2, language.getId());
+                            stat.setString(3, values.get(language));
+                            stat.executeUpdate();
+                        }
+                    }
+            );
+        }
     }
 
 }

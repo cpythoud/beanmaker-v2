@@ -29,7 +29,6 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addImports() {
-        importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditor");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.BeanImportBase");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.DataEntry");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.DataFile");
@@ -77,9 +76,8 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
     private void addSetFieldsFunction() {
         var function = new FunctionDeclaration("setFields")
                 .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("DbBeanEditor", "dbBeanEditor"))
                 .addArgument(new FunctionArgument("DataEntry", "dataEntry"))
-                .addContent(new VarDeclaration("var", "editor", "(" + beanName + "Editor) dbBeanEditor"));
+                .addContent(new VarDeclaration("var", "editor", "(" + beanName + "Editor) getEditor()"));
 
         for (var column: columns) {
             if (!column.isId()) {

@@ -54,7 +54,9 @@ public class LabelManagerSourceFile extends BaseCode {
     @Override
     protected void addCoreFunctionality() {
         addNonImplementedStaticFunction("DbBeanLabel", "get", ID_ARG);
+        addNonImplementedStaticFunction("DbBeanLabel", "get", ID_ARG, TRANSACTION_ARG);
         addNonImplementedStaticFunction("DbBeanLabelEditor", "getEditor", ID_ARG);
+        addNonImplementedStaticFunction("DbBeanLabelEditor", "getEditor", ID_ARG, TRANSACTION_ARG);
         addNonImplementedStaticFunction("DbBeanLabel", "get", NAME_ARG);
         addNonImplementedStaticFunction("boolean", "isIdOK", ID_ARG);
         addNonImplementedStaticFunction("boolean", "isIdOK", ID_ARG, TRANSACTION_ARG);

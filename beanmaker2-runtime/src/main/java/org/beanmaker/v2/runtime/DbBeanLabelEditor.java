@@ -5,8 +5,10 @@ import org.dbbeans.sql.DBTransaction;
 public interface DbBeanLabelEditor extends DbBeanLabel {
 
     void setId(long id);
+    void setId(long id, DBTransaction transaction);
 
     void cacheLabelsFromDB();
+    void cacheLabelsFromDB(DBTransaction transaction);
     void clearCache();
 
     void updateLater(DbBeanLanguage dbBeanLanguage, String text);

@@ -305,6 +305,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 initFunction.addContent(new Assignment("this." + name, name));
         }
 
+        for (var column: columns.getLabels())
+            initFunction.addContent(new Assignment(uncapitalize(chopID(column.getJavaName())), "null"));
+
         javaClass.addContent(initFunction).addContent(EMPTY_LINE);
     }
 
@@ -454,6 +457,11 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new FunctionCall("init" + labelName)
                                 .byItself()))
                 .addContent(EMPTY_LINE)
+                .addContent(getStandardSetterFunctionWithTransaction(column)
+                        .addContent(new FunctionCall("init" + labelName)
+                                .addArgument("transaction")
+                                .byItself()))
+                .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("set" + labelName)
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLabel", "label"))
@@ -462,7 +470,17 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new FunctionCall("set" + capitalize(fieldName))
                                 .byItself()
                                 .addArgument(new FunctionCall("getId", "label"))))
-                .addContent(EMPTY_LINE);
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("set" + labelName)
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("DbBeanLabel", "label"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(checkNonZeroID("label", "DbBeanLabel"))
+                        .addContent(EMPTY_LINE)
+                        .addContent(new FunctionCall("set" + capitalize(fieldName))
+                                .byItself()
+                                .addArgument(new FunctionCall("getId", "label"))
+                                .addArgument("transaction")));
     }
 
     private void addFileSetterFunctions(Column column) {
@@ -618,6 +636,18 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new Assignment("this." + name, name));
     }
 
+    private FunctionDeclaration getStandardSetterFunctionWithTransaction(Column column) {
+        return getStandardSetterFunctionWithTransaction(column.getJavaType(), column.getJavaName());
+    }
+
+    private FunctionDeclaration getStandardSetterFunctionWithTransaction(String type, String name) {
+        return new FunctionDeclaration("set" + capitalize(name))
+                .visibility(Visibility.PUBLIC)
+                .addArgument(new FunctionArgument(type, name))
+                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addContent(new Assignment("this." + name, name));
+    }
+
     private void addGetters() {
         for (Column column: columns.getList())
             if (!column.isId() && !column.isItemOrder())
@@ -652,7 +682,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         String labelNameCap = chopID(idName);
         String labelName = uncapitalize(labelNameCap);
 
-        FunctionDeclaration labelFunction =
+        /*FunctionDeclaration labelFunction =
                 new FunctionDeclaration("get" + chopID(idName), "DbBeanLabel")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new VarDeclaration(
@@ -665,15 +695,18 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(
                                 new FunctionCall("replaceData", "LabelManager")
-                                        .addArguments("dbBeanLabelEditor", labelName)));
+                                        .addArguments("dbBeanLabelEditor", labelName)));*/
 
-        FunctionDeclaration perLanguageLabelFunction =
+        /*FunctionDeclaration perLanguageLabelFunction =
                 new FunctionDeclaration("get" + labelNameCap, "String")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addContent(new FunctionCall("init" + labelNameCap).byItself())
                         .addContent(new ReturnStatement(
-                                new FunctionCall("get", labelName).addArgument("dbBeanLanguage")));
+                                new FunctionCall("get", labelName).addArgument("dbBeanLanguage")));*/
+
+        var labelFunction = getLabelGetterFunction(idName, labelName, false);
+        var perLanguageLabelFunction = getPerLanguageLabelGetterFunction(labelName, labelNameCap, false);
 
         if (idName.equals("idLabel")) {
             labelFunction.annotate("@Override");
@@ -683,8 +716,59 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(labelFunction)
                 .addContent(EMPTY_LINE)
+                .addContent(getLabelGetterFunction(idName, labelName, true))
+                .addContent(EMPTY_LINE)
                 .addContent(perLanguageLabelFunction)
+                .addContent(EMPTY_LINE)
+                .addContent(getPerLanguageLabelGetterFunction(labelName, labelNameCap, true))
                 .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getLabelGetterFunction(String idName, String labelName, boolean transaction) {
+        var labelFunction =
+                new FunctionDeclaration("get" + chopID(idName), "DbBeanLabel")
+                        .visibility(Visibility.PUBLIC);
+
+        var editorGetterFunctionCall = new FunctionCall("getEditor", "LabelManager").addArguments(idName);
+        if (transaction) {
+            labelFunction.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+            editorGetterFunctionCall.addArgument("transaction");
+        }
+
+        labelFunction
+                .addContent(new VarDeclaration(
+                        "DbBeanLabelEditor",
+                        "dbBeanLabelEditor",
+                        editorGetterFunctionCall))
+                .addContent(EMPTY_LINE)
+                .addContent(new IfBlock(new Condition(labelName + " == null"))
+                        .addContent(new ReturnStatement("dbBeanLabelEditor")))
+                .addContent(EMPTY_LINE)
+                .addContent(new ReturnStatement(
+                        new FunctionCall("replaceData", "LabelManager")
+                                .addArguments("dbBeanLabelEditor", labelName)));
+
+        return labelFunction;
+    }
+
+    private FunctionDeclaration getPerLanguageLabelGetterFunction(String labelName, String labelNameCap, boolean transaction) {
+        var perLanguageLabelFunction =
+                new FunctionDeclaration("get" + labelNameCap, "String")
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"));
+
+        var initFunctionCall = new FunctionCall("init" + labelNameCap).byItself();
+        if (transaction) {
+            perLanguageLabelFunction.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+            initFunctionCall.addArgument("transaction");
+        }
+
+        perLanguageLabelFunction
+                .addContent(initFunctionCall)
+                .addContent(new ReturnStatement(
+                        new FunctionCall("get", labelName).addArgument("dbBeanLanguage")));
+
+        return perLanguageLabelFunction;
     }
 
     private void addLabelGetters() {
@@ -758,7 +842,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         String labelName = chopID(fieldName);
         String labelBean = uncapitalize(labelName);
 
-        javaClass
+        /*javaClass
                 .addContent(new FunctionDeclaration("init" + labelName)
                         .visibility(Visibility.PRIVATE)
                         .addContent(new IfBlock(new Condition(labelBean + " == null"))
@@ -772,7 +856,62 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addArgument(new FunctionArgument("String", "text"))
                         .addContent(new FunctionCall("init" + labelName).byItself())
                         .addContent(new FunctionCall("updateLater", labelBean).byItself().addArguments("dbBeanLanguage", "text")))
+                .addContent(EMPTY_LINE);*/
+
+        javaClass
+                .addContent(getInitLabelFunction(fieldName, labelName, labelBean, false))
+                .addContent(EMPTY_LINE)
+                .addContent(getInitLabelFunction(fieldName, labelName, labelBean, true))
+                .addContent(EMPTY_LINE)
+                .addContent(getLabelSetterFunction(labelName,  labelBean, false))
+                .addContent(EMPTY_LINE)
+                .addContent(getLabelSetterFunction(labelName,  labelBean, true))
                 .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getInitLabelFunction(String fieldName, String labelName, String labelBean, boolean transaction) {
+        String functionName = "init" + labelName;
+        var function = new FunctionDeclaration(functionName)
+                .visibility(Visibility.PRIVATE);
+
+        FunctionCall setIdCall = new FunctionCall("setId", labelBean).byItself().addArgument(fieldName);
+        FunctionCall cacheFromDBCall = new FunctionCall("cacheLabelsFromDB", labelBean).byItself();
+        if (transaction) {
+            function.addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                    .addContent(new IfBlock(new Condition("transaction == null"))
+                            .addContent(new FunctionCall(functionName).byItself())
+                            .addContent(new ReturnStatement()))
+                    .addContent(EMPTY_LINE);
+            setIdCall.addArgument("transaction");
+            cacheFromDBCall.addArgument("transaction");
+        }
+
+        function.addContent(new IfBlock(new Condition(labelBean + " == null"))
+                .addContent(new Assignment(labelBean, new FunctionCall("createEditorInstance", "LabelManager")))
+                .addContent(new IfBlock(new Condition(fieldName + " > 0"))
+                        .addContent(setIdCall)
+                        .addContent(cacheFromDBCall)));
+
+        return function;
+    }
+
+    private FunctionDeclaration getLabelSetterFunction(String labelName, String labelBean, boolean transaction) {
+        var function = new FunctionDeclaration("set" + labelName)
+                .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
+                .addArgument(new FunctionArgument("String", "text"));
+
+        var initFunctionCall = new FunctionCall("init" + labelName).byItself();
+        if (transaction) {
+            function.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+            initFunctionCall.addArgument("transaction");
+        }
+
+        function.addContent(initFunctionCall)
+                .addContent(new FunctionCall("updateLater", labelBean)
+                        .byItself()
+                        .addArguments("dbBeanLanguage", "text"));
+
+        return function;
     }
 
     private void addPreUpdateConversionsFunction() {
@@ -873,7 +1012,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         var labels = columns.stream().filter(Column::isLabelReference).toList();
         for (Column label: labels)
-            function.addContent(new FunctionCall("init" + chopID(label.getJavaName())).byItself());
+            function.addContent(new FunctionCall("init" + chopID(label.getJavaName()))
+                    .byItself()
+                    .addArgument("transaction")
+            );
         if (!labels.isEmpty())
             function.addContent(EMPTY_LINE);
 
@@ -1282,7 +1424,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private void addResetFunctions() {
         var labels = columns.getLabels();
 
-        var resetFunction =
+        /*var resetFunction =
                 new FunctionDeclaration("reset").annotate("@Override").visibility(Visibility.PUBLIC);
 
         if (!labels.isEmpty()) {
@@ -1330,7 +1472,11 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionCall("clearErrorMessages", "dbBeanLocalization").byItself());
 
-        javaClass.addContent(resetFunction).addContent(EMPTY_LINE);
+        javaClass.addContent(resetFunction).addContent(EMPTY_LINE);*/
+
+        javaClass.addContent(getResetFunction(labels, false)).addContent(EMPTY_LINE);
+        if (!labels.isEmpty())
+            javaClass.addContent(getResetFunction(labels, true)).addContent(EMPTY_LINE);
 
         if (columns.hasItemOrder() || !labels.isEmpty()) {
             var fullResetFunction = new FunctionDeclaration("fullReset")
@@ -1351,6 +1497,65 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
             javaClass.addContent(fullResetFunction).addContent(EMPTY_LINE);
         }
+    }
+
+    private FunctionDeclaration getResetFunction(List<Column> labels, boolean transaction) {
+        var resetFunction =
+                new FunctionDeclaration("reset").annotate("@Override").visibility(Visibility.PUBLIC);
+
+        if (transaction)
+            resetFunction.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        if (!labels.isEmpty()) {
+            for (Column label: labels) {
+                var initLabelFunctionCall = new FunctionCall("init" + chopID(label.getJavaName())).byItself();
+                if (transaction)
+                    initLabelFunctionCall.addArgument("transaction");
+                resetFunction.addContent(initLabelFunctionCall);
+            }
+            resetFunction.addContent(EMPTY_LINE);
+        }
+
+        for (Column column: columns.getList()) {
+            if (!column.isId() && !column.isItemOrder()) {
+                String type = column.getJavaType();
+                String name = column.getJavaName();
+                switch (type) {
+                    case "long":
+                        resetFunction.addContent(new Assignment(name, "0"));
+                        break;
+                    case "Boolean":
+                        resetFunction.addContent(new Assignment(name, "null"));
+                        break;
+                    case "Integer":
+                    case "Long":
+                    case "Date":
+                    case "Time":
+                    case "Timestamp":
+                    case "Money":
+                        resetFunction.addContent(new Assignment(name, "null"));
+                        resetFunction.addContent(new Assignment(name + "Str", EMPTY_STRING));
+                        break;
+                    case "String":
+                        resetFunction.addContent(new Assignment(name, EMPTY_STRING));
+                        break;
+                    default:
+                        throw new AssertionError("Unknown type: " + type);
+                }
+            }
+        }
+
+        if (!labels.isEmpty()) {
+            resetFunction.addContent(EMPTY_LINE);
+            for (Column label: labels)
+                resetFunction.addContent(new FunctionCall("clearCache", uncapitalize(chopID(label.getJavaName()))).byItself());
+        }
+
+        resetFunction
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionCall("clearErrorMessages", "dbBeanLocalization").byItself());
+
+        return resetFunction;
     }
 
     private void addDatabaseFunctions() {
@@ -1480,7 +1685,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         var labels = columns.getLabels();
         for (Column label: labels)
-            function.addContent(new FunctionCall("init" + chopID(label.getJavaName())).byItself());
+            function.addContent(new FunctionCall("init" + chopID(label.getJavaName()))
+                    .byItself()
+                    .addArgument("transaction"));
         for (Column label: labels)
             function.addContent(getUpdateLabelFunctionCall(label));
 
@@ -1533,7 +1740,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new FunctionCall("set" + capitalize(name))
                 .byItself()
                 .addArgument(new FunctionCall("updateDB", uncapitalize(chopID(name)))
-                        .addArgument("transaction"));
+                        .addArgument("transaction"))
+                .addArgument("transaction");
     }
 
     private OperatorExpression getItemOrderPlusOneExpression(FunctionCall functionCall) {

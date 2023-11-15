@@ -93,6 +93,10 @@ public abstract class DbBeanEditor {
 
     public abstract void reset();
 
+    public void reset(DBTransaction transaction) {
+        reset();
+    }
+
     public void fullReset() {
         reset();
         id = 0;

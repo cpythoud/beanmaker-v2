@@ -17,6 +17,8 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
     private final Map<String, String> fieldToHeaderMap;
     private final DbBeanEditor editor;
 
+    private DBTransaction dbTransaction;
+
     public BeanImportBase(DataFile dataFile, Class<?> editorClass, String... fields) {
         this.dataFile = dataFile;
         dataEntries = dataFile.parseFile();
@@ -58,12 +60,18 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         return editor;
     }
 
+    protected DBTransaction getDbTransaction() {
+        return dbTransaction;
+    }
+
+    @Override
     public void importData(DBTransaction dbTransaction) {
+        this.dbTransaction = dbTransaction;
         Transactions.wrap(
                 transaction -> {
                     for (var dataEntry: dataEntries) {
-                        setupEditor(transaction, dataEntry);
-                        setFields(editor, dataEntry);
+                        setupEditor(dataEntry);
+                        setFields(dataEntry);
                         editor.updateDB(transaction);
                     }
                 },
@@ -71,18 +79,18 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         );
     }
 
-    protected void setupEditor(DBTransaction transaction, DataEntry dataEntry) {
-        long id = retrieveId(transaction, dataEntry);
+    protected void setupEditor(DataEntry dataEntry) {
+        long id = retrieveId(dataEntry);
         if (id == 0)
             editor.fullReset();
         else
-            editor.setId(id, transaction);
+            editor.setId(id, dbTransaction);
     }
 
-    protected long retrieveId(DBTransaction transaction, DataEntry dataEntry) {
+    protected long retrieveId(DataEntry dataEntry) {
         return dataEntry.getLongValue("id");
     }
 
-    protected abstract void setFields(DbBeanEditor editor, DataEntry dataEntry);
+    protected abstract void setFields(DataEntry dataEntry);
 
 }
