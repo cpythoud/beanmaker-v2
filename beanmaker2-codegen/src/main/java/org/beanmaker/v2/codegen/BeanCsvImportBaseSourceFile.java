@@ -70,6 +70,7 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void addCoreFunctionality() {
         addSetFieldsFunction();
+        addSetters();
         addFieldGetters();
     }
 
@@ -83,14 +84,33 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
             if (!column.isId()) {
                 String fieldName = column.getCapitalizedJavaName();
                 function.addContent(
-                        new FunctionCall("set" + fieldName, "editor")
-                                .addArgument(new FunctionCall("get" + fieldName).addArgument("dataEntry"))
+                        new FunctionCall("set" + fieldName)
+                                .addArguments("editor", "dataEntry")
                                 .byItself()
                 );
             }
         }
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
+    void addSetters() {
+        for (var column: columns) {
+            if (!column.isId()) {
+                String fieldName = column.getCapitalizedJavaName();
+                javaClass.addContent(
+                        new FunctionDeclaration("set" + fieldName)
+                                .addArgument(new FunctionArgument(beanName + "Editor", "editor"))
+                                .addArgument(new FunctionArgument("DataEntry", "dataEntry"))
+                                .addContent(
+                                        new FunctionCall("set" + fieldName, "editor")
+                                                .addArgument(new FunctionCall("get" + fieldName)
+                                                        .addArgument("dataEntry"))
+                                                .byItself()
+                                )
+                ).addContent(EMPTY_LINE);
+            }
+        }
     }
 
     private void addFieldGetters() {
