@@ -120,9 +120,9 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
                         new FunctionDeclaration("get" + column.getCapitalizedJavaName(), column.getJavaType())
                                 .addArgument(new FunctionArgument("DataEntry", "dataEntry"))
                                 .addContent(new ReturnStatement(
-                                        new FunctionCall("get" + column.getCapitalizedJavaType() + "Value", "dataEntry")
-                                                .addArgument(new FunctionCall("get", "getFieldToHeaderMap()")
-                                                        .addArgument(Strings.quickQuote(column.getJavaName())))
+                                        new FunctionCall("get" + column.getCapitalizedJavaType() + "Value")
+                                                .addArgument("dataEntry")
+                                                .addArgument(Strings.quickQuote(column.getJavaName()))
                                 ))
                 ).addContent(EMPTY_LINE);
             }

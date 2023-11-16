@@ -93,4 +93,12 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     protected abstract void setFields(DataEntry dataEntry);
 
+    protected String getStringValue(DataEntry dataEntry, String field) {
+        return dataEntry.getStringValue(fieldToHeaderMap.get(field));
+    }
+
+    protected long getLongValue(DataEntry dataEntry, String field) {
+        return dataEntry.getLongValue(fieldToHeaderMap.get(field));
+    }
+
 }
