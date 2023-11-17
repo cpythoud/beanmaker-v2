@@ -6,4 +6,6 @@ public interface DbBeanCsvImport {
 
     void importData(DBTransaction dbTransaction);
 
+    void importData(DBTransaction dbTransaction, DataValidator validator);
+
 }

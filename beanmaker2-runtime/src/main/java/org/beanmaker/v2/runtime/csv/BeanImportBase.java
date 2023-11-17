@@ -66,13 +66,19 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     @Override
     public void importData(DBTransaction dbTransaction) {
+        importData(dbTransaction, DataValidator.ALWAYS_TRUST);
+    }
+
+    @Override
+    public void importData(DBTransaction dbTransaction, DataValidator validator) {
         this.dbTransaction = dbTransaction;
         Transactions.wrap(
                 transaction -> {
                     for (var dataEntry: dataEntries) {
                         setupEditor(dataEntry);
                         setFields(dataEntry);
-                        editor.updateDB(transaction);
+                        if (validator.validate(editor, dataEntry))
+                            editor.updateDB(transaction);
                     }
                 },
                 dbTransaction
