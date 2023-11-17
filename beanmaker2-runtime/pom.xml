@@ -54,10 +54,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
         </dependency>
-        <dependency>
-            <groupId>rodeo.password</groupId>
-            <artifactId>password-rodeo</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
