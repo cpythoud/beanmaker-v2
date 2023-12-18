@@ -17,6 +17,8 @@
     </description>
     <url>https://github.com/cpythoud/beanmaker-v2</url>
 
+    <!-- DO NOT FORGET TO UPDATE BUILD NUMBER IN Version.java PRIOR TO INSTALLING A NEW VERSION -->
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
