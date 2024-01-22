@@ -97,6 +97,18 @@ public abstract class BaseMasterTableView extends TabularView {
     protected String deleteIcon = "bin";
     protected boolean showEditLinks = false;
 
+    protected String editTooltip = dbBeanLocalization.getLabel("tooltip_edit");
+    protected String deleteTooltip = dbBeanLocalization.getLabel("tooltip_delete");
+
+
+    protected String editLabel() {
+        return editTooltip;
+    }
+
+    protected String deleteLabel() {
+        return deleteTooltip;
+    }
+
     protected String moveUpLabel() {
         return dbBeanLocalization.getLabel("cct_move_up");
     }
@@ -463,11 +475,11 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected TdTag getEditCell(DbBeanInterface bean) {
-        return getEditCell(bean, dbBeanLocalization.getBeanVarName(), dbBeanLocalization.getLabel("tooltip_edit"));
+        return getEditCell(bean, dbBeanLocalization.getBeanVarName(), editLabel());
     }
 
     private TdTag getOperationCell(DbBeanWithItemOrder bean) {
-        return getOperationCell(bean, dbBeanLocalization.getBeanVarName(), dbBeanLocalization.getLabel("tooltip_edit"));
+        return getOperationCell(bean, dbBeanLocalization.getBeanVarName(), editLabel());
     }
 
     protected TdTag getIdTableCell(DbBeanInterface bean) {
@@ -481,7 +493,7 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected TdTag getDeleteCell(DbBeanInterface bean) {
-        return getDeleteCell(bean, dbBeanLocalization.getBeanVarName(), dbBeanLocalization.getLabel("tooltip_delete"));
+        return getDeleteCell(bean, dbBeanLocalization.getBeanVarName(), deleteLabel());
     }
 
     protected TrTag getTableLine(long id) {
