@@ -20,7 +20,8 @@ import static org.beanmaker.v2.util.Strings.uncapitalize;
 public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
 
     private static final List<String> BM_RUNTIME_IMPORTS =
-            createImportList("org.beanmaker.v2.runtime", "ChangeOrderDirection", "DbBeanEditor", "DbBeanHTMLViewInterface");
+            createImportList("org.beanmaker.v2.runtime", "ChangeOrderDirection", "DbBeanEditor",
+                    "DbBeanHTMLViewInterface", "HttpRequestParameters");
 
     public BeanServletBaseSourceFile(String beanName, String packageName, Columns columns) {
         this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);
@@ -37,7 +38,6 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
         addImports(BM_RUNTIME_IMPORTS);
 
         importsManager.addImport("javax.servlet.ServletException");
-        importsManager.addImport("javax.servlet.http.HttpServletRequest");
     }
 
     @Override
@@ -64,7 +64,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                                 .annotate("@Override")
                                 .visibility(Visibility.PROTECTED)
                                 .addArgument(new FunctionArgument("long", "id"))
-                                .addArgument(new FunctionArgument("HttpServletRequest", "request"))
+                                .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"))
                                 .addException("ServletException")
                                 .addContent(VarDeclaration.declareAndInit(editorClass, editorObject))
                                 .addContent(EMPTY_LINE)
@@ -77,7 +77,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                                         new ObjectCreation(beanName + "HTMLView")
                                                 .addArgument(editorObject)
                                                 .addArgument(new FunctionCall("getLanguage")
-                                                        .addArgument(new FunctionCall("getSession", "request"))))))
+                                                        .addArgument(new FunctionCall("getSession", "requestParameters"))))))
                 .addContent(EMPTY_LINE);
     }
 
@@ -87,9 +87,9 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                         new FunctionDeclaration("getSubmitBeanId", "long")
                                 .annotate("@Override")
                                 .visibility(Visibility.PROTECTED)
-                                .addArgument(new FunctionArgument("HttpServletRequest", "request"))
+                                .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"))
                                 .addContent(new ReturnStatement(new FunctionCall("getBeanId")
-                                        .addArguments("request", quickQuote("submitted" + beanName)))))
+                                        .addArguments("requestParameters", quickQuote("submitted" + beanName)))))
                 .addContent(EMPTY_LINE);
     }
 
@@ -112,7 +112,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                 .addArgument(new FunctionArgument("long", "id"))
                 .addArgument(new FunctionArgument("ChangeOrderDirection", "direction"))
                 .addArgument(new FunctionArgument("long", "companionId"))
-                .addArgument(new FunctionArgument("HttpServletRequest", "request"));
+                .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"));
 
         if (columns.hasItemOrder())
             functionDeclaration
@@ -123,7 +123,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                     .addContent(new FunctionCall("setCurrentDbBeanLanguage", "editor")
                             .byItself()
                             .addArgument(new FunctionCall("getLanguage")
-                                    .addArgument(new FunctionCall("getSession", "request"))))
+                                    .addArgument(new FunctionCall("getSession", "requestParameters"))))
                     .addContent(new ReturnStatement(new FunctionCall("changeOrder")
                             .addArgument("editor")
                             .addArgument("direction")

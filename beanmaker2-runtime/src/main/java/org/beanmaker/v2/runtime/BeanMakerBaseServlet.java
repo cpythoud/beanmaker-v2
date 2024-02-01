@@ -52,8 +52,8 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
             return map;
         }
 
-        public static Operation from(HttpServletRequest request) throws ServletException {
-            String paramValue = request.getParameter("beanmaker_operation");
+        public static Operation from(HttpRequestParameters requestParameters) throws ServletException {
+            String paramValue = requestParameters.getValue("beanmaker_operation");
             if (paramValue == null)
                 throw new ServletException("Missing beanmaker_operation parameter");
 
@@ -93,6 +93,10 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         buf.append(" ] }");
 
         return buf.toString();
+    }
+
+    protected long getBeanId(HttpRequestParameters requestParameters, String parameterName) {
+        return Strings.getLongVal(requestParameters.getValue(parameterName));
     }
 
     protected long getBeanId(HttpServletRequest request, String parameterName) {
@@ -222,16 +226,16 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return "<div id='" + idContainer + "' class='" + cssClass + "'></div>";
     }
 
-    protected ChangeOrderDirection getChangeOrderDirection(HttpServletRequest request) throws ServletException {
-        return getChangeOrderDirection(request, "direction");
+    protected ChangeOrderDirection getChangeOrderDirection(HttpRequestParameters requestParameters) throws ServletException {
+        return getChangeOrderDirection(requestParameters, "direction");
     }
 
     protected ChangeOrderDirection getChangeOrderDirection(
-            HttpServletRequest request,
+            HttpRequestParameters requestParameters,
             String parameterName
     ) throws ServletException
     {
-        String direction = request.getParameter(parameterName);
+        String direction = requestParameters.getValue(parameterName);
         if (direction == null)
             throw new ServletException("Missing direction parameter");
 
@@ -324,8 +328,8 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return newBean;
     }
 
-    protected Operation getOperation(HttpServletRequest request) throws ServletException {
-        return Operation.from(request);
+    protected Operation getOperation(HttpRequestParameters requestParameters) throws ServletException {
+        return Operation.from(requestParameters);
     }
 
     protected String getExpectedStringParameter(HttpServletRequest request, String parameterName) throws ServletException {
