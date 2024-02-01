@@ -1,11 +1,11 @@
-// beanmaker.file-upload.js -- v0.1.0 -- 2018-03-10
+// beanmaker.file-upload.js -- v0.1.1 -- 2024-01-31
 
 $(document).ready(function() {
 
-    var $body = $('body');
+    const $body = $('body');
 
     $body.on('change', 'input.file', function () {
-        var id = $(this).attr('id');
+        const id = $(this).attr('id');
         $('#display_' + id)
             .text($(this).val().replace(/C:\\fakepath\\/i, ''));
         $('#remove_' + id).removeClass('hidden');
@@ -13,7 +13,7 @@ $(document).ready(function() {
     });
 
     $body.on('click', '.remove-file', function () {
-        var id = $(this).data('fileinput');
+        const id = $(this).data('fileinput');
         $('#' + id).val('');
         $('#display_' + id).text('(no file)');
         $(this).addClass("hidden");
