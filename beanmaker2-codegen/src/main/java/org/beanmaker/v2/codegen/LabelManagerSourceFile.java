@@ -19,7 +19,7 @@ public class LabelManagerSourceFile extends BaseCode {
             createImportList("java.util", "List", "Map", "Optional");
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DbBeanLabel", "DbBeanLabelBasicFunctions",
-                    "DbBeanLabelEditor", "DbBeanLanguage", "MissingImplementationException");
+                    "DbBeanLabelEditor", "DbBeanLanguage", "MissingImplementationException", "dbutil.LabelHelper");
 
     private static final FunctionArgument ID_ARG = new FunctionArgument("long", "id");
     private static final FunctionArgument NAME_ARG = new FunctionArgument("String", "name");
@@ -80,6 +80,8 @@ public class LabelManagerSourceFile extends BaseCode {
         addReplaceDataFunction();
         addFunctionsWithOptionalResults();
         addBasicFunctionsClass();
+
+        addJavascriptLabelsFunctions();
     }
 
     private void addReplaceDataFunction() {
@@ -160,6 +162,32 @@ public class LabelManagerSourceFile extends BaseCode {
                         .markAsStatic()
                         .addContent(new ReturnStatement("basicFunctions")))
                 .addContent(EMPTY_LINE);
+    }
+
+    private void addJavascriptLabelsFunctions() {
+        javaClass
+                .addContent(getJavascriptLabelsFunction(true))
+                .addContent(EMPTY_LINE)
+                .addContent(getJavascriptLabelsFunction(false))
+                .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getJavascriptLabelsFunction(boolean listArgument) {
+        var declaration = new FunctionDeclaration("getJavascriptLabelFileContent", "String")
+                .visibility(Visibility.PUBLIC)
+                .markAsStatic()
+                .addArgument(new FunctionArgument("String", "objectName"))
+                .addArgument(new FunctionArgument("List<DbBeanLanguage>", "languages"));
+
+        if (listArgument)
+            declaration.addArgument(new FunctionArgument("List<String>", "labelNames"));
+        else
+            declaration.addArgument(new FunctionArgument("String...", "labelNames"));
+
+        return declaration.addContent(
+                new ReturnStatement(
+                        new FunctionCall("getJavascriptLabelMap", "LabelHelper")
+                                .addArguments("objectName", "languages", "LabelManager::get", "labelNames")));
     }
 
 }

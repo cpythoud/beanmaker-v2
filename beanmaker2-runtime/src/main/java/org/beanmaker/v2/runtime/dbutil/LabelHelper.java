@@ -16,7 +16,6 @@ import rodeo.password.pgencheck.PasswordMaker;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
 
 import java.util.Arrays;
@@ -24,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import java.util.function.Function;
 
 import static rodeo.password.pgencheck.CharacterGroups.DIGITS;
 import static rodeo.password.pgencheck.CharacterGroups.LOWER_CASE;
@@ -435,6 +436,54 @@ public class LabelHelper {
                     }
             );
         }
+    }
+
+    public static String getJavascriptLabelMap(
+            String objectName,
+            List<DbBeanLanguage> languages,
+            List<DbBeanLabel> labels)
+    {
+        if (objectName == null || objectName.isEmpty())
+            throw new IllegalArgumentException("Javascript object name cannot be null or empty");
+        if (languages.isEmpty())
+            throw new IllegalArgumentException("Language list cannot be empty");
+        if (labels.isEmpty())
+            throw new IllegalArgumentException("Label list cannot be empty");
+
+        var javascript = new StringBuilder();
+        javascript.append(objectName).append(" = \n{");
+
+        for (var label: labels) {
+            javascript.append("\n    \"").append(label.getName()).append("\" : {");
+            for (var language: languages) {
+                javascript.append("\n        \"").append(language.getIso()).append("\" : \"")
+                        .append(label.get(language)).append("\",");
+            }
+            javascript.deleteCharAt(javascript.length() - 1);
+            javascript.append("\n    },");
+        }
+        javascript.deleteCharAt(javascript.length() - 1);
+
+        javascript.append("\n};");
+        return javascript.toString();
+    }
+
+    public static String getJavascriptLabelMap(
+            String objectName,
+            List<DbBeanLanguage> languages,
+            Function<String, DbBeanLabel> nameToLabel,
+            List<String> labelNames)
+    {
+        return getJavascriptLabelMap(objectName, languages, labelNames.stream().map(nameToLabel).toList());
+    }
+
+    public static String getJavascriptLabelMap(
+            String objectName,
+            List<DbBeanLanguage> languages,
+            Function<String, DbBeanLabel> nameToLabel,
+            String... labelNames)
+    {
+        return getJavascriptLabelMap(objectName, languages, nameToLabel, Arrays.asList(labelNames));
     }
 
 }
