@@ -68,10 +68,14 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
 
         if (htmlView.isDataOK()) {
             htmlView.updateDB();
-            return getJsonOk();
+            return getJsonOk(htmlView);
         }
 
         return getStartJsonErrors() + ErrorMessage.toJson(htmlView.getErrorMessages()) + " }";
+    }
+
+    protected String getJsonOk(DbBeanHTMLViewInterface htmlView) {
+        return getJsonOk();
     }
 
     protected String deleteBean(HttpRequestParameters requestParameters) {
