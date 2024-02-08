@@ -32,7 +32,7 @@ public final class MultiPartPost implements Closeable {
         this(url, DEFAULT_CHARSET, getDefaultBoundary());
     }
 
-    private static String getDefaultBoundary() {
+    public static String getDefaultBoundary() {
         return Long.toHexString(System.currentTimeMillis());
     }
 
@@ -45,9 +45,15 @@ public final class MultiPartPost implements Closeable {
     }
 
     public MultiPartPost(String url, Charset charset, String boundary) throws IOException {
+        this(url, charset, boundary, null);
+    }
+
+    public MultiPartPost(String url, Charset charset, String boundary, String cookie) throws IOException {
         connection = new URL(url).openConnection();
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        if (cookie != null)
+            connection.setRequestProperty("Cookie", cookie);
 
         this.charset = charset;
         this.boundary = boundary;
@@ -62,6 +68,14 @@ public final class MultiPartPost implements Closeable {
         writer.append("Content-Disposition: form-data; name=\"").append(name).append("\"").append(CRLF);
         writer.append("Content-Type: text/plain; charset=").append(charset.name()).append(CRLF);
         writer.append(CRLF).append(value).append(CRLF);
+    }
+
+    public void addFormParameter(String name, Object value) {
+        addFormParameter(name, value.toString());
+    }
+
+    public void addFormParameter(String name, long value) {
+        addFormParameter(name, Long.toString(value));
     }
 
     public void addTextFile(String parameterName, File textFile) throws IOException {
