@@ -1,0 +1,72 @@
+NOUVEL EXPORT EXCEL
+===================
+
+Based on displayed columns on page, with option to include everything
+
+MasterTable
+-----------
+
+Reactivate display of Excel export icon
+
+Add:
+- class tb-filter-row in filters <tr>
+- class tb-title-row  in titles  <tr>
+
+In titles, add properties data-fieldname and data-datatype on the <th>, with possible values for the latter:
+- str (default)
+- int
+- float
+- bool
+- date
+- time
+- timestamp
+
+In fields:
+
+- optional data-spreadsheet, in case the data to appear on the spreadsheet is different than what's shown on screen
+
+
+Javascript
+----------
+
+- integrate in cctable2.js
+
+- data:
+{
+    "fields": [
+        {
+            "field": "field1",
+            "title": "title1",
+            "type": "type1"
+         },
+        {
+            "field": "field2",
+            "title": "title2",
+            "type": "type2"
+         },
+    ],
+    "rows": [
+        {
+            "field1": "value",
+            "field2": "value"
+        },
+        {   
+            "field1": "value",
+            "field2": "value"
+        }
+    ]
+}
+
+
+Beanmaker Runtime
+-----------------
+
+- add Excel op to OperationBaseServlet
+- implementation in a separate, overridable, class in the runtime, DefaultExcelExporter 
+- public ExcelExporter getExcelExporter() { return DEFAULT_EXCEL_EXPORTER } in OperationBaseServlet, can be overriden in BaseServlet
+      
+
+CLI
+---
+
+- options in gc will need to be cumulatives
