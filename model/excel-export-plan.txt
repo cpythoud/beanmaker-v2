@@ -13,15 +13,16 @@ Add:
 - class tb-title-row  in titles  <tr>
 
 In titles, add properties data-fieldname and data-datatype on the <th>, with possible values for the latter:
-- str (default)
-- int
-- float
-- bool
-- date
-- time
-- timestamp
+- str (default)  -> String, Bean references
+- int            -> Integer, Long
+- float          -> (no direct correspondance, but should be available for ad hoc cells)
+- bool           -> Boolean
+- date           -> java.sql.Date
+- time           -> java.sql.Time
+- timestamp      -> java.sql.Timestamp
+- money          -> Money (class from runtime)
 
-In fields:
+In cells:
 
 - optional data-spreadsheet, in case the data to appear on the spreadsheet is different than what's shown on screen
 
@@ -29,7 +30,7 @@ In fields:
 Javascript
 ----------
 
-- integrate in cctable2.js
+- integrated in cctable2.js
 
 - data:
 {
@@ -64,9 +65,10 @@ Beanmaker Runtime
 - add Excel op to OperationBaseServlet
 - implementation in a separate, overridable, class in the runtime, DefaultExcelExporter 
 - public ExcelExporter getExcelExporter() { return DEFAULT_EXCEL_EXPORTER } in OperationBaseServlet, can be overriden in BaseServlet
+- interface ExcelExporter
       
 
 CLI
 ---
 
-- options in gc will need to be cumulatives
+- options in gc will need to be cumulative
