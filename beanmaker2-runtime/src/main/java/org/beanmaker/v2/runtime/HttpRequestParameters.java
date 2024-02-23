@@ -19,6 +19,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 public class HttpRequestParameters {
 
@@ -207,7 +210,7 @@ public class HttpRequestParameters {
                 if (foundFormName)
                     throw new IllegalArgumentException("More than one submittedXXX parameter in request");
 
-                form = param.substring(9, param.length());
+                form = param.substring(9);
                 id = Strings.getLongVal(parameters.get(param));
                 foundFormName = true;
             }
@@ -221,6 +224,26 @@ public class HttpRequestParameters {
 
     public void setParameters(String key, List<String> values) {
         multiValueParameters.put(key, new ArrayList<>(values));
+    }
+
+    public Optional<String> getStringValue(String parameterName) {
+        return Optional.ofNullable(getValue(parameterName));
+    }
+
+    public OptionalInt getIntValue(String parameterName) {
+        String value = getValue(parameterName);
+        if (value == null)
+            return OptionalInt.empty();
+
+        return OptionalInt.of(Integer.parseInt(value));
+    }
+
+    public OptionalLong getLongValue(String parameterName) {
+        String value = getValue(parameterName);
+        if (value == null)
+            return OptionalLong.empty();
+
+        return OptionalLong.of(Long.parseLong(value));
     }
 
 }
