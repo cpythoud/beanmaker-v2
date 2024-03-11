@@ -1,13 +1,18 @@
-<project xmlns = "http://maven.apache.org/POM/4.0.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>beanmaker2</artifactId>
+        <groupId>org.beanmaker</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-    <artifactId>beanmaker2-console</artifactId>
+    <artifactId>beanmaker2-email-smtp</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>BeanMaker V2 Console Utilities</name>
+    <name>BeanMaker V2 SMTP Email library</name>
     <description>
-        BeanMaker Framework Version 2, Console utilities for command line applications
+        BeanMaker Framework Version 2, Email sending utilities, SMTP implementation
     </description>
     <url>https://github.com/cpythoud/beanmaker-v2</url>
 
@@ -16,25 +21,7 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli-jansi-graalvm</artifactId>
-        </dependency>
     </dependencies>
-
-    <parent>
-        <groupId>org.beanmaker</groupId>
-        <artifactId>beanmaker2</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
 
     <build>
         <plugins>

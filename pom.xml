@@ -49,10 +49,12 @@
     </distributionManagement>
 
     <modules>
+        <module>beanmaker2-codegen</module>
+        <module>beanmaker2-runtime</module>
         <module>beanmaker2-util</module>
         <module>beanmaker2-console</module>
-        <module>beanmaker2-runtime</module>
-        <module>beanmaker2-codegen</module>
+        <module>beanmaker2-email</module>
+        <module>beanmaker2-email-smtp</module>
     </modules>
 
     <dependencyManagement>
