@@ -1,0 +1,27 @@
+Transaction in bean editor
+--------------------------
+
+DBTransaction beanEditorDefaultTransaction in DbBeanEditor
+
+final getBeanEditorDefaultTransaction() -> initialize and/or return transaction (+ check if transaction has been closed and then create a new one)
+
+all functions in <Bean>Editor have a transaction version
+
+non transaction functions:
+1. are final
+2. call the transaction functions with getBeanEditorDefaultTransaction as argument to the DBTransaction field
+
+
+
+ALTERNATIVE :
+
+wrapper function in DbBeanEditor or call to wrap in the bean
+
+non transaction functions:
+1. are final
+2. wrap all function calls in the on-the-spot creation of a new DBTransaction
+
+
+OR SIMPLY:
+
+non transaction functions are final
