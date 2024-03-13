@@ -5,6 +5,7 @@ import org.beanmaker.v2.util.Strings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class PlainMessageBuilder extends AbstractMessageBuilder {
@@ -13,6 +14,7 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
 
     private Sender sender;
     private final List<Recipient> recipients = new ArrayList<>();
+    private String subject;
     private String textContent;
     private String htmlContent;
     private final List<FileAttachment> attachments = new ArrayList<>();
@@ -20,12 +22,14 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
 
     @Override
     public MessageBuilder setSender(Sender sender) {
+        Objects.requireNonNull(sender);
         this.sender = sender;
         return this;
     }
 
     @Override
     public MessageBuilder addRecipient(Recipient recipient) {
+        Objects.requireNonNull(recipient);
         if (lenient)
             addRecipientIfRequired(recipient);
         else
@@ -64,19 +68,29 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
     }
 
     @Override
+    public MessageBuilder setSubject(String subject) {
+        Objects.requireNonNull(subject);
+        this.subject = subject;
+        return this;
+    }
+
+    @Override
     public MessageBuilder setTextContent(String content) {
+        Objects.requireNonNull(content);
         textContent = content;
         return this;
     }
 
     @Override
     public MessageBuilder setHTmlContent(String content) {
+        Objects.requireNonNull(content);
         htmlContent = content;
         return this;
     }
 
     @Override
     public MessageBuilder addFileAttachment(FileAttachment attachment) {
+        Objects.requireNonNull(attachment);
         if (fileAlreadyAttached(attachments, attachment)) {
             if (!lenient)
                 throw new IllegalArgumentException("File attachment already added: " + attachment.getFileName());
@@ -88,6 +102,7 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
 
     @Override
     public MessageBuilder addEmbeddedImage(EmbeddedImage image) {
+        Objects.requireNonNull(image);
         // TODO: add validation code
         embeddedImages.add(image);
         return this;
@@ -101,9 +116,21 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
 
     @Override
     public Message build() {
+        if (sender == null)
+            throw new IllegalStateException("No sender specified");
+        if (!hasToFieldRecipient(recipients))
+            throw new IllegalStateException("No To: recipient has been added");
+        if (Strings.isEmpty(subject))
+            throw new IllegalStateException("Subject missing");
+        if (Strings.isEmpty(textContent) && Strings.isEmpty(htmlContent))
+            throw new IllegalStateException("Message has no content");
+        if (!embeddedImages.isEmpty() && Strings.isEmpty(htmlContent))
+            throw new IllegalStateException("HTML content must be present to embed images");
+
         return new PlainMessage(
                 sender,
                 List.copyOf(recipients),
+                subject,
                 textContent,
                 htmlContent,
                 List.copyOf(attachments),
@@ -149,14 +176,24 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
 
         private final Sender sender;
         private final List<Recipient> recipients;
+        private final String subject;
         private final String textContent;
         private final String htmlContent;
         private final List<FileAttachment> attachments;
         private final List<EmbeddedImage> embeddedImages;
 
-        public PlainMessage(Sender sender, List<Recipient> recipients, String textContent, String htmlContent, List<FileAttachment> attachments, List<EmbeddedImage> embeddedImages) {
+        public PlainMessage(
+                Sender sender,
+                List<Recipient> recipients,
+                String subject,
+                String textContent,
+                String htmlContent,
+                List<FileAttachment> attachments,
+                List<EmbeddedImage> embeddedImages)
+        {
             this.sender = sender;
             this.recipients = recipients;
+            this.subject = subject;
             this.textContent = textContent;
             this.htmlContent = htmlContent;
             this.attachments = attachments;
@@ -171,6 +208,11 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
         @Override
         public List<Recipient> getRecipients(AddressField field) {
             return getRecipients(recipients, field);
+        }
+
+        @Override
+        public String getSubject() {
+            return subject;
         }
 
         @Override

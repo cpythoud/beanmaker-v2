@@ -9,11 +9,21 @@ public interface Message {
 
     List<Recipient> getRecipients(AddressField field);
 
+    String getSubject();
+
     Optional<String> getTextContent();
     Optional<String> getHtmlContent();
 
     List<FileAttachment> getFileAttachments();
 
     List<EmbeddedImage> getEmbeddedImages();
+
+    default boolean hasAttachments() {
+        return !getFileAttachments().isEmpty();
+    }
+
+    default boolean hasEmbeddedImages() {
+        return !getEmbeddedImages().isEmpty();
+    }
 
 }

@@ -17,7 +17,7 @@ public interface Recipient {
     }
 
     default String printDetails() {
-        return getAddressField().getDisplayName() + getFormattedEmail();
+        return getAddressField().displayName() + getFormattedEmail();
     }
 
 }

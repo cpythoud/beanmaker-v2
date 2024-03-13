@@ -5,6 +5,7 @@ public interface MessageBuilder {
     MessageBuilder setSender(Sender sender);
 
     MessageBuilder addRecipient(Recipient recipient);
+    MessageBuilder setSubject(String subject);
 
     MessageBuilder setTextContent(String content);
 

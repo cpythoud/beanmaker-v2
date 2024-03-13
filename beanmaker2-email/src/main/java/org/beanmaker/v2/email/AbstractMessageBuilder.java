@@ -37,6 +37,15 @@ public abstract class AbstractMessageBuilder implements MessageBuilder {
         return -1;
     }
 
+    protected boolean hasToFieldRecipient(List<Recipient> recipients) {
+        for (var recipient : recipients) {
+            if (recipient.getAddressField() == AddressField.TO) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected boolean fileAlreadyAttached(List<FileAttachment> attachments, FileAttachment attachment) {
         try {
             for (var att : attachments)

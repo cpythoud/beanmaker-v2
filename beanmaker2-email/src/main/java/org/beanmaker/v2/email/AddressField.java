@@ -10,7 +10,7 @@ public enum AddressField {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
+    public String displayName() {
         return displayName;
     }
 
