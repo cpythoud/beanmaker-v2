@@ -7,7 +7,6 @@ import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.MultiPartEmail;
 import org.apache.commons.mail.SimpleEmail;
 
-import org.beanmaker.v2.email.AddressField;
 import org.beanmaker.v2.email.Message;
 import org.beanmaker.v2.email.MessageDispatcher;
 import org.beanmaker.v2.email.MessageDispatcherBuilder;
@@ -124,14 +123,8 @@ public class BasicSmtpServerBuilder implements MessageDispatcherBuilder {
                 } else if (useSSL)
                     apacheEmail.setSSLOnConnect(true);
 
-                apacheEmail.setFrom(message.getSender().getFormattedEmail());
-
-                for (var recipient: message.getRecipients(AddressField.TO))
-                    apacheEmail.addTo(recipient.getFormattedEmail());
-                for (var recipient: message.getRecipients(AddressField.CC))
-                    apacheEmail.addCc(recipient.getFormattedEmail());
-                for (var recipient: message.getRecipients(AddressField.BCC))
-                    apacheEmail.addBcc(recipient.getFormattedEmail());
+                setFrom(apacheEmail, message.getSender());
+                addRecipients(apacheEmail, message.getAllRecipients());
 
                 apacheEmail.setSubject(message.getSubject());
 
@@ -175,6 +168,7 @@ public class BasicSmtpServerBuilder implements MessageDispatcherBuilder {
 
             String htmlContent = insertEmbeddedImages(message, htmlEmail);
             htmlEmail.setHtmlMsg(htmlContent);
+            htmlEmail.setCharset("UTF-8");
 
             String textContent = message.getTextContent().orElse(null);
             if (textContent != null)

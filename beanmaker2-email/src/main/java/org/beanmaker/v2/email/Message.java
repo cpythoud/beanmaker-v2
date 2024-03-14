@@ -8,6 +8,7 @@ public interface Message {
     Sender getSender();
 
     List<Recipient> getRecipients(AddressField field);
+    List<Recipient> getAllRecipients();
 
     String getSubject();
 

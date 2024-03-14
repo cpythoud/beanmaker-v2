@@ -211,6 +211,11 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
         }
 
         @Override
+        public List<Recipient> getAllRecipients() {
+            return Collections.unmodifiableList(recipients);
+        }
+
+        @Override
         public String getSubject() {
             return subject;
         }
