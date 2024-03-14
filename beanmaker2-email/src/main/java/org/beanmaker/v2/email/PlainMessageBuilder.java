@@ -82,7 +82,7 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
     }
 
     @Override
-    public MessageBuilder setHTmlContent(String content) {
+    public MessageBuilder setHtmlContent(String content) {
         Objects.requireNonNull(content);
         htmlContent = content;
         return this;

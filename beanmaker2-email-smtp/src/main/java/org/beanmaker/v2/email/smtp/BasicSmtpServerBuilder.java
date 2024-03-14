@@ -62,7 +62,7 @@ public class BasicSmtpServerBuilder implements MessageDispatcherBuilder {
 
     @Override
     public MessageDispatcher build() {
-        return null;
+        return new SmtpServer(smtpServer, port, useSSL, useTLS, smtpUser, smtpPassword);
     }
 
     public String getSmtpServer() {

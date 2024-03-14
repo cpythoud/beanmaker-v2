@@ -9,7 +9,7 @@ public interface MessageBuilder {
 
     MessageBuilder setTextContent(String content);
 
-    MessageBuilder setHTmlContent(String content);
+    MessageBuilder setHtmlContent(String content);
 
     MessageBuilder addFileAttachment(FileAttachment attachment);
 

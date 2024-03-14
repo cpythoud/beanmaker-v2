@@ -1,6 +1,10 @@
 package org.beanmaker.v2.email;
 
-public class PlainSender {
+import org.beanmaker.v2.util.Strings;
+
+import java.util.Optional;
+
+public class PlainSender implements Sender {
 
     private final String email;
     private final String displayName;
@@ -18,12 +22,17 @@ public class PlainSender {
         return new PlainSender(email, "");
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    @Override
+    public Optional<String> getDisplayName() {
+        if (Strings.isEmpty(displayName))
+            return Optional.empty();
+
+        return Optional.of(displayName);
     }
 
 }

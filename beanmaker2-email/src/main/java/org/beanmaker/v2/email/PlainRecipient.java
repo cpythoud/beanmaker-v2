@@ -47,14 +47,17 @@ public class PlainRecipient implements Recipient {
         return bcc(email, null);
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public AddressField getAddressField() {
         return field;
     }
 
+    @Override
     public Optional<String> getDisplayName() {
         if (Strings.isEmpty(displayName))
             return Optional.empty();
