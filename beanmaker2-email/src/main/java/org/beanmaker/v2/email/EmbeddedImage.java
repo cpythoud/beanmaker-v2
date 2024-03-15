@@ -13,7 +13,7 @@ public class EmbeddedImage {
         this.name = name;
     }
 
-    public EmbeddedImage create(String imageURL, String name) {
+    public static EmbeddedImage create(String imageURL, String name) {
         try {
             URL url = new URL(imageURL);
             return new EmbeddedImage(url, name);
