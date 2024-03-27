@@ -3,20 +3,20 @@ package org.beanmaker.v2.email;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class EmbeddedImage {
+public class EmbeddedImageUrl {
 
     private final URL imageUrl;
     private final String name;
 
-    private EmbeddedImage(URL imageUrl, String name) {
+    private EmbeddedImageUrl(URL imageUrl, String name) {
         this.imageUrl = imageUrl;
         this.name = name;
     }
 
-    public static EmbeddedImage create(String imageURL, String name) {
+    public static EmbeddedImageUrl create(String imageURL, String name) {
         try {
             URL url = new URL(imageURL);
-            return new EmbeddedImage(url, name);
+            return new EmbeddedImageUrl(url, name);
         } catch (MalformedURLException muex) {
             throw new RuntimeException(muex);
         }

@@ -17,14 +17,15 @@ public interface Message {
 
     List<FileAttachment> getFileAttachments();
 
-    List<EmbeddedImage> getEmbeddedImages();
+    List<EmbeddedImageUrl> getEmbeddedImageUrls();
+    List<EmbeddedImageFile> getEmbeddedImageFiles();
 
     default boolean hasAttachments() {
         return !getFileAttachments().isEmpty();
     }
 
     default boolean hasEmbeddedImages() {
-        return !getEmbeddedImages().isEmpty();
+        return !getEmbeddedImageUrls().isEmpty() || !getEmbeddedImageFiles().isEmpty();
     }
 
 }

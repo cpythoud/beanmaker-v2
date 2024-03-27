@@ -193,8 +193,11 @@ public class BasicSmtpServerBuilder implements MessageDispatcherBuilder {
         private Map<String, String> getEmbeddedImageCids(Message message, HtmlEmail email) throws EmailException {
             var cids = new HashMap<String, String>();
 
-            for (var image: message.getEmbeddedImages())
+            for (var image: message.getEmbeddedImageUrls())
                 cids.put(image.getName(), email.embed(image.getImageUrl(), image.getName()));
+
+            for (var image : message.getEmbeddedImageFiles())
+                cids.put(image.getName(), email.embed(image.getFilePath().toFile(), image.getName()));
 
             return cids;
         }

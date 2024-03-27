@@ -13,7 +13,8 @@ public interface MessageBuilder {
 
     MessageBuilder addFileAttachment(FileAttachment attachment);
 
-    MessageBuilder addEmbeddedImage(EmbeddedImage image);
+    MessageBuilder addEmbeddedImage(EmbeddedImageUrl image);
+    MessageBuilder addEmbeddedImage(EmbeddedImageFile image);
 
     MessageBuilder lenient(boolean value);
 

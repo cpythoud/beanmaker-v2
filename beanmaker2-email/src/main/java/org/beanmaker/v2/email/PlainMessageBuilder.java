@@ -18,7 +18,8 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
     private String textContent;
     private String htmlContent;
     private final List<FileAttachment> attachments = new ArrayList<>();
-    private final List<EmbeddedImage> embeddedImages = new ArrayList<>();
+    private final List<EmbeddedImageUrl> embeddedImageUrls = new ArrayList<>();
+    private final List<EmbeddedImageFile> embeddedImageFiles = new ArrayList<>();
 
     @Override
     public MessageBuilder setSender(Sender sender) {
@@ -101,10 +102,18 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
     }
 
     @Override
-    public MessageBuilder addEmbeddedImage(EmbeddedImage image) {
+    public MessageBuilder addEmbeddedImage(EmbeddedImageUrl image) {
         Objects.requireNonNull(image);
         // TODO: add validation code
-        embeddedImages.add(image);
+        embeddedImageUrls.add(image);
+        return this;
+    }
+
+    @Override
+    public MessageBuilder addEmbeddedImage(EmbeddedImageFile image) {
+        Objects.requireNonNull(image);
+        // TODO: add validation code
+        embeddedImageFiles.add(image);
         return this;
     }
 
@@ -124,7 +133,7 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
             throw new IllegalStateException("Subject missing");
         if (Strings.isEmpty(textContent) && Strings.isEmpty(htmlContent))
             throw new IllegalStateException("Message has no content");
-        if (!embeddedImages.isEmpty() && Strings.isEmpty(htmlContent))
+        if ((!embeddedImageUrls.isEmpty() || !embeddedImageFiles.isEmpty()) && Strings.isEmpty(htmlContent))
             throw new IllegalStateException("HTML content must be present to embed images");
 
         return new PlainMessage(
@@ -134,7 +143,8 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
                 textContent,
                 htmlContent,
                 List.copyOf(attachments),
-                List.copyOf(embeddedImages)
+                List.copyOf(embeddedImageUrls),
+                List.copyOf(embeddedImageFiles)
         );
     }
 
@@ -168,8 +178,12 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
         return Collections.unmodifiableList(attachments);
     }
 
-    public List<EmbeddedImage> getEmbeddedImages() {
-        return Collections.unmodifiableList(embeddedImages);
+    public List<EmbeddedImageUrl> getEmbeddedImageUrls() {
+        return Collections.unmodifiableList(embeddedImageUrls);
+    }
+
+    public List<EmbeddedImageFile> getEmbeddedImageFiles() {
+        return Collections.unmodifiableList(embeddedImageFiles);
     }
 
     public static class PlainMessage extends AbstractMessage {
@@ -180,7 +194,8 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
         private final String textContent;
         private final String htmlContent;
         private final List<FileAttachment> attachments;
-        private final List<EmbeddedImage> embeddedImages;
+        private final List<EmbeddedImageUrl> embeddedImageUrls;
+        private final List<EmbeddedImageFile> embeddedImageFiles;
 
         public PlainMessage(
                 Sender sender,
@@ -189,7 +204,8 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
                 String textContent,
                 String htmlContent,
                 List<FileAttachment> attachments,
-                List<EmbeddedImage> embeddedImages)
+                List<EmbeddedImageUrl> embeddedImageUrls,
+                List<EmbeddedImageFile> embeddedImageFiles)
         {
             this.sender = sender;
             this.recipients = recipients;
@@ -197,7 +213,8 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
             this.textContent = textContent;
             this.htmlContent = htmlContent;
             this.attachments = attachments;
-            this.embeddedImages = embeddedImages;
+            this.embeddedImageUrls = embeddedImageUrls;
+            this.embeddedImageFiles = embeddedImageFiles;
         }
 
         @Override
@@ -242,8 +259,13 @@ public class PlainMessageBuilder extends AbstractMessageBuilder {
         }
 
         @Override
-        public List<EmbeddedImage> getEmbeddedImages() {
-            return Collections.unmodifiableList(embeddedImages);
+        public List<EmbeddedImageUrl> getEmbeddedImageUrls() {
+            return Collections.unmodifiableList(embeddedImageUrls);
+        }
+
+        @Override
+        public List<EmbeddedImageFile> getEmbeddedImageFiles() {
+            return Collections.unmodifiableList(embeddedImageFiles);
         }
 
     }
