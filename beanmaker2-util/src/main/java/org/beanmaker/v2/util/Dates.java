@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -82,7 +83,7 @@ public class Dates {
 
     /**
      * Returns a java.sql.Date initialized with the current date.
-     * The time part of any java.sql.Date returned by getCurrentDate()
+     * The timestamp part of any java.sql.Date returned by getCurrentDate()
      * is 00:00:00.000.
      * @return a java.sql.Date initialized with the current date.
      */
@@ -98,10 +99,10 @@ public class Dates {
     }
 
     /**
-     * Returns a java.sql.Time initialized with the current time.
+     * Returns a java.sql.Time initialized with the current timestamp.
      * The date part of any java.sql.Time returned by getCurrentTime()
      * is January 1, 1970 and the microseconds are set to 0.
-     * @return a java.sql.Time initialized with the current time.
+     * @return a java.sql.Time initialized with the current timestamp.
      */
     public static Time getCurrentTime() {
         Calendar calendar = Calendar.getInstance();
@@ -139,8 +140,8 @@ public class Dates {
     }
 
     /**
-     * Returns a java.sql.Timestamp initialized with the current date and time.
-     * @return a java.sql.Timestamp initialized with the current date and time.
+     * Returns a java.sql.Timestamp initialized with the current date and timestamp.
+     * @return a java.sql.Timestamp initialized with the current date and timestamp.
      */
     public static Timestamp getCurrentTimestamp() {
         return new Timestamp((new java.util.Date()).getTime());
@@ -148,7 +149,7 @@ public class Dates {
 
     /**
      * Returns a number that can be used as a timestamp. Useful for recording creation dates or generating
-     * time dependant, unique, names. (For temporary files or directories for example.)
+     * timestamp dependant, unique, names. (For temporary files or directories for example.)
      * @return a long. Its first four digits represent the current year, the next two the current month, the next
      * two the current day of month, the next two the current hour, the next two the current minutes, the next
      * two the current seconds and the next three the current milliseconds.
@@ -198,12 +199,12 @@ public class Dates {
     }
 
     /**
-     * Check if a time is correct. This function checks if the hours, minutes and seconds of a time are in
+     * Check if a timestamp is correct. This function checks if the hours, minutes and seconds of a timestamp are in
      * acceptable range, respectively 0-23, 0-59 and 0-59
-     * @param hours of time to be checked.
-     * @param minutes of time to be checked.
-     * @param seconds of time to be checked.
-     * @return true if time can be validated, false otherwise.
+     * @param hours of timestamp to be checked.
+     * @param minutes of timestamp to be checked.
+     * @param seconds of timestamp to be checked.
+     * @return true if timestamp can be validated, false otherwise.
      * @see Dates#isTimeOK(String, String, String)
      */
     public static boolean isTimeOK(int hours, int minutes, int seconds) {
@@ -211,12 +212,12 @@ public class Dates {
     }
 
     /**
-     * Check if a time is correct. This function checks if the hours, minutes and seconds of a time are in
+     * Check if a timestamp is correct. This function checks if the hours, minutes and seconds of a timestamp are in
      * acceptable range, respectively 0-23, 0-59 and 0-59.
-     * @param hours of time to be checked.
-     * @param minutes of time to be checked.
-     * @param seconds of time to be checked.
-     * @return true if time can be validated, false otherwise.
+     * @param hours of timestamp to be checked.
+     * @param minutes of timestamp to be checked.
+     * @param seconds of timestamp to be checked.
+     * @return true if timestamp can be validated, false otherwise.
      * @see Dates#isTimeOK(int, int, int)
      */
     public static boolean isTimeOK(String hours, String minutes, String seconds) {
@@ -230,13 +231,13 @@ public class Dates {
     }
 
     /**
-     * Check if a time String is correctly formatted.
-     * The time string must be comprised of hours, minutes and seconds. Precision beyond seconds is not supported.
-     * The three parts of the time string must be between acceptable range for hours, minutes and seconds,
+     * Check if a timestamp String is correctly formatted.
+     * The timestamp string must be comprised of hours, minutes and seconds. Precision beyond seconds is not supported.
+     * The three parts of the timestamp string must be between acceptable range for hours, minutes and seconds,
      * respectively 0-23, 0-59 and 0-59.
      * @param time string to be checked.
-     * @param separator between the time string parts.
-     * @return true if time string can be validated, false otherwise.
+     * @param separator between the timestamp string parts.
+     * @return true if timestamp string can be validated, false otherwise.
      * @see Dates#isShortTimeOK(String, String)
      */
     public static boolean isTimeOK(String time, String separator) {
@@ -245,13 +246,13 @@ public class Dates {
     }
 
     /**
-     * Check if a time String, without seconds, is correctly formatted.
-     * The time string must be comprised of hours and minutes only.
-     * The two parts of the time string must be between acceptable range for hours and minutes,
+     * Check if a timestamp String, without seconds, is correctly formatted.
+     * The timestamp string must be comprised of hours and minutes only.
+     * The two parts of the timestamp string must be between acceptable range for hours and minutes,
      * respectively 0-23 and 0-59.
      * @param time string to be checked.
      * @param separator between the hours and minutes.
-     * @return true if time string can be validated, false otherwise.
+     * @return true if timestamp string can be validated, false otherwise.
      * @see Dates#isTimeOK(String, String, String)
      */
     public static boolean isShortTimeOK(String time, String separator) {
@@ -304,7 +305,7 @@ public class Dates {
      * Check if a timestamp, of which the date part is in the format YYMD, is correct.
      * @param timestamp to be checked.
      * @param dateSeparator to be used to separate the date elements (year, month, day).
-     * @param timeSeparator to be used to separate the time elements (hours, minutes, seconds).
+     * @param timeSeparator to be used to separate the timestamp elements (hours, minutes, seconds).
      * @return true if the timestamp is correct, false otherwise.
      * @see Dates#isYYMDTimestampOK(String, String, String, String)
      * @see Dates#isYYMDDateOK(String, String)
@@ -318,8 +319,8 @@ public class Dates {
      * Check if a timestamp, of which the date part is in the format YYMD, is correct.
      * @param timestamp to be checked.
      * @param dateSeparator to be used to separate the date elements (year, month, day).
-     * @param timeSeparator to be used to separate the time elements (hours, minutes, seconds).
-     * @param millisecondsSeparator to be used to separate the milliseconds from the time. If you don't need
+     * @param timeSeparator to be used to separate the timestamp elements (hours, minutes, seconds).
+     * @param millisecondsSeparator to be used to separate the milliseconds from the timestamp. If you don't need
      *                              to check for milliseconds, use
      *                              {@link Dates#isYYMDTimestampOK(String, String, String)}.
      * @return true if the timestamp is correct, false otherwise.
@@ -357,7 +358,7 @@ public class Dates {
      * Check if a timestamp, of which the date part is in the format DMYY, is correct.
      * @param timestamp to be checked.
      * @param dateSeparator to be used to separate the date elements (year, month, day).
-     * @param timeSeparator to be used to separate the time elements (hours, minutes, seconds).
+     * @param timeSeparator to be used to separate the timestamp elements (hours, minutes, seconds).
      * @return true if the timestamp is correct, false otherwise.
      * @see Dates#isDMYYDateOK(String, String)
      * @see Dates#isTimeOK(String, String)
@@ -371,7 +372,7 @@ public class Dates {
      * Check if a timestamp, of which the date part is in the format MDYY, is correct.
      * @param timestamp to be checked.
      * @param dateSeparator to be used to separate the date elements (year, month, day).
-     * @param timeSeparator to be used to separate the time elements (hours, minutes, seconds).
+     * @param timeSeparator to be used to separate the timestamp elements (hours, minutes, seconds).
      * @return true if the timestamp is correct, false otherwise.
      * @see Dates#isMDYYDateOK(String, String)
      * @see Dates#isTimeOK(String, String)
@@ -385,7 +386,7 @@ public class Dates {
      * Transform a String in a {@link java.sql.Date} object. The separator between the date elements
      * (year, month, day in this order) must be specified.
      * @param string to be converted.
-     * @param separator used to separate the time elements.
+     * @param separator used to separate the timestamp elements.
      * @return a Date object.
      */
     public static Date getDateFromYYMD(String string, String separator) {
@@ -403,7 +404,7 @@ public class Dates {
      * Transform a String in a {@link java.sql.Date} object. The separator between the date elements
      * (day, month, year in this order) must be specified.
      * @param string to be converted.
-     * @param separator used to separate the time elements.
+     * @param separator used to separate the timestamp elements.
      * @return a Date object.
      */
     public static Date getDateFromDMYY(String string, String separator) {
@@ -421,7 +422,7 @@ public class Dates {
      * Transform a String in a {@link java.sql.Date} object. The separator between the date elements
      * (month, day, year in this order) must be specified.
      * @param string to be converted.
-     * @param separator used to separate the time elements.
+     * @param separator used to separate the timestamp elements.
      * @return a Date object.
      */
     public static Date getDateFromMDYY(String string, String separator) {
@@ -436,10 +437,10 @@ public class Dates {
     }
 
     /**
-     * Transform a String in a {@link java.sql.Time} object. The separator between the time elements
+     * Transform a String in a {@link java.sql.Time} object. The separator between the timestamp elements
      * (hours, minutes, seconds) must be specified.
      * @param string to be converted.
-     * @param separator used to separate the time elements.
+     * @param separator used to separate the timestamp elements.
      * @return a Time object.
      */
     public static Time getTimeFromString(String string, String separator) {
@@ -447,7 +448,7 @@ public class Dates {
         if (parts.length != 3)
             throw new IllegalArgumentException("Invalid format: must be   [h]h" + separator + "[m]m" + separator + "[s]s, received " + string);
         if (!isTimeOK(parts[0], parts[1], parts[2]))
-            throw new IllegalArgumentException("Submitted time (" + string + ") is invalid.");
+            throw new IllegalArgumentException("Submitted timestamp (" + string + ") is invalid.");
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
@@ -469,7 +470,7 @@ public class Dates {
         if (parts.length != 2)
             throw new IllegalArgumentException("Invalid format: must be   [h]h" + separator + "[m]m, received " + string);
         if (!isTimeOK(parts[0], parts[1], "00"))
-            throw new IllegalArgumentException("Submitted time (" + string + ") is invalid.");
+            throw new IllegalArgumentException("Submitted timestamp (" + string + ") is invalid.");
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
@@ -481,10 +482,10 @@ public class Dates {
 
     /**
      * Transform a String in a {@link java.sql.Timestamp} object. The separators between the date elements
-     * (years, month, days) and time elements (hours, minutes, seconds) must be specified.
+     * (years, month, days) and timestamp elements (hours, minutes, seconds) must be specified.
      * @param string to be converted.
      * @param dateSeparator to separate date elements.
-     * @param timeSeparator to separate time elements.
+     * @param timeSeparator to separate timestamp elements.
      * @return a Timestamp object.
      */
     public static Timestamp getTimestampFromYYMD(String string, String dateSeparator, String timeSeparator) {
@@ -493,12 +494,12 @@ public class Dates {
 
     /**
      * Transform a String in a {@link java.sql.Timestamp} object. The separators between the date elements
-     * (years, month, days) and time elements (hours, minutes, seconds), and between time and milliseconds,
+     * (years, month, days) and timestamp elements (hours, minutes, seconds), and between timestamp and milliseconds,
      * must be specified.
      * @param string to be converted.
      * @param dateSeparator to separate date elements.
-     * @param timeSeparator to separate time elements.
-     * @param millisecondsSeparator to separate time and milliseconds.
+     * @param timeSeparator to separate timestamp elements.
+     * @param millisecondsSeparator to separate timestamp and milliseconds.
      * @return a Timestamp object.
      */
     public static Timestamp getTimestampFromYYMD(String string, String dateSeparator, String timeSeparator, String millisecondsSeparator) {
@@ -523,7 +524,7 @@ public class Dates {
 
         String[] timeParts = parts[1].split(timeSeparator);
         if (timeParts.length != 3)
-            throw new IllegalArgumentException("Invalid time format : must be [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s, got " + parts[1]);
+            throw new IllegalArgumentException("Invalid timestamp format : must be [h]h" + timeSeparator + "[m]m" + timeSeparator + "[s]s, got " + parts[1]);
         if (!isTimeOK(timeParts[0], timeParts[1], timeParts[2]))
             throw new IllegalArgumentException("Time passed (" + string + ") is invalid");
 
@@ -541,7 +542,7 @@ public class Dates {
      * If the first date is before the second date, returns a negative number (i.e., -1).
      * If the first date is after the second date, returns a positive number (i.e., 1).
      * This method should be used instead of the compareTo() method inherited from java.util.Date which does not
-     * work as expected when the dates are the same (problem with the normalization of the time parts in
+     * work as expected when the dates are the same (problem with the normalization of the timestamp parts in
      * java.util.Date).
      * @param date1
      * @param date2
@@ -553,9 +554,9 @@ public class Dates {
 
     /**
      * Compare two times (java.sql.Time). Only the hours, minutes and seconds are compared. Milliseconds are ignored.
-     * If the first time is the same as the second time, returns 0.
-     * If the first time is before the second time, returns a negative number (i.e., -1).
-     * If the first time is after the second time, returns a positive number (i.e., 1).
+     * If the first timestamp is the same as the second timestamp, returns 0.
+     * If the first timestamp is before the second timestamp, returns a negative number (i.e., -1).
+     * If the first timestamp is after the second timestamp, returns a positive number (i.e., 1).
      * @param time1
      * @param time2
      * @return
@@ -675,6 +676,18 @@ public class Dates {
         if (year % 400 == 0)
             return true;
         return year % 4 == 0 && !(year % 100 == 0);
+    }
+
+    public static String formatIso8601dString(Date date) {
+        return date.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    public static String formatIso8601dString(Time time) {
+        return time.toLocalTime().format(DateTimeFormatter.ISO_LOCAL_TIME);
+    }
+
+    public static String formatIso8601dString(Timestamp timestamp) {
+        return timestamp.toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
 }
