@@ -58,4 +58,36 @@ public abstract class AbstractMessageBuilder implements MessageBuilder {
         return false;
     }
 
+    protected boolean imageReferenceAlreadyPresent(
+            List<EmbeddedImageUrl> imageUrls,
+            List<EmbeddedImageFile> imageFiles,
+            EmbeddedImageUrl image)
+    {
+        return imageReferenceExists(imageUrls, imageFiles, image.getName());
+    }
+
+    protected boolean imageReferenceAlreadyPresent(
+            List<EmbeddedImageUrl> imageUrls,
+            List<EmbeddedImageFile> imageFiles,
+            EmbeddedImageFile image)
+    {
+        return imageReferenceExists(imageUrls, imageFiles, image.getName());
+    }
+
+    protected boolean imageReferenceExists(
+            List<EmbeddedImageUrl> imageUrls,
+            List<EmbeddedImageFile> imageFiles,
+            String name)
+    {
+        for (var image: imageUrls)
+            if (image.getName().equals(name))
+                return true;
+
+        for (var image: imageFiles)
+            if (image.getName().equals(name))
+                return true;
+
+        return false;
+    }
+
 }

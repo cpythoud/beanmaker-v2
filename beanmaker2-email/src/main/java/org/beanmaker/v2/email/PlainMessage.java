@@ -192,7 +192,8 @@ public class PlainMessage extends AbstractMessage {
         @Override
         public MessageBuilder addEmbeddedImage(EmbeddedImageUrl image) {
             Objects.requireNonNull(image);
-            // TODO: add validation code
+            if (imageReferenceAlreadyPresent(embeddedImageUrls, embeddedImageFiles, image))
+                throw new IllegalArgumentException("There is already an image with name: " + image.getName());
             embeddedImageUrls.add(image);
             return this;
         }
@@ -200,7 +201,8 @@ public class PlainMessage extends AbstractMessage {
         @Override
         public MessageBuilder addEmbeddedImage(EmbeddedImageFile image) {
             Objects.requireNonNull(image);
-            // TODO: add validation code
+            if (imageReferenceAlreadyPresent(embeddedImageUrls, embeddedImageFiles, image))
+                throw new IllegalArgumentException("There is already an image with name: " + image.getName());
             embeddedImageFiles.add(image);
             return this;
         }
