@@ -6,7 +6,7 @@ public enum AddressField {
 
     private final String displayName;
 
-    private AddressField(String displayName) {
+    AddressField(String displayName) {
         this.displayName = displayName;
     }
 
