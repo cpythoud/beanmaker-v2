@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class PlainMessage extends AbstractMessage {
+public class PlainMessage implements Message {
 
     private final Sender sender;
     private final List<Recipient> recipients;
@@ -50,7 +50,7 @@ public class PlainMessage extends AbstractMessage {
 
     @Override
     public List<Recipient> getRecipients(AddressField field) {
-        return getRecipients(recipients, field);
+        return Recipient.getRecipients(recipients, field);
     }
 
     @Override
