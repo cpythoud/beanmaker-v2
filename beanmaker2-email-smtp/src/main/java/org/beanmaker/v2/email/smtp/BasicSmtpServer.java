@@ -10,8 +10,12 @@ import org.apache.commons.mail.SimpleEmail;
 import org.beanmaker.v2.email.Message;
 import org.beanmaker.v2.email.MessageDispatcher;
 import org.beanmaker.v2.email.MessageDispatcherBuilder;
+import org.beanmaker.v2.email.Recipient;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BasicSmtpServer extends AbstractSmtpServer {
@@ -23,13 +27,24 @@ public class BasicSmtpServer extends AbstractSmtpServer {
     private final String smtpUser;
     private final String smtpPassword;
 
-    private BasicSmtpServer(String smtpServer, int port, boolean useSSL, boolean useTLS, String smtpUser, String smtpPassword) {
+    private final List<Recipient> debugRecipients;
+
+    private BasicSmtpServer(
+            String smtpServer,
+            int port,
+            boolean useSSL,
+            boolean useTLS,
+            String smtpUser,
+            String smtpPassword,
+            List<Recipient> debugRecipients)
+    {
         this.smtpServer = smtpServer;
         this.port = port;
         this.useSSL = useSSL;
         this.useTLS = useTLS;
         this.smtpUser = smtpUser;
         this.smtpPassword = smtpPassword;
+        this.debugRecipients = debugRecipients;
     }
 
     public static Builder builder(String smtpServer) {
@@ -54,7 +69,10 @@ public class BasicSmtpServer extends AbstractSmtpServer {
                 apacheEmail.setSSLOnConnect(true);
 
             setFrom(apacheEmail, message.getSender());
-            addRecipients(apacheEmail, message.getAllRecipients());
+            if (debugRecipients == null || debugRecipients.isEmpty())
+                addRecipients(apacheEmail, message.getAllRecipients());
+            else
+                addRecipients(apacheEmail, debugRecipients);
 
             apacheEmail.setSubject(message.getSubject());
 
@@ -141,6 +159,8 @@ public class BasicSmtpServer extends AbstractSmtpServer {
         private String smtpUser;
         private String smtpPassword;
 
+        private final List<Recipient> debugRecipients = new ArrayList<>();
+
         private Builder(String smtpServer) {
             this.smtpServer = smtpServer;
         }
@@ -177,9 +197,15 @@ public class BasicSmtpServer extends AbstractSmtpServer {
             return this;
         }
 
+        public Builder debugRecipients(List<Recipient> recipients) {
+            debugRecipients.clear();
+            debugRecipients.addAll(recipients);
+            return this;
+        }
+
         @Override
         public MessageDispatcher build() {
-            return new BasicSmtpServer(smtpServer, port, useSSL, useTLS, smtpUser, smtpPassword);
+            return new BasicSmtpServer(smtpServer, port, useSSL, useTLS, smtpUser, smtpPassword, debugRecipients);
         }
 
         public String getSmtpServer() {
@@ -206,6 +232,9 @@ public class BasicSmtpServer extends AbstractSmtpServer {
             return smtpPassword;
         }
 
+        public List<Recipient> getDebugRecipients() {
+            return Collections.unmodifiableList(debugRecipients);
+        }
     }
 
 }
