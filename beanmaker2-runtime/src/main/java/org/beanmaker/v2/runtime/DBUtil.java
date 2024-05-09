@@ -290,6 +290,55 @@ public final class DBUtil {
         }
     }
 
+    public static boolean checkQualifiedUnicity(
+            DbBeanParameters parameters,
+            String fieldName,
+            Object value,
+            long id,
+            String associatedBeanFieldName,
+            long idAssociatedBean,
+            DBAccess dbAccess)
+    {
+        return !dbAccess.processQuery(
+                getQualifiedUnicityQuery(parameters, fieldName, associatedBeanFieldName),
+                stat -> {
+                    setValueForUnicityCheck(stat, value);
+                    stat.setLong(2, idAssociatedBean);
+                    stat.setLong(3, id);
+                },
+                ResultSet::next
+        );
+    }
+
+    public static boolean checkQualifiedUnicity(
+            DbBeanParameters parameters,
+            String fieldName,
+            Object value,
+            long id,
+            String associatedBeanFieldName,
+            long idAssociatedBean,
+            DBTransaction transaction)
+    {
+        return !transaction.addQuery(
+                getQualifiedUnicityQuery(parameters, fieldName, associatedBeanFieldName),
+                stat -> {
+                    setValueForUnicityCheck(stat, value);
+                    stat.setLong(2, idAssociatedBean);
+                    stat.setLong(3, id);
+                },
+                ResultSet::next
+        );
+    }
+
+    private static String getQualifiedUnicityQuery(
+            DbBeanParameters parameters,
+            String fieldName,
+            String associatedBeanFieldName)
+    {
+        return "SELECT id FROM " + parameters.getDatabaseTableName()
+                + " WHERE " + fieldName + "=? AND " + associatedBeanFieldName + "=? AND id <> ?";
+    }
+
     // ------------
 
     public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, DBAccess dbAccess) {
