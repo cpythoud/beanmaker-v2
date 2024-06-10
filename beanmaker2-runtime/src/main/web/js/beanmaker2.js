@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.1.2 -- 2022-10-07';
+    static VERSION = 'v0.2 -- 2024-05-31';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -14,7 +14,7 @@ class Beanmaker2 {
         errorContainerIDPrefix: 'error_messages_',
         errorContainerSelector: undefined,
         elementToScrollUpOnError: 'body',
-        deleteLinkClass: undefined,
+        deleteLinkClass: undefined,  // * if undefined, default to 'delete_bean'
         deleteSuccessFunction: undefined,
         deleteSuccessURL: undefined,
         deleteErrorFunction: undefined,
@@ -22,6 +22,12 @@ class Beanmaker2 {
         deleteConfirmationFunction: (id, message) => {
             return confirm(message);
         },
+        editLinkClass: undefined,  // * if undefined, default to 'edit_bean'
+        dialogID: undefined,  // * if undefined, default to 'BeanDialog'
+        showFormDialogFunction: (dialogID) => {
+            document.getElementById(dialogID).style.display='block';
+        },
+        formContainerInDialogClass: 'form-content',
         // * CSS classes
         loadingClass: '',
         errorContainerStyles: '',
@@ -66,6 +72,10 @@ class Beanmaker2 {
 
         if (!this.parameters.deleteLinkClass)
             this.parameters.deleteLinkClass = 'delete_' + Beanmaker2.uncapitalize(bean);
+        if (!this.parameters.editLinkClass)
+            this.parameters.editLinkClass = 'edit_' + Beanmaker2.uncapitalize(bean);
+        if (!this.parameters.dialogID)
+            this.parameters.dialogID = bean + 'Dialog';
 
         this.createEventListeners();
     }
@@ -73,6 +83,7 @@ class Beanmaker2 {
     createEventListeners() {
         this.addSubmitOperation();
         this.addDeleteOperation();
+        this.addEditOperation();
     }
 
     addSubmitOperation() {
@@ -285,6 +296,52 @@ class Beanmaker2 {
 
         const formData = new FormData();
         formData.set('beanmaker_operation', 'delete');
+        formData.set('id', id.toString());
+
+        parameters.body = new URLSearchParams(formData);
+
+        return parameters;
+    }
+
+    addEditOperation() {
+        document.addEventListener('click', event => {
+            const $link = event.target.closest('.' + this.parameters.editLinkClass);
+            if ($link) {
+                event.preventDefault();
+                const id = Beanmaker2.getBeanID($link);
+                fetch(this.parameters.servletURL, this.getEditParameters(id))
+                    .then(response => {
+                        if (response.ok && response.headers.get("Content-Type") === "text/html; charset=UTF-8")
+                            return response.text();
+
+                        console.log(response.text());
+
+                        throw new Error(`Unexpected response status ${response.status} or content type`);
+                    })
+                    .then(data => {
+                        document.querySelector(
+                            '#' + this.parameters.dialogID + ' .' + this.parameters.formContainerInDialogClass
+                        ).innerHTML = data;
+                        this.parameters.showFormDialogFunction(this.parameters.dialogID);
+                    })
+                    .catch(error => {
+                        // TODO: improve error reporting
+                        console.log(error);
+                        alert('An unexpected error has occurred. See console output for more information.');
+                    });
+            }
+        });
+    }
+
+    getEditParameters(id) {
+        const parameters = {
+            method: 'POST',
+            cache: 'no-store',
+            credentials: 'same-origin'
+        };
+
+        const formData = new FormData();
+        formData.set('beanmaker_operation', 'get');
         formData.set('id', id.toString());
 
         parameters.body = new URLSearchParams(formData);
