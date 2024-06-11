@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2 -- 2024-05-31';
+    static VERSION = 'v0.2.1 -- 2024-06-11';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -34,6 +34,8 @@ class Beanmaker2 {
         errorContainerULStyles: '',
         errorContainerLIStyles: '',
         fieldInErrorStyles: '',
+        itemOrderMoveAfterFunction: function () { },
+        itemOrderMoveBeforeFunction: function () { },
     }
 
     static isStringEmpty(str) {
@@ -63,6 +65,43 @@ class Beanmaker2 {
 
     static uncapitalize(str) {
         return str.charAt(0).toLowerCase() + str.slice(1);
+    }
+
+    static itemOrderMove(servlet, bean, id, direction, companionId, doneFunction) {
+        fetch(servlet, Beanmaker2.getMoveParameters(bean, id, direction, companionId))
+            .then(response => {
+                if (response.ok && response.headers.get("Content-Type") === "text/json; charset=UTF-8")
+                    return response.json();
+
+                console.log(response.text());
+
+                throw new Error(`Unexpected response status ${response.status} or content type`);
+            })
+            .then(data => doneFunction(data))
+            .catch(error => {
+                // TODO: improve error reporting
+                console.log(error);
+                alert('An unexpected error has occurred. See console output for more information.');
+            });
+    };
+
+    static getMoveParameters(bean, id, direction, companionId) {
+        const parameters = {
+            method: 'POST',
+            cache: 'no-store',
+            credentials: 'same-origin'
+        };
+
+        const formData = new FormData();
+        formData.set('beanmaker_operation', 'order');
+        formData.set('bean', bean);
+        formData.set('id', id.toString());
+        formData.set('direction', direction);
+        formData.set('companionId', companionId.toString());
+
+        parameters.body = new URLSearchParams(formData);
+
+        return parameters;
     }
 
     constructor(bean, nonDefaultParameters) {
@@ -347,6 +386,32 @@ class Beanmaker2 {
         parameters.body = new URLSearchParams(formData);
 
         return parameters;
+    }
+
+    getItemOrderMoveAfterFunction() {
+        return (itemId, moveAfterItemId) => {
+            Beanmaker2.itemOrderMove(
+                this.parameters.servletURL,
+                this.bean,
+                Beanmaker2.parseID(itemId),
+                'after',
+                Beanmaker2.parseID(moveAfterItemId),
+                this.parameters.itemOrderMoveAfterFunction
+            );
+        };
+    }
+
+    getItemOrderMoveBeforeFunction() {
+        return (itemId, moveBeforeItemId) => {
+            Beanmaker2.itemOrderMove(
+                this.parameters.servletURL,
+                this.bean,
+                Beanmaker2.parseID(itemId),
+                'before',
+                Beanmaker2.parseID(moveBeforeItemId),
+                this.parameters.itemOrderMoveBeforeFunction
+            );
+        };
     }
 
 }
