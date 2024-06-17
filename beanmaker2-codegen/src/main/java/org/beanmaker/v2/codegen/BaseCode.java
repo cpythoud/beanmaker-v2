@@ -72,6 +72,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         addStaticInitialization();
         addProperties();
         addConstructors();
+        addStaticFunctions();
         addCoreFunctionality();
     }
 
@@ -86,6 +87,9 @@ public abstract class BaseCode implements BeanMakerSourceFile {
     protected void addProperties() { }
 
     protected void addConstructors() { }
+
+    // TODO: for all classes, remove static functions from addCoreFunctionality() and put them here
+    protected void addStaticFunctions() { }
 
     protected abstract void addCoreFunctionality();
 
@@ -165,13 +169,13 @@ public abstract class BaseCode implements BeanMakerSourceFile {
             functionDeclaration.addArgument(argument);
             argTypeList.append(argument.getType()).append(", ");
         }
-        if (argTypeList.length() > 0)
+        if (!argTypeList.isEmpty())
             argTypeList.delete(argTypeList.length() - 2, argTypeList.length());
 
         functionDeclaration.addContent(
                 new ExceptionThrow("MissingImplementationException")
                         .addArgument(Strings.quickQuote(
-                                className + "." + name + "(" + argTypeList.toString() + ")"))
+                                className + "." + name + "(" + argTypeList + ")"))
         );
 
         javaClass.addContent(functionDeclaration).addContent(EMPTY_LINE);
