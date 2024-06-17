@@ -29,7 +29,6 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addImports() {
-        importsManager.addImport("org.beanmaker.v2.runtime.csv.BeanImportBase");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.DataEntry");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.DataFile");
 
@@ -45,7 +44,7 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.markAsAbstract().extendsClass("BeanImportBase");
+        javaClass.markAsAbstract().extendsClass("LocalCsvImport");
         applySealedModifier(beanName + "CsvImport");
     }
 
