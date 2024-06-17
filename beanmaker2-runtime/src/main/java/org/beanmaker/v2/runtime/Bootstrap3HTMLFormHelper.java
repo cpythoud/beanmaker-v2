@@ -11,8 +11,6 @@ import org.jcodegen.html.HtmlCodeFragment;
 import org.jcodegen.html.InputTag;
 import org.jcodegen.html.LabelTag;
 import org.jcodegen.html.OptgroupTag;
-import org.jcodegen.html.OptionTag;
-import org.jcodegen.html.PTag;
 import org.jcodegen.html.SelectTag;
 import org.jcodegen.html.SpanTag;
 import org.jcodegen.html.Tag;
@@ -23,39 +21,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
-
-    public static final String SELECT_OFF_GROUP_MAP_KEY = "__ROOT__";
-
-    private String notRequiredExtension = "";
-    private String requiredExtension = " *";
-    private boolean useRequiredInHtml = true;
+public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
 
     private String htmlFormAction = null;
-    private boolean htmlFormMultipart = false;
 
     private String defaultEncoding = null;
 
-
-    private boolean inline = false;
     private boolean inlineWithoutLabels = false;
-    private boolean horizontal = false;
-    private boolean readonly = false;
-    private String readonlyExtension = "-readonly";
 
     private String horizontalSizeShift = "sm";
     private int horizontalLabelWidth = 4;
     private int horizontalFieldWidth = 8;
 
-
-    private InputTag.InputType inputTypeForDateFields = null;
-    private String cssClassForDateFields = null;
-    private InputTag.InputType inputTypeForTimeFields = null;
-    private String cssClassForTimeFields = null;
-    private InputTag.InputType inputTypeForNumberFields = null;
-    private String cssClassForNumberFields = null;
-
-    private String cssClassForFileFields = "file";
     private String uploadButtonLabel = "Upload";
     private String uploadButtonCssClasses = "btn btn-default btn-sm";
     private String uploadNoFileLabel = "(no file)";
@@ -64,38 +41,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
     private String uploadRemoveFileCssClasses = "remove-file glyphicons glyphicons-remove text-danger";
     private String uploadRemoveFileTitle = "Remove file";
 
-    private String extraFormCssClasses = null;
-
-    private String readonlyPostfix = "-ro";
-
     private boolean displayROFilesAsLinks = false;
-
-    private String readonlyFormCssClass = null;
-
-
-    public String getNotRequiredExtension() {
-        return notRequiredExtension;
-    }
-
-    public void setNotRequiredExtension(String notRequiredExtension) {
-        this.notRequiredExtension = notRequiredExtension;
-    }
-
-    public String getRequiredExtension() {
-        return requiredExtension;
-    }
-
-    public void setRequiredExtension(String requiredExtension) {
-        this.requiredExtension = requiredExtension;
-    }
-
-    public boolean useRequiredInHtml() {
-        return useRequiredInHtml;
-    }
-
-    public void useRequiredInHtml(boolean useRequiresInHtml) {
-        this.useRequiredInHtml = useRequiresInHtml;
-    }
 
     public String getHtmlFormAction() {
         return htmlFormAction;
@@ -103,14 +49,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
 
     public void setHtmlFormAction(String htmlFormAction) {
         this.htmlFormAction = htmlFormAction;
-    }
-
-    public boolean htmlFormMultipart() {
-        return htmlFormMultipart;
-    }
-
-    public void htmlFormMultipart(boolean htmlFormMultipart) {
-        this.htmlFormMultipart = htmlFormMultipart;
     }
 
     public String getDefaultEncoding() {
@@ -121,24 +59,20 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         this.defaultEncoding = defaultEncoding;
     }
 
-
+    @Override
     public void setInline(boolean inline) {
-        this.inline = inline;
+        super.setInline(inline);
         if (inline)
-            horizontal = false;
+            setHorizontal(false);
         else
             inlineWithoutLabels = false;
-    }
-
-    public boolean isInline() {
-        return inline;
     }
 
     public void setInlineWithoutLabels(boolean inlineWithoutLabels) {
         this.inlineWithoutLabels = inlineWithoutLabels;
         if (inlineWithoutLabels) {
-            horizontal = false;
-            inline = true;
+            setHorizontal(false);
+            setInline(true);
         }
     }
 
@@ -146,33 +80,13 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return inlineWithoutLabels;
     }
 
+    @Override
     public void setHorizontal(boolean horizontal) {
-        this.horizontal = horizontal;
+        super.setHorizontal(horizontal);
         if (horizontal) {
-            inline = false;
+            setInline(false);
             inlineWithoutLabels = false;
         }
-    }
-
-    public boolean isHorizontal() {
-        return horizontal;
-    }
-
-    @Override
-    public void setReadonly(boolean readonly) {
-        this.readonly = readonly;
-    }
-
-    public boolean isReadonly() {
-        return readonly;
-    }
-
-    public void setReadonlyExtension(String readonlyExtension) {
-        this.readonlyExtension = readonlyExtension;
-    }
-
-    public String getReadonlyExtension() {
-        return readonlyExtension;
     }
 
     private static List<String> BOOTSTRAP_SIZES = Arrays.asList("xs", "sm", "md", "lg");
@@ -213,58 +127,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return horizontalFieldWidth;
     }
 
-    public void setInputTypeForDateFields(InputTag.InputType inputTypeForDateFields) {
-        this.inputTypeForDateFields = inputTypeForDateFields;
-    }
-
-    public InputTag.InputType getInputTypeForDateFields() {
-        return inputTypeForDateFields;
-    }
-
-    public void setCssClassForDateFields(String cssClassForDateFields) {
-        this.cssClassForDateFields = cssClassForDateFields;
-    }
-
-    public String getCssClassForDateFields() {
-        return cssClassForDateFields;
-    }
-
-    public void setInputTypeForTimeFields(InputTag.InputType inputTypeForTimeFields) {
-        this.inputTypeForTimeFields = inputTypeForTimeFields;
-    }
-
-    public InputTag.InputType getInputTypeForTimeFields() {
-        return inputTypeForTimeFields;
-    }
-
-    public void setCssClassForTimeFields(String cssClassForTimeFields) {
-        this.cssClassForTimeFields = cssClassForTimeFields;
-    }
-
-    public String getCssClassForTimeFields() {
-        return cssClassForTimeFields;
-    }
-
-    public void setInputTypeForNumberFields(InputTag.InputType inputTypeForNumberFields) {
-        this.inputTypeForNumberFields = inputTypeForNumberFields;
-    }
-
-    public InputTag.InputType getInputTypeForNumberFields() {
-        return inputTypeForNumberFields;
-    }
-
-    public void setCssClassForNumberFields(String cssClassForNumberFields) {
-        this.cssClassForNumberFields = cssClassForNumberFields;
-    }
-
-    public String getCssClassForNumberFields() {
-        return cssClassForNumberFields;
-    }
-
-    public void setCssClassForFileFields(String cssClassForFileFields) {
-        this.cssClassForFileFields = cssClassForFileFields;
-    }
-
     public void setUploadButtonLabel(String uploadButtonLabel) {
         this.uploadButtonLabel = uploadButtonLabel;
     }
@@ -274,7 +136,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
     }
 
     public void setUseRequiredInHtml(boolean useRequiredInHtml) {
-        this.useRequiredInHtml = useRequiredInHtml;
+        useRequiredInHtml(useRequiredInHtml);
     }
 
     public void setUploadNoFileLabel(String uploadNoFileLabel) {
@@ -295,10 +157,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
 
     public void setUploadRemoveFileTitle(String uploadRemoveFileTitle) {
         this.uploadRemoveFileTitle = uploadRemoveFileTitle;
-    }
-
-    public String getCssClassForFileFields() {
-        return cssClassForFileFields;
     }
 
     public String getUploadButtonLabel() {
@@ -329,22 +187,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return uploadRemoveFileTitle;
     }
 
-    public void setExtraFormCssClasses(String extraFormCssClasses) {
-        this.extraFormCssClasses = extraFormCssClasses;
-    }
-
-    public String getExtraFormCssClasses() {
-        return extraFormCssClasses;
-    }
-
-    public void setReadonlyPostfix(String readonlyPostfix) {
-        this.readonlyPostfix = readonlyPostfix;
-    }
-
-    public String getReadonlyPostfix() {
-        return readonlyPostfix;
-    }
-
     public void setDisplayROFilesAsLinks(boolean displayROFilesAsLinks) {
         this.displayROFilesAsLinks = displayROFilesAsLinks;
     }
@@ -353,53 +195,9 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return displayROFilesAsLinks;
     }
 
-    public void setReadonlyFormCssClass(String readonlyFormCssClass) {
-        this.readonlyFormCssClass = readonlyFormCssClass;
-    }
-
-    public String getReadonlyFormCssClass() {
-        return readonlyFormCssClass;
-    }
-
-    protected String getFormCssClasses(String beanName) {
-        StringBuilder formCssClasses = new StringBuilder();
-
-        formCssClasses.append(beanName).append("-form");
-        if (readonly) {
-            formCssClasses.append(readonlyExtension);
-            if (readonlyFormCssClass != null)
-                formCssClasses.append(" ").append(readonlyFormCssClass);
-        }
-
-        if (inline)
-            formCssClasses.append(" form-inline");
-        if (horizontal)
-            formCssClasses.append(" form-horizontal");
-
-        if (extraFormCssClasses != null)
-            formCssClasses.append(" ").append(extraFormCssClasses);
-
-        return formCssClasses.toString();
-    }
-
-    protected FormTag getFormTag(String beanName, long id) {
-        FormTag form =
-                new FormTag()
-                        .role("form")
-                        .id(getHtmlId(beanName, id))
-                        .name(beanName + (readonly ? readonlyExtension : ""))
-                        .method(FormTag.Method.POST);
-
-        if (htmlFormMultipart)
-            return form.enctype(FormTag.EncodingType.MULTIPART);
-
-        return form;
-    }
-
     protected void resetFormTypeFlags() {
-        inline = false;
+        super.resetFormTypeFlags();
         inlineWithoutLabels = false;
-        horizontal = false;
     }
 
     @Override
@@ -416,7 +214,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         FormTag form = getFormTag(beanName, id);
 
         resetFormTypeFlags();
-        inline = true;
+        setInline(true);
 
         return form.cssClass(getFormCssClasses(beanName));
     }
@@ -425,7 +223,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         FormTag form = getFormTag(beanName, id);
 
         resetFormTypeFlags();
-        inline = true;
+        setInline(true);
         inlineWithoutLabels = true;
 
         return form.cssClass(getFormCssClasses(beanName));
@@ -436,70 +234,12 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         FormTag form = getFormTag(beanName, id);
 
         resetFormTypeFlags();
-        horizontal = true;
+        setHorizontal(true);
 
         return form.cssClass(getFormCssClasses(beanName));
     }
 
     @Override
-    public InputTag getHiddenSubmitInput(String beanName, long id) {
-        return new InputTag(InputTag.InputType.HIDDEN).name("submitted" + beanName).value(Long.toString(id));
-    }
-
-    @Override
-    public DivTag getTextField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
-        LabelTag label =
-                getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
-
-        InputTag input =
-                getInputTag(
-                        params.getInputType(),
-                        fieldId,
-                        params.getField(),
-                        params.getValue(),
-                        params.isReadonly(),
-                        params.getTagExtraCssClasses());
-
-        if (params.isRequired() && useRequiredInHtml)
-            input.required();
-        if (params.getPlaceholder() != null)
-            input.placeholder(params.getPlaceholder());
-        if (params.isDisabled())
-            input.disabled();
-        if (params.isReadonly())
-            input.readonly();
-        if (!params.isAutocomplete())
-            input.attribute("autocomplete", "off");
-        if (params.getMaxLength() > 0)
-            input.maxlength(params.getMaxLength());
-
-        return getFormGroup(label, input, params.getHelpText(), params.getGroupExtraCssClasses());
-    }
-
-    protected String getFieldId(String field, long idBean, boolean readonly) {
-        return getFieldId(field, idBean, null, readonly);
-    }
-
-    protected String getFieldId(String field, long idBean, String idNamePostfix, boolean readonly) {
-        String readonlyIndication = readonly ? readonlyPostfix : "";
-
-        if (Strings.isEmpty(idNamePostfix))
-            return field + "_" + idBean + readonlyIndication;
-
-        return field + "_" + idNamePostfix + "_" + idBean + readonlyIndication;
-    }
-
-    protected InputTag getInputTag(
-            InputTag.InputType type,
-            String id,
-            String name,
-            String value,
-            boolean readonly)
-    {
-        return getInputTag(type, id, name, value, readonly, null);
-    }
-
     protected InputTag getInputTag(
             InputTag.InputType type,
             String id,
@@ -508,35 +248,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
             boolean readonly,
             String extraCssClasses)
     {
-        if (type == InputTag.InputType.DATE)
-            return new InputTag(inputTypeForDateFields == null ? type : inputTypeForDateFields)
-                    .cssClass(CssClasses.start("form-control").add(cssClassForDateFields, !readonly).add(extraCssClasses).get())
-                    .id(id).name(name).value(value);
-
-        if (type == InputTag.InputType.TIME)
-            return new InputTag(readonly || inputTypeForTimeFields == null ? type : inputTypeForTimeFields)
-                    .cssClass(CssClasses.start("form-control").add(cssClassForTimeFields).add(extraCssClasses).get())
-                    .id(id).name(name).value(value);
-
-        if (type == InputTag.InputType.NUMBER)
-            return new InputTag(inputTypeForNumberFields == null ? type : inputTypeForNumberFields)
-                    .cssClass(CssClasses.start("form-control").add(cssClassForNumberFields).add(extraCssClasses).get())
-                    .id(id).name(name).value(value);
-
-        if (type == InputTag.InputType.FILE) {
-            InputTag fileInput = new InputTag(InputTag.InputType.FILE);
-            if (!Strings.isEmpty(cssClassForFileFields))
-                fileInput.cssClass(CssClasses.start(cssClassForFileFields).add(extraCssClasses).get());
-            if (!Strings.isEmpty(value))
-                fileInput.placeholder(value);
-            return fileInput.id(id).name(name);
-        }
-
-        return new InputTag(type)
-                .cssClass(CssClasses.start("form-control").add(extraCssClasses).get())
-                .id(id)
-                .name(name)
-                .value(value);
+        return getInputTag(type, id, name, value, readonly, "form-control", extraCssClasses);
     }
 
     public DivTag getFormGroup() {
@@ -560,7 +272,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
                 new DivTag().cssClass(CssClasses.start("form-group").add(extraCssClasses).get())
                         .child(label);
 
-        if (horizontal) {
+        if (isHorizontal()) {
             DivTag formElements =
                     new DivTag().cssClass(getHorizontalFieldClass())
                             .child(field);
@@ -574,10 +286,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         }
 
         return formGroup;
-    }
-
-    protected Tag getHelperBlock(String helpText) {
-        return new PTag(helpText).cssClass("helpBlock");
     }
 
     protected LabelTag getLabel(String fieldLabel, boolean required) {
@@ -594,33 +302,20 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
             boolean required,
             String extraCssClasses)
     {
-        LabelTag label;
-        if (fieldId == null)
-            label = new LabelTag(getLabelText(fieldLabel, required));
-        else
-            label = new LabelTag(getLabelText(fieldLabel, required), fieldId);
-
-        StringBuilder cssClasses = new StringBuilder();
-        if (inlineWithoutLabels)
-            cssClasses.append("sr-only");
-        if (horizontal)
-            cssClasses.append(getHorizontalLabelClasses());
-        if (!Strings.isEmpty(extraCssClasses)) {
-            if (cssClasses.length() > 0)
-                cssClasses.append(" ");
-            cssClasses.append(extraCssClasses);
-        }
-        if (cssClasses.length() > 0)
-            label.cssClass(cssClasses.toString());
-
-        return label;
+        return super.getLabel(fieldLabel, fieldId, required, calculateLabelExtraCssClasses(extraCssClasses));
     }
 
-    protected String getLabelText(String fieldLabel, boolean required) {
-        if (required && !readonly)
-            return fieldLabel + requiredExtension;
+    private String calculateLabelExtraCssClasses(String extraCssClasses) {
+        if (Strings.isEmpty(extraCssClasses)) {
+            if (isHorizontal())
+                return getHorizontalLabelClasses();
+            return null;
+        }
 
-        return fieldLabel + notRequiredExtension;
+        if (isHorizontal())
+            return extraCssClasses + " " + getHorizontalLabelClasses();
+
+        return extraCssClasses;
     }
 
     protected String getHorizontalLabelClasses() {
@@ -666,7 +361,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         if (params.isDisabled())
             submit.disabled();
 
-        if (horizontal)
+        if (isHorizontal())
             return getFormGroup().child(new DivTag().cssClass(getHorizontalFieldClassesWithOffset()).child(submit));
 
         return submit;
@@ -690,7 +385,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         else
             formElement = getReadWriteFormElement(params, fieldId);
 
-        if (params.isRequired() && useRequiredInHtml)
+        if (params.isRequired() && useRequiredInHtml())
             formElement.required();
         if (params.isDisabled())
             formElement.disabled();
@@ -698,18 +393,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return getFormGroup(label, formElement, params.getHelpText(), params.getGroupExtraCssClasses());
     }
 
-    private FormElement getReadOnlyFormElement(HFHParameters params, String fieldId) {
-        String value = "";
-        if (!params.getSelected().equals("0"))
-            for (IdNamePair pair: params.getSelectPairs())
-                if (pair.getId().equals(params.getSelected()))
-                    value = pair.getName();
-
-        return getInputTag(InputTag.InputType.TEXT, fieldId, params.getField(), value, true, params.getTagExtraCssClasses())
-                .readonly();
-    }
-
-    private FormElement getReadWriteFormElement(HFHParameters params, String fieldId) {
+    protected FormElement getReadWriteFormElement(HFHParameters params, String fieldId) {
         SelectTag select = getSelectTag(params.getField(), fieldId, params.getTagExtraCssClasses());
 
         if (params.hasOptionGroupSelectData()) {
@@ -729,41 +413,11 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return select;
     }
 
-    private void addPairs(Tag selectOrGroup, List<IdNamePair> pairs, String selected) {
-        for (IdNamePair pair: pairs) {
-            OptionTag optionTag = new OptionTag(pair.getName(), pair.getId());
-            if (pair.isDisabled())
-                optionTag.disabled();
-            if (pair.getId().equals(selected))
-                optionTag.selected();
-            selectOrGroup.child(optionTag);
-        }
-    }
-
+    @Override
     protected SelectTag getSelectTag(String name, String id, String extraCssClasses) {
         return new SelectTag(name)
                 .cssClass(CssClasses.start("form-control").add(extraCssClasses).get())
                 .id(id);
-    }
-
-    @Override
-    public DivTag getTextAreaField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
-        LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
-
-        TextareaTag textarea = getTextAreaTag(fieldId, params.getField(), params.getValue(), params.getTagExtraCssClasses());
-        if (params.isRequired() && useRequiredInHtml)
-            textarea.required();
-        if (params.getPlaceholder() != null)
-            textarea.placeholder(params.getPlaceholder());
-        if (params.isDisabled())
-            textarea.disabled();
-        if (params.isReadonly())
-            textarea.readonly();
-        if (params.getMaxLength() > 0)
-            textarea.maxlength(params.getMaxLength());
-
-        return getFormGroup(label, textarea, params.getHelpText(), params.getGroupExtraCssClasses());
     }
 
     protected TextareaTag getTextAreaTag(String id, String name, String value, String extraCssClasses) {
@@ -777,7 +431,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
     public DivTag getCheckboxField(HFHParameters params) {
         DivTag innerPart = getCheckbox(params);
 
-        if (horizontal)
+        if (isHorizontal())
             return getFormGroup(params.getGroupExtraCssClasses())
                     .child(new DivTag().cssClass(getHorizontalFieldClassesWithOffset()).child(innerPart));
 
@@ -785,46 +439,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
             innerPart.changeCssClasses(CssClasses.start("checkbox").add(params.getGroupExtraCssClasses()).get());
 
         return innerPart;
-    }
-
-    protected DivTag getCheckbox(HFHParameters params) {
-        LabelTag labelTag = new LabelTag()
-                .child(getCheckboxTag(params))
-                .child(new CData(" " + params.getFieldLabel()));
-        if (params.hasLabelExtraCssClasses())
-            labelTag.cssClass(params.getLabelExtraCssClasses());
-
-        return new DivTag()
-                .cssClass("checkbox")
-                .child(labelTag);
-    }
-
-    protected InputTag getCheckboxTag(HFHParameters params) {
-        InputTag checkbox =
-                new InputTag(InputTag.InputType.CHECKBOX)
-                        .name(params.getField())
-                        .id(getFieldId(params.getField(), params.getIdBean(), params.getIdNameSuffix(), params.isReadonly()));
-
-        if (params.hasTagExtraCssClasses())
-            checkbox.cssClass(params.getTagExtraCssClasses());
-        if (params.isChecked())
-            checkbox.checked();
-        if (params.isDisabled())
-            checkbox.disabled();
-        if (params.isReadonly())
-            checkbox.readonly()
-                    .attribute("onclick", "return false;")
-                    .attribute("onkeydown", "return false;");
-        if (!params.isAutocomplete())
-            checkbox.attribute("autocomplete", "off");
-        if (params.getCheckboxValue() != null)
-            checkbox.value(params.getCheckboxValue());
-
-        return checkbox;
-    }
-
-    protected String getHtmlId(String beanName, long id) {
-        return beanName + (readonly ? readonlyExtension : "") + "_" + id;
     }
 
     @Override
@@ -858,7 +472,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
                         .data("fileinput", fieldId)
                         .title(uploadRemoveFileTitle);
 
-        if (params.isRequired() && useRequiredInHtml && !params.hasCurrentFile())
+        if (params.isRequired() && useRequiredInHtml() && !params.hasCurrentFile())
             input.required();
         if (params.isDisabled())
             input.disabled();
@@ -904,7 +518,7 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
                         .cssClass(CssClasses.start("form-group").add(extraCssClasses).get())
                         .child(label);
 
-        if (horizontal) {
+        if (isHorizontal()) {
             DivTag formElements =
                     new DivTag().cssClass(getHorizontalFieldClass())
                             .child(uploadButton)
@@ -920,14 +534,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         }
 
         return formGroup;
-    }
-
-    @Override
-    public Tag getHiddenInfo(String field, long idBean, String value) {
-        return new InputTag(InputTag.InputType.HIDDEN)
-                .name(field)
-                .id(getFieldId(field, idBean, false))
-                .value(value);
     }
 
     public DivTag getBooleanRadiosField(HFHParameters params) {
@@ -977,28 +583,6 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
         return new LabelTag().cssClass("radio-inline").addCodeFragment(buttonInside);
     }
 
-    @Override
-    public DivTag getLabelFormField(
-            String value,
-            DbBeanLanguage dbBeanLanguage,
-            boolean required,
-            HFHParameters params)
-    {
-        HFHParameters actualParameters = new HFHParameters(params);
-        String iso = dbBeanLanguage.getCapIso();
-
-        actualParameters.setField(params.getField() + iso);
-        actualParameters.setValue(value);
-        actualParameters.setFieldLabel(params.getFieldLabel() + " " + iso);
-        actualParameters.setRequired(required);
-
-        if (params.isAsTextArea())
-            return getTextAreaField(actualParameters);
-
-        actualParameters.setInputType(InputTag.InputType.TEXT);
-        return getTextField(actualParameters);
-    }
-
     public DivTag getTextLabelField(HFHParameters params) {
         String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
 
@@ -1046,4 +630,5 @@ public class Bootstrap3HTMLFormHelper implements HtmlFormHelper {
 
         return getFormGroup(label, wrapper, null, params.getGroupExtraCssClasses());
     }
+
 }
