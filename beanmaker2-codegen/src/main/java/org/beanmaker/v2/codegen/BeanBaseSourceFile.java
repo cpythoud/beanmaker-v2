@@ -75,6 +75,11 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         }
         if (columns.hasFiles())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanFile");
+        if (columns.hasUniqueCodeField()) {
+            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanWithUniqueCode");
+            importsManager.addImport("org.beanmaker.v2.runtime.dbutil.Codes");
+            importsManager.addImport("java.util.Optional");
+        }
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
@@ -91,6 +96,9 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.hasLabelField())
             javaClass.implementsInterface("DbBeanMultilingual");
+
+        if (columns.hasUniqueCodeField())
+            javaClass.implementsInterface("DbBeanWithUniqueCode");
     }
 
     @Override
@@ -253,6 +261,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         addInventoriesAndCountFunctions();
         addIDCheckFunctions();
         addListFunction();
+        addUniqueCodeFunction();
     }
 
     private void addRefreshFromDatabaseFunction() {
@@ -502,6 +511,21 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new ReturnStatement("list"));
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
+    private void addUniqueCodeFunction() {
+        if (columns.hasUniqueCodeField()) {
+            javaClass.addContent(new FunctionDeclaration("getFromCode", "Optional<" + beanName + ">")
+                    .visibility(Visibility.PUBLIC)
+                    .markAsStatic()
+                    .addArgument(new FunctionArgument("String", "code"))
+                    .addContent(new ReturnStatement(new FunctionCall("getBean", "Codes")
+                            .addArgument(beanName + ".class")
+                            .addArgument(beanName + "Parameters.INSTANCE")
+                            .addArgument("code")
+                            .addArgument("DbBeans.dbAccess"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
 }
