@@ -27,6 +27,14 @@ public class DataEntry {
         return Long.parseLong(getStringValue(header));
     }
 
+    public Boolean getBooleanValue(String header, Map<String, Boolean> booleanMappings, boolean lenientParsing) {
+        String value = getStringValue(header);
+        Boolean result = booleanMappings.get(value);
+        if (result == null && !lenientParsing)
+            throw new IllegalArgumentException("Cannot convert value to boolean: " + value);
+        return result != null ? result : false;
+    }
+
     // TODO: code other data types (numeric, bean reference, etc.)
 
 }

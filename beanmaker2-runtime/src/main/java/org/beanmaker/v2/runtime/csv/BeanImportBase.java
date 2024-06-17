@@ -16,6 +16,9 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
     private final DataEntries dataEntries;
     private final Map<String, String> fieldToHeaderMap;
     private final DbBeanEditor editor;
+    private final Map<String, Boolean> booleanMappings;
+
+    private boolean booleanLenientParsing = false;
 
     private DBTransaction dbTransaction;
 
@@ -24,6 +27,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         dataEntries = dataFile.parseFile();
         fieldToHeaderMap = createDefaultFieldToHeaderMap(fields);
         editor = createEditor(editorClass);
+        booleanMappings = DataValidator.getDefaultBooleanValues();
     }
 
     private Map<String, String> createDefaultFieldToHeaderMap(String... fields) {
@@ -62,6 +66,18 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     protected DBTransaction getDbTransaction() {
         return dbTransaction;
+    }
+
+    protected Map<String, Boolean> getBooleanMappings() {
+        return booleanMappings;
+    }
+
+    public boolean isBooleanParsingLenient() {
+        return booleanLenientParsing;
+    }
+
+    public void setBooleanLenientParsing(boolean booleanLenientParsing) {
+        this.booleanLenientParsing = booleanLenientParsing;
     }
 
     @Override
@@ -105,6 +121,10 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     protected long getLongValue(DataEntry dataEntry, String field) {
         return dataEntry.getLongValue(fieldToHeaderMap.get(field));
+    }
+
+    protected Boolean getBooleanValue(DataEntry dataEntry, String field) {
+        return dataEntry.getBooleanValue(field, booleanMappings, booleanLenientParsing);
     }
 
 }
