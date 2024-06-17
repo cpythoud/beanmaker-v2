@@ -46,7 +46,7 @@ public class LabelHelper {
     private final String labelDataTable;
     private final String labelAutoNamePrefix;
 
-    private final String idBasedDataQuery;
+    final String idBasedDataQuery;
     private final String idFromNameQuery;
     private final String labelDataQuery;
 
@@ -110,18 +110,21 @@ public class LabelHelper {
         return text;
     }
 
-    private String processResult(String result, long id, DbBeanLanguage dbBeanLanguage) {
-        return Objects.requireNonNull(result, "No data for label #" + id + " & language: " + dbBeanLanguage.getCapIso());
+    String processResult(String result, long id, DbBeanLanguage dbBeanLanguage) {
+        return Objects.requireNonNull(
+                result,
+                "No data for label #" + id + " & language: " + dbBeanLanguage.getCapIso()
+        );
     }
 
-    private DBQuerySetup setProcessingParameters(long id, DbBeanLanguage dbBeanLanguage) {
+    DBQuerySetup setProcessingParameters(long id, DbBeanLanguage dbBeanLanguage) {
         return stat -> {
             stat.setLong(1, id);
             stat.setLong(2, dbBeanLanguage.getId());
         };
     }
 
-    private DBQueryRetrieveData<String> getResult() {
+    DBQueryRetrieveData<String> getResult() {
         return rs -> {
             if (rs.next())
                 return rs.getString(1);
@@ -182,7 +185,12 @@ public class LabelHelper {
         );
     }
 
-    public String get(DBTransaction transaction, long id, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
+    public String get(
+            DBTransaction transaction,
+            long id,
+            DbBeanLanguage dbBeanLanguage,
+            Map<String, Object> parameters)
+    {
         return processParameters(
                 processResult(
                         transaction.addQuery(
@@ -257,7 +265,12 @@ public class LabelHelper {
         return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
     }
 
-    public String get(DBTransaction transaction, String name, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
+    public String get(
+            DBTransaction transaction,
+            String name,
+            DbBeanLanguage dbBeanLanguage,
+            Map<String, Object> parameters)
+    {
         return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
     }
 
@@ -284,9 +297,7 @@ public class LabelHelper {
     public long createLabel(DBTransaction transaction, Map<DbBeanLanguage, String> values) {
         long id = transaction.addRecordCreation(
                 "INSERT INTO " + labelTable + " (name) VALUES (?)",
-                stat -> {
-                    stat.setString(1, createUniqueLabelName());
-                }
+                stat -> stat.setString(1, createUniqueLabelName())
         );
         for (var value: values.entrySet()) {
             transaction.addUpdate(
@@ -346,9 +357,7 @@ public class LabelHelper {
     public long quickCreate(DBTransaction transaction, DbBeanLanguage language, String value) {
         long id = transaction.addRecordCreation(
                 "INSERT INTO " + labelTable + " (name) VALUES (?)",
-                stat -> {
-                    stat.setString(1, createUniqueLabelName());
-                }
+                stat -> stat.setString(1, createUniqueLabelName())
         );
         transaction.addUpdate(
                 "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",

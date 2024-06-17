@@ -373,7 +373,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                             "DbBeanLanguage",
                             "dbBeanLanguage",
                             new FunctionCall("getAllActiveLanguages", "LabelManager"))
-                            .addContent(new VarDeclaration("String", "iso", new FunctionCall("getCapIso", "dbBeanLanguage")))
+                            .addContent(new VarDeclaration("String", "iso", new FunctionCall("getTag", "dbBeanLanguage")))
                             .addContent(new FunctionCall("set" + choppedIdName, editorObject)
                                     .byItself()
                                     .addArgument("dbBeanLanguage")

@@ -1112,7 +1112,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                             .addContent(new VarDeclaration(
                                     "String",
                                     "iso",
-                                    new FunctionCall("getCapIso", "dbBeanLanguage")))
+                                    new FunctionCall("getTag", "dbBeanLanguage")))
                             .addContent(new VarDeclaration(
                                     "FieldValidator",
                                     "contentValidator",

@@ -160,7 +160,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addContent(new ReturnStatement(new FunctionCall("getStringFilterCell")
                                 .addArgument(new OperatorExpression(
-                                        new FunctionCall("getIso", "dbBeanLanguage"),
+                                        new FunctionCall("getTag", "dbBeanLanguage"),
                                         quickQuote(name),
                                         OperatorExpression.Operator.ADD)))))
                 .addContent(EMPTY_LINE);
@@ -254,7 +254,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addContent(new ReturnStatement(new FunctionCall("getTitleCell")
                                 .addArgument(new OperatorExpression(
-                                        new FunctionCall("getIso", "dbBeanLanguage"),
+                                        new FunctionCall("getTag", "dbBeanLanguage"),
                                         quickQuote(labelName),
                                         OperatorExpression.Operator.ADD))
                                 .addArgument(new OperatorExpression(
@@ -262,7 +262,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                                                 new FunctionCall("getTitle").addArgument(quickQuote(name)),
                                                 quickQuote(" "),
                                                 OperatorExpression.Operator.ADD),
-                                        new FunctionCall("getCapIso", "dbBeanLanguage"),
+                                        new FunctionCall("getTag", "dbBeanLanguage"),
                                         OperatorExpression.Operator.ADD)))))
                 .addContent(EMPTY_LINE);
     }
@@ -383,7 +383,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall("getTableCell")
                                 .addArgument(new FunctionCall("createTextCellDefinition", "MasterTableCellDefinition")
                                         .addArgument(new OperatorExpression(
-                                                new FunctionCall("getIso", "dbBeanLanguage"),
+                                                new FunctionCall("getTag", "dbBeanLanguage"),
                                                 quickQuote(chopID(name)),
                                                 OperatorExpression.Operator.ADD))
                                         .addArgument(new FunctionCall("get" + chopID(name), beanVarName)

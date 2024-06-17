@@ -66,18 +66,22 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addLabelFormattingFunctions(Column column) {
         javaClass
-                .addContent(getDefaultFormattingFunctionDeclaration(column)
-                        .addContent(getNoDataTestForReferencedBeanInFormatter(column))
-                        .addContent(EMPTY_LINE)
-                        .addContent(new ReturnStatement(getLabelFunction(column)
+                .addContent(getFormattingFunctionDeclarationWithLocalization(column)
+                        .addContent(new ReturnStatement(new FunctionCall(getFormattingFunctionName(column))
+                                .addArgument(beanVarName)
                                 .addArgument(new FunctionCall("getLanguage", "localization")))))
                 .addContent(EMPTY_LINE)
-                .addContent(getFormattingFunctionDeclarationWithLangugae(column)
+                .addContent(getFormattingFunctionDeclarationWithLanguage(column)
                         .addContent(getNoDataTestForReferencedBeanInFormatter(column))
                         .addContent(EMPTY_LINE)
-                        .addContent(new ReturnStatement(getLabelFunction(column)
-                                .addArgument("language"))))
+                        .addContent(new ReturnStatement(getChainedLabelTestAndCall(column))))
                 .addContent(EMPTY_LINE);
+    }
+
+    private String getChainedLabelTestAndCall(Column column) {
+        String labelName = chopID(column.getJavaName());
+        return "%s.get%s().hasDataFor(language) ? %s.get%s(language) : \"\""
+                .formatted(beanVarName, labelName, beanVarName, labelName);
     }
 
     private IfBlock getNoDataTestForReferencedBeanInFormatter(Column column) {
@@ -95,7 +99,7 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
         var functionCall = new FunctionCall("get" + capName, beanVarName);
 
         javaClass
-                .addContent(getDefaultFormattingFunctionDeclaration(column)
+                .addContent(getFormattingFunctionDeclarationWithLocalization(column)
                         .addContent(getNoDataTestForReferencedBeanInFormatter(column))
                         .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(new FunctionCall("getFilename", functionCall))))
@@ -117,7 +121,7 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
         var functionCall = new FunctionCall("get" + chopID(column.getJavaName()), beanVarName);
 
         javaClass
-                .addContent(getDefaultFormattingFunctionDeclaration(column)
+                .addContent(getFormattingFunctionDeclarationWithLocalization(column)
                         .addContent(getNoDataTestForReferencedBeanInFormatter(column))
                         .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(
@@ -128,7 +132,7 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addStringFormattingFunction(Column column) {
         javaClass
-                .addContent(getDefaultFormattingFunctionDeclaration(column)
+                .addContent(getFormattingFunctionDeclarationWithLocalization(column)
                         .addContent(new ReturnStatement(
                                 new FunctionCall("formatString")
                                         .addArgument(new FunctionCall("get" + capitalize(column.getJavaName()), beanVarName)))))
@@ -142,31 +146,33 @@ public class BeanFormatterBaseSourceFile extends BeanCodeWithDBInfo {
         String functionName = (type.equals("Boolean") ? "is" : "get") + capitalize(column.getJavaName());
 
         javaClass
-                .addContent(getDefaultFormattingFunctionDeclaration(column)
+                .addContent(getFormattingFunctionDeclarationWithLocalization(column)
                         .addContent(new ReturnStatement(new FunctionCall("format" + type)
                                 .addArgument(new FunctionCall(functionName, beanVarName))
                                 .addArgument("localization"))))
                 .addContent(EMPTY_LINE);
     }
 
-    private FunctionDeclaration getDefaultFormattingFunctionDeclaration(Column column) {
+    private FunctionDeclaration getFormattingFunctionDeclarationWithLocalization(Column column) {
         return getFormattingFunctionDeclaration(column)
                 .addArgument(new FunctionArgument("DbBeanLocalization", "localization"));
     }
 
-    private FunctionDeclaration getFormattingFunctionDeclarationWithLangugae(Column column) {
+    private FunctionDeclaration getFormattingFunctionDeclarationWithLanguage(Column column) {
         return getFormattingFunctionDeclaration(column)
                 .addArgument(new FunctionArgument("DbBeanLanguage", "language"));
     }
 
     private FunctionDeclaration getFormattingFunctionDeclaration(Column column) {
-        String fieldName = column.getJavaName();
-        String functionName = "getFormatted" + (column.isBeanReference() ? chopID(fieldName) : capitalize(fieldName));
-
-        return new FunctionDeclaration(functionName, "String")
+        return new FunctionDeclaration(getFormattingFunctionName(column), "String")
                 .annotate("@Override")
                 .visibility(Visibility.PUBLIC)
                 .addArgument(new FunctionArgument(beanName, beanVarName));
+    }
+
+    private String getFormattingFunctionName(Column column) {
+        String fieldName = column.getJavaName();
+        return "getFormatted" + (column.isBeanReference() ? chopID(fieldName) : capitalize(fieldName));
     }
 
 }
