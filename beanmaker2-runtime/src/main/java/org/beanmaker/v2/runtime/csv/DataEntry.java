@@ -35,6 +35,10 @@ public class DataEntry {
         return result != null ? result : false;
     }
 
+    public Integer getIntegerValue(String header) {
+        return Integer.parseInt(getStringValue(header));
+    }
+
     // TODO: code other data types (numeric, bean reference, etc.)
 
 }
