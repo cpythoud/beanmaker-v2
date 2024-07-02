@@ -1,5 +1,7 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.util.Version;
+
 import java.text.DateFormat;
 
 import java.util.Locale;
@@ -11,7 +13,7 @@ public class SourceFiles {
         buf.append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.ENGLISH).format(new java.util.Date()));
         buf.append("\n");
         buf.append("// Library Version #");
-        buf.append(Version.get(false));
+        buf.append(Version.get());
         buf.append("\n\n");
     }
 

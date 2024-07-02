@@ -2,3 +2,4 @@
 *.iml
 target/
 local-scripts/
+pom.xml.versionsBackup

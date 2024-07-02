@@ -1,6 +1,7 @@
 package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
+import org.beanmaker.v2.util.Version;
 
 import org.jcodegen.java.ClassSourceFile;
 import org.jcodegen.java.EmptyLine;
@@ -197,7 +198,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
         else
             annotation.append("EDITABLE");
 
-        annotation.append(",").append(Version.get(true)).append("\")");
+        annotation.append(",").append(Version.get()).append("\")");
 
         javaClass.annotate(annotation.toString());
     }
