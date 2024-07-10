@@ -1,0 +1,8 @@
+Release Notes for Beanmaker CLI
+-------------------------------
+
+v2.0 (2024-02-07)
+
+- move from 1.0-SNAPSHOT to an actual version number
+- the libraries are deployed on so many projects now that they cannot be considered alpha or beta anymore, plus we
+  need versioning for projects that are moving at different speeds
