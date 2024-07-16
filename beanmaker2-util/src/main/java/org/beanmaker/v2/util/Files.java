@@ -97,6 +97,18 @@ public class Files {
         return isFileExtensionOK(file.getName(), extensions);
     }
 
+    public static String removeFileExtension(String filename) {
+        if (filename == null)
+            throw new NullPointerException("Filename cannot be null");
+
+        int index = filename.lastIndexOf(".");
+
+        if (index == -1)
+            return filename;  // * filename has no extension
+        else
+            return filename.substring(0, index);
+    }
+
     /**
      * Use a String to create an UTF-8 text file
      * @param s text to be written to file.
