@@ -9,7 +9,12 @@ public class DefaultProjectParameters implements ProjectParameters {
 
     @Override
     public boolean createSealedClasses() {
-        return true;
+        return false;
+    }
+
+    @Override
+    public boolean createDatabaseProviderReference() {
+        return false;
     }
 
 }

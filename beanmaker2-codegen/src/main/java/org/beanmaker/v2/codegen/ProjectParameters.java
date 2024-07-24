@@ -6,4 +6,6 @@ public interface ProjectParameters {
 
     boolean createSealedClasses();
 
+    boolean createDatabaseProviderReference();
+
 }
