@@ -1,17 +1,24 @@
 package org.beanmaker.v2.util;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 import java.util.List;
+import java.util.Scanner;
+
+import java.util.stream.Collectors;
 
 public class Files {
 
@@ -198,6 +205,69 @@ public class Files {
             throw new IOException("File download failed. HTTP code: " + responseCode);
 
         connection.disconnect();
+    }
+
+    /**
+     * Reads the content of a resource file using the specified file name
+     * and returns it as a string.
+     *
+     * @param fileName the name of the resource file
+     * @return the content of the resource file as a string
+     */
+    public static String readResourceFile(String fileName) {
+        return readResourceFile(fileName, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Reads the content of a resource file using the specified file name and encoding,
+     * and returns it as a string.
+     *
+     * @param fileName  the name of the resource file
+     * @param encoding  the character encoding of the resource file
+     * @return the content of the resource file as a string
+     * @throws IllegalArgumentException if the file is not found
+     */
+    public static String readResourceFile(String fileName, Charset encoding) {
+        var inputStream = Files.class.getClassLoader().getResourceAsStream(fileName);
+        if (inputStream == null)
+            throw new IllegalArgumentException("File not found! " + fileName);
+
+        try (var scanner = new Scanner(new InputStreamReader(inputStream, encoding)).useDelimiter("\\A")) {
+            return scanner.hasNext() ? scanner.next() : "";
+        }
+    }
+
+
+    /**
+     * Reads the content of a resource file using the specified file name and returns it as a list of strings.
+     *
+     * @param fileName the name of the resource file
+     * @return the content of the resource file as a list of strings
+     * @throws IllegalArgumentException if the file is not found
+     */
+    public static List<String> readResourceFileToList(String fileName) {
+        return readResourceFileToList(fileName, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Reads the content of a resource file using the specified file name and returns it as a list of strings.
+     *
+     * @param fileName the name of the resource file
+     * @param encoding the character encoding of the resource file
+     * @return the content of the resource file as a list of strings
+     * @throws IllegalArgumentException if the file is not found
+     */
+    public static List<String> readResourceFileToList(String fileName, Charset encoding) {
+        var inputStream = Files.class.getClassLoader().getResourceAsStream(fileName);
+        if (inputStream == null)
+            throw new IllegalArgumentException("File not found! " + fileName);
+
+        try (var isr = new InputStreamReader(inputStream, encoding);
+            var reader = new BufferedReader(isr)) {
+            return reader.lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read file " + fileName, e);
+        }
     }
 
 }
