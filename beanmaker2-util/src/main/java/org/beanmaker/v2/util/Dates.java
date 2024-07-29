@@ -7,6 +7,9 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -688,6 +691,48 @@ public class Dates {
 
     public static String formatIso8601dString(Timestamp timestamp) {
         return timestamp.toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    /**
+     * Creates a new instance of Date based on the provided year, month, and dayOfMonth.
+     *
+     * @param year        the year value, represented as an integer.
+     * @param month       the month value, represented as an integer. The value should be between 1 and 12 (inclusive).
+     * @param dayOfMonth  the day of the month value, represented as an integer. The value should be between 1 and 31 (inclusive).
+     * @return a new instance of Date.
+     */
+    public static Date createDate(int year, int month, int dayOfMonth) {
+        var date = LocalDate.of(year, month, dayOfMonth);
+        return Date.valueOf(date);
+    }
+
+    /**
+     * Creates a Time object with the specified hour, minutes, and seconds.
+     *
+     * @param hour    the hour value (0-23)
+     * @param minutes the minute value (0-59)
+     * @param seconds the second value (0-59)
+     * @return the Time object representing the specified time
+     */
+    public static Time createTime(int hour, int minutes, int seconds) {
+        var time = LocalTime.of(hour, minutes, seconds);
+        return Time.valueOf(time);
+    }
+
+    /**
+     * Creates a Timestamp object based on the provided date and time components.
+     *
+     * @param year        the year (e.g., 2022)
+     * @param month       the month value (1-12)
+     * @param dayOfMonth  the day of the month (1-31)
+     * @param hour        the hour of the day (0-23)
+     * @param minutes     the minute value (0-59)
+     * @param seconds     the second value (0-59)
+     * @return a Timestamp object representing the specified date and time
+     */
+    public static Timestamp createTimestamp(int year, int month, int dayOfMonth, int hour, int minutes, int seconds) {
+        var dateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minutes, seconds);
+        return Timestamp.valueOf(dateTime);
     }
 
 }
