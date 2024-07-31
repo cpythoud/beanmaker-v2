@@ -23,16 +23,15 @@ public class Processes {
         var reader = new BufferedReader(new InputStreamReader(buildProcess(cmd).getInputStream()));
         String line;
         var output = new StringBuilder();
-        while (true) {
-            try {
-                if ((line = reader.readLine()) == null)
-                    break;
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+        try {
+            while ((line = reader.readLine()) != null) {
+                output.append(line);
+                output.append(System.lineSeparator());
             }
-            output.append(line);
-            output.append(System.lineSeparator());
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
+
         return output.toString();
     }
 
@@ -58,14 +57,13 @@ public class Processes {
         var reader = new BufferedReader(new InputStreamReader(buildProcess(cmd).getInputStream()));
         String line;
         var output = new ArrayList<String>();
-        while (true) {
-            try {
-                if ((line = reader.readLine()) == null) break;
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            output.add(line);
+        try {
+            while ((line = reader.readLine()) != null)
+                output.add(line);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
+
         return output;
     }
 
