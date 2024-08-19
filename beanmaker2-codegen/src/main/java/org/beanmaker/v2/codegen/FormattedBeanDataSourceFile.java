@@ -18,6 +18,7 @@ public class FormattedBeanDataSourceFile extends BeanCode {
 
     @Override
     protected void addImports() {
+        importsManager.addImport("org.beanmaker.v2.runtime.DbBeanFormatter");
         importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
     }
 
@@ -33,7 +34,7 @@ public class FormattedBeanDataSourceFile extends BeanCode {
                         .addContent(superCall()))
                 .addContent(EMPTY_LINE)
                 .addContent(createConstructor()
-                        .addArgument(new FunctionArgument(beanName + "FormatterInterface", "formatter"))
+                        .addArgument(new FunctionArgument("DbBeanFormatter", "formatter"))
                         .addContent(superCall().addArgument("formatter")))
                 .addContent(EMPTY_LINE);
     }

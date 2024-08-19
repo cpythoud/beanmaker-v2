@@ -7,6 +7,8 @@ import org.jcodegen.java.JavaInterface;
 
 import static org.beanmaker.v2.util.Strings.uncapitalize;
 
+// ! There are no longer any class extending this one in the project. We keep it for now, in case we need
+// ! to reintroduce interfaces in the generated code.
 public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
 
     protected final String beanName;

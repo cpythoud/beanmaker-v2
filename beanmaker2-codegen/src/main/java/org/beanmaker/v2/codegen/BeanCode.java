@@ -26,7 +26,7 @@ public abstract class BeanCode extends BaseCode {
         parametersInstanceExpression = getParametersInstanceExpression(beanName);
         badIDExceptionMessage = getBadIDExceptionMessage(beanName);
         itemManagerRetrievalCall = getItemManagerRetrievalCall(beanName);
-        formatterInstanceExpression = getFormatterInstanceExpression(beanName);
+        formatterInstanceExpression = "LocalDbBeanFormatter.INSTANCE";
     }
 
     protected static String getBeanVarName(String beanName) {
@@ -56,9 +56,9 @@ public abstract class BeanCode extends BaseCode {
         return getParametersInstanceExpression(beanName) + ".getItemOrderManager()";
     }
 
-    protected static String getFormatterInstanceExpression(String beanName) {
-        return beanName + "Formatter.INSTANCE";
-    }
+    /*protected static String getFormatterInstanceExpression(String beanName) {
+        return "LocalDbBeanFormatter.INSTANCE";
+    }*/
 
     protected void applySealedModifier(String permittedClass) {
         if (projectParameters.createSealedClasses())

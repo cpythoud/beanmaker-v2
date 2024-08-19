@@ -14,39 +14,43 @@ import java.sql.Timestamp;
 
 import java.text.DateFormat;
 
-public abstract class DbBeanFormatter {
+public interface DbBeanFormatter {
 
-    public String formatString(String text) {
+    default String formatString(String text) {
         if (text == null)
-            return "";
+            return noData();
 
         return text;
     }
 
-    public String formatDate(Date date, DbBeanLocalization dbBeanLocalization) {
+    default String formatString(String text, DbBeanLocalization dbBeanLocalization) {
+        return formatString(text);
+    }
+
+    default String formatDate(Date date, DbBeanLocalization dbBeanLocalization) {
         if (date == null)
-            return "";
+            return noData();
 
         return DateFormat.getDateInstance(DateFormat.LONG, dbBeanLocalization.getLocale()).format(date);
     }
 
-    public String formatTime(Time time, DbBeanLocalization dbBeanLocalization) {
+    default String formatTime(Time time, DbBeanLocalization dbBeanLocalization) {
         if (time == null)
-            return "";
+            return noData();
 
         return DateFormat.getTimeInstance(DateFormat.LONG, dbBeanLocalization.getLocale()).format(time);
     }
 
-    public String formatTimestamp(Timestamp timestamp, DbBeanLocalization dbBeanLocalization) {
+    default String formatTimestamp(Timestamp timestamp, DbBeanLocalization dbBeanLocalization) {
         if (timestamp == null)
-            return "";
+            return noData();
 
         return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, dbBeanLocalization.getLocale()).format(timestamp);
     }
 
-    public String formatBoolean(Boolean value, DbBeanLocalization dbBeanLocalization) {
+    default String formatBoolean(Boolean value, DbBeanLocalization dbBeanLocalization) {
         if (value == null)
-            return "";
+            return noData();
 
         if (value)
             return dbBeanLocalization.getLabel("true_value");
@@ -54,89 +58,129 @@ public abstract class DbBeanFormatter {
         return dbBeanLocalization.getLabel("false_value");
     }
 
-    public String formatInt(Integer value, DbBeanLocalization dbBeanLocalization) {
+    default String formatInteger(Integer value, DbBeanLocalization dbBeanLocalization) {
         if (value == null)
-            return "";
+            return noData();
 
         return value.toString();
     }
 
-    public String formatLong(Long value, DbBeanLocalization dbBeanLocalization) {
+    default String formatInt(Integer value, DbBeanLocalization dbBeanLocalization) {
+        return formatInteger(value, dbBeanLocalization);
+    }
+
+    default String formatLong(Long value, DbBeanLocalization dbBeanLocalization) {
         if (value == null)
-            return "";
+            return noData();
 
         return value.toString();
     }
 
-    public String formatMoney(Money value, DbBeanLocalization dbBeanLocalization) {
+    default String formatMoney(Money value, DbBeanLocalization dbBeanLocalization) {
         if (value == null)
-            return "";
+            return noData();
 
         return value.toString();
+    }
+
+    default String formatBean(DbBeanInterface bean, DbBeanLocalization dbBeanLocalization) {
+        if (bean == null)
+            return noData();
+
+        return bean.getNameForIdNamePairsAndTitles(dbBeanLocalization.getLanguage());
+    }
+
+    default String formatLabel(DbBeanLabel label, DbBeanLocalization dbBeanLocalization) {
+        return formatLabel(label, dbBeanLocalization.getLanguage());
+    }
+
+    default String formatLabel(DbBeanLabel label, DbBeanLanguage language) {
+        if (label == null || !label.hasDataFor(language))
+            return noData();
+
+        return label.get(language);
+    }
+
+    default String formatFile(DbBeanFile file, DbBeanLocalization dbBeanLocalization) {
+        if (file == null)
+            return noData();
+
+        return file.getFilename();
+    }
+
+    default String formatFileLink(DbBeanFile file, DbBeanLocalization dbBeanLocalization) {
+        if (file == null)
+            return noData();
+
+        return DbBeanFile.getLink(file).toString();
+    }
+
+    default String noData() {
+        return "";
     }
 
     // *************
 
-    public Date convertStringToDate(String str) {
+    default Date convertStringToDate(String str) {
         if (Strings.isEmpty(str))
             return null;
 
         return Dates.getDateFromYYMD(str, "-");
     }
 
-    public String convertDateToString(Date date) {
+    default String convertDateToString(Date date) {
         if (date == null)
-            return "";
+            return noData();
 
         return date.toString();
     }
 
-    public boolean validateDateFormat(String str) {
+    default boolean validateDateFormat(String str) {
         SimpleInputDateFormat simpleInputDateFormat = new SimpleInputDateFormat(SimpleInputDateFormat.ElementOrder.YYMD, "-");
         return simpleInputDateFormat.validate(str);
     }
 
-    public Time convertStringToTime(String str) {
+    default Time convertStringToTime(String str) {
         if (Strings.isEmpty(str))
             return null;
 
         return Dates.getTimeFromString(str, ":");
     }
 
-    public String convertTimeToString(Time time) {
+    default String convertTimeToString(Time time) {
         if (time == null)
-            return "";
+            return noData();
 
         return time.toString();
     }
 
-    public boolean validateTimeFormat(String str) {
+    default boolean validateTimeFormat(String str) {
         SimpleInputTimeFormat simpleInputTimeFormat = new SimpleInputTimeFormat(":");
         return simpleInputTimeFormat.validate(str);
     }
 
-    public Timestamp convertStringToTimestamp(String str) {
+    default Timestamp convertStringToTimestamp(String str) {
         if (Strings.isEmpty(str))
             return null;
 
         return Dates.getTimestampFromYYMD(str, "-", ":");
     }
 
-    public String convertTimestampToString(Timestamp timestamp) {
+    default String convertTimestampToString(Timestamp timestamp) {
         if (timestamp == null)
-            return "";
+            return noData();
 
         return timestamp.toString();
     }
 
-    public boolean validateTimestampFormat(String str) {
+    default boolean validateTimestampFormat(String str) {
         SimpleInputTimestampFormat simpleInputTimestampFormat = new SimpleInputTimestampFormat(SimpleInputDateFormat.ElementOrder.YYMD, "-", ":");
         return simpleInputTimestampFormat.validate(str);
     }
 
     // *************
 
-    public MoneyFormat getDefaultMoneyFormat() {
+    default MoneyFormat getDefaultMoneyFormat() {
         return MoneyFormat.getDefault();
     }
 

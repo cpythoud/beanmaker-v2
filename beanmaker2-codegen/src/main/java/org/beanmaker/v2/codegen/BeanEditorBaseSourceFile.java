@@ -154,7 +154,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         name,
                         false,
                         new StringOrCode<>(new FunctionCall("withFormat", "Money.ZERO")
-                                .addArgument(beanName + "Formatter.INSTANCE.getDefaultMoneyFormat()"))
+                                .addArgument("LocalDbBeanFormatter.INSTANCE.getDefaultMoneyFormat()"))
                 );
                 addProperty(
                         "String",
@@ -260,7 +260,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
             dbUtilCall.addArguments("rs", Integer.toString(++index));
             if (type.equals("Money"))
-                dbUtilCall.addArgument(beanName + "Formatter.INSTANCE");
+                dbUtilCall.addArgument("LocalDbBeanFormatter.INSTANCE");
 
             initCall.addArgument(dbUtilCall);
         }
@@ -596,7 +596,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 fieldStr,
                                 new FunctionCall(
                                         "convert" + type + "ToString",
-                                        beanName + "Formatter.INSTANCE")
+                                        "LocalDbBeanFormatter.INSTANCE")
                                         .addArgument(field))))
                 .addContent(EMPTY_LINE)
                 .addContent(getStandardSetterFunction("String", fieldStr))
@@ -620,7 +620,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                                 new FunctionCall("withFormat", field)
                                                         .addArgument(new FunctionCall(
                                                                 "getDefaultMoneyFormat",
-                                                                beanName + "Formatter.INSTANCE"))))
+                                                                "LocalDbBeanFormatter.INSTANCE"))))
                                         .addContent(new Assignment(
                                                 fieldStr,
                                                 new FunctionCall("toString", field))))))
@@ -968,14 +968,14 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private FunctionCall getTemporalConversion(String type, String nameStr) {
-        return new FunctionCall("convertStringTo" + type, beanName + "Formatter.INSTANCE")
+        return new FunctionCall("convertStringTo" + type, "LocalDbBeanFormatter.INSTANCE")
                 .addArgument(nameStr);
     }
 
     private ObjectCreation getMoneyConversion(String nameStr) {
         return new ObjectCreation("Money")
                 .addArgument(nameStr)
-                .addArgument(new FunctionCall("getDefaultMoneyFormat", beanName + "Formatter.INSTANCE"));
+                .addArgument(new FunctionCall("getDefaultMoneyFormat", "LocalDbBeanFormatter.INSTANCE"));
     }
 
     private void addDataValidationFunctions() {
@@ -1287,7 +1287,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new IfBlock(new Condition(
                         new FunctionCall(
                                 "validate" + column.getJavaType() + "Format",
-                                beanName + "Formatter.INSTANCE")
+                                "LocalDbBeanFormatter.INSTANCE")
                                 .addArgument(name + "Str")))
                         .addContent(new ReturnStatement("FieldValidationResult.OK")))
                 .addContent(EMPTY_LINE)
@@ -1353,8 +1353,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         lambda
                 .addContent(new IfBlock(new Condition(
-                        new FunctionCall("isValOK", beanName
-                                + "Formatter.INSTANCE.getDefaultMoneyFormat()")
+                        new FunctionCall(
+                                "isValOK",
+                                "LocalDbBeanFormatter.INSTANCE.getDefaultMoneyFormat()")
                                 .addArgument(name + "Str")))
                         .addContent(new ReturnStatement("FieldValidationResult.OK")))
                 .addContent(EMPTY_LINE)

@@ -1,6 +1,8 @@
 package org.beanmaker.v2.codegen;
 
-public class LocalDbBeanFormatterSourceFile extends BaseCode {
+import static org.beanmaker.v2.codegen.BaseCode.DEFAULT_PROJECT_PARAMETERS;
+
+public class LocalDbBeanFormatterSourceFile extends BaseEnumCode {
 
     public LocalDbBeanFormatterSourceFile(String packageName) {
         this(packageName, DEFAULT_PROJECT_PARAMETERS);
@@ -18,11 +20,13 @@ public class LocalDbBeanFormatterSourceFile extends BaseCode {
     }
 
     @Override
-    protected void decorateJavaClass() {
-        javaClass.extendsClass("DbBeanFormatter");
+    protected void decorateJavaEnum() {
+        javaEnum.implementsInterface("DbBeanFormatter");
     }
 
     @Override
-    protected void addCoreFunctionality() { }
+    protected void enumerateConstants() {
+        javaEnum.addEnumConstant("INSTANCE");
+    }
 
 }
