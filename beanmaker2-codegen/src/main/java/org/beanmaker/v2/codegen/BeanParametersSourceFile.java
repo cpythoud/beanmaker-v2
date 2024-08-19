@@ -1,43 +1,27 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.FunctionCall;
-import org.jcodegen.java.VarDeclaration;
-import org.jcodegen.java.Visibility;
+import static org.beanmaker.v2.codegen.BaseCode.DEFAULT_PROJECT_PARAMETERS;
 
-public class BeanParametersSourceFile extends BeanCode {
+public class BeanParametersSourceFile extends BaseEnumCode {
 
     public BeanParametersSourceFile(String beanName, String packageName) {
         this(beanName, packageName, DEFAULT_PROJECT_PARAMETERS);
     }
 
     public BeanParametersSourceFile(String beanName, String packageName, ProjectParameters projectParameters) {
-        super(beanName, packageName, null, "Parameters", projectParameters);
+        super(beanName + "Parameters", packageName, projectParameters);
 
         createSourceCode();
     }
 
     @Override
-    protected void decorateJavaClass() {
-        javaClass.markAsFinal().extendsClass(beanName  + "ParametersBase");
+    protected void decorateJavaEnum() {
+        javaEnum.implementsInterface(enumName + "Base");
     }
 
     @Override
-    protected void addStaticProperties() {
-        javaClass
-                .addContent(VarDeclaration.declareAndInit(className, "INSTANCE").markAsStatic().markAsFinal())
-                .addContent(EMPTY_LINE);
+    protected void enumerateConstants() {
+        javaEnum.addEnumConstant("INSTANCE");
     }
-
-    @Override
-    protected void addConstructors() {
-        javaClass
-                .addContent(javaClass.createConstructor()
-                        .visibility(Visibility.PRIVATE)
-                        .addContent(new FunctionCall("super").byItself()))
-                .addContent(EMPTY_LINE);
-    }
-
-    @Override
-    protected void addCoreFunctionality() { }
 
 }

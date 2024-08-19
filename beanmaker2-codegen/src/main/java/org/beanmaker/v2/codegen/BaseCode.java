@@ -21,7 +21,7 @@ import static org.beanmaker.v2.util.Strings.capitalize;
 
 public abstract class BaseCode implements BeanMakerSourceFile {
 
-    protected static final ProjectParameters DEFAULT_PROJECT_PARAMETERS = new DefaultProjectParameters();
+    static final ProjectParameters DEFAULT_PROJECT_PARAMETERS = new DefaultProjectParameters();
 
     protected static final EmptyLine EMPTY_LINE = new EmptyLine();
     protected static final String EMPTY_STRING = "\"\"";
@@ -106,7 +106,7 @@ public abstract class BaseCode implements BeanMakerSourceFile {
                 importsManager.addImport(importname);
     }
 
-    protected static List<String> createImportList(String packageName, String... classes) {
+    static List<String> createImportList(String packageName, String... classes) {
         var importList = new ArrayList<String>();
         for (String className: classes)
             importList.add(packageName + "." + className);

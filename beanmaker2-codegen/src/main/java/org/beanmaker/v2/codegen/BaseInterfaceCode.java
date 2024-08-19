@@ -5,6 +5,8 @@ import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.InterfaceSourceFile;
 import org.jcodegen.java.JavaInterface;
 
+import java.util.List;
+
 import static org.beanmaker.v2.util.Strings.uncapitalize;
 
 // ! There are no longer any class extending this one in the project. We keep it for now, in case we need
@@ -16,6 +18,7 @@ public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
     protected final String packageName;
     protected final String interfaceName;
     protected final Columns columns;
+    protected final ProjectParameters projectParameters;
 
     protected final InterfaceSourceFile sourceFile;
     protected final JavaInterface javaInterface;
@@ -23,12 +26,13 @@ public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
 
     protected static final EmptyLine EMPTY_LINE = new EmptyLine();
 
-    public BaseInterfaceCode(String beanName, String packageName, String interfaceNameExtension, Columns columns) {
+    public BaseInterfaceCode(String beanName, String packageName, String interfaceNameExtension, Columns columns, ProjectParameters projectParameters) {
         this.beanName = beanName;
         beanVarName = uncapitalize(beanName);
         this.packageName = packageName;
         interfaceName = beanName + interfaceNameExtension;
         this.columns = columns;
+        this.projectParameters = projectParameters;
 
         sourceFile = new InterfaceSourceFile(packageName, interfaceName);
         javaInterface = sourceFile.getJavaInterface();
@@ -54,9 +58,17 @@ public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
         addStaticProperties();
         addStaticInitialization();
         addFunctionDeclarations();
+        addCoreFunctionality();
     }
 
     protected void addImports() { }
+
+    @SafeVarargs
+    protected final void addImports(List<String>... importLists) {
+        for (var importList: importLists)
+            for (String importname : importList)
+                importsManager.addImport(importname);
+    }
 
     protected void decorateJavaInterface() { }
 
@@ -65,5 +77,7 @@ public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
     protected void addStaticInitialization() { }
 
     protected abstract void addFunctionDeclarations();
+
+    protected void addCoreFunctionality() { }
 
 }
