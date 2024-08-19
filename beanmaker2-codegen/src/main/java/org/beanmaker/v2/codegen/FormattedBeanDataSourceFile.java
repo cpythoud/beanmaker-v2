@@ -3,6 +3,7 @@ package org.beanmaker.v2.codegen;
 import org.jcodegen.java.ConstructorDeclaration;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
+import org.jcodegen.java.Visibility;
 
 public class FormattedBeanDataSourceFile extends BeanCode {
 
@@ -24,7 +25,7 @@ public class FormattedBeanDataSourceFile extends BeanCode {
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.markAsFinal().extendsClass(className + "Base");
+        javaClass.markAsFinal().visibility(Visibility.PUBLIC).extendsClass(className + "Base");
     }
 
     @Override
