@@ -11,3 +11,11 @@ V2.0.1 (2024-07-23)
 
 - add removeFileExtension() to Files class
 - update Version management
+
+V2.1 (2024-08-01)
+
+- introduce the possibility to initialize the database reference in DbBeans via an ad hoc class
+- in package util, add methods to read resource files as a string or list of strings
+- in package util, add Process utility class to manage execution of external processes
+- in package util, add some new methods to create Date, Time and Timestamp objects
+- remove custom logging framework
