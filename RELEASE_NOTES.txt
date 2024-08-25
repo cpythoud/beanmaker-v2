@@ -19,3 +19,11 @@ V2.1 (2024-08-01)
 - in package util, add Process utility class to manage execution of external processes
 - in package util, add some new methods to create Date, Time and Timestamp objects
 - remove custom logging framework
+
+V2.2 (TBD)
+- simplify data formatting by removing BeanFormatter, BeanFormatterBase, BeanFormatterInterface,
+  BeanFormatterInterfaceBase and reengineer LocalDbBeanFormatter, FormattedBeanData and FormattedBeanDataBase
+  to pick up the slack
+- reengineer BeanParameter and BeanParameterBase to fully enforce the singleton approach (BeanParameter becomes
+  an enum and BeanParameterBase is now an interface)
+- fix a bug in SingleElements (runtime.dbutils) when retrieving elements in a DBTransaction
