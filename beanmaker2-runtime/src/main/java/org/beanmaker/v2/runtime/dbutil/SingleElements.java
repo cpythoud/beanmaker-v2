@@ -48,7 +48,11 @@ public final class SingleElements {
         );
     }
 
-    private static <B extends DbBeanInterface> B getSingleBean(Class<? extends DbBeanInterface> beanClass, ResultSet rs) throws SQLException {
+    private static <B extends DbBeanInterface> B getSingleBean(
+            Class<? extends DbBeanInterface> beanClass,
+            ResultSet rs)
+            throws SQLException
+    {
         long id = getSingleID(rs);
         if (id == 0)
             return null;
@@ -67,7 +71,7 @@ public final class SingleElements {
                         query,
                         querySetup,
                         rs -> {
-                            return getSingleBean(beanClass, rs);
+                            return getSingleBean(beanClass, rs, transaction);
                         }
                 )
         );
@@ -82,10 +86,23 @@ public final class SingleElements {
                 transaction.addQuery(
                         query,
                         rs -> {
-                            return getSingleBean(beanClass, rs);
+                            return getSingleBean(beanClass, rs, transaction);
                         }
                 )
         );
+    }
+
+    private static <B extends DbBeanInterface> B getSingleBean(
+            Class<? extends DbBeanInterface> beanClass,
+            ResultSet rs,
+            DBTransaction transaction)
+            throws SQLException
+    {
+        long id = getSingleID(rs);
+        if (id == 0)
+            return null;
+
+        return Beans.createBean(beanClass, id, transaction);
     }
 
     public static <E extends DbBeanEditor> Optional<E> getEditor(
@@ -147,10 +164,24 @@ public final class SingleElements {
                         query,
                         querySetup,
                         rs -> {
-                            return getSingleEditor(returnedEditor, rs);
+                            return getSingleEditor(returnedEditor, rs, transaction);
                         }
                 )
         );
+    }
+
+    private static <E extends DbBeanEditor> E getSingleEditor(
+            E returnedEditor,
+            ResultSet rs,
+            DBTransaction transaction)
+            throws SQLException
+    {
+        long id = getSingleID(rs);
+        if (id == 0)
+            return null;
+
+        returnedEditor.setId(id, transaction);
+        return returnedEditor;
     }
 
     public static long getID(String query, DBQuerySetup querySetup, DBTransaction transaction) {
