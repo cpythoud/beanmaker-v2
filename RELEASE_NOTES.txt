@@ -27,3 +27,5 @@ V2.2 (TBD)
 - reengineer BeanParameter and BeanParameterBase to fully enforce the singleton approach (BeanParameter becomes
   an enum and BeanParameterBase is now an interface)
 - fix a bug in SingleElements (runtime.dbutils) when retrieving elements in a DBTransaction
+- fix a bug in code generation for labels that are not required: no per-language value should be reported as required
+  if the field itself is not required
