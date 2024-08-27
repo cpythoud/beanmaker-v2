@@ -804,17 +804,18 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addPerLangLabelRequiredTestFunction(Column column) {
-        javaClass
-                .addContent(
-                        new FunctionDeclaration("is" + capitalize(column.getJavaName() + "Required"),
-                                "boolean")
+        String requiredFunctionName = "is" + capitalize(column.getJavaName() + "Required");
+        javaClass.addContent(
+                new FunctionDeclaration(requiredFunctionName, "boolean")
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
-                        .addContent(new ReturnStatement(new FunctionCall(
-                                "isRequired",
-                                new FunctionCall(
-                                        "getRequiredLanguagesFor" + chopID(column.getJavaName()),
-                                        beanName + "Parameters.INSTANCE"))
-                                .addArgument("dbBeanLanguage"))))
+                        .addContent(new ReturnStatement(
+                                new Condition(new FunctionCall(requiredFunctionName))
+                                        .andCondition(new Condition(new FunctionCall(
+                                                "isRequired",
+                                                new FunctionCall(
+                                                        "getRequiredLanguagesFor" + chopID(column.getJavaName()),
+                                                        beanName + "Parameters.INSTANCE"))
+                                                .addArgument("dbBeanLanguage"))))))
                 .addContent(EMPTY_LINE);
     }
 
