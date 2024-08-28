@@ -889,6 +889,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private FunctionDeclaration getLabelSetterFunction(String labelName, String labelBean, boolean transaction) {
         var function = new FunctionDeclaration("set" + labelName)
+                .visibility(Visibility.PUBLIC)
                 .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                 .addArgument(new FunctionArgument("String", "text"));
 
