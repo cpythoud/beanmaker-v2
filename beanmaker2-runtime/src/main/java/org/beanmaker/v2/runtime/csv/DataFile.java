@@ -103,14 +103,14 @@ public class DataFile {
         try (var parser = CSVParser.parse(file, charset, csvFormat)) {
             headers = new ArrayList<>(parser.getHeaderNames());
             for (var record: parser) {
+                lineNumber = parser.getCurrentLineNumber();
                 var data = new HashMap<String, String>();
                 for (String header: headers)
                     data.put(header, record.get(header));
-                lineNumber = parser.getCurrentLineNumber();
                 dataEntries.add(new DataEntry(lineNumber, data));
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Throwable throwable) {
+            throw new RuntimeException("Exception at line number: " + lineNumber, throwable);
         }
 
         return new DataEntries(lineNumber, headers, dataEntries);
