@@ -116,4 +116,16 @@ public class DataFile {
         return new DataEntries(lineNumber, headers, dataEntries);
     }
 
+    public File getFile() {
+        return file;
+    }
+
+    public CSVFormat getCsvFormat() {
+        return CSVFormat.Builder.create(csvFormat).build();  // * because CSVFormat is mutable
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
 }
