@@ -1603,7 +1603,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         var labels = columns.getLabels();
         for (Column label: labels)
-            function.addContent(getUpdateLabelFunctionCall(label));
+            function.addContent(getUpdateLabelFunctionCalls(label));
 
         columns.getItemOrderColumn().ifPresent(column -> {
             if (Strings.isEmpty(column.getItemOrderAssociatedField()))
@@ -1666,7 +1666,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                     .byItself()
                     .addArgument("transaction"));
         for (Column label: labels)
-            function.addContent(getUpdateLabelFunctionCall(label));
+            function.addContent(getUpdateLabelFunctionCalls(label));
 
         function.addContent(new FunctionCall("addUpdate", "transaction")
                 .byItself()
@@ -1690,11 +1690,17 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .visibility(Visibility.PRIVATE)
                 .addArgument(new FunctionArgument("DBTransaction", "transaction"));
 
-        for (Column label: labels)
+        for (Column label: labels) {
+            String varName = label.getJavaName();
             function.addContent(
-                    new FunctionCall("commitTextsToDatabase", uncapitalize(chopID(label.getJavaName())))
-                            .byItself()
-                            .addArgument("transaction"));
+                    new IfBlock(new Condition(varName + " > 0"))
+                            .addContent(
+                                    new FunctionCall("commitTextsToDatabase", uncapitalize(chopID(varName)))
+                                            .byItself()
+                                            .addArgument("transaction")
+                            )
+            );
+        }
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
@@ -1712,14 +1718,19 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addArgument(new FunctionArgument("DBTransaction", "transaction"));
     }
 
-    private FunctionCall getUpdateLabelFunctionCall(Column column) {
-        String name = column.getJavaName();
+    private IfBlock getUpdateLabelFunctionCalls(Column column) {
+        String idName = column.getJavaName();
+        String cacheName = uncapitalize(chopID(idName));
+        String functionName = "set" + capitalize(idName);
+        var hasDatafunctionCall = new FunctionCall(functionName).byItself();
+        var noDatafunctionCall = new FunctionCall(functionName).byItself();
 
-        return new FunctionCall("set" + capitalize(name))
-                .byItself()
-                .addArgument(new FunctionCall("updateDB", uncapitalize(chopID(name)))
-                        .addArgument("transaction"))
-                .addArgument("transaction");
+        return new IfBlock(new Condition(new FunctionCall("cachedValuesExist", cacheName)))
+                .addContent(hasDatafunctionCall
+                        .addArgument(new FunctionCall("updateDB", cacheName).addArgument("transaction"))
+                        .addArgument("transaction")
+                )
+                .elseClause(new ElseBlock().addContent(noDatafunctionCall.addArgument("0")));
     }
 
     private OperatorExpression getItemOrderPlusOneExpression(FunctionCall functionCall) {

@@ -10,6 +10,7 @@ public interface DbBeanLabelEditor extends DbBeanLabel {
     void cacheLabelsFromDB();
     void cacheLabelsFromDB(DBTransaction transaction);
     void clearCache();
+    boolean cachedValuesExist();
 
     void updateLater(DbBeanLanguage dbBeanLanguage, String text);
 
