@@ -124,7 +124,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
     }
 
     protected Boolean getBooleanValue(DataEntry dataEntry, String field) {
-        return dataEntry.getBooleanValue(field, booleanMappings, booleanLenientParsing);
+        return dataEntry.getBooleanValue(fieldToHeaderMap.get(field), booleanMappings, booleanLenientParsing);
     }
 
     protected Integer getIntegerValue(DataEntry dataEntry, String field) {

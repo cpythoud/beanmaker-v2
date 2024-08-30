@@ -31,4 +31,5 @@ V2.2 (TBD)
   if the field itself is not required
 - fix a bug where an empty label was created for an optional label field instead of leaving the field empty; this fix
   includes the addition of function cachedValuesExist() to DbBeanEditor interface that will need to be implemented by
-   client libraries/programs
+  client libraries/programs
+- fix bug: CSV importer classes were not correctly referencing column name for boolean fields
