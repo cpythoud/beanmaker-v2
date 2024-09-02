@@ -33,3 +33,5 @@ V2.2 (TBD)
   includes the addition of function cachedValuesExist() to DbBeanEditor interface that will need to be implemented by
   client libraries/programs
 - fix bug: CSV importer classes were not correctly referencing column name for boolean fields
+- in code generator, when reporting a field that is too long, add the length of the field as a second argument to the
+  error message composing function

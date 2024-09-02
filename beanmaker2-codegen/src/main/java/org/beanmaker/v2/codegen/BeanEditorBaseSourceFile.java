@@ -26,6 +26,7 @@ import org.jcodegen.java.TernaryOperator;
 import org.jcodegen.java.VarDeclaration;
 import org.jcodegen.java.Visibility;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -1330,15 +1331,21 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         var lambda = createValidationFunctionLambda();
 
         String name = column.getJavaName();
-        String length = Integer.toString(column.getDisplaySize());
+        String maxLength = Integer.toString(column.getDisplaySize());
+        var lengthCall = new FunctionCall("length", name);
+        var validationErrorArguments = new ArrayList<StringOrCode<Expression>>();
+        validationErrorArguments.add(new StringOrCode<>(maxLength));
+        validationErrorArguments.add(new StringOrCode<>(lengthCall));
 
         lambda
                 .addContent(new IfBlock(new Condition(
-                        new Comparison(
-                                new FunctionCall("length", name), length, Comparison.Comparator.LT_EQUAL)))
+                        new Comparison(lengthCall, maxLength, Comparison.Comparator.LT_EQUAL)))
                         .addContent(new ReturnStatement("FieldValidationResult.OK")))
                 .addContent(EMPTY_LINE)
-                .addContent(getFieldValidationErrorMessage(name, "TOO_LONG_EXT", length));
+                .addContent(getFieldValidationErrorMessage(
+                        name,
+                        "TOO_LONG_EXT",
+                        validationErrorArguments));
 
         return getValidationFunctionsListOfLambdas(lambda);
     }
@@ -1377,7 +1384,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private ReturnStatement getFieldValidationErrorMessage(
             String name,
             String errorLabelExtension,
-            String errorMessageArguments)
+            List<StringOrCode<Expression>> errorMessageArguments)
     {
         var functionCall = new FunctionCall("create", "FieldValidationResult")
                 .addArgument(new OperatorExpression(
@@ -1385,8 +1392,17 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         "DbBeanLocalization." + errorLabelExtension,
                         OperatorExpression.Operator.ADD));
 
-        if (errorMessageArguments != null)
-            functionCall.addArgument(errorMessageArguments);
+        if (errorMessageArguments != null) {
+            for (var errorMessageArgument : errorMessageArguments) {
+                if (errorMessageArgument.isString())
+                    functionCall.addArgument(errorMessageArgument.getString());
+                else if (errorMessageArgument.isCode())
+                    functionCall.addArgument(errorMessageArgument.getCode());
+                else
+                    throw new IllegalStateException("Can't figure content type - impossible situation");
+            }
+        }
+
 
         return new ReturnStatement(functionCall);
     }
