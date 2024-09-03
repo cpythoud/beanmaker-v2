@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Strings {
@@ -590,6 +591,29 @@ public class Strings {
         } catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
+    }
+
+    public static int convertMoneyAmountToCents(String moneyAmount, int decimals, String separator) {
+        if (moneyAmount == null)
+            throw new IllegalArgumentException("moneyAmount is null");
+        if (decimals < 2)
+            throw new IllegalArgumentException("decimals must be at least 2");
+        if (separator == null)
+            throw new IllegalArgumentException("separator is null");
+
+        var parts = moneyAmount.split(Pattern.quote(separator));
+        if (parts.length > 2)
+            throw new IllegalArgumentException("moneyAmount is not formatted correctly");
+
+        String cents = parts.length == 1 ? "0" : parts[1];
+        if (cents.length() > decimals)
+            throw new IllegalArgumentException("moneyAmount is not formatted correctly");
+        else if (cents.length() < decimals) {
+            for (int i = 0; i < decimals - cents.length(); i++)
+                cents = cents + "0";
+        }
+
+        return Integer.parseInt(parts[0] + cents);
     }
 
 }
