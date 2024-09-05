@@ -1,6 +1,7 @@
 package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.runtime.dbutil.Transactions;
+
 import org.dbbeans.sql.DBTransaction;
 
 import java.util.Collections;
@@ -8,7 +9,7 @@ import java.util.List;
 
 import java.util.function.Function;
 
-public abstract class DbBeanEditor {
+public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
     protected final DbBeanLocalization dbBeanLocalization;
     private final String tableName;
