@@ -35,3 +35,6 @@ V2.2 (TBD)
 - fix bug: CSV importer classes were not correctly referencing column name for boolean fields
 - in code generator, when reporting a field that is too long, add the length of the field as a second argument to the
   error message composing function
+- add possibility to dynamically instantiate bean editors to the runtime
+- add BeanEditorInterface to the runtime to allow client classes that mimic an editor to implement it without having
+  to subclass DbBeanEditor
