@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * A utility class for common string manipulation operations.
+ */
 public class Strings {
 
     /**
@@ -340,7 +343,7 @@ public class Strings {
         if (value < 0)
             throw new IllegalArgumentException("Illegal value " + value + " < 1");
         if (digits < 2 || digits > 18)
-            throw new IllegalArgumentException("Illegal digits number: " + digits + ", must be between 2 and 19.");
+            throw new IllegalArgumentException("Illegal digits number: " + digits + ", must be between 2 and 18.");
 
         if (value == 0)
             return repeatString("0", digits);
@@ -364,6 +367,22 @@ public class Strings {
         return buf.toString();
     }
 
+
+    /**
+     * Generates a string consisting of zeros with the specified number of digits.
+     *
+     * @param digits the number of zeros that the resulting string should contain.
+     *                Must be between 2 and 18, inclusive.
+     * @return a string composed of the specified number of zeros.
+     * @throws IllegalArgumentException if the number of digits is not between 2 and 18.
+     */
+    public static String zeroFill(int digits) {
+        if (digits < 2 || digits > 18)
+            throw new IllegalArgumentException("Illegal digits number: " + digits + ", must be between 2 and 18.");
+
+        return repeatString("0", digits);
+    }
+
     /**
      * Given a String returns the same String repeated n times
      * @param s the String to repeat
@@ -374,11 +393,7 @@ public class Strings {
         if (times < 0)
             throw new IllegalArgumentException("Multiplier must be >= 0");
 
-        StringBuilder repeated = new StringBuilder();
-        for (int i = 0; i < times; ++i)
-            repeated.append(s);
-
-        return repeated.toString();
+        return String.valueOf(s).repeat(times);
     }
 
     // TODO: replace these 2 functions by a proper call to the appropriate java.math function
