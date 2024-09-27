@@ -48,17 +48,6 @@ public class MasterTableCellDefinition {
         return new MasterTableCellDefinition(fieldName, text).orderingValue(timestamp);
     }
 
-    @Deprecated(since = "2.2", forRemoval = true)
-    public static MasterTableCellDefinition createBooleanCellDefinition(
-            String fieldName,
-            String text,
-            boolean value,
-            String yesValue,
-            String noValue)
-    {
-        return createBooleanCellDefinition(fieldName, text, Boolean.valueOf(value), yesValue, noValue);
-    }
-
     public static MasterTableCellDefinition createBooleanCellDefinition(
             String fieldName,
             String text,
@@ -69,16 +58,6 @@ public class MasterTableCellDefinition {
         return new MasterTableCellDefinition(fieldName, text)
                 .orderingValue(value, yesValue, noValue)
                 .filteringValue(value, yesValue, noValue);
-    }
-
-    @Deprecated(since = "2.2", forRemoval = true)
-    public static MasterTableCellDefinition createIntegerCellDefinition(
-            String fieldName,
-            String text,
-            int value,
-            int zeroFilledMaxDigits)
-    {
-        return createIntegerCellDefinition(fieldName, text, Long.valueOf(value), zeroFilledMaxDigits);
     }
 
     public static MasterTableCellDefinition createIntegerCellDefinition(
@@ -93,16 +72,6 @@ public class MasterTableCellDefinition {
                 value == null ? null : Long.valueOf(value),
                 zeroFilledMaxDigits
         );
-    }
-
-    @Deprecated(since = "2.2.", forRemoval = true)
-    public static MasterTableCellDefinition createIntegerCellDefinition(
-            String fieldName,
-            String text,
-            long value,
-            int zeroFilledMaxDigits)
-    {
-        return createIntegerCellDefinition(fieldName, text, Long.valueOf(value), zeroFilledMaxDigits);
     }
 
     public static MasterTableCellDefinition createIntegerCellDefinition(
@@ -172,11 +141,6 @@ public class MasterTableCellDefinition {
         return this;
     }
 
-    @Deprecated(since = "2.2", forRemoval = true)
-    public MasterTableCellDefinition orderingValue(boolean orderingValue, String yesValue, String noValue) {
-        return orderingValue(Boolean.valueOf(orderingValue), yesValue, noValue);
-    }
-
     public MasterTableCellDefinition orderingValue(Boolean orderingValue, String yesValue, String noValue) {
         if (orderingValue == null)
             this.orderingValue = null;
@@ -185,18 +149,8 @@ public class MasterTableCellDefinition {
         return this;
     }
 
-    @Deprecated(since = "2.2", forRemoval = true)
-    public MasterTableCellDefinition orderingValue(int orderingValue, int zeroFilledMaxDigits) {
-        return orderingValue(Long.valueOf(orderingValue), zeroFilledMaxDigits);
-    }
-
     public MasterTableCellDefinition orderingValue(Integer orderingValue, int zeroFilledMaxDigits) {
         return orderingValue(orderingValue == null ? null : Long.valueOf(orderingValue), zeroFilledMaxDigits);
-    }
-
-    @Deprecated(since = "2.2", forRemoval = true)
-    public MasterTableCellDefinition orderingValue(long orderingValue, int zeroFilledMaxDigits) {
-        return orderingValue(Long.valueOf(orderingValue), zeroFilledMaxDigits);
     }
 
     public MasterTableCellDefinition orderingValue(Long orderingValue, int zeroFilledMaxDigits) {
@@ -226,11 +180,6 @@ public class MasterTableCellDefinition {
     public MasterTableCellDefinition filteringValue(String filteringValue) {
         this.filteringValue = filteringValue;
         return this;
-    }
-
-    @Deprecated(since = "2.2", forRemoval = true)
-    public MasterTableCellDefinition filteringValue(boolean filteringValue, String yesValue, String noValue) {
-        return filteringValue(Boolean.valueOf(filteringValue), yesValue, noValue);
     }
 
     public MasterTableCellDefinition filteringValue(Boolean filteringValue, String yesValue, String noValue) {
