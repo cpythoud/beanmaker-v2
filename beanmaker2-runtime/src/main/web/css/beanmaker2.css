@@ -1,3 +1,5 @@
+/* * beanmaker2.css - V0.2 - 2024-10-18 * */
+
 .beanmaker_spinning {
     animation: beanmaker_spin 1s infinite linear;
     -webkit-animation: beanmaker_spin2 1s infinite linear;
@@ -11,4 +13,21 @@
 @-webkit-keyframes beanmaker_spin2 {
     from { -webkit-transform: rotate(0deg);}
     to { -webkit-transform: rotate(360deg);}
+}
+
+.beanmaker_removed {
+    display: none;
+}
+
+.beanmaker_fading {
+    animation: beanmaker_fade 1s ease-in-out;
+}
+
+@keyframes beanmaker_fade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.beanmaker_invisible {
+    visibility: hidden;
 }
