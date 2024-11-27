@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Files {
@@ -324,5 +325,34 @@ public class Files {
             return new FileDetail(file, file.getFileName().toString());
         }
     }
+
+    /**
+     * Generates a new name for a duplicated file by augmenting the base
+     * name with a numerical suffix or incrementing an existing one.
+     *
+     * @param filename the original file name
+     * @return a new file name for the duplicated file with an incremented suffix
+     */
+    public static String nameForDuplicatedFile(String filename) {
+        String extension = "";
+        if (hasExtension(filename))
+            extension = "." + getExtension(filename);
+        String baseName = removeFileExtension(filename);
+
+        return augmentFilename(baseName) + extension;
+    }
+
+    private static String augmentFilename(String filename) {
+        if (DUPLICATED_FILE_PATTERN.matcher(filename).matches()) {
+            int lastDigit = filename.lastIndexOf("(");
+            String baseName = filename.substring(0, lastDigit);
+            String digit = filename.substring(lastDigit + 1, filename.length() - 1);
+            int newDigit = Integer.parseInt(digit) + 1;
+            return baseName + "(" + newDigit + ")";
+        }
+        return filename + " (1)";
+    }
+
+    private static final Pattern DUPLICATED_FILE_PATTERN = Pattern.compile("(.*) \\((\\d+)\\)$");
 
 }
