@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class Files {
 
     /**
-     * Checks if a file as an extension, as evidenced by a dot character in filename that is neither the first
+     * Checks if a file has an extension, as evidenced by a dot character in filename that is neither the first
      * nor the last filename character.
      * @param filename to check.
      * @return true if filename has an extension, false otherwise.
@@ -114,6 +114,23 @@ public class Files {
             return filename;  // * filename has no extension
         else
             return filename.substring(0, index);
+    }
+
+    /**
+     * Replaces the extension of a given filename if it matches the specified old extension.
+     *
+     * @param filename the name of the file whose extension is to be replaced
+     * @param oldExt the old extension that should be replaced
+     * @param newExt the new extension to be applied to the filename
+     * @return the filename with the new extension
+     * @throws IllegalArgumentException if the filename does not have the specified old extension
+     */
+    public static String replaceExtension(String filename, String oldExt, String newExt) {
+        if (filename.endsWith(oldExt)) {
+            return filename.substring(0, filename.length() - oldExt.length()) + newExt;
+        }
+
+        throw new IllegalArgumentException("Filename " + filename + " does not have extension " + oldExt);
     }
 
     /**
