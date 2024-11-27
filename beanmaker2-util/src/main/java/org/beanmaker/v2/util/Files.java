@@ -13,8 +13,10 @@ import java.net.URL;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -284,6 +286,42 @@ public class Files {
             return reader.lines().collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read file " + fileName, e);
+        }
+    }
+
+    /**
+     * Represents detailed information about a file.
+     *
+     * This class encapsulates the file path and the file name.
+     *
+     * @param path The path of the file.
+     * @param fileName The name of the file.
+     */
+    public record FileDetail(Path path, String fileName) { }
+
+    /**
+     * Retrieves a single file from the specified directory.
+     * If there are no files or more than one file in the directory,
+     * an IllegalStateException is thrown.
+     *
+     * @param directory the directory to search for a single file
+     * @return a FileDetail object representing the single file in the directory
+     * @throws IOException if an I/O error occurs accessing the directory
+     * @throws IllegalStateException if zero or more than one file is found in the directory
+     */
+    public static FileDetail getSingleFile(Path directory) throws IOException {
+        try (DirectoryStream<Path> stream = java.nio.file.Files.newDirectoryStream(directory)) {
+            Iterator<Path> iterator = stream.iterator();
+
+            if (!iterator.hasNext())
+                throw new IllegalStateException("No files found in the directory");
+
+            Path file = iterator.next();
+
+            if (iterator.hasNext())
+                throw new IllegalStateException("More than one file found in the directory");
+
+            return new FileDetail(file, file.getFileName().toString());
         }
     }
 
