@@ -1,12 +1,11 @@
-// * Beanmaker2Util - V0.1.1 - 2024-10-17
+// * Beanmaker2Util - V0.2 - 2024-12-06
 
-const Beanmaker2Util = {
+class Beanmaker2Util {
+    constructor() { }
 
-    setupDataRefresh: (id, availabilityCheckURL, dataURL, checkFrequency) => {
-        if (checkFrequency === undefined)
-            checkFrequency = 5;
+    setupDataRefresh(id, availabilityCheckURL, dataURL, checkFrequency = 5) {
 
-        window.setTimeout(function () {
+        const recursiveCheck = () => {
             fetch(availabilityCheckURL, {
                 method: 'POST',
                 headers: {
@@ -23,18 +22,18 @@ const Beanmaker2Util = {
                             })
                             .catch(error => console.error('Error loading data URL:', error));
                     } else {
-                        BEANMAKER.setupDataRefresh(id, availabilityCheckURL, dataURL, checkFrequency);
+                        window.setTimeout(recursiveCheck, checkFrequency * 1000);
                     }
                 })
                 .catch(error => console.error('Error checking availability:', error));
-        }, checkFrequency * 1000);
-    },
+        }
 
-    setupJavaScriptRefresh: (availabilityCheckURL, dataURL, checkFrequency) => {
-        if (checkFrequency === undefined)
-            checkFrequency = 5;
+        window.setTimeout(recursiveCheck, checkFrequency * 1000);
+    }
 
-        window.setTimeout(function () {
+    setupJavaScriptRefresh(availabilityCheckURL, dataURL, checkFrequency = 5) {
+
+        const recursiveCheck = () => {
             fetch(availabilityCheckURL, {
                 method: 'POST',
                 headers: {
@@ -53,11 +52,33 @@ const Beanmaker2Util = {
                             })
                             .catch(error => console.error('Error loading data URL:', error));
                     } else {
-                        Beanmaker2Util.setupJavaScriptRefresh(availabilityCheckURL, dataURL, checkFrequency);
+                        window.setTimeout(recursiveCheck, checkFrequency * 1000);
                     }
                 })
                 .catch(error => console.error('Error checking availability:', error));
-        }, checkFrequency * 1000);
+        }
+
+        window.setTimeout(recursiveCheck, checkFrequency * 1000);
     }
 
-};
+    static showContent(containerElementId, loadingIndicatorElementId, htmlContent) {
+        if (htmlContent === null || htmlContent === undefined) {
+            throw new Error('HTML content must not be null or undefined.');
+        }
+
+        const containerElement = document.getElementById(containerElementId);
+        const loadingIndicatorElement = document.getElementById(loadingIndicatorElementId);
+
+        if (!containerElement) {
+            throw new Error(`Element with id "${containerElementId}" not found.`);
+        }
+        if (!loadingIndicatorElement) {
+            throw new Error(`Element with id "${loadingIndicatorElementId}" not found.`);
+        }
+
+        containerElement.innerHTML = htmlContent;
+        containerElement.classList.remove('beanmaker_removed');
+        loadingIndicatorElement.classList.add('beanmaker_removed');
+    }
+
+}
