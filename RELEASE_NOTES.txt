@@ -20,12 +20,18 @@ V2.1 (2024-08-01)
 - in package util, add some new methods to create Date, Time and Timestamp objects
 - remove custom logging framework
 
-V2.2 (TBD)
+V2.2 (2024-12-24)
+INCOMPATIBLE CHANGES:
 - simplify data formatting by removing BeanFormatter, BeanFormatterBase, BeanFormatterInterface,
   BeanFormatterInterfaceBase and reengineer LocalDbBeanFormatter, FormattedBeanData and FormattedBeanDataBase
   to pick up the slack
 - reengineer BeanParameter and BeanParameterBase to fully enforce the singleton approach (BeanParameter becomes
   an enum and BeanParameterBase is now an interface)
+
+BECAUSE OF THE CHANGES ABOVE, THE CODE FOR ALL BEANS MUST BE REGENERATED AND FILES THAT ARE NO LONGER BEING
+CREATED BY THIS VERSION MUST BE DELETED FROM YOUR CODEBASE.
+
+BUG FIXES AND MINOR CHANGES:
 - fix a bug in SingleElements (runtime.dbutils) when retrieving elements in a DBTransaction
 - fix a bug in code generation for labels that are not required: no per-language value should be reported as required
   if the field itself is not required

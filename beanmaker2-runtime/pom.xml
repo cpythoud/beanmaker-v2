@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>beanmaker2-runtime</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.2</version>
 
     <name>BeanMaker V2 Runtime</name>
     <description>
@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.beanmaker</groupId>
         <artifactId>beanmaker2</artifactId>
-        <version>2.2-SNAPSHOT</version>
+        <version>2.2</version>
     </parent>
 
     <dependencies>
