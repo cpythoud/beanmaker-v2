@@ -12,6 +12,7 @@ module org.beanmaker.v2.runtime {
     requires org.apache.commons.csv;
 
     exports org.beanmaker.v2.runtime;
+    exports org.beanmaker.v2.runtime.annotations;
     exports org.beanmaker.v2.runtime.dbutil;
     exports org.beanmaker.v2.runtime.util;
 }
