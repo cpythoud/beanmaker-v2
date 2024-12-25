@@ -8,8 +8,9 @@ module org.beanmaker.v2.runtime {
     requires org.jcodegen.html;
     requires rodeo.password.pgencheck;
 
-    requires commons.fileupload;
     requires org.apache.commons.csv;
+    requires org.apache.commons.fileupload2.javax;
+    requires org.apache.commons.fileupload2.core;
 
     exports org.beanmaker.v2.runtime;
     exports org.beanmaker.v2.runtime.annotations;
