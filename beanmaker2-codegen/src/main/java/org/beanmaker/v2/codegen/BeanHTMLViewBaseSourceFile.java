@@ -382,13 +382,13 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                 else if (column.isFileReference())
                     allFieldsSetterFunction
                             .addContent(
-                                    new IfBlock(new Condition(new FunctionCall("hasFileItem", "parameters").addArgument(quickQuote(name))))
+                                    new IfBlock(new Condition(new FunctionCall("hasUploadedFile", "parameters").addArgument(quickQuote(name))))
                                             .addContent(new FunctionCall("set" + choppedIdName, editorObject)
                                                     .byItself()
                                                     .addArgument(new FunctionCall("create", "dbBeanFileCreator")
                                                             .addArgument(new FunctionCall("getOrCreateEditor", "LocalFileManager")
                                                                     .addArgument(new FunctionCall("get" + capName, editorObject)))
-                                                            .addArgument(new FunctionCall("getFileItem", "parameters")
+                                                            .addArgument(new FunctionCall("getUploadedFile", "parameters")
                                                                     .addArgument(quickQuote(name))))))
                             .addContent(
                                     new IfBlock(new Condition(new FunctionCall("hasParameter", "parameters")
