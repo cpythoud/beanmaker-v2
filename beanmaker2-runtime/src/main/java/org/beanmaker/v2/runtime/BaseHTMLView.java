@@ -20,6 +20,8 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     protected boolean horizontal = false;
     protected boolean readonly = false;
 
+    protected int uploadedFileSizeThreshold = HttpRequestParameters.DEFAULT_UPLOADED_FILE_SIZE_THRESHOLD;
+
     public BaseHTMLView(DbBeanEditor editor, DbBeanLocalization dbBeanLocalization) {
         super(dbBeanLocalization);
         this.editor = editor;
@@ -109,7 +111,7 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
 
     @Override
     public void setAllFields(HttpServletRequest request) {
-        setAllFields(new HttpRequestParameters(request));
+        setAllFields(new HttpRequestParameters(request, uploadedFileSizeThreshold));
     }
 
     @Override

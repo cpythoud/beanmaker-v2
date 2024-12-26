@@ -15,7 +15,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        var requestParameters = new HttpRequestParameters(request);
+        var requestParameters = new HttpRequestParameters(request, getUploadedFileSizeThreshold());
         switch (getOperation(requestParameters)) {
             case GET_FORM -> {
                 response.setContentType("text/html; charset=UTF-8");

@@ -374,4 +374,8 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return (B) attribute;
     }
 
+    protected int getUploadedFileSizeThreshold() {
+        return HttpRequestParameters.DEFAULT_UPLOADED_FILE_SIZE_THRESHOLD;
+    }
+
 }

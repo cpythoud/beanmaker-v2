@@ -27,16 +27,25 @@ import java.util.OptionalLong;
 
 public class HttpRequestParameters {
 
+    public static final int DEFAULT_UPLOADED_FILE_SIZE_THRESHOLD =
+            DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD;  // * 10 MB
+
     private final Map<String, String> parameters = new HashMap<>();
     private final Map<String, List<String>> multiValueParameters = new HashMap<>();
     private final Map<String, FileItem> files = new HashMap<>();
 
     private final HttpServletRequest request;
     private final boolean multipartRequest;
+    private final int uploadedFileSizeThreshold;
 
     public HttpRequestParameters(HttpServletRequest request) {
+        this(request, DEFAULT_UPLOADED_FILE_SIZE_THRESHOLD);
+    }
+
+    public HttpRequestParameters(HttpServletRequest request, int uploadedFileSizeThreshold) {
         this.request = request;
         multipartRequest = ServletFileUpload.isMultipartContent(request);
+        this.uploadedFileSizeThreshold = uploadedFileSizeThreshold;
 
         if (multipartRequest) {
             for (FileItem item: parseRequest(request)) {
@@ -61,6 +70,7 @@ public class HttpRequestParameters {
 
         File repository = (File) request.getServletContext().getAttribute("javax.servlet.context.tempdir");
         factory.setRepository(repository);
+        factory.setSizeThreshold(uploadedFileSizeThreshold);
 
         ServletFileUpload upload = new ServletFileUpload(factory);
 
