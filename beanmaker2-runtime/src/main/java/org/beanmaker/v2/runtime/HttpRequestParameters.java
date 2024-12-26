@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
@@ -148,12 +149,12 @@ public class HttpRequestParameters {
         return !files.isEmpty();
     }
 
-    public boolean hasFileItem(String parameterName) {
+    public boolean hasUploadedFile(String parameterName) {
         return files.containsKey(parameterName);
     }
 
-    public FileItem getFileItem(String parameterName) {
-        return files.get(parameterName);
+    public UploadedFile getUploadedFile(String parameterName) {
+        return new UploadedFile(files.get(parameterName));
     }
 
     public String getDebugInfo() {
@@ -244,6 +245,27 @@ public class HttpRequestParameters {
             return OptionalLong.empty();
 
         return OptionalLong.of(Long.parseLong(value));
+    }
+
+    public static class UploadedFile {
+        private final FileItem fileItem;
+
+        UploadedFile(FileItem fileItem) {
+            this.fileItem = fileItem;
+        }
+
+        public String getFilename() {
+            return fileItem.getName();
+        }
+
+        public void writeFile(File file) throws IOException {
+            try {
+                fileItem.write(file);  // ! method signature actually contains throws Exception... >:-(
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
+        }
+
     }
 
 }

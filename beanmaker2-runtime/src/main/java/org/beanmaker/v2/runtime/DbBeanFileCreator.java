@@ -1,7 +1,5 @@
 package org.beanmaker.v2.runtime;
 
-import org.apache.commons.fileupload.FileItem;
-
 import org.dbbeans.sql.DBTransaction;
 
 import java.io.File;
@@ -54,14 +52,14 @@ public class DbBeanFileCreator {
     }
 
     // * Create from web form
-    public DbBeanFile create(DbBeanFileEditor dbBeanFileEditor, FileItem fileItem) {
-        String uploadFilename = fileItem.getName();
+    public DbBeanFile create(DbBeanFileEditor dbBeanFileEditor, HttpRequestParameters.UploadedFile uploadedFile) {
+        String uploadFilename = uploadedFile.getFilename();
         String internalFilename = storedFilenameCalculator.calc(uploadFilename);
 
         boolean newRecord = configureEditor(dbBeanFileEditor, uploadFilename, internalFilename, null);
 
         try {
-            fileItem.write(new File(getOrCreateUploadDirectory(dbBeanFileEditor), internalFilename));
+            uploadedFile.writeFile(new File(getOrCreateUploadDirectory(dbBeanFileEditor), internalFilename));
         } catch (Exception ex) {  // function write() is actually marked as throwing Exception !!!
             if (newRecord)
                 dbBeanFileEditor.getAssociatedEditor().delete();
