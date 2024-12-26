@@ -1,11 +1,9 @@
 package org.beanmaker.v2.runtime;
 
-import org.apache.commons.fileupload2.core.DiskFileItem;
-import org.apache.commons.fileupload2.core.FileUploadException;
-import org.apache.commons.fileupload2.core.DiskFileItemFactory;
-
-import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
-import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import org.beanmaker.v2.util.Strings;
 
@@ -13,8 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,17 +27,17 @@ public class HttpRequestParameters {
 
     private final Map<String, String> parameters = new HashMap<>();
     private final Map<String, List<String>> multiValueParameters = new HashMap<>();
-    private final Map<String, DiskFileItem> files = new HashMap<>();
+    private final Map<String, FileItem> files = new HashMap<>();
 
     private final HttpServletRequest request;
     private final boolean multipartRequest;
 
     public HttpRequestParameters(HttpServletRequest request) {
         this.request = request;
-        multipartRequest = JavaxServletFileUpload.isMultipartContent(request);
+        multipartRequest = ServletFileUpload.isMultipartContent(request);
 
         if (multipartRequest) {
-            for (DiskFileItem item: parseRequest(request)) {
+            for (FileItem item: parseRequest(request)) {
                 if (item.isFormField())
                     recordParameter(item);
                 else
@@ -57,13 +54,15 @@ public class HttpRequestParameters {
         }
     }
 
-    private List<DiskFileItem> parseRequest(HttpServletRequest request) {
+    private List<FileItem> parseRequest(HttpServletRequest request) {
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+
         File repository = (File) request.getServletContext().getAttribute("javax.servlet.context.tempdir");
-        DiskFileItemFactory factory = DiskFileItemFactory.builder().setPath(repository.toPath()).get();
+        factory.setRepository(repository);
 
-        JavaxServletDiskFileUpload upload = new JavaxServletDiskFileUpload(factory);
+        ServletFileUpload upload = new ServletFileUpload(factory);
 
-        List<DiskFileItem> items;
+        List<FileItem> items;
         try {
             items = upload.parseRequest(request);
         } catch (FileUploadException fuex) {
@@ -73,12 +72,12 @@ public class HttpRequestParameters {
         return items;
     }
 
-    private void recordParameter(DiskFileItem item) {
+    private void recordParameter(FileItem item) {
         String value;
         try {
-            value = item.getString(StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            value = item.getString("UTF-8");
+        } catch (UnsupportedEncodingException ueex) {
+            throw new RuntimeException(ueex);
         }
         if (Strings.isEmpty(value))
             return;
@@ -91,7 +90,7 @@ public class HttpRequestParameters {
         }
 
         if (parameters.containsKey(name)) {
-            var values = new ArrayList<String>();
+            List<String> values = new ArrayList<String>();
             values.add(parameters.get(name));
             values.add(value);
 
@@ -104,7 +103,7 @@ public class HttpRequestParameters {
         parameters.put(name, value);
     }
 
-    private void recordFile(DiskFileItem item) {
+    private void recordFile(FileItem item) {
         if (Strings.isEmpty(item.getName()))
             return;
 
@@ -153,7 +152,7 @@ public class HttpRequestParameters {
         return files.containsKey(parameterName);
     }
 
-    public DiskFileItem getFileItem(String parameterName) {
+    public FileItem getFileItem(String parameterName) {
         return files.get(parameterName);
     }
 
@@ -187,7 +186,7 @@ public class HttpRequestParameters {
 
         if (!files.isEmpty()) {
             buf.append("FILES:\n\n");
-            for (Map.Entry<String, DiskFileItem> entry: files.entrySet())
+            for (Map.Entry<String, FileItem> entry: files.entrySet())
                 buf.append(entry.getKey())
                         .append(" = ")
                         .append(entry.getValue().getName())
