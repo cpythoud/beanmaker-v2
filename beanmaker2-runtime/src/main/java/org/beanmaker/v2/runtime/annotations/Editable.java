@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface NonEditableGenerated {
+public @interface Editable {
 
     String generator();
     String version();
     String date();
-    String comment() default "DO-NOT-EDIT";
+    String comment() default "";
 
 }

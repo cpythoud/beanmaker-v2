@@ -75,15 +75,10 @@ public abstract class BaseEnumCode implements BeanMakerSourceFile {
     protected void addOptionalFunctionality() { }
 
     protected void addGeneratedAnnotation() {
-        importsManager.addImport("javax.annotation.processing.Generated");
+        importsManager.addImport("org.beanmaker.v2.runtime.annotations.Editable");
 
-        String annotation = "@Generated(value = \"" +
-                enumName +
-                "\", date = \"" +
-                Instant.now().toString() +
-                "\", comments = \"EDITABLE," +
-                Version.get() +
-                "\")";
+        String annotation = "@Editable(generator = \"%s\", version = \"%s\", date = \"%s\")".formatted(
+                enumName, Version.get(), Instant.now().toString());
 
         javaEnum.annotate(annotation);
     }

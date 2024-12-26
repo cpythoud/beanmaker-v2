@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface EditableGenerated {
+public @interface DoNotEdit {
 
     String generator();
     String version();
     String date();
-    String comment() default "EDITABLE-BOILERPLATE";
+    String comment() default "";
 
 }

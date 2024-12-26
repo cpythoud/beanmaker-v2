@@ -183,24 +183,14 @@ public abstract class BaseCode implements BeanMakerSourceFile {
     }
 
     protected void addGeneratedAnnotation() {
-        importsManager.addImport("javax.annotation.processing.Generated");
+        String annotationName = className.endsWith("Base") ? "DoNotEdit" : "Editable";
 
-        var annotation = new StringBuilder();
-        annotation
-                .append("@Generated(value = \"")
-                .append(getClass().getName())
-                .append("\", date = \"")
-                .append(Instant.now().toString())
-                .append("\", comments = \"");
+        importsManager.addImport("org.beanmaker.v2.runtime.annotations." + annotationName);
 
-        if (className.endsWith("Base"))
-            annotation.append("DO-NOT-EDIT");
-        else
-            annotation.append("EDITABLE");
+        String annotation = "@%s(generator = \"%s\", version = \"%s\", date = \"%s\")".formatted(
+                annotationName, getClass().getName(), Version.get(), Instant.now().toString());
 
-        annotation.append(",").append(Version.get()).append("\")");
-
-        javaClass.annotate(annotation.toString());
+        javaClass.annotate(annotation);
     }
 
 }
