@@ -816,10 +816,15 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected TrTag getSuperTitleRow() {
-        return getDefautStartSuperTitleRow();
+        return getDefaultStartSuperTitleRow();
     }
 
-    protected TrTag getDefautStartSuperTitleRow() {
+    @Deprecated
+    protected TrTag getDefautStartSuperTitleRow() {  // ! Deprecated because of typo, any usage in client code should get fixed
+        return getDefaultStartSuperTitleRow();
+    }
+
+    protected TrTag getDefaultStartSuperTitleRow() {
         TrTag row = new TrTag().child(new ThTag().cssClass(thResetCssClass));
 
         if (trSuperTitleCssClass != null)
