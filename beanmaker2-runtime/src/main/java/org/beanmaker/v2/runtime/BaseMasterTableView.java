@@ -708,7 +708,7 @@ public abstract class BaseMasterTableView extends TabularView {
     @Deprecated
     protected TdTag getTableCell(String name, IdNamePair pair, String extraCssClasses) {
         return getTableCell(name, pair.getName(), extraCssClasses)
-                .attribute("data-filter-value", Strings.zeroFill(Long.valueOf(pair.getId()), zeroFilledMaxDigits));
+                .attribute("data-filter-value", Strings.zeroFill(Long.parseLong(pair.getId()), zeroFilledMaxDigits));
     }
 
     @Deprecated
@@ -1020,7 +1020,7 @@ public abstract class BaseMasterTableView extends TabularView {
         StringBuilder cssClasses = new StringBuilder();
 
         cssClasses.append(cell.getCssClasses());
-        if (cssClasses.length() > 0)
+        if (!cssClasses.isEmpty())
             cssClasses.append(" ");
 
         cssClasses.append(maskableCssClass);
