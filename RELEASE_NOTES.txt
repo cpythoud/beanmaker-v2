@@ -44,3 +44,9 @@ BUG FIXES AND MINOR CHANGES:
 - add possibility to dynamically instantiate bean editors to the runtime
 - add BeanEditorInterface to the runtime to allow client classes that mimic an editor to implement it without having
   to subclass DbBeanEditor
+
+V2.3 (TBD)
+
+INCOMPATIBLES CHANGES:
+- leaked FileItem from HttpRequestParameters has been removed and replaced by inner class UploadedFile (code for
+  beans containing DbBeanFile-s needs to regenerated)
