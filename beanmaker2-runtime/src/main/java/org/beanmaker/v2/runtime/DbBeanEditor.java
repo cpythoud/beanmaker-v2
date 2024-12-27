@@ -21,7 +21,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         tableName = parameters.getDatabaseTableName();
     }
 
-    public void setId(long id) {
+    public final void setId(long id) {
         setId(id, null);
     }
 
@@ -42,7 +42,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         return id;
     }
 
-    public void updateDB() {
+    public final void updateDB() {
         Transactions.wrap(
                 this::updateDB,
                 createDBTransaction()
@@ -69,7 +69,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
     protected abstract void updateRecord(DBTransaction transaction);
 
-    public void preUpdateConversions() {
+    public final void preUpdateConversions() {
         preUpdateConversions(null);
     }
 
@@ -78,7 +78,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
             throw new IllegalArgumentException(ErrorMessage.toStrings(getErrorMessages()));
     }
 
-    public boolean isDataOK() {
+    public final boolean isDataOK() {
         return isDataOK(null);
     }
 
@@ -92,18 +92,18 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         return dbBeanLocalization.getErrorMessages();
     }
 
-    public abstract void reset();
-
-    public void reset(DBTransaction transaction) {
-        reset();
+    public final void reset() {
+        reset(null);
     }
+
+    public abstract void reset(DBTransaction transaction);
 
     public void fullReset() {
         reset();
         id = 0;
     }
 
-    public void delete() {
+    public final void delete() {
         DBTransaction transaction = createDBTransaction();
         delete(transaction);
         transaction.commit();
