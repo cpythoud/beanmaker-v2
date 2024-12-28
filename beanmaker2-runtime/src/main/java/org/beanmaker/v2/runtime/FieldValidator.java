@@ -4,8 +4,6 @@ import org.dbbeans.sql.DBTransaction;
 
 import java.util.List;
 
-import java.util.function.Function;
-
 public class FieldValidator {
 
     private final DbBeanLocalization dbBeanLocalization;
@@ -123,7 +121,7 @@ public class FieldValidator {
     }
 
     public boolean validate(
-            List<Function<DBTransaction, FieldValidationResult>> validationFunctions,
+            List<FieldValidationFunction> validationFunctions,
             DBTransaction transaction)
     {
         var emptinessEvaluation = new EmptinessEvaluation();
@@ -149,12 +147,12 @@ public class FieldValidator {
     }
 
     private boolean executeValidityChecks(
-            List<Function<DBTransaction, FieldValidationResult>> validationFunctions,
+            List<FieldValidationFunction> validationFunctions,
             DBTransaction transaction)
     {
         boolean ok = true;
         for (var test: validationFunctions) {
-            var result = test.apply(transaction);
+            var result = test.validate(transaction);
             if (!result.ok()) {
                 dbBeanLocalization.addErrorMessage(
                         id,

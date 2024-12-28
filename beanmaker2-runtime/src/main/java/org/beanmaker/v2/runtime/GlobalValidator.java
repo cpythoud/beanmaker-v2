@@ -3,7 +3,6 @@ package org.beanmaker.v2.runtime;
 import org.dbbeans.sql.DBTransaction;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class GlobalValidator {
 
@@ -16,12 +15,12 @@ public class GlobalValidator {
     }
 
     public boolean validate(
-            List<Function<DBTransaction, FieldValidationResult>> validationFunctions,
+            List<FieldValidationFunction> validationFunctions,
             DBTransaction transaction)
     {
         boolean ok = true;
         for (var test: validationFunctions) {
-            var result = test.apply(transaction);
+            var result = test.validate(transaction);
             if (!result.ok()) {
                 dbBeanLocalization.addErrorMessage(
                         id,

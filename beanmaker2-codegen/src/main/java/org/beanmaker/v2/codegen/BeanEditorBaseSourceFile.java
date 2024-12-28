@@ -42,8 +42,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private static final List<String> JAVA_SQL_IMPORTS =
             createImportList("java.sql", "PreparedStatement", "ResultSet", "SQLException");
     private static final List<String> BM_RUNTIME_IMPORTS =
-            createImportList("org.beanmaker.v2.runtime", "DBUtil", "FieldValidationResult",
-                    "FieldValidator", "GlobalValidator", "ToStringMaker");
+            createImportList("org.beanmaker.v2.runtime", "DBUtil", "FieldValidationFunction",
+                    "FieldValidationResult", "FieldValidator", "GlobalValidator", "ToStringMaker");
     private static final List<String> SQL_IMPORTS =
             createImportList("org.dbbeans.sql", "DBQuerySetup", "DBTransaction");
 
@@ -71,7 +71,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addImports(JAVA_SQL_IMPORTS, BM_RUNTIME_IMPORTS, SQL_IMPORTS);
 
         importsManager.addImport("java.util.List");
-        importsManager.addImport("java.util.function.Function");
         importsManager.addImport("org.beanmaker.v2.util.Strings");
 
         if (types.contains("Integer") || types.contains("Long") || types.contains("String"))
@@ -1261,7 +1260,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     FunctionDeclaration getValidationFunctionListFunctionDeclaration(String fieldName) {
         return new FunctionDeclaration(
                 "get" + capitalize(fieldName) + "ValidationFunctions",
-                "List<Function<DBTransaction, FieldValidationResult>>");
+                "List<FieldValidationFunction>");
     }
 
     private ReturnStatement getLabelValidationFunctionList(Column column) {

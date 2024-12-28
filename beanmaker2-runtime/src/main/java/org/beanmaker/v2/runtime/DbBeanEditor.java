@@ -7,8 +7,6 @@ import org.dbbeans.sql.DBTransaction;
 import java.util.Collections;
 import java.util.List;
 
-import java.util.function.Function;
-
 public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
     protected final DbBeanLocalization dbBeanLocalization;
@@ -84,7 +82,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
     protected abstract boolean isDataOK(DBTransaction transaction);
 
-    protected List<Function<DBTransaction, FieldValidationResult>> getDbBeanGlobalValidationFunctions() {
+    protected List<FieldValidationFunction> getDbBeanGlobalValidationFunctions() {
         return Collections.emptyList();
     }
 
