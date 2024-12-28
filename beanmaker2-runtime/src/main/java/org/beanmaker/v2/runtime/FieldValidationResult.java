@@ -1,56 +1,94 @@
 package org.beanmaker.v2.runtime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class FieldValidationResult {
     
     public static final FieldValidationResult OK =
-            new FieldValidationResult(true, null, null, true);
+            new FieldValidationResult(true, false, true, null, null);
 
-    private final boolean status;
+    private final boolean ok;
+    private final boolean warning;
+    private final boolean continueOnError;
     private final String labelName;
     private final List<Object> labelParameters;
-    private final boolean continueOnError;
 
-    private FieldValidationResult(boolean status, String labelName, List<String> labelParameters, boolean continueOnError) {
-        this.status = status;
+    private FieldValidationResult(
+            boolean ok,
+            boolean warning,
+            boolean continueOnError,
+            String labelName,
+            List<String> labelParameters)
+    {
+        this.ok = ok;
+        this.warning = warning;
+        this.continueOnError = continueOnError;
         this.labelName = labelName;
         this.labelParameters = labelParameters == null ? null : Collections.unmodifiableList(labelParameters);
-        this.continueOnError = continueOnError;
     }
 
-    public static FieldValidationResult create(String labelName) {
-        return create(labelName, false);
+    private static FieldValidationResult create(
+            boolean ok,
+            boolean warning,
+            boolean continueOnError,
+            String labelName,
+            Object... labelParameters)
+    {
+        return new FieldValidationResult(ok, warning, continueOnError, labelName, convertParameters(labelParameters));
     }
 
-    public static FieldValidationResult create(String labelName, boolean continueOnError) {
-        return new FieldValidationResult(false, labelName, null, continueOnError);
-    }
+    private static List<String> convertParameters(Object[] labelParameters) {
+        if (labelParameters == null)
+            return Collections.emptyList();
 
-    public static FieldValidationResult create(String labelName, Object... labelParameters) {
-        return create(labelName, false, labelParameters);
-    }
-
-    public static FieldValidationResult create(String labelName, boolean continueOnError, Object... labelParameters) {
-        return create(labelName, continueOnError, Arrays.asList(labelParameters));
-    }
-
-    public static FieldValidationResult create(String labelName, List<Object> labelParameters) {
-        return create(labelName, false, labelParameters);
-    }
-
-    public static FieldValidationResult create(String labelName, boolean continueOnError, List<Object> labelParameters) {
         var stringParameters = new ArrayList<String>();
-        for (var parameter: labelParameters)
+        for (Object parameter: labelParameters)
             stringParameters.add(parameter.toString());  // * we do not want mutable objects as parameters
-        return new FieldValidationResult(false, labelName, stringParameters, continueOnError);
+        return stringParameters;
+    }
+
+    public static FieldValidationResult fatal(String labelName, Object... labelParameters) {
+        return new FieldValidationResult(
+                false,
+                false,
+                false,
+                labelName,
+                convertParameters(labelParameters)
+        );
+    }
+
+    public static FieldValidationResult error(String labelName, Object... labelParameters) {
+        return new FieldValidationResult(
+                false,
+                false,
+                true,
+                labelName,
+                convertParameters(labelParameters)
+        );
+    }
+
+    public static FieldValidationResult warning(String labelName, Object... labelParameters) {
+        return new FieldValidationResult(
+                true,
+                true,
+                true,
+                labelName,
+                convertParameters(labelParameters)
+        );
     }
 
     public boolean ok() {
-        return status;
+        return ok;
+    }
+
+    public boolean isWarning() {
+        return warning;
+    }
+
+    public boolean continueOnError() {
+        return continueOnError;
     }
 
     public String getLabelName() {
@@ -59,10 +97,6 @@ public class FieldValidationResult {
 
     public List<Object> getLabelParameters() {
         return labelParameters;
-    }
-
-    public boolean continueOnError() {
-        return continueOnError;
     }
 
 }

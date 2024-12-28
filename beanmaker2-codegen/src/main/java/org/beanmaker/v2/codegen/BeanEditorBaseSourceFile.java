@@ -1424,7 +1424,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             String errorLabelExtension,
             List<StringOrCode<Expression>> errorMessageArguments)
     {
-        var functionCall = new FunctionCall("create", "FieldValidationResult")
+        var functionCall = new FunctionCall("fatal", "FieldValidationResult")
                 .addArgument(new OperatorExpression(
                         quickQuote(name),
                         "DbBeanLocalization." + errorLabelExtension,
