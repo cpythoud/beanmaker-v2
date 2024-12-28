@@ -6,7 +6,6 @@ import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ObjectCreation;
 import org.jcodegen.java.ReturnStatement;
 import org.jcodegen.java.VarDeclaration;
-import org.jcodegen.java.Visibility;
 
 import java.util.List;
 

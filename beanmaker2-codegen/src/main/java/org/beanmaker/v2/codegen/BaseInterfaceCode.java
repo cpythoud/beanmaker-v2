@@ -1,16 +1,16 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.util.Version;
 import org.jcodegen.java.EmptyLine;
 import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.InterfaceSourceFile;
 import org.jcodegen.java.JavaInterface;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.beanmaker.v2.util.Strings.uncapitalize;
 
-// ! There are no longer any class extending this one in the project. We keep it for now, in case we need
-// ! to reintroduce interfaces in the generated code.
 public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
 
     protected final String beanName;
@@ -42,6 +42,7 @@ public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
 
     @Override
     public String getSourceCode() {
+        addGeneratedAnnotation();
         return sourceFile.toString();
     }
 
@@ -79,5 +80,14 @@ public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
     protected abstract void addFunctionDeclarations();
 
     protected void addCoreFunctionality() { }
+
+    protected void addGeneratedAnnotation() {
+        importsManager.addImport("org.beanmaker.v2.runtime.annotations.DoNotEdit");
+
+        String annotation = "@DoNotEdit(generator = \"%s\", version = \"%s\", date = \"%s\")".formatted(
+                getClass().getName(), Version.get(), Instant.now().toString());
+
+        javaInterface.annotate(annotation);
+    }
 
 }
