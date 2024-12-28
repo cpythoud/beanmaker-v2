@@ -3,6 +3,7 @@ package org.beanmaker.v2.codegen;
 import org.beanmaker.v2.util.Strings;
 
 import org.jcodegen.java.Assignment;
+import org.jcodegen.java.ChainedFunctionCalls;
 import org.jcodegen.java.Comparison;
 import org.jcodegen.java.Condition;
 import org.jcodegen.java.ConstructorDeclaration;
@@ -1108,23 +1109,29 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             function.addContent(new VarDeclaration(
                     "FieldValidator",
                     "validator",
-                    new ObjectCreation("FieldValidator")
-                            .addArgument("dbBeanLocalization")
-                            .addArgument("id")
-                            .addArgument(quickQuote(field))
-                            .addArgument(getCheckDataFunctionFunctionCall(field, "get", "Label"))
-                            .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Empty"))
-                            .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Required"))
-                            .addArgument(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"))
-                            .addArgument(new Condition(
+                    new ChainedFunctionCalls("builder", "FieldValidator")
+                            .chain(new FunctionCall("dbBeanLocalization").addArgument("dbBeanLocalization"))
+                            .chain(new FunctionCall("id").addArgument("id"))
+                            .chain(new FunctionCall("fieldName").addArgument(quickQuote(field)))
+                            .chain(new FunctionCall("fieldLabel")
+                                    .addArgument(getCheckDataFunctionFunctionCall(field, "get", "Label")))
+                            .chain(new FunctionCall("empty")
+                                    .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Empty")))
+                            .chain(new FunctionCall("required")
+                                    .addArgument(getCheckDataFunctionFunctionCall(field, "is", "Required")))
+                            .chain(new FunctionCall("shouldBeUnique")
+                                    .addArgument(getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique")))
+                            .chain(new FunctionCall("isUnique").addArgument(new Condition(
                                     getCheckDataFunctionFunctionCall(field, "is", "ToBeUnique"),
                                     true)
                                     .orCondition(new Condition(getCheckDataFunctionFunctionCall(
                                             field,
                                             "is",
                                             "Unique")
-                                            .addArgument("transaction"))))));
-
+                                            .addArgument("transaction")))))
+                            .chain("build")
+                    )
+            );
 
         String validationFunctionsFunctionName = "get" + capitalize(field) + "ValidationFunctions";
         var validationCall = new FunctionCall("validate", "validator")
@@ -1146,26 +1153,30 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                             .addContent(new VarDeclaration(
                                     "FieldValidator",
                                     "contentValidator",
-                                    new ObjectCreation("FieldValidator")
-                                            .addArgument("dbBeanLocalization")
-                                            .addArgument("id")
-                                            .addArgument("\"" + field + "\" + iso")
-                                            .addArgument(new OperatorExpression(
+                                    new ChainedFunctionCalls("builder", "FieldValidator")
+                                            .chain(new FunctionCall("dbBeanLocalization").addArgument("dbBeanLocalization"))
+                                            .chain(new FunctionCall("id").addArgument("id"))
+                                            .chain(new FunctionCall("fieldName").addArgument("\"" + field + "\" + iso"))
+                                            .chain(new FunctionCall("fieldLabel").addArgument(new OperatorExpression(
                                                     getCheckDataFunctionFunctionCall(field, "get", "Label"),
                                                     "\" \" + iso",
-                                                    OperatorExpression.Operator.ADD))
-                                            .addArgument(new FunctionCall("isEmpty", "Strings")
-                                                    .addArgument(new FunctionCall(
-                                                            "get",
-                                                            uncapitalize(chopID(field)))
+                                                    OperatorExpression.Operator.ADD)))
+                                            .chain(new FunctionCall("empty").addArgument(
+                                                    new FunctionCall("isEmpty", "Strings")
+                                                            .addArgument(new FunctionCall(
+                                                                    "get",
+                                                                    uncapitalize(chopID(field)))
+                                                                    .addArgument("dbBeanLanguage"))))
+                                            .chain(new FunctionCall("required").addArgument(
+                                                    getCheckDataFunctionFunctionCall(
+                                                            field,
+                                                            "is",
+                                                            "Required")
                                                             .addArgument("dbBeanLanguage")))
-                                            .addArgument(getCheckDataFunctionFunctionCall(
-                                                    field,
-                                                    "is",
-                                                    "Required")
-                                                    .addArgument("dbBeanLanguage"))
-                                            .addArgument("false")
-                                            .addArgument("true")))
+                                            .chain(new FunctionCall("shouldBeUnique").addArgument("false"))
+                                            .chain(new FunctionCall("isUnique").addArgument("false"))
+                                            .chain("build")
+                            ))
                             .addContent(new Assignment(
                                     "ok",
                                     new Condition(

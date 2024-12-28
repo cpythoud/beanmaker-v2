@@ -17,7 +17,92 @@ public class FieldValidator {
     private final boolean shouldBeUnique;
     private final boolean isUnique;
 
-    public FieldValidator(
+    public static class Builder {
+        private DbBeanLocalization dbBeanLocalization = null;
+        private long id = -1;
+        private String fieldName = null;
+        private String fieldLabel = null;
+        private boolean empty = false;
+        private boolean required = false;
+        private boolean shouldBeUnique = false;
+        private boolean isUnique = false;
+
+        private Builder() { }
+
+        public Builder dbBeanLocalization(DbBeanLocalization dbBeanLocalization) {
+            this.dbBeanLocalization = dbBeanLocalization;
+            return this;
+        }
+
+        public Builder id(long id) {
+            if (id < 0)
+                throw new IllegalArgumentException("ID must be >= 0");
+
+            this.id = id;
+            return this;
+        }
+
+        public Builder fieldName(String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+
+        public Builder fieldLabel(String fieldLabel) {
+            this.fieldLabel = fieldLabel;
+            return this;
+        }
+
+        public Builder empty(boolean empty) {
+            this.empty = empty;
+            return this;
+        }
+
+        public Builder required(boolean required) {
+            this.required = required;
+            return this;
+        }
+
+        public Builder shouldBeUnique(boolean shouldBeUnique) {
+            this.shouldBeUnique = shouldBeUnique;
+            return this;
+        }
+
+        public Builder isUnique(boolean isUnique) {
+            this.isUnique = isUnique;
+            return this;
+        }
+
+        public FieldValidator build() {
+            if (dbBeanLocalization == null)
+                throw new IllegalArgumentException("dbBeanLocalization is missing");
+
+            if (id < 0)
+                throw new IllegalArgumentException("ID must be >= 0");
+
+            if (fieldName == null)
+                throw new IllegalArgumentException("fieldName is missing");
+
+            if (fieldLabel == null)
+                throw new IllegalArgumentException("fieldLabel is missing");
+
+            return new FieldValidator(
+                    dbBeanLocalization,
+                    id,
+                    fieldName,
+                    fieldLabel,
+                    empty,
+                    required,
+                    shouldBeUnique,
+                    isUnique
+            );
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    private FieldValidator(
             DbBeanLocalization dbBeanLocalization,
             long id,
             String fieldName,
