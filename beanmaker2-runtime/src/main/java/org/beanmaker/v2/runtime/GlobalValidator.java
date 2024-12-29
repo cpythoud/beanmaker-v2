@@ -21,10 +21,17 @@ public class GlobalValidator {
         boolean ok = true;
         for (var test: validationFunctions) {
             var result = test.validate(transaction);
-            if (!result.ok()) {
+            if (result.ok()) {
+                if (result.isWarning()) {
+                    dbBeanLocalization.addWarningMessage(
+                            id,
+                            dbBeanLocalization.formatMessage(result.getLabelName(), result.getLabelParameters())
+                    );
+                }
+            } else {
                 dbBeanLocalization.addErrorMessage(
                         id,
-                        dbBeanLocalization.getBadFormatErrorMessage(result.getLabelName(), result.getLabelParameters())
+                        dbBeanLocalization.formatMessage(result.getLabelName(), result.getLabelParameters())
                 );
                 if (result.continueOnError())
                     ok = false;

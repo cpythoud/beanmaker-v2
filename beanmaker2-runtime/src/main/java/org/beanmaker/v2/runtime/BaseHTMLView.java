@@ -119,6 +119,8 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
         boolean ok = editor.isDataOK();
         errorMessages.clear();
         errorMessages.addAll(editor.getErrorMessages());
+        warningMessages.clear();
+        warningMessages.addAll(editor.getWarningMessages());
 
         return ok;
     }

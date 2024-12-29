@@ -20,6 +20,7 @@ public class DbBeanLocalization {
     private DbBeanLanguage language;
 
     private final List<ErrorMessage> errorMessages = new ArrayList<>();
+    private final List<WarningMessage> warningMessages = new ArrayList<>();
 
     public DbBeanLocalization(DbBeanLabelBasicFunctions dbBeanLabelBasicFunctions, String labelNamePrefix, String beanClassName) {
         this(dbBeanLabelBasicFunctions, labelNamePrefix, beanClassName, dbBeanLabelBasicFunctions.getDefaultLanguage());
@@ -60,7 +61,12 @@ public class DbBeanLocalization {
         return getLabel(field + REQUIRED_EXT);
     }
 
+    @Deprecated
     public String getBadFormatErrorMessage(String labelName, List<Object> parameters) {
+        return formatMessage(labelName, parameters);
+    }
+
+    public String formatMessage(String labelName, List<Object> parameters) {
         if (parameters == null || parameters.isEmpty())
             return getLabel(labelName);
 
@@ -88,6 +94,22 @@ public class DbBeanLocalization {
         return Collections.unmodifiableList(errorMessages);
     }
 
+    public void clearWarningMessages() {
+        warningMessages.clear();
+    }
+
+    public void addWarningMessage(long beanId, String fieldName, String fieldLabel, String message) {
+        warningMessages.add(new WarningMessage(beanId, fieldName, fieldLabel, message));
+    }
+
+    public void addWarningMessage(long beanId, String message) {
+        warningMessages.add(new WarningMessage(beanId, message));
+    }
+
+    public List<WarningMessage> getWarningMessages() {
+        return Collections.unmodifiableList(warningMessages);
+    }
+
 
     public Locale getLocale() {
         if (language == null)
@@ -95,4 +117,5 @@ public class DbBeanLocalization {
 
         return language.getLocale();
     }
+
 }

@@ -119,6 +119,10 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return "{ \"status\": \"errors\", ";
     }
 
+    protected String getStartJsonOk() {
+        return "{ \"status\": \"ok\", ";
+    }
+
     protected record NameIDPair(String name, long id) { }
 
     protected NameIDPair getSubmittedFormAndId(HttpServletRequest request) throws ServletException {

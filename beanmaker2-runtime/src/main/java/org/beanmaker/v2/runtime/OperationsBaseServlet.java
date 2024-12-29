@@ -75,6 +75,9 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
     }
 
     protected String getJsonOk(DbBeanHTMLViewInterface htmlView) {
+        if (htmlView.hasWarnings())
+            return getStartJsonOk() + WarningMessage.toJson(htmlView.getWarningMessages()) + " }";
+
         return getJsonOk();
     }
 

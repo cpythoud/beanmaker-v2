@@ -10,6 +10,11 @@ import java.util.List;
 public interface DbBeanHTMLViewInterface extends DbBeanViewInterface {
 
     List<ErrorMessage> getErrorMessages();
+    List<WarningMessage> getWarningMessages();
+
+    default boolean hasWarnings() {
+        return !getWarningMessages().isEmpty();
+    }
 
     String getHtmlForm();
 

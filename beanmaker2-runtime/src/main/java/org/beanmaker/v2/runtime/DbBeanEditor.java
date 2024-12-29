@@ -90,6 +90,10 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         return dbBeanLocalization.getErrorMessages();
     }
 
+    public List<WarningMessage> getWarningMessages() {
+        return dbBeanLocalization.getWarningMessages();
+    }
+
     public final void reset() {
         reset(null);
     }
