@@ -618,11 +618,15 @@ public class Strings {
 
         var parts = moneyAmount.split(Pattern.quote(separator));
         if (parts.length > 2)
-            throw new IllegalArgumentException("moneyAmount is not formatted correctly");
+            throw new IllegalArgumentException(
+                    "incorrect formatting: too many separators (%d) in string: %s".formatted(parts.length, moneyAmount)
+            );
 
         String cents = parts.length == 1 ? "0" : parts[1];
         if (cents.length() > decimals)
-            throw new IllegalArgumentException("moneyAmount is not formatted correctly");
+            throw new IllegalArgumentException(
+                    "incorrect formatting: too many decimals (%d) in string: %s".formatted(cents.length(), moneyAmount)
+            );
         else if (cents.length() < decimals) {
             for (int i = 0; i < decimals - cents.length(); i++)
                 cents = cents + "0";
