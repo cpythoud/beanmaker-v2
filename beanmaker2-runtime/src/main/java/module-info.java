@@ -11,6 +11,8 @@ module org.beanmaker.v2.runtime {
     requires commons.fileupload;
     requires org.apache.commons.csv;
 
+    requires org.slf4j;
+
     exports org.beanmaker.v2.runtime;
     exports org.beanmaker.v2.runtime.annotations;
     exports org.beanmaker.v2.runtime.dbutil;

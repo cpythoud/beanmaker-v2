@@ -5,12 +5,17 @@ import org.beanmaker.v2.runtime.dbutil.Transactions;
 
 import org.dbbeans.sql.DBTransaction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class BeanImportBase implements DbBeanCsvImport {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final DataFile dataFile;
     private final DataEntries dataEntries;
@@ -42,7 +47,9 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         try {
             var constructor = editorClass.getConstructor();
             editor = (DbBeanEditor) constructor.newInstance();
+            logger.trace("Created editor for database operations");
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+            logger.error("Failed to create editor", e);
             throw new RuntimeException(e);
         }
         return editor;
@@ -91,6 +98,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         Transactions.wrap(
                 transaction -> {
                     for (var dataEntry: dataEntries) {
+                        logger.trace("Recording data at line: {}", dataEntry.getLineNumber());
                         setupEditor(dataEntry);
                         setFields(dataEntry);
                         if (validator.validate(editor, dataEntry))

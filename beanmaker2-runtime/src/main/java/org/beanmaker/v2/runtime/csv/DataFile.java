@@ -4,8 +4,10 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.DuplicateHeaderMode;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
-import java.io.IOException;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -85,6 +87,8 @@ public class DataFile {
         }
     }
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private final File file;
     private final CSVFormat csvFormat;
     private final Charset charset;
@@ -102,14 +106,18 @@ public class DataFile {
 
         try (var parser = CSVParser.parse(file, charset, csvFormat)) {
             headers = new ArrayList<>(parser.getHeaderNames());
+            logger.info("CSV parsed headers: {}", headers);
+            logger.trace("Creating data entries");
             for (var record: parser) {
                 lineNumber = parser.getCurrentLineNumber();
+                logger.trace("Processing line: {}", lineNumber);
                 var data = new HashMap<String, String>();
                 for (String header: headers)
                     data.put(header, record.get(header));
                 dataEntries.add(new DataEntry(lineNumber, data));
             }
         } catch (Throwable throwable) {
+            logger.error("Exception at line number: {}", lineNumber, throwable);
             throw new RuntimeException("Exception at line number: " + lineNumber, throwable);
         }
 
