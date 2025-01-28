@@ -31,8 +31,8 @@
             <artifactId>html-codegen</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

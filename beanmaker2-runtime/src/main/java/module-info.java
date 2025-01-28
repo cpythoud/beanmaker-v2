@@ -1,7 +1,7 @@
 @SuppressWarnings("module")
 module org.beanmaker.v2.runtime {
     requires java.sql;
-    requires javax.servlet.api;
+    requires javaee.web.api;
 
     requires org.beanmaker.v2.util;
     requires org.dbbeans.sql;
