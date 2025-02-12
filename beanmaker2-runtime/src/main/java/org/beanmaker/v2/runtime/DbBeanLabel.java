@@ -15,4 +15,9 @@ public interface DbBeanLabel {
 
     boolean hasDataFor(DbBeanLanguage dbBeanLanguage);
 
+    String getSafeValue(DbBeanLanguage dbBeanLanguage);
+    String getSafeValue(DbBeanLanguage dbBeanLanguage, Object... parameters);
+    String getSafeValue(DbBeanLanguage dbBeanLanguage, List<Object> parameters);
+    String getSafeValue(DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters);
+
 }
