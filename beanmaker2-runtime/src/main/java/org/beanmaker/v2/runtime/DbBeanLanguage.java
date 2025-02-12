@@ -47,6 +47,12 @@ public interface DbBeanLanguage extends DbBeanInterface {
         return Locale.forLanguageTag(getTag());
     }
 
+    default String getCapTag() {
+        return getRegionCode()
+                .map(code -> getCapIso() + " (" + code.toUpperCase() + ")")
+                .orElseGet(this::getCapIso);
+    }
+
 
     /**
      * Checks if the language is the default language.
