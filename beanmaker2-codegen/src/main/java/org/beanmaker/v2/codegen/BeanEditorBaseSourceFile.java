@@ -725,6 +725,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE)
                 .addContent(getPerLanguageLabelGetterFunction(labelName, labelNameCap, true))
                 .addContent(EMPTY_LINE);
+
+        if (idName.equals("idLabel"))
+            javaClass.addContent(getNoOpSafeLabelGetterFunction()).addContent(EMPTY_LINE);
     }
 
     private FunctionDeclaration getLabelGetterFunction(String idName, String labelName, boolean transaction) {
@@ -788,6 +791,18 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         }
 
         return perLanguageLabelFunction;
+    }
+
+    private FunctionDeclaration getNoOpSafeLabelGetterFunction() {
+        return new FunctionDeclaration("getSafeLabel", "String")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC)
+                .markAsFinal()
+                .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
+                .addContent(
+                        new ExceptionThrow("UnsupportedOperationException")
+                                .addArgument(quickQuote("Safe label not available from editors"))
+                );
     }
 
     private void addLabelGetters() {

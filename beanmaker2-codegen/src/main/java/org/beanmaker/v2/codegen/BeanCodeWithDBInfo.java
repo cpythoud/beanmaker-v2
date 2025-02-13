@@ -74,12 +74,12 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
             addItemOrderEdgeStatusCheckFunctions();
     }
 
-    // ! Must be implemented in super class
+    // ! Only applies to BeanBase & BeanBaseEditor, must be implemented in super class
     protected void addStrGetter(Column column) {
         throw new UnsupportedOperationException();
     }
 
-    // ! Must be implemented in super class
+    // ! Only applies to BeanBase & BeanBaseEditor, must be implemented in super class
     protected void addLabelSpecificGetterFunctions(Column column) {
         throw new UnsupportedOperationException();
     }

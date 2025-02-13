@@ -323,32 +323,52 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addLabelSpecificGetterFunctions(Column column) {
-        String name = column.getJavaName();
+        String fieldName = column.getJavaName();
+        String functionName = "get" + chopID(fieldName);
         FunctionDeclaration labelFunction =
-                new FunctionDeclaration("get" + chopID(name), "DbBeanLabel")
+                new FunctionDeclaration(functionName, "DbBeanLabel")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(
                                 new FunctionCall("get", "LabelManager")
-                                        .addArgument(name)));
+                                        .addArgument(fieldName)));
 
         FunctionDeclaration perLanguageLabelFunction =
-                new FunctionDeclaration("get" + chopID(name), "String")
+                new FunctionDeclaration(functionName, "String")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addContent(new ReturnStatement(
                                 new FunctionCall("get", new FunctionCall(labelFunction.getName()))
                                         .addArgument("dbBeanLanguage")));
 
-        if (name.equals("idLabel")) {
+        FunctionDeclaration perLanguageSafeLabelFunction =
+                new FunctionDeclaration(getSafeFunctionName(functionName), "String")
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
+                        .addContent(new ReturnStatement(
+                                new FunctionCall("getSafeValue", new FunctionCall(labelFunction.getName()))
+                                        .addArgument("dbBeanLanguage")));
+
+        if (fieldName.equals("idLabel")) {
             labelFunction.annotate("@Override");
             perLanguageLabelFunction.annotate("@Override");
+            perLanguageSafeLabelFunction.annotate("@Override");
         }
 
         javaClass
                 .addContent(labelFunction)
                 .addContent(EMPTY_LINE)
                 .addContent(perLanguageLabelFunction)
+                .addContent(EMPTY_LINE)
+                .addContent(perLanguageSafeLabelFunction)
                 .addContent(EMPTY_LINE);
+    }
+
+    private String getSafeFunctionName(String originalFunctionName) {
+        if (originalFunctionName.endsWith("Label"))
+            return originalFunctionName.substring(0, originalFunctionName.length() - "Label".length()) + "SafeLabel";
+
+        throw new AssertionError(
+                "Function name " + originalFunctionName + " not supported. Must end with 'Label'.");
     }
 
     private void addGetters() {
