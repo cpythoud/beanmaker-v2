@@ -382,4 +382,14 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return HttpRequestParameters.DEFAULT_UPLOADED_FILE_SIZE_THRESHOLD;
     }
 
+    public static String getFullUrl(HttpServletRequest request) {
+        StringBuffer url = request.getRequestURL();
+        String query = request.getQueryString();
+
+        if (query != null)
+            url.append("?").append(query);
+
+        return url.toString();
+    }
+
 }
