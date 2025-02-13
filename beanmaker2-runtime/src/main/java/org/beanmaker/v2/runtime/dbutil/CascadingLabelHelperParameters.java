@@ -3,10 +3,10 @@ package org.beanmaker.v2.runtime.dbutil;
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 import org.beanmaker.v2.runtime.DbBeanWithUniqueCode;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class CascadingLabelHelperParameters {
 
@@ -57,6 +57,10 @@ public class CascadingLabelHelperParameters {
         private DbBeanLanguage defaultLanguage;
         private String defaultValue;
 
+        public Builder parameters(Object... parameterList) {
+            return parameters(Arrays.asList(parameterList));
+        }
+
         public Builder parameters(List<Object> parameterList) {
             this.parameterList = parameterList;
             return this;
@@ -95,8 +99,15 @@ public class CascadingLabelHelperParameters {
                         defaultValue);
             }
 
+            if (parameterList == null)
+                return new CascadingLabelHelperParameters(
+                        Collections.emptyList(),
+                        null,
+                        defaultLanguage,
+                        defaultValue);
+
             return new CascadingLabelHelperParameters(
-                    Objects.requireNonNullElse(Collections.unmodifiableList(parameterList), Collections.emptyList()),
+                    Collections.unmodifiableList(parameterList),
                     null,
                     defaultLanguage,
                     defaultValue);

@@ -2,6 +2,8 @@ package org.beanmaker.v2.runtime.dbutil;
 
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
+import org.beanmaker.v2.util.Strings;
+
 import org.dbbeans.sql.DBAccess;
 import org.dbbeans.sql.DBTransaction;
 
@@ -49,14 +51,14 @@ public class CascadingLabelHelper extends LabelHelper {
                 setProcessingParameters(id, language),
                 getResult());
 
-        if (labelText == null) {
+        if (Strings.isEmpty(labelText)) {
             if (!language.isBareLanguage()) {
                 labelText = dbAccess.processQuery(
                         idBasedDataQuery,
                         setProcessingParameters(id, language.getBareLanguage()),
                         getResult());
             }
-            if (labelText == null) {
+            if (Strings.isEmpty(labelText)) {
                 var defaultLanguage = parameters.getDefaultLanguage();
                 if (!language.isDefaultLanguage() && defaultLanguage != null) {
                     labelText = dbAccess.processQuery(
@@ -64,7 +66,7 @@ public class CascadingLabelHelper extends LabelHelper {
                             setProcessingParameters(id, defaultLanguage),
                             getResult());
                 }
-                if (labelText == null) {
+                if (Strings.isEmpty(labelText)) {
                     labelText = parameters.getDefaultValue();
                 }
             }
@@ -137,14 +139,14 @@ public class CascadingLabelHelper extends LabelHelper {
                 setProcessingParameters(id, language),
                 getResult());
 
-        if (labelText == null) {
+        if (Strings.isEmpty(labelText)) {
             if (!language.isBareLanguage()) {
                 labelText = transaction.addQuery(
                         idBasedDataQuery,
                         setProcessingParameters(id, language.getBareLanguage()),
                         getResult());
             }
-            if (labelText == null) {
+            if (Strings.isEmpty(labelText)) {
                 var defaultLanguage = parameters.getDefaultLanguage();
                 if (!language.isDefaultLanguage() && defaultLanguage != null) {
                     labelText = transaction.addQuery(
@@ -152,7 +154,7 @@ public class CascadingLabelHelper extends LabelHelper {
                             setProcessingParameters(id, defaultLanguage),
                             getResult());
                 }
-                if (labelText == null) {
+                if (Strings.isEmpty(labelText)) {
                     labelText = parameters.getDefaultValue();
                 }
             }
