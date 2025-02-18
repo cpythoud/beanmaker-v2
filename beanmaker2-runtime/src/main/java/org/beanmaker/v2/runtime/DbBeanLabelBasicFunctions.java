@@ -55,6 +55,10 @@ public abstract class DbBeanLabelBasicFunctions {
         return true;
     }
 
+    protected boolean fallbackToDefaultLanguage() {
+        return false;
+    }
+
     protected String globalPrefix() {
         return "global";
     }
@@ -75,9 +79,21 @@ public abstract class DbBeanLabelBasicFunctions {
         return DefaultGenericDbBeanLabels.getInstance();
     }
 
+    private String retrieveText(DbBeanLabel label, DbBeanLanguage language) {
+        if (fallbackToDefaultLanguage())
+            return label.getSafeValue(language);
+        return label.get(language);
+    }
+
+    private String retrieveText(DbBeanLabel label, DbBeanLanguage language, List<Object> parameters) {
+        if (fallbackToDefaultLanguage())
+            return label.getSafeValue(language, parameters);
+        return label.get(language, parameters);
+    }
+
     protected String get(String labelName, DbBeanLanguage language) {
         return processContent(
-                getPossibleLabel(labelName).map(label -> label.get(language)).orElse(null),
+                getPossibleLabel(labelName).map(label -> retrieveText(label, language)).orElse(null),
                 labelName,
                 language,
                 null,
@@ -87,7 +103,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     protected String get(String labelName, DbBeanLanguage language, List<Object> parameters) {
         return processContent(
-                getPossibleLabel(labelName).map(label -> label.get(language, parameters)).orElse(null),
+                getPossibleLabel(labelName).map(label -> retrieveText(label, language, parameters)).orElse(null),
                 labelName,
                 language,
                 null,
@@ -97,7 +113,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     protected String get(String labelName, DbBeanLanguage language, String fullyQualifiedLabel) {
         return processContent(
-                getPossibleLabel(labelName).map(label -> label.get(language)).orElse(null),
+                getPossibleLabel(labelName).map(label -> retrieveText(label, language)).orElse(null),
                 labelName,
                 language,
                 fullyQualifiedLabel,
@@ -107,7 +123,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     protected String get(String labelName, DbBeanLanguage language, List<Object> parameters, String fullyQualifiedLabel) {
         return processContent(
-                getPossibleLabel(labelName).map(label -> label.get(language, parameters)).orElse(null),
+                getPossibleLabel(labelName).map(label -> retrieveText(label, language, parameters)).orElse(null),
                 labelName,
                 language,
                 fullyQualifiedLabel,
@@ -117,7 +133,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     protected String get(String labelName, DbBeanLanguage language, String fullyQualifiedLabel, String globalLabelName) {
         return processContent(
-                getPossibleLabel(labelName).map(label -> label.get(language)).orElse(null),
+                getPossibleLabel(labelName).map(label -> retrieveText(label, language)).orElse(null),
                 labelName,
                 language,
                 fullyQualifiedLabel,
@@ -127,7 +143,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     protected String get(String labelName, DbBeanLanguage language, List<Object> parameters, String fullyQualifiedLabel, String globalLabelName) {
         return processContent(
-                getPossibleLabel(labelName).map(label -> label.get(language, parameters)).orElse(null),
+                getPossibleLabel(labelName).map(label -> retrieveText(label, language, parameters)).orElse(null),
                 labelName,
                 language,
                 fullyQualifiedLabel,
