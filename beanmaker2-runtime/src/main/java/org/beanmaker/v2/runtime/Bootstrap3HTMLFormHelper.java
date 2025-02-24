@@ -17,7 +17,6 @@ import org.jcodegen.html.Tag;
 import org.jcodegen.html.TextareaTag;
 import org.jcodegen.html.util.CssClasses;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -89,7 +88,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         }
     }
 
-    private static List<String> BOOTSTRAP_SIZES = Arrays.asList("xs", "sm", "md", "lg");
+    private static final List<String> BOOTSTRAP_SIZES = List.of("xs", "sm", "md", "lg");
 
     public void setHorizontalFormParameters(
             String horizontalSizeShift,
@@ -195,6 +194,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         return displayROFilesAsLinks;
     }
 
+    @Override
     protected void resetFormTypeFlags() {
         super.resetFormTypeFlags();
         inlineWithoutLabels = false;
@@ -251,22 +251,27 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         return getInputTag(type, id, name, value, readonly, "form-control", extraCssClasses);
     }
 
+    @Override
     public DivTag getFormGroup() {
         return new DivTag().cssClass("form-group");
     }
 
+    @Override
     public DivTag getFormGroup(String extraCssClasses) {
         return new DivTag().cssClass(CssClasses.start("form-group").add(extraCssClasses).get());
     }
 
+    @Override
     public DivTag getFormGroup(LabelTag label, Tag field) {
         return getFormGroup(label, field, null);
     }
 
+    @Override
     public DivTag getFormGroup(LabelTag label, Tag field, String helpText) {
         return getFormGroup(label, field, helpText, null);
     }
 
+    @Override
     public DivTag getFormGroup(LabelTag label, Tag field, String helpText, String extraCssClasses) {
         DivTag formGroup =
                 new DivTag().cssClass(CssClasses.start("form-group").add(extraCssClasses).get())
@@ -296,6 +301,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         return getLabel(fieldLabel, fieldId, required, null);
     }
 
+    @Override
     protected LabelTag getLabel(
             String fieldLabel,
             String fieldId,
@@ -335,6 +341,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         return getSubmitButtonTag(params, null);
     }
 
+    @Override
     public ButtonTag getSubmitButtonTag(HFHParameters params, String extraCssClasses) {
         return getButtonTag(
                 new HFHParameters(params)
@@ -343,6 +350,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
                         .setCssClasses("btn btn-default" + (extraCssClasses == null ? "" : " " + extraCssClasses)));
     }
 
+    @Override
     public ButtonTag getButtonTag(HFHParameters params) {
         var button = new ButtonTag(params.getButtonType())
                 .id(getHtmlId(params.getBeanName() + "_" + params.getFunctionName(), params.getIdBean()))
@@ -381,9 +389,9 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
 
         FormElement formElement;
         if (params.isReadonly())
-            formElement = getReadOnlyFormElement(params, fieldId);
+            formElement = getSelectReadOnlyFormElement(params, fieldId);
         else
-            formElement = getReadWriteFormElement(params, fieldId);
+            formElement = getSelectReadWriteFormElement(params, fieldId);
 
         if (params.isRequired() && useRequiredInHtml())
             formElement.required();
@@ -393,7 +401,8 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         return getFormGroup(label, formElement, params.getHelpText(), params.getGroupExtraCssClasses());
     }
 
-    protected FormElement getReadWriteFormElement(HFHParameters params, String fieldId) {
+    @Override
+    protected FormElement getSelectReadWriteFormElement(HFHParameters params, String fieldId) {
         SelectTag select = getSelectTag(params.getField(), fieldId, params.getTagExtraCssClasses());
 
         if (params.hasOptionGroupSelectData()) {
@@ -420,6 +429,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
                 .id(id);
     }
 
+    @Override
     protected TextareaTag getTextAreaTag(String id, String name, String value, String extraCssClasses) {
         return new TextareaTag(value)
                 .cssClass(CssClasses.start("form-control").add(extraCssClasses).get())

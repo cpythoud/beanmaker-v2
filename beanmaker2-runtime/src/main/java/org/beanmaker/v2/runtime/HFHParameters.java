@@ -277,6 +277,10 @@ public class HFHParameters {
         return this;
     }
 
+    public boolean hasHelpText() {
+        return !Strings.isEmpty(helpText);
+    }
+
     public boolean isReadonly() {
         return readonly;
     }
@@ -352,7 +356,7 @@ public class HFHParameters {
     public HFHParameters setOptionGroupSelectPairs(Map<String, List<IdNamePair>> optionGroupSelectPairs) {
         this.optionGroupSelectPairs = optionGroupSelectPairs;
 
-        selectPairs = new ArrayList<IdNamePair>();
+        selectPairs = new ArrayList<>();
         for (List<IdNamePair> idNamePairs: optionGroupSelectPairs.values())
             selectPairs.addAll(idNamePairs);
 

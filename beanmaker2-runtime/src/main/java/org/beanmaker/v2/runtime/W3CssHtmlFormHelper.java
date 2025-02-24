@@ -77,9 +77,9 @@ public class W3CssHtmlFormHelper extends AbstractHtmlFormHelper {
 
         FormElement formElement;
         if (params.isReadonly())
-            formElement = getReadOnlyFormElement(params, fieldId);
+            formElement = getSelectReadOnlyFormElement(params, fieldId);
         else
-            formElement = getReadWriteFormElement(params, fieldId);
+            formElement = getSelectReadWriteFormElement(params, fieldId);
 
         if (params.isRequired() && useRequiredInHtml())
             formElement.required();

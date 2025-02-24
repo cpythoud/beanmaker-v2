@@ -296,6 +296,12 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
                         .name(params.getField())
                         .id(getFieldId(params.getField(), params.getIdBean(), params.getIdNameSuffix(), params.isReadonly()));
 
+        setCheckboxParameters(checkbox, params);
+
+        return checkbox;
+    }
+
+    protected void setCheckboxParameters(InputTag checkbox, HFHParameters params) {
         if (params.hasTagExtraCssClasses())
             checkbox.cssClass(params.getTagExtraCssClasses());
         if (params.isChecked())
@@ -310,8 +316,6 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
             checkbox.attribute("autocomplete", "off");
         if (params.getCheckboxValue() != null)
             checkbox.value(params.getCheckboxValue());
-
-        return checkbox;
     }
 
     protected String getFieldId(String field, long idBean, boolean readonly) {
@@ -358,7 +362,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         return fieldLabel + notRequiredExtension;
     }
 
-    protected FormElement getReadOnlyFormElement(HFHParameters params, String fieldId) {
+    protected FormElement getSelectReadOnlyFormElement(HFHParameters params, String fieldId) {
         String value = "";
         if (!params.getSelected().equals("0"))
             for (IdNamePair pair: params.getSelectPairs())
@@ -369,7 +373,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
                 .readonly();
     }
 
-    protected FormElement getReadWriteFormElement(HFHParameters params, String fieldId) {
+    protected FormElement getSelectReadWriteFormElement(HFHParameters params, String fieldId) {
         var select = getSelectTag(params.getField(), fieldId, params.getTagExtraCssClasses());
 
         if (params.hasOptionGroupSelectData()) {
