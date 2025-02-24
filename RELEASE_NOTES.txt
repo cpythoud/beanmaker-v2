@@ -64,6 +64,12 @@ INCOMPATIBLES CHANGES:
 NEW FEATURES:
 - add two separate annotations to distinguish generated files that can be edited from those that should not be (replace
   use of javax.annotation.processing.Generated)
+- add support for ApplicationParameters singleton, to centralize application parameters and allow data libraries
+  built with Beanmaker to be used in more than one project/deliverable.
+- add support for subcontainers in forms, so the the form's fields can be placed in a subcontainer and the form's
+  buttons in another (this to help take advantage of CSS frameworks that offer facilites to separate body and
+  footer in modales)
+- introduce Bootstrap 5 HtmlFormHelper
 
 BUG FIXES AND MINOR CHANGES:
 - code cleanup in master tables
