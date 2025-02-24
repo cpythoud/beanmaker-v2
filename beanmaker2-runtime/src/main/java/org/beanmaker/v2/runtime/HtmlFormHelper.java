@@ -73,4 +73,12 @@ public interface HtmlFormHelper {
 
     Tag getHiddenInfo(String field, long idBean, String value);
 
+    default Tag getFormElementsContainer(Tag form) {
+        return form;
+    }
+
+    default Tag getFormButtonsContainer(Tag form) {
+        return form;
+    }
+
 }

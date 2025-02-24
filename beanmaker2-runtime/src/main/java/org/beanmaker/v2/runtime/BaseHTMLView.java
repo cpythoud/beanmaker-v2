@@ -79,11 +79,19 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
         return htmlFormHelper.getForm(formName, editor.getId());
     }
 
+    protected Tag getFormElementsContainer(Tag form) {
+        return htmlFormHelper.getFormElementsContainer(form);
+    }
+
     protected void composeHiddenSubmitField(Tag form) {
         form.child(htmlFormHelper.getHiddenSubmitInput(formName, editor.getId()));
     }
 
     protected void composeAdditionalHtmlFormFields(Tag form) { }
+
+    protected Tag getFormButtonsContainer(Tag form) {
+        return htmlFormHelper.getFormButtonsContainer(form);
+    }
 
     protected void composeButtons(Tag form) {
         composeSubmitButton(form);

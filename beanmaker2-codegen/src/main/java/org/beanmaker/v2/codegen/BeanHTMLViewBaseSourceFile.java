@@ -167,16 +167,24 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                     .byItself()
                     .addArgument("FormTag.EncodingType.MULTIPART"));
 
-        formTagFunction.addContent(new FunctionCall("composeHiddenSubmitField").byItself().addArgument("form"));
+        formTagFunction.addContent(new VarDeclaration(
+                "var",
+                "fields",
+                new FunctionCall("getFormElementsContainer").addArgument("form")));
+
+        formTagFunction.addContent(new FunctionCall("composeHiddenSubmitField").byItself().addArgument("fields"));
 
         for (Column column: columns.getList())
             if (!column.isSpecial())
                 formTagFunction.addContent(getComposeFunctionCall(column));
 
         formTagFunction
-                .addContent(new FunctionCall("composeAdditionalHtmlFormFields").byItself().addArgument("form"))
+                .addContent(new FunctionCall("composeAdditionalHtmlFormFields").byItself().addArgument("fields"))
                 .addContent(new IfBlock(new Condition("!readonly"))
-                        .addContent(new FunctionCall("composeButtons").byItself().addArgument("form")))
+                        .addContent(
+                                new FunctionCall("composeButtons")
+                                        .byItself()
+                                        .addArgument(new FunctionCall("getFormButtonsContainer").addArgument("form"))))
                 .addContent(EMPTY_LINE)
                 .addContent(new ReturnStatement("form"));
 
@@ -186,7 +194,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
     private FunctionCall getComposeFunctionCall(Column column) {
         return new FunctionCall("compose" + capitalize(column.getJavaName()) + "FormElement")
                 .byItself()
-                .addArgument("form");
+                .addArgument("fields");
     }
 
     private void addFormFieldComposers() {
