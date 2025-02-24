@@ -1,6 +1,7 @@
 package org.beanmaker.v2.runtime;
 
 import org.jcodegen.html.ButtonTag;
+import org.jcodegen.html.DivTag;
 import org.jcodegen.html.FormTag;
 import org.jcodegen.html.InputTag;
 import org.jcodegen.html.Tag;
@@ -81,6 +82,10 @@ public interface HtmlFormHelper {
         return form;
     }
 
-    default void addErrorMessagesContainer(Tag form) { }
+    default void addErrorMessagesContainer(Tag form, long idBean) { }
+
+    static Tag getDefaultErrorMessageContainer(long idBean) {
+        return new DivTag().id("error_messages_" + idBean);
+    }
 
 }

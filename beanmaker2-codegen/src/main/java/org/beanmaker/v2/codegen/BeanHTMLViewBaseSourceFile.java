@@ -181,13 +181,19 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
 
         formTagFunction
                 .addContent(new FunctionCall("composeAdditionalHtmlFormFields").byItself().addArgument("fields"))
-                .addContent(new IfBlock(new Condition("!readonly"))
-                        .addContent(
-                                new FunctionCall("composeButtons")
-                                        .byItself()
-                                        .addArgument(new FunctionCall("getFormButtonsContainer").addArgument("form"))))
+                .addContent(new IfBlock(new Condition("readonly"))
+                        .addContent(new ReturnStatement(
+                                new FunctionCall("finalizeForm").addArguments("form", "fields"))))
                 .addContent(EMPTY_LINE)
-                .addContent(new ReturnStatement("form"));
+                .addContent(
+                        new VarDeclaration(
+                                "var",
+                                "buttons",
+                                new FunctionCall("getFormButtonsContainer").addArgument("form")))
+                .addContent(new FunctionCall("composeButtons").byItself().addArgument("buttons"))
+                .addContent(EMPTY_LINE)
+                .addContent(new ReturnStatement(
+                        new FunctionCall("finalizeForm").addArguments("form", "fields", "buttons")));
 
         javaClass.addContent(formTagFunction).addContent(EMPTY_LINE);
     }

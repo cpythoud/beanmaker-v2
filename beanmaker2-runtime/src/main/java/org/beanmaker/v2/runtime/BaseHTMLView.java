@@ -84,7 +84,7 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     }
 
     protected void composeErrorContainer(Tag form) {
-        htmlFormHelper.addErrorMessagesContainer(form);
+        htmlFormHelper.addErrorMessagesContainer(form, editor.getId());
     }
 
     protected void composeHiddenSubmitField(Tag form) {
@@ -115,6 +115,22 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     }
 
     protected void composeResetButton(Tag form) { }
+
+    protected FormTag finalizeForm(FormTag form, Tag formElementsContainer) {
+        if (form != formElementsContainer)
+            form.child(formElementsContainer);
+
+        return form;
+    }
+
+    protected FormTag finalizeForm(FormTag form, Tag formElementsContainer, Tag formButtonsContainer) {
+        if (form != formElementsContainer)
+            form.child(formElementsContainer);
+        if (form != formButtonsContainer)
+            form.child(formButtonsContainer);
+
+        return form;
+    }
 
     @Override
     public void setAllFields(ServletRequest request) {
