@@ -81,4 +81,6 @@ public interface HtmlFormHelper {
         return form;
     }
 
+    default void addErrorMessagesContainer(Tag form) { }
+
 }

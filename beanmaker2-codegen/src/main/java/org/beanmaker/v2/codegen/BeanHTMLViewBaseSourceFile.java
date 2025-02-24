@@ -172,6 +172,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                 "fields",
                 new FunctionCall("getFormElementsContainer").addArgument("form")));
 
+        formTagFunction.addContent(new FunctionCall("composeErrorContainer").byItself().addArgument("fields"));
         formTagFunction.addContent(new FunctionCall("composeHiddenSubmitField").byItself().addArgument("fields"));
 
         for (Column column: columns.getList())
