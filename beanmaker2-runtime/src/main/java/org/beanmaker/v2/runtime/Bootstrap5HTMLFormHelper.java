@@ -2,6 +2,7 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.Strings;
 
+import org.jcodegen.html.ButtonTag;
 import org.jcodegen.html.CData;
 import org.jcodegen.html.DivTag;
 import org.jcodegen.html.FormElement;
@@ -19,6 +20,7 @@ import org.jcodegen.html.util.CssClasses;
 public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     private String verticalFormElementSpacing = "mb-3";
+    private boolean formInModale = true;
 
     public String getVerticalFormElementSpacing() {
         return verticalFormElementSpacing;
@@ -26,6 +28,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     public void setVerticalFormElementSpacing(String verticalFormElementSpacing) {
         this.verticalFormElementSpacing = verticalFormElementSpacing;
+    }
+
+    public boolean isFormInModale() {
+        return formInModale;
+    }
+
+    public void setFormInModale(boolean formInModale) {
+        this.formInModale = formInModale;
     }
 
     @Override
@@ -183,6 +193,38 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
             String extraCssClasses)
     {
         return getInputTag(type, id, name, value, readonly, "form-control", extraCssClasses);
+    }
+
+    @Override
+    public Tag getFormElementsContainer(Tag form) {
+        if (isFormInModale())
+            return new DivTag().cssClass("modal-body");
+
+        return super.getFormElementsContainer(form);
+    }
+
+    @Override
+    public Tag getFormButtonsContainer(Tag form) {
+        if (isFormInModale())
+            return new DivTag().cssClass("modal-footer");
+
+        return super.getFormButtonsContainer(form);
+    }
+
+    @Override
+    public void addErrorMessagesContainer(Tag form, long idBean) {
+        form.child(HtmlFormHelper.getDefaultErrorMessageContainer(idBean));
+    }
+
+    @Override
+    public ButtonTag getButtonTag(HFHParameters params) {
+        return super.getButtonTag(params).appendCssClasses("btn btn-primary");
+    }
+
+    public static ButtonTag getDefaultCancelButton(String label) {
+        return new ButtonTag(ButtonTag.ButtonType.BUTTON, label)
+                .cssClass("btn btn-secondary")
+                .data("bs-dismiss", "modal");
     }
 
 }
