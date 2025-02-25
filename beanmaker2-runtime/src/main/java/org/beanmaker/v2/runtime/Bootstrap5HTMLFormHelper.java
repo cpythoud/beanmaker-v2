@@ -21,6 +21,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     private String verticalFormElementSpacing = "mb-3";
     private boolean formInModale = true;
+    private boolean floatingLabels = false;
 
     public String getVerticalFormElementSpacing() {
         return verticalFormElementSpacing;
@@ -36,6 +37,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     public void setFormInModale(boolean formInModale) {
         this.formInModale = formInModale;
+    }
+
+    public boolean isFloatingLabels() {
+        return floatingLabels;
+    }
+
+    public void setFloatingLabels(boolean floatingLabels) {
+        this.floatingLabels = floatingLabels;
     }
 
     @Override
@@ -153,9 +162,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     public DivTag getFormGroup(LabelTag label, Tag field, String helpText, String extraCssClasses) {
         String cssClasses = CssClasses.start(getVerticalFormElementSpacing()).add(extraCssClasses).get();
         var formGroup = new DivTag().cssClass(cssClasses);
-        formGroup.child(label);
+        if (isFloatingLabels()) {
+            formGroup.child(field);
+            formGroup.child(label);
+        } else {
+            formGroup.child(label);
+            formGroup.child(field);
+        }
 
-        formGroup.child(field);
         if (helpText != null)
             formGroup.child(getHelperBlock(helpText));
 
@@ -181,6 +195,45 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
             label = new LabelTag(getLabelText(fieldLabel, required), fieldId);
 
         return label.cssClass(CssClasses.start("form-label").add(extraCssClasses).get());
+    }
+
+    @Override
+    public DivTag getTextField(HFHParameters params) {
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        LabelTag label =
+                getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
+
+        InputTag input =
+                getInputTag(
+                        params.getInputType(),
+                        fieldId,
+                        params.getField(),
+                        params.getValue(),
+                        params.isReadonly(),
+                        params.getTagExtraCssClasses());
+
+        if (params.isRequired() && useRequiredInHtml())
+            input.required();
+        if (params.getPlaceholder() != null)
+            input.placeholder(params.getPlaceholder());
+        else if (isFloatingLabels())
+            input.placeholder(params.getFieldLabel()); // ! placeholder required for floating labels
+        if (params.isDisabled())
+            input.disabled();
+        if (params.isReadonly())
+            input.readonly();
+        if (!params.isAutocomplete())
+            input.attribute("autocomplete", "off");
+        if (params.getMaxLength() > 0)
+            input.maxlength(params.getMaxLength());
+
+        return getFormGroup(
+                label,
+                input,
+                params.getHelpText(),
+                isFloatingLabels() ?
+                        params.mergeGroupExtraCssClasses("form-floating") :
+                        params.getGroupExtraCssClasses());
     }
 
     @Override
