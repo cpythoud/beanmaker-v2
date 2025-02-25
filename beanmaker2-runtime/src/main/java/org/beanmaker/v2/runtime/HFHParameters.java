@@ -7,6 +7,8 @@ import org.jcodegen.html.InputTag;
 import org.jcodegen.html.SpanTag;
 import org.jcodegen.html.Tag;
 
+import org.jcodegen.html.util.CssClasses;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -647,6 +649,10 @@ public class HFHParameters {
         return !Strings.isEmpty(groupExtraCssClasses);
     }
 
+    public String mergeGroupExtraCssClasses(String cssClasses) {
+        return CssClasses.start(cssClasses).add(getGroupExtraCssClasses()).get();
+    }
+
     public String getLabelExtraCssClasses() {
         return labelExtraCssClasses;
     }
@@ -661,6 +667,10 @@ public class HFHParameters {
         return !Strings.isEmpty(labelExtraCssClasses);
     }
 
+    public String mergeLabelExtraCssClasses(String cssClasses) {
+        return CssClasses.start(cssClasses).add(getLabelExtraCssClasses()).get();
+    }
+
     public String getTagExtraCssClasses() {
         return tagExtraCssClasses;
     }
@@ -673,6 +683,10 @@ public class HFHParameters {
 
     public boolean hasTagExtraCssClasses() {
         return !Strings.isEmpty(tagExtraCssClasses);
+    }
+
+    public String mergeTagExtraCssClasses(String cssClasses) {
+        return CssClasses.start(cssClasses).add(getTagExtraCssClasses()).get();
     }
 
 }
