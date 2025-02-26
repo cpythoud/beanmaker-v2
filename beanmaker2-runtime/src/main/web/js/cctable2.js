@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #66");
+        console.info("CCTABLE2: build #67");
 
         // * FILTERING *
 
@@ -470,6 +470,10 @@ let CCTable2 = (function () {
         Object.freeze(settings);
 
         let $table = document.querySelector(tableRef);
+        if (!$table) {
+            console.error("Table not found: " + tableRef);
+            return;
+        }
 
         Object.defineProperties(this, {
             _table: { value: $table },
