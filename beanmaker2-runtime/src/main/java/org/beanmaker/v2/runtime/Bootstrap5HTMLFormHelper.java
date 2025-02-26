@@ -143,7 +143,10 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
         if (params.isDisabled())
             formElement.disabled();
 
-        return getFormGroup(label, formElement, params.getHelpText(), params.getGroupExtraCssClasses());
+        var formGroup = getFormGroup(label, formElement, params.getHelpText(), params.getGroupExtraCssClasses());
+        if (isFloatingLabels())
+            formGroup.appendCssClasses("form-floating");
+        return formGroup;
     }
 
     @Override
