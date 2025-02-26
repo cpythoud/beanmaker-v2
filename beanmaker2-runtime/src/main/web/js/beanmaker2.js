@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.2 -- 2024-06-12';
+    static VERSION = 'v0.2.3 -- 2025-02-26';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -107,7 +107,7 @@ class Beanmaker2 {
     constructor(bean, nonDefaultParameters) {
         console.log("Beanmaker2 -- " + bean + " -- " + Beanmaker2.VERSION);
         this.bean = bean;
-        this.parameters = Object.assign(Beanmaker2.DEFAULT_PARAMETERS, nonDefaultParameters);
+        this.parameters = Object.assign({}, Beanmaker2.DEFAULT_PARAMETERS, nonDefaultParameters);
 
         if (!this.parameters.deleteLinkClass)
             this.parameters.deleteLinkClass = 'delete_' + Beanmaker2.uncapitalize(bean);
