@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.1 -- 2024-06-11';
+    static VERSION = 'v0.2.2 -- 2024-06-12';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -199,7 +199,7 @@ class Beanmaker2 {
 
     removeErrorMarking($form) {
         if (!Beanmaker2.isStringEmpty(this.parameters.errorContainerStyles))
-            Beanmaker2.removeClasses(this.getErrorContainer($form), this.parameters.errorContainerStyles);
+            Beanmaker2.removeClasses(this.getErrorContainer(Beanmaker2.getBeanID($form)), this.parameters.errorContainerStyles);
 
         if (!Beanmaker2.isStringEmpty(this.parameters.fieldInErrorStyles))
             for (const child of $form.children)
@@ -232,7 +232,7 @@ class Beanmaker2 {
     }
 
     showErrorMessages($form, errors) {
-        const $container = this.getErrorContainer($form);
+        const $container = this.getErrorContainer(Beanmaker2.getBeanID($form));
 
         $container.replaceChildren();
         if (!Beanmaker2.isStringEmpty(this.parameters.errorContainerStyles))
@@ -264,12 +264,12 @@ class Beanmaker2 {
         $container.appendChild(errorList);
     }
 
-    getErrorContainer($form) {
+    getErrorContainer(beanID) {
         let errorContainer;
         if (this.parameters.errorContainerSelector)
             errorContainer = document.querySelector(this.parameters.errorContainerSelector);
         else
-            errorContainer = document.getElementById(this.parameters.errorContainerIDPrefix + Beanmaker2.getBeanID($form));
+            errorContainer = document.getElementById(this.parameters.errorContainerIDPrefix + beanID);
 
         if (!errorContainer)
             throw new Error("Could not determine where to display error messages on page");
@@ -361,6 +361,7 @@ class Beanmaker2 {
                         document.querySelector(
                             '#' + this.parameters.dialogID + ' .' + this.parameters.formContainerInDialogClass
                         ).innerHTML = data;
+                        this.getErrorContainer(id).innerHTML = "";
                         this.parameters.showFormDialogFunction(this.parameters.dialogID);
                     })
                     .catch(error => {
