@@ -556,13 +556,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new FunctionCall(functionName).byItself().addArgument("secondaryFieldID");
     }
 
-    private String getItemOrderSecondaryFieldJavaName(Column column) {
-        // !!! We assume the name of the field is the suggested name from Beanmaker.
-        // !!! This might prove incorrect at same point and need an extension of the Column class
-        // !!! as well as an adjustment of the related user interfaces.
-        return uncapitalize(camelize(column.getItemOrderAssociatedField()));
-    }
-
     private void addNumericDataSetterFunctions(Column column) {
         String field = column.getJavaName();
         String fieldStr = field + "Str";

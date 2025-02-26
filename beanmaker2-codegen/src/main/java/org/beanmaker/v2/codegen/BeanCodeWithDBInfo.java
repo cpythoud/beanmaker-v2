@@ -1,5 +1,6 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.util.Strings;
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ObjectCreation;
@@ -70,8 +71,19 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                 addBeanGetterFunction(column);
         }
 
-        if (column.isItemOrder())
+        if (column.isItemOrder()) {
             addItemOrderEdgeStatusCheckFunctions();
+
+            if (!Strings.isEmpty(column.getItemOrderAssociatedField()))
+                javaClass
+                        .addContent(new FunctionDeclaration("getItemOrderSecondaryFieldID", "long")
+                                .annotate("@Override")
+                                .visibility(Visibility.PUBLIC)
+                                .addContent(new ReturnStatement(
+                                        new FunctionCall(
+                                                "get" + capitalize(getItemOrderSecondaryFieldJavaName(column))))))
+                        .addContent(EMPTY_LINE);
+        }
     }
 
     // ! Only applies to BeanBase & BeanBaseEditor, must be implemented in super class
@@ -120,6 +132,13 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                                 new FunctionCall("isLastInItemOrder", itemManagerRetrievalCall)
                                         .addArguments("this", "dbAccess"))))
                 .addContent(EMPTY_LINE);
+    }
+
+    protected String getItemOrderSecondaryFieldJavaName(Column column) {
+        // !!! We assume the name of the field is the suggested name from Beanmaker.
+        // !!! This might prove incorrect at same point and need an extension of the Column class
+        // !!! as well as an adjustment of the related user interfaces.
+        return Strings.uncapitalize(Strings.camelize(column.getItemOrderAssociatedField()));
     }
 
     protected void addListAndCountOfBeansInRelationshipFunctions(Visibility visibility) {
