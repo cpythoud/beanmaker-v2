@@ -72,6 +72,8 @@ NEW FEATURES:
 - introduce Bootstrap 5 HtmlFormHelper
 
 BUG FIXES AND MINOR CHANGES:
+- bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
+- bug fix for: cannot create more than one instance of Beanmaker2 javascript object on the same page
 - code cleanup in master tables
 - improve some exception messages
 - various small improvements and fixes
