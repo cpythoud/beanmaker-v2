@@ -12,6 +12,7 @@ import org.jcodegen.html.LabelTag;
 import org.jcodegen.html.SelectTag;
 import org.jcodegen.html.Tag;
 
+import org.jcodegen.html.TextareaTag;
 import org.jcodegen.html.util.CssClasses;
 
 // !! This implementation for Bootstrap 5 should be considered alpha software !!
@@ -198,6 +199,43 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
             label = new LabelTag(getLabelText(fieldLabel, required), fieldId);
 
         return label.cssClass(CssClasses.start("form-label").add(extraCssClasses).get());
+    }
+
+    @Override
+    public DivTag getTextAreaField(HFHParameters params) {
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
+
+        TextareaTag textarea = getTextAreaTag(fieldId, params.getField(), params.getValue(), params.getTagExtraCssClasses());
+        if (params.isRequired() && useRequiredInHtml())
+            textarea.required();
+        if (params.getPlaceholder() != null)
+            textarea.placeholder(params.getPlaceholder());
+        else if (isFloatingLabels())
+            textarea.placeholder(params.getFieldLabel()); // ! placeholder required for floating labels
+        if (params.isDisabled())
+            textarea.disabled();
+        if (params.isReadonly())
+            textarea.readonly();
+        if (params.getMaxLength() > 0)
+            textarea.maxlength(params.getMaxLength());
+
+        return getFormGroup(
+                label,
+                textarea,
+                params.getHelpText(),
+                isFloatingLabels() ?
+                        params.mergeGroupExtraCssClasses("form-floating") :
+                        params.getGroupExtraCssClasses());
+    }
+
+    @Override
+    protected TextareaTag getTextAreaTag(String id, String name, String value, String extraCssClasses) {
+        return new  TextareaTag(value)
+                .id(id)
+                .name(name)
+                .style("height: 100px;")
+                .cssClass(CssClasses.start("form-control").add(extraCssClasses).get());
     }
 
     @Override
