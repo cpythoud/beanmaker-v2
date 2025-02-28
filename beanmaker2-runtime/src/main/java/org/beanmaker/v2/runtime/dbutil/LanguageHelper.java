@@ -40,6 +40,30 @@ public class LanguageHelper {
         return new Builder();
     }
 
+    public String getTable() {
+        return table;
+    }
+
+    public String getIsoField() {
+        return isoField;
+    }
+
+    public String getRegionField() {
+        return regionField;
+    }
+
+    public String getDefaultLanguageField() {
+        return defaultLanguageField;
+    }
+
+    public Class<? extends DbBeanLanguage> getLanguageClass() {
+        return languageClass;
+    }
+
+    public DBAccess getDbAccess() {
+        return dbAccess;
+    }
+
     public record IsoRegionPair(String iso, String region) { }
 
     public static IsoRegionPair getIsoRegionPair(String tag) {
@@ -66,14 +90,14 @@ public class LanguageHelper {
         var isoRegionPair = getIsoRegionPair(tag);
         if (isoRegionPair.region() == null)
             return SingleElements.getBean(
-                    "SELECT id FROM %s WHERE %s=? AND %s IS NULL".formatted(table, isoField, regionField),
+                    getLanguageTagQuery(isoRegionPair),
                     stat -> stat.setString(1, isoRegionPair.iso()),
                     languageClass,
                     dbAccess
             );
 
         return SingleElements.getBean(
-                "SELECT id FROM %s WHERE %s=? AND %s=?".formatted(table, isoField, regionField),
+                getLanguageTagQuery(isoRegionPair),
                 stat -> {
                     stat.setString(1, isoRegionPair.iso());
                     stat.setString(2, isoRegionPair.region());
@@ -81,6 +105,13 @@ public class LanguageHelper {
                 languageClass,
                 dbAccess
         );
+    }
+
+    String getLanguageTagQuery(IsoRegionPair isoRegionPair) {
+        if (isoRegionPair.region() == null)
+            return "SELECT id FROM %s WHERE %s=? AND %s IS NULL".formatted(table, isoField, regionField);
+
+        return "SELECT id FROM %s WHERE %s=? AND %s=?".formatted(table, isoField, regionField);
     }
 
     public <B extends DbBeanLanguage> B getDefaultLanguage() {
