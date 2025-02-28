@@ -17,9 +17,9 @@ public class IdNamePairTest {
 
         pairs.sort(new IdNamePair.IdNamePairLocalizedComparator(new TestLanguage()));
 
-        assertEquals(pairs.get(0).getId(), "0");
-        assertEquals(pairs.get(1).getId(), "2");
-        assertEquals(pairs.get(2).getId(), "1");
+        assertEquals("0", pairs.get(0).getId());
+        assertEquals("2", pairs.get(1).getId());
+        assertEquals("1", pairs.get(2).getId());
     }
 
     private static class TestLanguage implements DbBeanLanguage {
