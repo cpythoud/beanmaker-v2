@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.beanmaker.v2.util.Strings.camelize;
 import static org.beanmaker.v2.util.Strings.capitalize;
 import static org.beanmaker.v2.util.Strings.quickQuote;
 import static org.beanmaker.v2.util.Strings.uncapitalize;
@@ -1611,11 +1610,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                     function.addContent(getFieldDBUpdateDBUtilFunction("ID", name, index));
                 else if (column.isItemOrder())
                     function.addContent(getFieldDBUpdateStatFunction("Long", name, index));
-                else if (type.equals("Boolean") || type.equals("Long") || type.equals("Money"))
+                else if (type.equals("Boolean") || type.equals("Long") || type.equals("Money") || type.equals("String")
+                        || type.equals("Date")  || type.equals("Time") || type.equals("Timestamp"))
                     function.addContent(getFieldDBUpdateDBUtilFunction(type, name, index));
                 else if (type.equals("Integer"))
                     function.addContent(getFieldDBUpdateDBUtilFunction("Int", name, index));
-                else // * String, Date, Time, Timestamp
+                else // * Failsafe, should not be called
                     function.addContent(getFieldDBUpdateStatFunction(type, name, index));
             }
         }

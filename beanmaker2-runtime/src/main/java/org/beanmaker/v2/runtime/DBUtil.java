@@ -2,6 +2,7 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.Money;
 
+import org.beanmaker.v2.util.Strings;
 import org.dbbeans.sql.DBAccess;
 import org.dbbeans.sql.DBQuerySetup;
 import org.dbbeans.sql.DBTransaction;
@@ -157,6 +158,38 @@ public final class DBUtil {
             stat.setNull(index, Types.INTEGER);
         else
             stat.setLong(index, id);
+    }
+
+    public static void setString(PreparedStatement stat, int index, String value) throws SQLException {
+        if (Strings.isEmpty(value)) {
+            stat.setNull(index, Types.VARCHAR);
+        } else {
+            stat.setString(index, value);
+        }
+    }
+
+    public static void setDate(PreparedStatement stat, int index, Date value) throws SQLException {
+        if (value == null) {
+            stat.setNull(index, Types.DATE);
+        } else {
+            stat.setDate(index, value);
+        }
+    }
+
+    public static void setTime(PreparedStatement stat, int index, Time value) throws SQLException {
+        if (value == null) {
+            stat.setNull(index, Types.TIME);
+        } else {
+            stat.setTime(index, value);
+        }
+    }
+
+    public static void setTimestamp(PreparedStatement stat, int index, Timestamp value) throws SQLException {
+        if (value == null) {
+            stat.setNull(index, Types.TIMESTAMP);
+        } else {
+            stat.setTimestamp(index, value);
+        }
     }
 
     // ------------
