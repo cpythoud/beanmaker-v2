@@ -48,8 +48,7 @@ BUG FIXES AND MINOR CHANGES:
 V2.3 (TBD)
 
 INCOMPATIBLES CHANGES:
-- leaked FileItem from HttpRequestParameters has been removed and replaced by inner class UploadedFile (code for
-  beans containing DbBeanFile-s needs to regenerated)
+- leaked FileItem from HttpRequestParameters has been removed and replaced by inner class UploadedFile
 - field validation has been revamped with:
     - introduction of FieldValidationFunction class to replace complex generic arguments used in lists of validation
       functions
@@ -60,6 +59,11 @@ INCOMPATIBLES CHANGES:
 - add support for a hierarchy of languages in multilingual projects, where label value for a language+region,
   if they are not directly available, can be retrieved from the raw language labels and then, if still unavailable,
   from the default language
+- add support to use id_label, id_name_label, id_description_label fields, if present, to determine the 'name'
+  (its representation in tiles and lists)
+
+All generated code from version 2.2 must be regenerated. In editable files, overloaded functions related to file
+handling, data validation and naming and ordering beans should be checked.
 
 NEW FEATURES:
 - add two separate annotations to distinguish generated files that can be edited from those that should not be (replace
