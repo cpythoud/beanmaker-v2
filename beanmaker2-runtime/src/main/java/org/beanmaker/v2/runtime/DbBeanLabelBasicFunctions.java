@@ -37,6 +37,8 @@ public abstract class DbBeanLabelBasicFunctions {
         return get(getGlobalName(labelName), language, parameters, fullName);
     }
 
+    public abstract DbBeanLabel getLabel(long id);
+
     public abstract Optional<DbBeanLabel> getPossibleLabel(String labelName);
 
     public abstract boolean isNameOK(String labelName);

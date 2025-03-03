@@ -23,7 +23,10 @@ public class Columns implements Iterable<Column> {
     private final List<OneToManyRelationship> oneToManyRelationships;
     private final List<ExtraField> extraFields = new ArrayList<>();
 
-    private static final List<String> NAMING_CANDIDATE_FIELDS = Arrays.asList("name", "description", "code");
+    private static final List<String> NAMING_CANDIDATE_FIELDS =
+            Arrays.asList("name", "id_name_label", "id_label", "description", "id_description_label", "code");
+    private static final List<String> ORDER_BY_CANDIDATE_FIELDS =
+            Arrays.asList("item_order", "name", "description", "code");
 
 
     public Columns(DatabaseServer server, String db, String table) {
@@ -377,9 +380,18 @@ public class Columns implements Iterable<Column> {
             if (!itemOrder.isUnique())
                 list.add(itemOrder.getItemOrderAssociatedField());
             list.add("item_order");
-        } else
-            list.add(getNamingField());
+        } else {
+            for (String candidate: ORDER_BY_CANDIDATE_FIELDS) {
+                for (Column col: columns)
+                    if (col.getSqlName().equalsIgnoreCase(candidate)) {
+                        list.add(candidate);
+                        return list;
+                    }
+            }
+        }
 
+        if (list.isEmpty())
+            list.add("id");
         return list;
     }
 

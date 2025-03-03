@@ -126,6 +126,13 @@ public class LabelManagerSourceFile extends BaseCode {
 
     private void addBasicFunctionsClass() {
         var anonymousClass = new AnonymousClassCreation("DbBeanLabelBasicFunctions")
+                .addContent(new FunctionDeclaration("getLabel", "DbBeanLabel")
+                        .annotate("@Override")
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("long", "id"))
+                        .addContent(new ReturnStatement(new FunctionCall("get", "LabelManager")
+                                .addArgument("id"))))
+                .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("getPossibleLabel", "Optional<DbBeanLabel>")
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)

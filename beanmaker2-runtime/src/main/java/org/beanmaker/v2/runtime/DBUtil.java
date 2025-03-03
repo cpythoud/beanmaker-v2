@@ -457,41 +457,66 @@ public final class DBUtil {
 
     // ------------
 
-    public static String getHumanReadableTitle(DbBeanParameters parameters, long id, DBAccess dbAccess) {
+    public static String getHumanReadableTitle(
+            DbBeanParameters parameters,
+            long id,
+            DBAccess dbAccess,
+            DbBeanLabelBasicFunctions labelFunctions,
+            DbBeanLanguage language)
+    {
         if (!isIdOK(parameters, id, dbAccess))
             throw new IllegalArgumentException("No such id (" + id + ") in database for table " + parameters.getDatabaseTableName());
 
-        int fieldCount = parameters.getNamingFields().size();
-        return dbAccess.processQuery(
-                getHumanReadableTitleSQLQuery(parameters),
-                stat -> stat.setLong(1, id),
-                rs -> {
-                    StringBuilder name = new StringBuilder();
-                    rs.next();
-                    for (int i = 0; i < fieldCount; i++) {
-                        name.append(rs.getString(1 + i));
-                        if (i < fieldCount - 1)
-                            name.append(" ");
-                    }
-                    return name.toString();
-                }
-        );
+        var name = new StringBuilder();
+        for (String field: parameters.getNamingFields()) {
+            if (isLabelField(field))
+                name.append(getBeanNamingLabelValue(field, parameters, id, dbAccess, labelFunctions, language));
+            else
+                name.append(getBeanNamingFieldValue(field, parameters, id, dbAccess));
+            name.append(" ");
+        }
+        name.delete(name.length() - 1, name.length());
+        return name.toString();
     }
 
-    private static String getHumanReadableTitleSQLQuery(DbBeanParameters parameters) {
-        StringBuilder query = new StringBuilder();
+    private static boolean isLabelField(String field) {
+        return field.startsWith("id_") && field.endsWith("_label");
+    }
 
-        query.append("SELECT ");
-        for (String field: parameters.getNamingFields()) {
-            query.append(field);
-            query.append(", ");
-        }
-        query.delete(query.length() - 2, query.length());
-        query.append(" FROM ");
-        query.append(parameters.getDatabaseTableName());
-        query.append(" WHERE id=?");
+    private static String getBeanNamingFieldValue(
+            String field,
+            DbBeanParameters parameters,
+            long id,
+            DBAccess dbAccess)
+    {
+        return dbAccess.processQuery(
+                "SELECT " + field + " FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
+                stat -> stat.setLong(1, id),
+                rs -> {
+                    rs.next();
+                    return rs.getString(1);
+                }
+        );
 
-        return query.toString();
+    }
+
+    private static String getBeanNamingLabelValue(
+            String field,
+            DbBeanParameters parameters,
+            long id,
+            DBAccess dbAccess,
+            DbBeanLabelBasicFunctions labelFunctions,
+            DbBeanLanguage language)
+    {
+        return dbAccess.processQuery(
+                "SELECT " + field + " FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
+                stat -> stat.setLong(1, id),
+                rs -> {
+                    rs.next();
+                    return labelFunctions.getLabel(rs.getLong(1)).get(language);
+                }
+        );
+
     }
 
     // ------------

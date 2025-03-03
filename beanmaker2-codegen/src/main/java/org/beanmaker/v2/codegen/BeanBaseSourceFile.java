@@ -426,7 +426,11 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLanguage", "language"))
                         .addContent(new ReturnStatement(new FunctionCall("getHumanReadableTitle", "DBUtil")
-                                .addArguments(parametersInstanceExpression, "id", "dbAccess"))))
+                                .addArgument(parametersInstanceExpression)
+                                .addArgument("id")
+                                .addArgument("dbAccess")
+                                .addArgument(new FunctionCall("getBasicFunctions", "LabelManager"))
+                                .addArgument("language"))))
                 .addContent(EMPTY_LINE);
     }
 
