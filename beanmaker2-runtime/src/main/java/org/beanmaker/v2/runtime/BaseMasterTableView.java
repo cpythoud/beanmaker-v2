@@ -18,6 +18,7 @@ import org.jcodegen.html.TdTag;
 import org.jcodegen.html.ThTag;
 import org.jcodegen.html.TheadTag;
 import org.jcodegen.html.TrTag;
+import org.jcodegen.html.util.CssClasses;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -43,6 +44,7 @@ public abstract class BaseMasterTableView extends TabularView {
     protected String tdFilterCssClass = null;
     protected String thTitleCssClass = "tb-sort";
     protected String thSuperTitleCssClass = null;
+    protected String tdOperationCssClass = "tb-operation-group";
 
     protected String trFilterCssClass = null;
     protected String trTitleCssClass = null;
@@ -913,7 +915,7 @@ public abstract class BaseMasterTableView extends TabularView {
             String beanName,
             String editTooltip)
     {
-        TdTag cell = new TdTag().cssClass(tdResetCssClass);
+        TdTag cell = new TdTag().cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get());
 
         if (enableDragNDrop)
             cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon + " " + dragNDropDragElementCssClass));
@@ -948,7 +950,7 @@ public abstract class BaseMasterTableView extends TabularView {
             String tooltip)
     {
         return new TdTag()
-                .cssClass(tdResetCssClass)
+                .cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get())
                 .child(getEditLineLink(
                         bean.getId(),
                         beanName,
@@ -962,7 +964,7 @@ public abstract class BaseMasterTableView extends TabularView {
             String tooltip)
     {
         return new TdTag()
-                .cssClass(tdResetCssClass)
+                .cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get())
                 .child(getDeleteLineLink(
                         bean.getId(),
                         beanName + "Del",
