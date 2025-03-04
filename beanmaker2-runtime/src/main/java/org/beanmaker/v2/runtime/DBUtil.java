@@ -513,7 +513,7 @@ public final class DBUtil {
                 stat -> stat.setLong(1, id),
                 rs -> {
                     rs.next();
-                    return labelFunctions.getLabel(rs.getLong(1)).get(language);
+                    return labelFunctions.getLabel(rs.getLong(1)).getSafeValue(language);
                 }
         );
 
