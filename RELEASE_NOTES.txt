@@ -74,6 +74,8 @@ NEW FEATURES:
   buttons in another (this to help take advantage of CSS frameworks that offer facilites to separate body and
   footer in modales)
 - introduce Bootstrap 5 HtmlFormHelper
+- introduce direct support in BeanMasterTableViewBase for links to a detail view: removes the need for repetitive
+  overloading of the getEditCell() function
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field

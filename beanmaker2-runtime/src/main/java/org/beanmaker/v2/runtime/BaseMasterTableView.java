@@ -97,10 +97,14 @@ public abstract class BaseMasterTableView extends TabularView {
 
     protected String editIcon = "edit";
     protected String deleteIcon = "bin";
+    protected String detailIcon = "new-window";
     protected boolean showEditLinks = false;
+    protected boolean showDetailLinks = false;
+    protected String detailUrl = "#";
 
     protected String editTooltip = dbBeanLocalization.getLabel("tooltip_edit");
     protected String deleteTooltip = dbBeanLocalization.getLabel("tooltip_delete");
+    protected String detailTooltip = dbBeanLocalization.getLabel("tooltip_detail");
 
 
     protected String editLabel() {
@@ -109,6 +113,10 @@ public abstract class BaseMasterTableView extends TabularView {
 
     protected String deleteLabel() {
         return deleteTooltip;
+    }
+
+    protected String detailLabel() {
+        return detailTooltip;
     }
 
     protected String moveUpLabel() {
@@ -442,12 +450,12 @@ public abstract class BaseMasterTableView extends TabularView {
 
     public <B extends DbBeanInterface> TrTag getTableLine(B bean) {
         TrTag line;
-        if (showEditLinks)
+        if (showEditLinks || showDetailLinks)
             line = getTrTag(bean.getId());
         else
             line = getTableLine(bean.getId());
 
-        if (showEditLinks)
+        if (showEditLinks || showDetailLinks)
             line.child(getEditCell(bean));
         if (displayId)
             line.child(getIdTableCell(bean));
@@ -460,12 +468,12 @@ public abstract class BaseMasterTableView extends TabularView {
 
     public <B extends DbBeanWithItemOrder> TrTag getItemOrderTableLine(B bean) {
         TrTag line;
-        if (showEditLinks || showOrderingLinks || enableDragNDrop)
+        if (showEditLinks || showOrderingLinks || enableDragNDrop || showDetailLinks)
             line = getTrTag(bean.getId());
         else
             line = getTableLine(bean.getId());
 
-        if (showEditLinks || showOrderingLinks || enableDragNDrop)
+        if (showEditLinks || showOrderingLinks || enableDragNDrop || showDetailLinks)
             line.child(getOperationCell(bean));
         if (displayId)
             line.child(getIdTableCell(bean));
@@ -477,11 +485,11 @@ public abstract class BaseMasterTableView extends TabularView {
     }
 
     protected TdTag getEditCell(DbBeanInterface bean) {
-        return getEditCell(bean, dbBeanLocalization.getBeanVarName(), editLabel());
+        return getEditCell(bean, dbBeanLocalization.getBeanVarName(), editLabel(), detailLabel());
     }
 
     private TdTag getOperationCell(DbBeanWithItemOrder bean) {
-        return getOperationCell(bean, dbBeanLocalization.getBeanVarName(), editLabel());
+        return getOperationCell(bean, dbBeanLocalization.getBeanVarName(), editLabel(), detailLabel());
     }
 
     protected TdTag getIdTableCell(DbBeanInterface bean) {
@@ -872,6 +880,10 @@ public abstract class BaseMasterTableView extends TabularView {
         return getOperationLink(id, idPrefix, cssClass, editIcon, tooltip);
     }
 
+    protected ATag getGotoDetailLink(long id, String idPrefix, String cssClass, String tooltip) {
+        return getOperationLink(id, idPrefix, cssClass, detailIcon, tooltip);
+    }
+
     protected ATag getDeleteLineLink(long id, String idPrefix, String cssClass, String tooltip) {
         return getOperationLink(id, idPrefix, cssClass, deleteIcon, tooltip);
     }
@@ -913,19 +925,10 @@ public abstract class BaseMasterTableView extends TabularView {
     protected TdTag getOperationCell(
             DbBeanWithItemOrder bean,
             String beanName,
-            String editTooltip)
+            String editTooltip,
+            String detailTooltip)
     {
-        TdTag cell = new TdTag().cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get());
-
-        if (enableDragNDrop)
-            cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon + " " + dragNDropDragElementCssClass));
-
-        if (showEditLinks)
-            cell.child(getEditLineLink(
-                    bean.getId(),
-                    beanName,
-                    "edit_" + beanName,
-                    editTooltip));
+        TdTag cell = getEditCell(bean, beanName, editTooltip, detailTooltip);
 
         if (showOrderingLinks) {
             if (!bean.isFirstInItemOrder())
@@ -947,15 +950,29 @@ public abstract class BaseMasterTableView extends TabularView {
     protected TdTag getEditCell(
             DbBeanInterface bean,
             String beanName,
-            String tooltip)
+            String tooltip,
+            String detailTooltip)
     {
-        return new TdTag()
-                .cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get())
-                .child(getEditLineLink(
-                        bean.getId(),
-                        beanName,
-                        "edit_" + beanName,
-                        tooltip));
+        TdTag cell = new TdTag().cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get());
+
+        if (enableDragNDrop)
+            cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon + " " + dragNDropDragElementCssClass));
+
+        if (showEditLinks)
+            cell.child(getEditLineLink(
+                    bean.getId(),
+                    beanName,
+                    "edit_" + beanName,
+                    editTooltip));
+
+        if (showDetailLinks)
+            cell.child(getGotoDetailLink(
+                bean.getId(),
+                beanName + "_detail",
+                "goto_detail_" + beanName,
+                detailTooltip));
+
+        return cell;
     }
 
     protected TdTag getDeleteCell(
