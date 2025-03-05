@@ -1,12 +1,8 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.Assignment;
-import org.jcodegen.java.Condition;
-import org.jcodegen.java.ExceptionThrow;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
-import org.jcodegen.java.IfBlock;
 import org.jcodegen.java.ObjectCreation;
 import org.jcodegen.java.ReturnStatement;
 import org.jcodegen.java.Visibility;
@@ -33,26 +29,18 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addImports() {
-        importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLanguage");
+        importsManager.addImport("org.beanmaker.v2.runtime.DbBeanHTMLWrapperBase");
     }
 
     @Override
     protected void decorateJavaClass() {
-        javaClass.markAsAbstract();
+        javaClass.markAsAbstract().extendsClass("DbBeanHTMLWrapperBase");
         applySealedModifier(wrapperClass);
     }
 
     @Override
-    protected void addProperties() {
-        addProperty(beanName, "bean", false, null);
-        addProperty("DbBeanLanguage", "language", false, null);
-    }
-
-    @Override
     protected void addCoreFunctionality() {
-        javaClass.addContent(EMPTY_LINE);
         addSetIdFunction();
-        addLanguageSetterFunction();
         addBeanGetter();
         addHtmlFormGetter();
     }
@@ -62,16 +50,8 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
                 new FunctionDeclaration("setId")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("long", "id"))
-                        .addContent(new Assignment("bean", new ObjectCreation(beanName).addArgument("id")))
-        ).addContent(EMPTY_LINE);
-    }
-
-    private void addLanguageSetterFunction() {
-        javaClass.addContent(
-                new FunctionDeclaration("setLanguage")
-                        .visibility(Visibility.PUBLIC)
-                        .addArgument(new FunctionArgument("DbBeanLanguage", "language"))
-                        .addContent(new Assignment("this.language", "language"))
+                        .addContent(new FunctionCall("setBean").byItself()
+                                .addArgument(new ObjectCreation(beanName).addArgument("id")))
         ).addContent(EMPTY_LINE);
     }
 
@@ -79,7 +59,7 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass.addContent(
                 new FunctionDeclaration("getBean", beanName)
                         .visibility(Visibility.PUBLIC)
-                        .addContent(new ReturnStatement("bean"))
+                        .addContent(new ReturnStatement("(%s) super.getBean()".formatted(beanName)))
         ).addContent(EMPTY_LINE);
     }
 
@@ -87,24 +67,15 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass.addContent(
                 new FunctionDeclaration("getForm", "String")
                         .visibility(Visibility.PUBLIC)
+                        .addContent(new FunctionCall("checkParameters").byItself())
                         .addContent(
-                                new IfBlock(new Condition("bean == null"))
-                                        .addContent(ExceptionThrow.getThrowExpression(
-                                                "IllegalArgumentException",
-                                                "No bean set"))
-                        ).addContent(
-                                new IfBlock(new Condition("language == null"))
-                                        .addContent(ExceptionThrow.getThrowExpression(
-                                                "IllegalArgumentException",
-                                                "No language set"))
-                        ).addContent(EMPTY_LINE).addContent(
                                 new ReturnStatement(
                                         new FunctionCall(
                                                 "getHtmlForm",
                                                 new ObjectCreation(htmlFormClass)
                                                         .addArgument(new ObjectCreation(editorClass)
-                                                                .addArgument("bean"))
-                                                        .addArgument("language")))
+                                                                .addArgument(new FunctionCall("getBean")))
+                                                        .addArgument(new FunctionCall("getLanguage"))))
                         )
         ).addContent(EMPTY_LINE);
     }
