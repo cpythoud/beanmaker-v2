@@ -42,7 +42,7 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
     protected void addCoreFunctionality() {
         addSetIdFunction();
         addBeanGetter();
-        addHtmlFormGetter();
+        addHtmlViewGetter();
     }
 
     private void addSetIdFunction() {
@@ -58,24 +58,24 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
     private void addBeanGetter() {
         javaClass.addContent(
                 new FunctionDeclaration("getBean", beanName)
+                        .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement("(%s) super.getBean()".formatted(beanName)))
         ).addContent(EMPTY_LINE);
     }
 
-    private void addHtmlFormGetter() {
+    private void addHtmlViewGetter() {
         javaClass.addContent(
-                new FunctionDeclaration("getForm", "String")
-                        .visibility(Visibility.PUBLIC)
+                new FunctionDeclaration("getHtmlView", htmlFormClass)
+                        .annotate("@Override")
+                        .visibility(Visibility.PROTECTED)
                         .addContent(new FunctionCall("checkParameters").byItself())
                         .addContent(
                                 new ReturnStatement(
-                                        new FunctionCall(
-                                                "getHtmlForm",
-                                                new ObjectCreation(htmlFormClass)
-                                                        .addArgument(new ObjectCreation(editorClass)
-                                                                .addArgument(new FunctionCall("getBean")))
-                                                        .addArgument(new FunctionCall("getLanguage"))))
+                                        new ObjectCreation(htmlFormClass)
+                                                .addArgument(new ObjectCreation(editorClass)
+                                                        .addArgument(new FunctionCall("getBean")))
+                                                .addArgument(new FunctionCall("getLanguage")))
                         )
         ).addContent(EMPTY_LINE);
     }

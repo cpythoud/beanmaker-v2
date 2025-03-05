@@ -13,7 +13,7 @@ public abstract class DbBeanHTMLWrapperBase {
         this.language = language;
     }
 
-    public DbBeanInterface getBean() {
+    protected DbBeanInterface getBean() {
         return bean;
     }
 
@@ -32,7 +32,11 @@ public abstract class DbBeanHTMLWrapperBase {
             throw new IllegalArgumentException("No language set");
     }
 
-    public abstract String getForm();
+    protected abstract DbBeanHTMLViewInterface getHtmlView();
+
+    public String getForm() {
+        return getHtmlView().getHtmlForm();
+    }
 
     public String getDisplayName() {
         checkParameters();
