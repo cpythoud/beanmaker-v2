@@ -21,6 +21,10 @@ public abstract class DbBeanHTMLWrapperBase {
         return language;
     }
 
+    public long getId() {
+        return bean.getId();
+    }
+
     protected void checkParameters() {
         if (bean == null)
             throw new IllegalArgumentException("No bean set");
