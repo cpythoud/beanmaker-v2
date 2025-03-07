@@ -1,8 +1,10 @@
 package org.beanmaker.v2.codegen;
 
+import org.jcodegen.java.Condition;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
+import org.jcodegen.java.IfBlock;
 import org.jcodegen.java.ObjectCreation;
 import org.jcodegen.java.ReturnStatement;
 import org.jcodegen.java.Visibility;
@@ -69,7 +71,15 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
                 new FunctionDeclaration("getHtmlView", htmlFormClass)
                         .annotate("@Override")
                         .visibility(Visibility.PROTECTED)
-                        .addContent(new FunctionCall("checkParameters").byItself())
+                        .addContent(new FunctionCall("checkLanguage").byItself())
+                        .addContent(new IfBlock(new Condition(new FunctionCall("noBeanYet")))
+                                .addContent(
+                                        new ReturnStatement(
+                                                new ObjectCreation(htmlFormClass)
+                                                        .addArgument(new ObjectCreation(editorClass))
+                                                        .addArgument(new FunctionCall("getLanguage")))
+                                ))
+                        .addContent(EMPTY_LINE)
                         .addContent(
                                 new ReturnStatement(
                                         new ObjectCreation(htmlFormClass)
