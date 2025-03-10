@@ -61,6 +61,9 @@ INCOMPATIBLES CHANGES:
   from the default language
 - add support to use id_label, id_name_label, id_description_label fields, if present, to determine the 'name'
   (its representation in tiles and lists)
+- add support in BeanParametersBase to record database tables where the bean is referenced and to check the presence
+  of such references; this is used in the context of the implementation of the okToDelete() function in master tables;
+  because of this all BeanMasterTableViewBase source files need to be regenerated
 
 All generated code from version 2.2 must be regenerated. In editable files, overloaded functions related to file
 handling, data validation and naming and ordering beans should be checked.
