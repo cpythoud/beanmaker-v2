@@ -498,9 +498,7 @@ public abstract class BaseMasterTableView extends TabularView {
 
     protected abstract <B extends DbBeanInterface> void addDataToLine(TrTag line, B bean);
 
-    protected  <B extends DbBeanInterface> boolean okToDelete(B bean) {
-        return true;
-    }
+    protected abstract  <B extends DbBeanInterface> boolean okToDelete(B bean);
 
     protected TdTag getDeleteCell(DbBeanInterface bean) {
         return getDeleteCell(bean, dbBeanLocalization.getBeanVarName(), deleteLabel());

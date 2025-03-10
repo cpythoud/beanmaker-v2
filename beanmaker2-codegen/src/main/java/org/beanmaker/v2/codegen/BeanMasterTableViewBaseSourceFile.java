@@ -73,6 +73,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
         addDataFunctions();
         addDataLineFunction();
         addDataCellFunctions();
+        addOkToDeleteFunction();
     }
 
     private void addFilterRowFunction() {
@@ -470,6 +471,21 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
         }
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
+    private void addOkToDeleteFunction() {
+        javaClass
+                .addContent(new FunctionDeclaration("okToDelete", "<B extends DbBeanInterface> boolean")
+                        .annotate("@Override")
+                        .visibility(Visibility.PROTECTED)
+                        .addArgument(new FunctionArgument("B", "bean"))
+                        .addContent(new ReturnStatement(new Condition(
+                                new FunctionCall("isReferenced", beanName + "Parameters.INSTANCE")
+                                        .addArguments("bean", "DbBeans.dbAccess"),
+                                true
+                        )))
+                )
+                .addContent(EMPTY_LINE);
     }
 
 }
