@@ -11,7 +11,6 @@ public abstract class BeanCode extends BaseCode {
     protected final String beanName;
     protected final String packageName;
     protected final String beanVarName;
-    protected final String bundleName;
     protected final String parametersInstanceExpression;
     protected final String badIDExceptionMessage;
     protected final String itemManagerRetrievalCall;
@@ -22,7 +21,6 @@ public abstract class BeanCode extends BaseCode {
         this.beanName = beanName;
         this.packageName = packageName;
         beanVarName = getBeanVarName(beanName);
-        bundleName = getBundleName(beanName,  packageName);
         parametersInstanceExpression = getParametersInstanceExpression(beanName);
         badIDExceptionMessage = getBadIDExceptionMessage(beanName);
         itemManagerRetrievalCall = getItemManagerRetrievalCall(beanName);
@@ -33,7 +31,7 @@ public abstract class BeanCode extends BaseCode {
         return Strings.uncapitalize(beanName);
     }
 
-    protected static String getBundleName(String beanName, String packageName) {
+    protected static String getLabelNamePrefix(String beanName, String packageName) {
         return Strings.replace(packageName, ".", "-") + "-" + beanName;
     }
 
@@ -55,10 +53,6 @@ public abstract class BeanCode extends BaseCode {
     protected static String getItemManagerRetrievalCall(String beanName) {
         return getParametersInstanceExpression(beanName) + ".getItemOrderManager()";
     }
-
-    /*protected static String getFormatterInstanceExpression(String beanName) {
-        return "LocalDbBeanFormatter.INSTANCE";
-    }*/
 
     protected void applySealedModifier(String permittedClass) {
         if (projectParameters.createSealedClasses())

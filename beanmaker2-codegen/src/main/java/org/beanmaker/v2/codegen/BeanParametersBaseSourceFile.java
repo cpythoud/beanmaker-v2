@@ -12,7 +12,7 @@ import java.util.List;
 import static org.beanmaker.v2.codegen.BaseCode.DEFAULT_PROJECT_PARAMETERS;
 import static org.beanmaker.v2.codegen.BaseCode.createImportList;
 import static org.beanmaker.v2.codegen.BeanCode.chopID;
-import static org.beanmaker.v2.codegen.BeanCode.getBundleName;
+import static org.beanmaker.v2.codegen.BeanCode.getLabelNamePrefix;
 
 import static org.beanmaker.v2.util.Strings.quickQuote;
 
@@ -106,7 +106,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
     private ObjectCreation getLocalizationObject() {
         return new ObjectCreation("DbBeanLocalization")
                 .addArgument(new FunctionCall("getBasicFunctions", "LabelManager"))
-                .addArgument(quickQuote(getBundleName(beanName,  packageName)))  // TODO: identify usage and motivation for bundleName !!!
+                .addArgument(quickQuote(getLabelNamePrefix(beanName,  packageName)))
                 .addArgument(quickQuote(beanName));
     }
 
