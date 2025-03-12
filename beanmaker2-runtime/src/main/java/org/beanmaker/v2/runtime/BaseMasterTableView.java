@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseMasterTableView extends TabularView {
+public abstract class BaseMasterTableView extends BaseView {
 
     protected String tableId;
 
@@ -58,6 +58,17 @@ public abstract class BaseMasterTableView extends TabularView {
         return new SpanTag()
                 .cssClass(iconLibrary + removeFilteringIcon)
                 .title(dbBeanLocalization.getLabel("cct_remove_filtering"));
+    }
+
+    protected boolean displayId = false;
+    protected boolean displayAllLanguages = true;
+    protected boolean useSafeLabels = false;
+
+    protected String yesName() {
+        return dbBeanLocalization.getLabel("yes");
+    }
+    protected String noName() {
+        return dbBeanLocalization.getLabel("no");
     }
 
     protected String yesValue = "A";
