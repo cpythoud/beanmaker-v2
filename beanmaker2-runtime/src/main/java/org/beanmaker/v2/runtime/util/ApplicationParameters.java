@@ -3,7 +3,7 @@ package org.beanmaker.v2.runtime.util;
 import org.beanmaker.v2.runtime.HtmlFormHelper;
 import org.beanmaker.v2.util.Types;
 
-import javax.ws.rs.PUT;
+import java.util.List;
 import java.util.Map;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +11,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public enum ApplicationParameters {
     INSTANCE;
+
+    private static final List<String> BOOLEAN_TRUE_VALUES = List.of("true", "yes", "on", "1");
+    private static final List<String> BOOLEAN_FALSE_VALUES = List.of("false", "no", "off", "0");
 
     public static final String HTML_HELPER_CLASS_NAME_PARAMETER = "htmlHelperClassName";
 
@@ -38,6 +41,20 @@ public enum ApplicationParameters {
         ensureInitialized();
         Object value = parameters.get(key);
         return value == null ? null : value.toString();
+    }
+
+    public boolean getAsBoolean(String key) {
+        ensureInitialized();
+        String value = getAsString(key);
+        if (value == null)
+            throw new IllegalStateException("No value specified for key: " + key);
+
+        if (BOOLEAN_TRUE_VALUES.contains(value))
+            return true;
+        if (BOOLEAN_FALSE_VALUES.contains(value))
+            return false;
+
+        throw new IllegalArgumentException("Invalid boolean value: " + value);
     }
 
     private void ensureInitialized() {
