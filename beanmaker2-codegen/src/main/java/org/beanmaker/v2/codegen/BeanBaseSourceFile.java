@@ -341,7 +341,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                                         .addArgument("dbBeanLanguage")));
 
         FunctionDeclaration perLanguageSafeLabelFunction =
-                new FunctionDeclaration(getSafeFunctionName(functionName), "String")
+                new FunctionDeclaration(getSafeLabelFunctionName(functionName), "String")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addContent(new ReturnStatement(
@@ -361,14 +361,6 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE)
                 .addContent(perLanguageSafeLabelFunction)
                 .addContent(EMPTY_LINE);
-    }
-
-    private String getSafeFunctionName(String originalFunctionName) {
-        if (originalFunctionName.endsWith("Label"))
-            return originalFunctionName.substring(0, originalFunctionName.length() - "Label".length()) + "SafeLabel";
-
-        throw new AssertionError(
-                "Function name " + originalFunctionName + " not supported. Must end with 'Label'.");
     }
 
     private void addGetters() {

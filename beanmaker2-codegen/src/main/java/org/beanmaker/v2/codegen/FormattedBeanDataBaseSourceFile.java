@@ -107,34 +107,20 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
         function.addContent(new ReturnStatement(getFormattingFunctionCall(column, functionName)));
         javaClass.addContent(function).addContent(EMPTY_LINE);
 
-        if (column.isLabelReference())
-            javaClass.addContent(getLabelWithLangArgFunction(column, functionName)).addContent(EMPTY_LINE);
+        if (column.isLabelReference()) {
+            javaClass.addContent(
+                    getLabelWithLangArgFunction(column, functionName, true,false))
+                    .addContent(EMPTY_LINE);
+            javaClass.addContent(
+                    getLabelWithLangArgFunction(column, getSafeLabelFunctionName(functionName), false, true))
+                    .addContent(EMPTY_LINE);
+            javaClass.addContent(
+                    getLabelWithLangArgFunction(column, getSafeLabelFunctionName(functionName), true, true))
+                    .addContent(EMPTY_LINE);
+        }
 
         if (column.isFileReference())
             javaClass.addContent(getFileLinkFunction(column, functionName)).addContent(EMPTY_LINE);
-
-        /*javaClass
-                .addContent(new FunctionDeclaration(functionName, "String")
-                        .addContent(new ReturnStatement(
-                                new FunctionCall("getFormatted" + capName, "formatter")
-                                        .addArguments(beanVarName, "localization"))))
-                .addContent(EMPTY_LINE);
-
-        if (column.isLabelReference())
-            javaClass
-                    .addContent(new FunctionDeclaration(functionName, "String")
-                            .addArgument(new FunctionArgument("DbBeanLanguage", "language"))
-                            .addContent(new ReturnStatement(
-                                    new FunctionCall("getFormatted" + capName, "formatter")
-                                            .addArguments(beanVarName, "language"))))
-                    .addContent(EMPTY_LINE);
-        else if (column.isFileReference())
-            javaClass
-                    .addContent(new FunctionDeclaration(functionName + "Link", "String")
-                            .addContent(new ReturnStatement(
-                                    new FunctionCall("get" + capName + "Link", "formatter")
-                                            .addArguments(beanVarName, "localization"))))
-                    .addContent(EMPTY_LINE);*/
     }
 
     private IfBlock getIdZeroTest(Column column) {
@@ -154,29 +140,27 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
         else
             functionName = "format" + column.getJavaType();
 
-        /*String capName;
-        if (column.isBeanReference() || column.isFileReference() || column.isLabelReference())
-            capName = chopID(column.getJavaName());
-        else
-            capName = capitalize(column.getJavaName());*/
-
         return new FunctionCall(functionName, "formatter")
                 .addArgument(new FunctionCall(dataRetrievalFunction, beanVarName))
                 .addArgument("localization");
     }
 
-    private FunctionDeclaration getLabelWithLangArgFunction(Column column, String functionName) {
-        return new FunctionDeclaration(functionName, "String")
-                .addArgument(new FunctionArgument("DbBeanLanguage", "language"))
+    private FunctionDeclaration getLabelWithLangArgFunction(Column column, String functionName, boolean langArgument, boolean safe) {
+        var function = new FunctionDeclaration(functionName, "String")
                 .addContent(getIdZeroTest(column))
                 .addContent(EMPTY_LINE)
                 .addContent(new ReturnStatement(
-                        new FunctionCall("formatLabel", "formatter")
+                        new FunctionCall(safe ? "formatSafeLabel" : "formatLabel", "formatter")
                                 .addArgument(
                                         new FunctionCall("get" + chopID(column.getJavaName()), beanVarName)
                                 )
-                                .addArgument("language")
+                                .addArgument(langArgument ? "language" : "localization")
                 ));
+
+        if (langArgument)
+            function.addArgument(new FunctionArgument("DbBeanLanguage", "language"));
+
+        return function;
     }
 
     private FunctionDeclaration getFileLinkFunction(Column column, String functionNameStart) {

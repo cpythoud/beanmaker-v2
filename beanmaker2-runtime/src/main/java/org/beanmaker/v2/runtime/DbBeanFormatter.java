@@ -101,6 +101,18 @@ public interface DbBeanFormatter {
         return label.get(language);
     }
 
+    default String formatSafeLabel(DbBeanLabel label, DbBeanLocalization dbBeanLocalization) {
+        return formatSafeLabel(label, dbBeanLocalization.getLanguage());
+    }
+
+    default String formatSafeLabel(DbBeanLabel label, DbBeanLanguage language) {
+        String text = label.getSafeValue(language);
+        if (Strings.isEmpty(text))
+            text = noData();
+
+        return text;
+    }
+
     default String formatFile(DbBeanFile file, DbBeanLocalization dbBeanLocalization) {
         if (file == null)
             return noData();

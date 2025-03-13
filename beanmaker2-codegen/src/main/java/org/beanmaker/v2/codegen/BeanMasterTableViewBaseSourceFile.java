@@ -229,6 +229,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
             }
     }
 
+    // TODO: properly decompose and rewrite in easier to read style
     private void addLabelTitleFunctions(Column column) {
         String name = column.getJavaName();
         String labelName = chopID(name);
@@ -253,6 +254,14 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("get" + labelName + "TitleCell", "ThTag")
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
+                        .addContent(new IfBlock(new Condition("!displayAllLanguages && useSafeLabels"))
+                                .addContent(new ReturnStatement(new FunctionCall("getTitleCell")
+                                        .addArgument(new OperatorExpression(
+                                                new FunctionCall("getTag", "dbBeanLanguage"),
+                                                quickQuote(labelName),
+                                                OperatorExpression.Operator.ADD))
+                                        .addArgument(new FunctionCall("getTitle").addArgument(quickQuote(name))))))
+                        .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(new FunctionCall("getTitleCell")
                                 .addArgument(new OperatorExpression(
                                         new FunctionCall("getTag", "dbBeanLanguage"),
@@ -355,6 +364,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
             }
     }
 
+    // TODO: properly decompose and rewrite in easier to read style
     private void addDLabelDataCellFunctions(Column column) {
         String name = column.getJavaName();
 
@@ -381,6 +391,17 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new FunctionDeclaration("get" + chopID(name) + "TableCell", "TdTag")
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addArgument(new FunctionArgument("Formatted" + beanName + "Data", beanVarName))
+                        .addContent(new IfBlock(new Condition("!displayAllLanguages && useSafeLabels"))
+                                .addContent(new ReturnStatement(new FunctionCall("getTableCell")
+                                        .addArgument(new FunctionCall("createTextCellDefinition", "MasterTableCellDefinition")
+                                                .addArgument(new OperatorExpression(
+                                                        new FunctionCall("getTag", "dbBeanLanguage"),
+                                                        quickQuote(chopID(name)),
+                                                        OperatorExpression.Operator.ADD))
+                                                .addArgument(new FunctionCall(
+                                                        getSafeLabelFunctionName("get" + chopID(name)), beanVarName)
+                                                        .addArgument("dbBeanLanguage"))))))
+                        .addContent(EMPTY_LINE)
                         .addContent(new ReturnStatement(new FunctionCall("getTableCell")
                                 .addArgument(new FunctionCall("createTextCellDefinition", "MasterTableCellDefinition")
                                         .addArgument(new OperatorExpression(

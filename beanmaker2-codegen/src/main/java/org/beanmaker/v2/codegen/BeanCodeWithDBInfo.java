@@ -96,6 +96,14 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         throw new UnsupportedOperationException();
     }
 
+    protected String getSafeLabelFunctionName(String originalFunctionName) {
+        if (originalFunctionName.endsWith("Label"))
+            return originalFunctionName.substring(0, originalFunctionName.length() - "Label".length()) + "SafeLabel";
+
+        throw new AssertionError(
+                "Function name " + originalFunctionName + " not supported. Must end with 'Label'.");
+    }
+
     protected void addFileGetterFunction(Column column) {
         String name = column.getJavaName();
         javaClass
