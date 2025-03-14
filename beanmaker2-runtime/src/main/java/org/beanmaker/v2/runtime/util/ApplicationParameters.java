@@ -44,10 +44,8 @@ public enum ApplicationParameters {
     }
 
     public boolean getAsBoolean(String key) {
-        ensureInitialized();
+        ensureExisting(key);
         String value = getAsString(key);
-        if (value == null)
-            throw new IllegalStateException("No value specified for key: " + key);
 
         if (BOOLEAN_TRUE_VALUES.contains(value))
             return true;
@@ -57,10 +55,30 @@ public enum ApplicationParameters {
         throw new IllegalArgumentException("Invalid boolean value: " + value);
     }
 
+    public int getAsInt(String key) {
+        ensureExisting(key);
+        return Integer.parseInt(getAsString(key));
+    }
+
+    public long getAsLong(String key) {
+        ensureExisting(key);
+        return Long.parseLong(getAsString(key));
+    }
+
+    public long getId(String key) {
+        return getAsLong(key);
+    }
+
     private void ensureInitialized() {
         if (!initialized.get()) {
             throw new IllegalStateException("ApplicationParameters not initialized");
         }
+    }
+
+    private void ensureExisting(String key) {
+        ensureInitialized();
+        if (!parameters.containsKey(key))
+            throw new IllegalStateException("No value specified for key: " + key);
     }
 
     public HtmlFormHelper getHtmlFormHelper() {
