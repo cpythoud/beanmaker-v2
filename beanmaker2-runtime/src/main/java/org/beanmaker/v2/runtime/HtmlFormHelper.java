@@ -82,10 +82,10 @@ public interface HtmlFormHelper {
         return form;
     }
 
-    default void addErrorMessagesContainer(Tag form, long idBean) { }
+    default void addErrorMessagesContainer(Tag form, String formName, long idBean) { }
 
-    static Tag getDefaultErrorMessageContainer(long idBean) {
-        return new DivTag().id("error_messages_" + idBean);
+    static Tag getDefaultErrorMessageContainer(String formName, long idBean) {
+        return new DivTag().id("error_messages_" + formName + "_" + idBean);
     }
 
 }

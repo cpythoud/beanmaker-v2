@@ -306,8 +306,8 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public void addErrorMessagesContainer(Tag form, long idBean) {
-        form.child(HtmlFormHelper.getDefaultErrorMessageContainer(idBean));
+    public void addErrorMessagesContainer(Tag form, String formName, long idBean) {
+        form.child(HtmlFormHelper.getDefaultErrorMessageContainer(formName, idBean));
     }
 
     @Override

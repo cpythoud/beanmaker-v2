@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.3 -- 2025-02-26';
+    static VERSION = 'v0.2.4 -- 2025-03-15';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -269,7 +269,7 @@ class Beanmaker2 {
         if (this.parameters.errorContainerSelector)
             errorContainer = document.querySelector(this.parameters.errorContainerSelector);
         else
-            errorContainer = document.getElementById(this.parameters.errorContainerIDPrefix + beanID);
+            errorContainer = document.getElementById(this.parameters.errorContainerIDPrefix + this.bean + "_" + beanID);
 
         if (!errorContainer)
             throw new Error("Could not determine where to display error messages on page");
