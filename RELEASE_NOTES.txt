@@ -82,6 +82,9 @@ NEW FEATURES:
 - introduce Bootstrap 5 HtmlFormHelper
 - introduce direct support in BeanMasterTableViewBase for links to a detail view: removes the need for repetitive
   overloading of the getEditCell() function
+- add 'sortOnHeaderClick' boolean to master table to toggle on and off the sorting of table lines when the user
+  click on a column header (on by default); allows to disable this on some table with drag'n drop item_order
+  rearrangement
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field

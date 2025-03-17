@@ -42,7 +42,7 @@ public abstract class BaseMasterTableView extends BaseView {
     protected String tdResetCssClass = null;
     protected String thFilterCssClass = null;
     protected String tdFilterCssClass = null;
-    protected String thTitleCssClass = "tb-sort";
+    protected String thTitleCssClass = null;
     protected String thSuperTitleCssClass = null;
     protected String tdOperationCssClass = "tb-operation-group";
 
@@ -63,6 +63,9 @@ public abstract class BaseMasterTableView extends BaseView {
     protected boolean displayId = false;
     protected boolean displayAllLanguages = true;
     protected boolean useSafeLabels = false;
+
+    protected boolean sortOnHeaderClick = true;
+    protected String sortableOnHeaderClickCssClass = "tb-sort";
 
     protected String yesName() {
         return dbBeanLocalization.getLabel("yes");
@@ -456,7 +459,11 @@ public abstract class BaseMasterTableView extends BaseView {
     }
 
     protected String getTitleCellCssClasses(String name, String extraCssClasses) {
-        return thTitleCssClass + " th-" + name + (Strings.isEmpty(extraCssClasses) ? "" : " " + extraCssClasses);
+        var cssClasses = CssClasses.start("th-" + name).add(thTitleCssClass).add(extraCssClasses);
+        if (sortOnHeaderClick)
+            cssClasses.add(sortableOnHeaderClickCssClass);
+
+        return cssClasses.get();
     }
 
     public <B extends DbBeanInterface> TrTag getTableLine(B bean) {
