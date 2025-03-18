@@ -88,6 +88,10 @@ NEW FEATURES:
 - create LocalLabelCache, to cache labels in the context of multilingual master tables: for large tables this allows
   a considerable reduction of the number of queries run against the database, especially if safe labels are used;
   the number of queries can go from thousands to barely a dozen
+- add new parameter 'extraFormRequestParameters' to beanmaker2.js, that is a javascript array of parameters to be
+  looked up in the dataset of the edit link and that will be translated into request parameters with their
+  corresponding value when the web form is request; this should help a lot when extra information is required
+  to initialize a new record/bean
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field

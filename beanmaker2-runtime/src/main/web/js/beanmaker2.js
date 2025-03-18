@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.4 -- 2025-03-15';
+    static VERSION = 'v0.2.5 -- 2025-03-18';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -36,6 +36,7 @@ class Beanmaker2 {
         fieldInErrorStyles: '',
         itemOrderMoveAfterFunction: function () { },
         itemOrderMoveBeforeFunction: function () { },
+        extraFormRequestParameters: [ ]
     }
 
     static isStringEmpty(str) {
@@ -348,7 +349,7 @@ class Beanmaker2 {
             if ($link) {
                 event.preventDefault();
                 const id = Beanmaker2.getBeanID($link);
-                fetch(this.parameters.servletURL, this.getEditParameters(id))
+                fetch(this.parameters.servletURL, this.getEditParameters($link, id))
                     .then(response => {
                         if (response.ok && response.headers.get("Content-Type") === "text/html; charset=UTF-8")
                             return response.text();
@@ -373,7 +374,7 @@ class Beanmaker2 {
         });
     }
 
-    getEditParameters(id) {
+    getEditParameters($link, id) {
         const parameters = {
             method: 'POST',
             cache: 'no-store',
@@ -383,6 +384,11 @@ class Beanmaker2 {
         const formData = new FormData();
         formData.set('beanmaker_operation', 'get');
         formData.set('id', id.toString());
+        this.parameters.extraFormRequestParameters.forEach(attr => {
+            if ($link.dataset.hasOwnProperty(attr)) {
+                formData.set(attr, $link.dataset[attr]);
+            }
+        })
 
         parameters.body = new URLSearchParams(formData);
 
