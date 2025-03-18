@@ -85,6 +85,9 @@ NEW FEATURES:
 - add 'sortOnHeaderClick' boolean to master table to toggle on and off the sorting of table lines when the user
   click on a column header (on by default); allows to disable this on some table with drag'n drop item_order
   rearrangement
+- create LocalLabelCache, to cache labels in the context of multilingual master tables: for large tables this allows
+  a considerable reduction of the number of queries run against the database, especially if safe labels are used;
+  the number of queries can go from thousands to barely a dozen
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
