@@ -45,7 +45,7 @@ public final class Money implements Comparable<Money> {
      * @param value in cents.
      */
     public Money(long value) {
-        this(value, MoneyFormat.getDefault());
+        this(value, MoneyFormat.DEFAULT_FORMAT);
     }
 
     /**
@@ -67,7 +67,7 @@ public final class Money implements Comparable<Money> {
      *              or down if necessary (.5 goes up).
      */
     public Money(double value) {
-        this(value, MoneyFormat.getDefault(), 2);
+        this(value, MoneyFormat.DEFAULT_FORMAT, 2);
     }
 
     /**
@@ -107,7 +107,7 @@ public final class Money implements Comparable<Money> {
      * @throws java.lang.IllegalArgumentException if <code>value</code> cannot be parsed using the default MoneyFormat.
      */
     public Money(String value) {
-        this(MoneyFormat.getDefault().getVal(value), MoneyFormat.getDefault());
+        this(MoneyFormat.DEFAULT_FORMAT.getVal(value), MoneyFormat.DEFAULT_FORMAT);
     }
 
     /**
@@ -189,10 +189,9 @@ public final class Money implements Comparable<Money> {
         if (o == this)
             return true;
 
-        if (!(o instanceof Money))
+        if (!(o instanceof Money money))
             return false;
 
-        Money money = (Money) o;
         return val == money.val && format.equals(money.format);
     }
 
@@ -227,4 +226,5 @@ public final class Money implements Comparable<Money> {
 
         return new Money(val, format);
     }
+
 }

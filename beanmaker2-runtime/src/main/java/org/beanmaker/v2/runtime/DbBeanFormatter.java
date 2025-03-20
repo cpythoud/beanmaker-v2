@@ -193,7 +193,7 @@ public interface DbBeanFormatter {
     // *************
 
     default MoneyFormat getDefaultMoneyFormat() {
-        return MoneyFormat.getDefault();
+        return MoneyFormat.DEFAULT_FORMAT;
     }
 
 }

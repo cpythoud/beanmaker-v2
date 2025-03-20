@@ -80,7 +80,7 @@ public final class SetOf {
     }
 
     public static Set<Money> monies(ResultSet rs) throws SQLException {
-        return monies(rs, MoneyFormat.getDefault());
+        return monies(rs, MoneyFormat.DEFAULT_FORMAT);
     }
 
     public static Set<Money> monies(ResultSet rs, MoneyFormat moneyFormat) throws SQLException {

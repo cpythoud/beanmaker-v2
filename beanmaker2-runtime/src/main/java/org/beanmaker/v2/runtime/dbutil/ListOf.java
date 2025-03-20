@@ -80,7 +80,7 @@ public final class ListOf {
     }
 
     public static List<Money> monies(ResultSet rs) throws SQLException {
-        return monies(rs, MoneyFormat.getDefault());
+        return monies(rs, MoneyFormat.DEFAULT_FORMAT);
     }
 
     public static List<Money> monies(ResultSet rs, MoneyFormat moneyFormat) throws SQLException {

@@ -67,6 +67,8 @@ INCOMPATIBLES CHANGES:
 - by default error message container IDs are now of the form: error_message_<Bean name>_<Bean ID>; this guarantee the
   uniqueness of these ids when creating complex interfaces; existing code might need to be changed if it relies
   on default generation of error message container
+- refactored MoneyFormat class to better correspond to Builder Pattern standard; theoretically, might affect existing
+  code
 
 All generated code from version 2.2 must be regenerated. In editable files, overloaded functions related to file
 handling, data validation and naming and ordering beans should be checked.
@@ -97,6 +99,8 @@ BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
 - bug fix for: cannot create more than one instance of Beanmaker2 javascript object on the same page
 - bug fix for: null String saved as empty text instead of a SQL NULL value
+- bug fix for: MoneyFormat builder doesn't work correctly as default format is leaking in all builder format
+               creation; doesn't work at all if builder is used to format strings
 
 MINOR CHANGES:
 - code cleanup in master tables

@@ -22,17 +22,19 @@ public final class MoneyFormat {
 
     private final long noDecimalMultiplier;
 
-    private static final MoneyFormat DEFAULT_MONEY_FORMAT = (new Builder()).create();
-
-
     /**
-     * Gets the default MoneyFormat.
      * The default format specifies two decimals, a decimal separator that can be either a dot or a comma, and
-     * a thousands decorator that can be either a space or an apostrophe.
-     * @return the default MoneyFormat.
+     * a thousand decorator that can be either a space or an apostrophe.
      */
-    public static MoneyFormat getDefault() {
-        return DEFAULT_MONEY_FORMAT;
+    public static final MoneyFormat DEFAULT_FORMAT = builder()
+            .addDecimalSeparator(".").addDecimalSeparator(",")
+            .addDecorator(" ").addDecorator("'")
+            .build();
+    public static final MoneyFormat EN_FORMAT = builder().addDecimalSeparator(".").addDecorator(",").build();
+    public static final MoneyFormat FR_FORMAT = builder().addDecimalSeparator(",").addDecorator("'").build();
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -45,7 +47,7 @@ public final class MoneyFormat {
     }
 
     private boolean hasSeparator() {
-        return decimalSeparators.size() > 0;
+        return !decimalSeparators.isEmpty();
     }
 
     private boolean separatorOK(String val) {
@@ -226,10 +228,9 @@ public final class MoneyFormat {
         if (o == this)
             return true;
 
-        if (!(o instanceof MoneyFormat))
+        if (!(o instanceof MoneyFormat format))
             return false;
 
-        MoneyFormat format = (MoneyFormat) o;
         if (decimals != format.decimals || noDecimalMultiplier != format.noDecimalMultiplier)
             return false;
         if (decimalSeparators.size() != format.decimalSeparators.size() || decorators.size() != format.decorators.size())
@@ -259,29 +260,19 @@ public final class MoneyFormat {
      * This inner class is used to build instances of MoneyFormats.<br/>
      * An instance of this class must be created, then setters methods are used to specify the MoneyFormat.
      * Each setter function returns the Builder object, so function calls can be chained. Once all parameters
-     * have been set, the {@link Builder#create()} function must be called to obtain the MoneyFormat.
+     * have been set, the {@link Builder#build()} function must be called to obtain the MoneyFormat.
      */
     public static class Builder {
-        private int decimals;
+        private int decimals = 2;
 
-        private final List<String> decimalSeparators;
+        private final List<String> decimalSeparators = new ArrayList<>();
 
-        private final List<String> decorators;
+        private final List<String> decorators = new ArrayList<>();
 
         /**
          * Use this constructor to instantiate a Builder Object.
          */
-        public Builder() {
-            decimals = 2;
-
-            decimalSeparators = new ArrayList<>();
-            decimalSeparators.add(".");
-            decimalSeparators.add(",");
-
-            decorators = new ArrayList<>();
-            decorators.add(" ");
-            decorators.add("'");
-        }
+        private Builder() { }
 
         /**
          * Specify the decimal separator character. Only this character will be accepted as the decimal separator.
@@ -353,7 +344,7 @@ public final class MoneyFormat {
          * @throws java.lang.IllegalArgumentException if there is any inconsistency in the specification of the
          * MoneyFormat (missing decimal separator, decorator identical to separator, etc.)
          */
-        public MoneyFormat create() {
+        public MoneyFormat build() {
             for (String sep: decimalSeparators)
                 if (decorators.contains(sep))
                     throw new IllegalArgumentException("Decimal Separator " + sep + " is also present in decorators.");
@@ -366,5 +357,7 @@ public final class MoneyFormat {
 
             return new MoneyFormat(decimals, decimalSeparators, decorators);
         }
+
     }
+
 }
