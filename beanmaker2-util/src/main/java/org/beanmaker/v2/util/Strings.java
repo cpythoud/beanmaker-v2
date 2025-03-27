@@ -635,4 +635,17 @@ public class Strings {
         return Integer.parseInt(parts[0] + cents);
     }
 
+    public static String rightPad(String string, int length) {
+        if (string.length() >= length) {
+            return string;
+        }
+
+        var sb = new StringBuilder(string);
+        while (sb.length() < length) {
+            sb.append(' ');
+        }
+
+        return sb.toString();
+    }
+
 }
