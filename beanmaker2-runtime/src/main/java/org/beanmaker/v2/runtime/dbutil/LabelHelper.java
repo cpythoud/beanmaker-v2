@@ -447,6 +447,38 @@ public class LabelHelper {
         }
     }
 
+    private static final String UNIQUE_LABEL_TEST_REQUEST = """
+            SELECT %s.id_label FROM %s
+            INNER JOIN %s ON %s.id_label=%s.%s
+            WHERE id_language=? AND %s.id_label <> ? AND `data`=?""";
+
+    public boolean labelExistsInContext(
+            DBAccess dbAccess,
+            String table,
+            String field,
+            long idLabel,
+            DbBeanLanguage language,
+            String text)
+    {
+        return dbAccess.processQuery(
+                UNIQUE_LABEL_TEST_REQUEST.formatted(
+                        labelDataTable,
+                        table,
+                        labelDataTable,
+                        labelDataTable,
+                        table,
+                        field,
+                        labelDataTable
+                ),
+                stat -> {
+                    stat.setLong(1, language.getId());
+                    stat.setLong(2, idLabel);
+                    stat.setString(3, text);
+                },
+                ResultSet::next
+        );
+    }
+
     public static String getJavascriptLabelMap(
             String objectName,
             List<DbBeanLanguage> languages,
