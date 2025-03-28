@@ -94,6 +94,7 @@ NEW FEATURES:
   looked up in the dataset of the edit link and that will be translated into request parameters with their
   corresponding value when the web form is request; this should help a lot when extra information is required
   to initialize a new record/bean
+- add function to check if a label is unique in context (specific table field)
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
@@ -106,3 +107,4 @@ MINOR CHANGES:
 - code cleanup in master tables
 - improve some exception messages
 - various small improvements and fixes
+- various utility functions added
