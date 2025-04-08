@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.5 -- 2025-03-18';
+    static VERSION = 'v0.2.6 -- 2025-04-08';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -103,6 +103,18 @@ class Beanmaker2 {
         parameters.body = new URLSearchParams(formData);
 
         return parameters;
+    }
+
+    static storeLabel(element, name, value) {
+        const jsonData = element.dataset.beanmaker2labels ? JSON.parse(element.dataset.beanmaker2labels) : {};
+        jsonData[name] = value;
+        element.dataset.beanmaker2labels = JSON.stringify(jsonData);
+        console.log(`Updated data-info: ${element.dataset.beanmaker2labels}`);
+    }
+
+    static getLabel(element, name) {
+        const jsonData = element.dataset.beanmaker2labels ? JSON.parse(element.dataset.beanmaker2labels) : {};
+        return name in jsonData ? jsonData[name] : "[MISSING LABEL: " + name + "]";
     }
 
     constructor(bean, nonDefaultParameters) {
