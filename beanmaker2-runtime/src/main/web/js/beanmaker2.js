@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.6 -- 2025-04-08';
+    static VERSION = 'v0.2.7 -- 2025-04-15';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -397,10 +397,12 @@ class Beanmaker2 {
         formData.set('beanmaker_operation', 'get');
         formData.set('id', id.toString());
         this.parameters.extraFormRequestParameters.forEach(attr => {
-            if ($link.dataset.hasOwnProperty(attr)) {
-                formData.set(attr, $link.dataset[attr]);
+            const dataAttr = `data-${attr}`;
+            const value = $link.getAttribute(dataAttr);
+            if (value !== null) {
+                formData.set(attr, value);
             }
-        })
+        });
 
         parameters.body = new URLSearchParams(formData);
 
