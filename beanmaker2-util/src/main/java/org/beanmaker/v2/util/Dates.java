@@ -11,11 +11,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * This class contains static function to help with Dates manipulations in the context of a database application.
+ * This class contains static functions to help with Dates manipulations in the context of a database application.
  * Only Gregorian calendar dates are supported.
  */
 @SuppressWarnings("MagicConstant")
@@ -202,8 +203,8 @@ public class Dates {
     }
 
     /**
-     * Check if a timestamp is correct. This function checks if the hours, minutes and seconds of a timestamp are in
-     * acceptable range, respectively 0-23, 0-59 and 0-59
+     * Check if a timestamp is correct. This function checks if the hours, minutes, and seconds of a timestamp are in
+     * acceptable range, respectively 0-23, 0-59, and 0-59
      * @param hours of timestamp to be checked.
      * @param minutes of timestamp to be checked.
      * @param seconds of timestamp to be checked.
@@ -215,8 +216,8 @@ public class Dates {
     }
 
     /**
-     * Check if a timestamp is correct. This function checks if the hours, minutes and seconds of a timestamp are in
-     * acceptable range, respectively 0-23, 0-59 and 0-59.
+     * Check if a timestamp is correct. This function checks if the hours, minutes, and seconds of a timestamp are in
+     * acceptable range, respectively 0-23, 0-59, and 0-59.
      * @param hours of timestamp to be checked.
      * @param minutes of timestamp to be checked.
      * @param seconds of timestamp to be checked.
@@ -235,9 +236,9 @@ public class Dates {
 
     /**
      * Check if a timestamp String is correctly formatted.
-     * The timestamp string must be comprised of hours, minutes and seconds. Precision beyond seconds is not supported.
-     * The three parts of the timestamp string must be between acceptable range for hours, minutes and seconds,
-     * respectively 0-23, 0-59 and 0-59.
+     * The timestamp string must be comprised of hours, minutes, and seconds. Precision beyond seconds is not supported.
+     * The three parts of the timestamp string must be between acceptable range for hours, minutes, and seconds,
+     * respectively 0-23, 0-59, and 0-59.
      * @param time string to be checked.
      * @param separator between the timestamp string parts.
      * @return true if timestamp string can be validated, false otherwise.
@@ -547,22 +548,22 @@ public class Dates {
      * This method should be used instead of the compareTo() method inherited from java.util.Date which does not
      * work as expected when the dates are the same (problem with the normalization of the timestamp parts in
      * java.util.Date).
-     * @param date1
-     * @param date2
-     * @return
+     * @param date1, date to be compared
+     * @param date2, date to be compared
+     * @return negative number if date1 &lt; date2, positive number if date1 &gt; date2, zero if date1 = date2
      */
     public static int compare(Date date1, Date date2) {
         return date1.toString().compareTo(date2.toString());
     }
 
     /**
-     * Compare two times (java.sql.Time). Only the hours, minutes and seconds are compared. Milliseconds are ignored.
+     * Compare two times (java.sql.Time). Only hours, minutes, and seconds are compared. Milliseconds are ignored.
      * If the first timestamp is the same as the second timestamp, returns 0.
      * If the first timestamp is before the second timestamp, returns a negative number (i.e., -1).
      * If the first timestamp is after the second timestamp, returns a positive number (i.e., 1).
-     * @param time1
-     * @param time2
-     * @return
+     * @param time1, time to be compared
+     * @param time2, time to be compared
+     * @return negative number if time1 &lt; time2, positive number if time1 &gt; time2, zero if time1 = time2
      */
     public static int compare(Time time1, Time time2) {
         return getTimeInSeconds(time1) - getTimeInSeconds(time2);

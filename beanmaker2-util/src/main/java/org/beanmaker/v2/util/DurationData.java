@@ -56,7 +56,7 @@ public class DurationData {
             buf.append(days).append(daySymbol);
 
         if (hours > 0) {
-            if (buf.length() > 0)
+            if (!buf.isEmpty())
                 buf.append(" ");
             buf.append(hours).append(hourSymbol);
         }
@@ -71,7 +71,7 @@ public class DurationData {
                 buf.append(minutes).append(minuteSymbol);
         }
 
-        if (showZero && buf.length() == 0)
+        if (showZero && buf.isEmpty())
             return "0" + minuteSymbol;
 
         return buf.toString();
