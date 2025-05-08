@@ -95,6 +95,7 @@ NEW FEATURES:
   corresponding value when the web form is request; this should help a lot when extra information is required
   to initialize a new record/bean
 - add function to check if a label is unique in context (specific table field)
+- add DbBeanHtmlSelector class to runtime as an helper class to generate HTML selects from a list of beans
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
