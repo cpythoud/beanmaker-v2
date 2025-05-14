@@ -31,12 +31,17 @@ public class DataEntry {
         String value = getStringValue(header);
         Boolean result = booleanMappings.get(value);
         if (result == null && !lenientParsing)
-            throw new IllegalArgumentException("Cannot convert value to boolean: " + value);
+            throw new IllegalArgumentException("Cannot convert value [" + value + "] to boolean @line #" + lineNumber);
         return result != null ? result : false;
     }
 
     public Integer getIntegerValue(String header) {
-        return Integer.parseInt(getStringValue(header));
+        try {
+            return Integer.parseInt(getStringValue(header));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Cannot convert value [" + getStringValue(header) + "] to integer @line #" + lineNumber, e);
+        }
     }
 
     // TODO: code other data types (numeric, bean reference, etc.)
