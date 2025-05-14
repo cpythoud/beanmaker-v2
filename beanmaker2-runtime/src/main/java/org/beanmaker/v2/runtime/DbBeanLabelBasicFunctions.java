@@ -99,6 +99,7 @@ public abstract class DbBeanLabelBasicFunctions {
                 labelName,
                 language,
                 null,
+                null,
                 null
         );
     }
@@ -109,7 +110,8 @@ public abstract class DbBeanLabelBasicFunctions {
                 labelName,
                 language,
                 null,
-                null
+                null,
+                parameters
         );
     }
 
@@ -119,6 +121,7 @@ public abstract class DbBeanLabelBasicFunctions {
                 labelName,
                 language,
                 fullyQualifiedLabel,
+                null,
                 null
         );
     }
@@ -129,7 +132,8 @@ public abstract class DbBeanLabelBasicFunctions {
                 labelName,
                 language,
                 fullyQualifiedLabel,
-                null
+                null,
+                parameters
         );
     }
 
@@ -139,7 +143,8 @@ public abstract class DbBeanLabelBasicFunctions {
                 labelName,
                 language,
                 fullyQualifiedLabel,
-                globalLabelName
+                globalLabelName,
+                null
         );
     }
 
@@ -149,7 +154,8 @@ public abstract class DbBeanLabelBasicFunctions {
                 labelName,
                 language,
                 fullyQualifiedLabel,
-                globalLabelName
+                globalLabelName,
+                parameters
         );
     }
 
@@ -158,25 +164,41 @@ public abstract class DbBeanLabelBasicFunctions {
             String labelName,
             DbBeanLanguage language,
             String fullyQualifiedLabel,
-            String globalLabelName)
+            String globalLabelName,
+            List<Object> parameters)
     {
         if (content == null) {
+            String formattedParameters = formatDebugParameterList(parameters);
             String errorMessage =
                     missingLabelErrorPrefix()
                             + (fullyQualifiedLabel == null ? "" : fullyQualifiedLabel + ", ")
                             + (globalLabelName == null ? "" : globalLabelName + ", ")
-                            + labelName;
+                            + labelName
+                            + (formattedParameters == null ? "" : formattedParameters);
             if (lenient())
                 return errorMessage;
             throw new IllegalArgumentException(errorMessage);
         }
         if (Strings.isEmpty(content)) {
-            String errorMessage = missingLanguageErrorPrefix() + labelName + " (" + language.getCapIso() + ")";
+            String formattedParameters = formatDebugParameterList(parameters);
+            String errorMessage = missingLanguageErrorPrefix() + labelName + " (" + language.getCapIso() + ")"
+                    + (formattedParameters == null ? "" : formattedParameters);
             if (lenient())
                 return errorMessage;
             throw new IllegalArgumentException(errorMessage);
         }
         return content;
+    }
+
+    private String formatDebugParameterList(List<Object> parameters) {
+        if (parameters == null || parameters.isEmpty())
+            return null;
+
+        StringBuilder formattedParameters = new StringBuilder();
+        formattedParameters.append(", Params =");
+        for (Object parameter: parameters)
+            formattedParameters.append(" [").append(parameter.toString()).append("]");
+        return formattedParameters.toString();
     }
 
     private String getGlobalName(String labelName) {
