@@ -14,6 +14,9 @@ public class ConvertMoneyAmountToCentsTest {
         assertEquals(640, Strings.convertMoneyAmountToCents("6.4", 2, "."));
 
         assertEquals(100, Strings.convertMoneyAmountToCents("1", 2, "."));
+
+        assertEquals(25000, Strings.convertMoneyAmountToCents("25", 3, "."));
+        assertEquals( 8150, Strings.convertMoneyAmountToCents("8.15", 3, "."));
     }
 
 }

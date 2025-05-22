@@ -613,6 +613,8 @@ public class Strings {
             throw new IllegalArgumentException("moneyAmount is null");
         if (decimals < 2)
             throw new IllegalArgumentException("decimals must be at least 2");
+        if (decimals > 10)
+            throw new IllegalArgumentException("decimals must be at most 10");
         if (separator == null)
             throw new IllegalArgumentException("separator is null");
 
@@ -623,12 +625,13 @@ public class Strings {
             );
 
         String cents = parts.length == 1 ? "0" : parts[1];
-        if (cents.length() > decimals)
+        int length = cents.length();
+        if (length > decimals)
             throw new IllegalArgumentException(
-                    "incorrect formatting: too many decimals (%d) in string: %s".formatted(cents.length(), moneyAmount)
+                    "incorrect formatting: too many decimals (%d) in string: %s".formatted(length, moneyAmount)
             );
-        else if (cents.length() < decimals) {
-            for (int i = 0; i < decimals - cents.length(); i++)
+        else if (length < decimals) {
+            for (int i = 0; i < decimals - length; i++)
                 cents = cents + "0";
         }
 
