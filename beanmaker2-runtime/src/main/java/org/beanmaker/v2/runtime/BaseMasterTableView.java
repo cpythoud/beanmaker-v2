@@ -966,7 +966,7 @@ public abstract class BaseMasterTableView extends BaseView {
     protected TdTag getEditCell(
             DbBeanInterface bean,
             String beanName,
-            String tooltip,
+            String editTooltip,
             String detailTooltip)
     {
         TdTag cell = new TdTag().cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get());
