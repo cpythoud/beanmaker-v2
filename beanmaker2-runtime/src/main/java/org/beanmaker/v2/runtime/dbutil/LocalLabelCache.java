@@ -55,6 +55,7 @@ public class LocalLabelCache {
         private final DBAccess dbAccess;
         private DbBeanLanguage defaultLanguage = null;
         private boolean sorted = false;
+        private String sqlFilter;
 
         private CacheBuilder(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
             this.tableName = tableName;
@@ -97,6 +98,11 @@ public class LocalLabelCache {
             return this;
         }
 
+        public CacheBuilder sqlFilter(String sqlFilter) {
+            this.sqlFilter = sqlFilter;
+            return this;
+        }
+
         // * SELECT table.id, label_data.data FROM table
         // * INNER JOIN label_data ON label_data.id_label=id_xxx_label
         // * WHERE label_data.id_language=?
@@ -104,7 +110,7 @@ public class LocalLabelCache {
                 "SELECT %s.id, %s.%s FROM %s INNER JOIN %s ON %s.%s=%s WHERE %s.%s=?";
 
         private String composeQuery() {
-            return QUERY_TEMPLATE.formatted(
+            String query = QUERY_TEMPLATE.formatted(
                     tableName,
                     labelDataTable,
                     labelDataTableDataField,
@@ -116,6 +122,11 @@ public class LocalLabelCache {
                     labelDataTable,
                     labelDataTableLanguageField
             );
+
+            if (sqlFilter != null)
+                query += " AND " + sqlFilter;
+
+            return query;
         }
 
         public LocalLabelCache build() {
