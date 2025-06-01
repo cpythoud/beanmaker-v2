@@ -5,12 +5,14 @@ import org.beanmaker.v2.runtime.DbBeanLanguage;
 import org.dbbeans.sql.DBAccess;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class LocalLabelCache {
 
-    private final Map<Long, String> cache = new HashMap<>();
+    private final Map<Long, String> cache;
 
     public static LocalLabelCache createSimpleCache(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
         return builder(tableName, language, dbAccess).build();
@@ -23,6 +25,19 @@ public class LocalLabelCache {
             DBAccess dbAccess)
     {
         return builder(tableName, language, dbAccess).smartCache(defaultLanguage).build();
+    }
+
+    public static LocalLabelCache createSortedSimpleCache(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
+        return builder(tableName, language, dbAccess).sorted().build();
+    }
+
+    public static LocalLabelCache createSortedSmartCache(
+            String tableName,
+            DbBeanLanguage language,
+            DbBeanLanguage defaultLanguage,
+            DBAccess dbAccess)
+    {
+        return builder(tableName, language, dbAccess).smartCache(defaultLanguage).sorted().build();
     }
 
     public static CacheBuilder builder(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
@@ -39,6 +54,7 @@ public class LocalLabelCache {
         private final DbBeanLanguage language;
         private final DBAccess dbAccess;
         private DbBeanLanguage defaultLanguage = null;
+        private boolean sorted = false;
 
         private CacheBuilder(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
             this.tableName = tableName;
@@ -76,6 +92,11 @@ public class LocalLabelCache {
             return this;
         }
 
+        public CacheBuilder sorted() {
+            this.sorted = true;
+            return this;
+        }
+
         // * SELECT table.id, label_data.data FROM table
         // * INNER JOIN label_data ON label_data.id_label=id_xxx_label
         // * WHERE label_data.id_language=?
@@ -98,20 +119,31 @@ public class LocalLabelCache {
         }
 
         public LocalLabelCache build() {
-            return new LocalLabelCache(composeQuery(), language, dbAccess, defaultLanguage);
+            return new LocalLabelCache(composeQuery(), language, dbAccess, defaultLanguage, sorted);
         }
     }
 
-    private LocalLabelCache(String query, DbBeanLanguage language, DBAccess dbAccess, DbBeanLanguage defaultLanguage) {
-        System.out.println(query);
-        populateCache(query, language, dbAccess, defaultLanguage);
+    private LocalLabelCache(
+            String query,
+            DbBeanLanguage language,
+            DBAccess dbAccess,
+            DbBeanLanguage defaultLanguage,
+            boolean sorted)
+    {
+        if (sorted)
+            cache = new LinkedHashMap<>();
+        else
+            cache = new HashMap<>();
+
+        populateCache(query, language, dbAccess, defaultLanguage, sorted);
     }
 
     private void populateCache(
             String query,
             DbBeanLanguage language,
             DBAccess dbAccess,
-            DbBeanLanguage defaultLanguage)
+            DbBeanLanguage defaultLanguage,
+            boolean sorted)
     {
         var languages = new LinkedHashSet<DbBeanLanguage>();
         languages.add(language);
@@ -120,21 +152,44 @@ public class LocalLabelCache {
             languages.add(defaultLanguage);
         }
 
-        for (var actualLanguage : languages) {
-            dbAccess.processQuery(
-                    query,
-                    stat -> stat.setLong(1, actualLanguage.getId()),
-                    rs -> {
-                        while (rs.next())
-                            cache.putIfAbsent(rs.getLong(1), rs.getString(2));
-                    }
-            );
+        if (sorted) {
+            var rawMap = new HashMap<Long, String>();
+            for (var actualLanguage : languages) {
+                dbAccess.processQuery(
+                        query,
+                        stat -> stat.setLong(1, actualLanguage.getId()),
+                        rs -> {
+                            while (rs.next())
+                                rawMap.putIfAbsent(rs.getLong(1), rs.getString(2));
+                        }
+                );
+            }
+
+            rawMap.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .forEach(entry -> cache.put(entry.getKey(), entry.getValue()));
+        } else {
+            for (var actualLanguage : languages) {
+                dbAccess.processQuery(
+                        query,
+                        stat -> stat.setLong(1, actualLanguage.getId()),
+                        rs -> {
+                            while (rs.next())
+                                cache.putIfAbsent(rs.getLong(1), rs.getString(2));
+                        }
+                );
+            }
         }
     }
 
     // ! L'ID est l'ID de l'élément dans la table, pas l'ID du label !
     public String getLabel(long id) {
         return cache.get(id);
+    }
+
+    public Set<Long> getIds() {
+        return cache.keySet();
     }
 
 }
