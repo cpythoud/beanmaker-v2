@@ -118,7 +118,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
     }
 
     protected long retrieveId(DataEntry dataEntry) {
-        return dataEntry.getLongValue("id");
+        return dataEntry.getBeanId("id");
     }
 
     protected abstract void setFields(DataEntry dataEntry);
@@ -127,7 +127,11 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         return dataEntry.getStringValue(fieldToHeaderMap.get(field));
     }
 
-    protected long getLongValue(DataEntry dataEntry, String field) {
+    protected long getIdBean(DataEntry dataEntry, String field) {
+        return dataEntry.getBeanId(fieldToHeaderMap.get(field));
+    }
+
+    protected Long getLongValue(DataEntry dataEntry, String field) {
         return dataEntry.getLongValue(fieldToHeaderMap.get(field));
     }
 

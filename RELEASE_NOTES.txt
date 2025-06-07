@@ -96,6 +96,7 @@ NEW FEATURES:
   to initialize a new record/bean
 - add function to check if a label is unique in context (specific table field)
 - add DbBeanHtmlSelector class to runtime as an helper class to generate HTML selects from a list of beans
+- enhance robustness of CSV parsing classes and functions and avoids unnecessary exceptions when fields are empty
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
