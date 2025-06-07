@@ -55,7 +55,7 @@ INCOMPATIBLES CHANGES:
     - introduction of a warning level in bean validation logic;
     - validation checking functions have been renamed to distinguish warnings, errors that should short circuit the
       validation logic and error that should be reported while letting the validation process continue
-- introduce the notion of region to DbBeanLanguage for finer localisation (ex. en-US vs en)
+- introduce the notion of region to DbBeanLanguage for finer localization (ex. en-US vs en)
 - add support for a hierarchy of languages in multilingual projects, where label value for a language+region,
   if they are not directly available, can be retrieved from the raw language labels and then, if still unavailable,
   from the default language
@@ -92,7 +92,7 @@ NEW FEATURES:
   the number of queries can go from thousands to barely a dozen
 - add new parameter 'extraFormRequestParameters' to beanmaker2.js, that is a javascript array of parameters to be
   looked up in the dataset of the edit link and that will be translated into request parameters with their
-  corresponding value when the web form is request; this should help a lot when extra information is required
+  corresponding value when the web form is posted; this will help when extra information is required
   to initialize a new record/bean
 - add function to check if a label is unique in context (specific table field)
 - add DbBeanHtmlSelector class to runtime as an helper class to generate HTML selects from a list of beans
