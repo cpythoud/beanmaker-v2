@@ -104,10 +104,10 @@ public class LocalLabelCache {
         }
 
         // * SELECT table.id, label_data.data FROM table
-        // * INNER JOIN label_data ON label_data.id_label=id_xxx_label
+        // * INNER JOIN label_data ON label_data.id_label=table.id_xxx_label
         // * WHERE label_data.id_language=?
         private static final String QUERY_TEMPLATE =
-                "SELECT %s.id, %s.%s FROM %s INNER JOIN %s ON %s.%s=%s WHERE %s.%s=?";
+                "SELECT %s.id, %s.%s FROM %s INNER JOIN %s ON %s.%s=%s.%s WHERE %s.%s=?";
 
         private String composeQuery() {
             String query = QUERY_TEMPLATE.formatted(
@@ -118,6 +118,7 @@ public class LocalLabelCache {
                     labelDataTable,
                     labelDataTable,
                     labelDataTableLabelField,
+                    tableName,
                     labelField,
                     labelDataTable,
                     labelDataTableLanguageField
