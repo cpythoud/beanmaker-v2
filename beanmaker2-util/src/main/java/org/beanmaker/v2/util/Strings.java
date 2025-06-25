@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import java.text.Normalizer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -505,19 +507,8 @@ public class Strings {
     }
 
     public static String removeAccents(String text) {
-        StringBuilder unaccentedText = new StringBuilder();
-        int length = text.length();
-
-        for(int i = 0; i < length; ++i) {
-            char c = text.charAt(i);
-            int pos = "ÀàÈèÌìÒòÙùÁáÉéÍíÓóÚúÝýÂâÊêÎîÔôÛûŶŷÃãÕõÑñÄäËëÏïÖöÜüŸÿÅåÇçŐőŰű".indexOf(c);
-            if (pos > -1)
-                unaccentedText.append("AaEeIiOoUuAaEeIiOoUuYyAaEeIiOoUuYyAaOoNnAaEeIiOoUuYyAaCcOoUu".charAt(pos));
-            else
-                unaccentedText.append(c);
-        }
-
-        return unaccentedText.toString();
+        return Normalizer.normalize(text, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
     }
 
     /**
@@ -649,6 +640,28 @@ public class Strings {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Replaces all characters in the input string that are not present in the known characters list with an underscore.
+     *
+     * @param input the string to process
+     * @param knownChars a string containing all known/allowed characters
+     * @return a new string where all unknown characters are replaced with underscores
+     * @throws IllegalArgumentException if either input or knownChars is null
+     */
+    public static String replaceUnknownChars(String input, String knownChars) {
+        if (input == null || knownChars == null) {
+            throw new IllegalArgumentException("Neither input nor knownChars can be null");
+        }
+
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            result.append(knownChars.indexOf(c) >= 0 ? c : '_');
+        }
+        return result.toString();
     }
 
 }
