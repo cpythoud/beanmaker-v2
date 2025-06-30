@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.runtime.DbBeanEditor;
+import org.beanmaker.v2.runtime.DbBeanEditorInterface;
 import org.beanmaker.v2.runtime.DbBeanInterface;
 
 import org.dbbeans.sql.DBAccess;
@@ -105,7 +105,7 @@ public final class SingleElements {
         return Beans.createBean(beanClass, id, transaction);
     }
 
-    public static <E extends DbBeanEditor> Optional<E> getEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             String query,
             DBQuerySetup querySetup,
             E returnedEditor,
@@ -122,7 +122,7 @@ public final class SingleElements {
         );
     }
 
-    private static <E extends DbBeanEditor> E getSingleEditor(E returnedEditor, ResultSet rs) throws SQLException {
+    private static <E extends DbBeanEditorInterface> E getSingleEditor(E returnedEditor, ResultSet rs) throws SQLException {
         long id = getSingleID(rs);
         if (id == 0)
             return null;
@@ -153,7 +153,7 @@ public final class SingleElements {
         );
     }
 
-    public static <E extends DbBeanEditor> Optional<E> getEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             String query,
             DBQuerySetup querySetup,
             E returnedEditor,
@@ -170,7 +170,7 @@ public final class SingleElements {
         );
     }
 
-    private static <E extends DbBeanEditor> E getSingleEditor(
+    private static <E extends DbBeanEditorInterface> E getSingleEditor(
             E returnedEditor,
             ResultSet rs,
             DBTransaction transaction)
