@@ -113,6 +113,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasOtherBeanReference())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
 
+        if (columns.hasUniqueCodeField())
+            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditorWithUniqueCode");
+
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
 
@@ -135,6 +138,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditor");
             javaClass.extendsClass("DbBeanEditor");
         });
+
+        if (columns.hasUniqueCodeField())
+            javaClass.implementsInterface("DbBeanEditorWithUniqueCode");
     }
 
     @Override
@@ -625,13 +631,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addStandardSetterFunction(Column column) {
-        addStandardSetterFunction(column.getJavaType(), column.getJavaName());
-    }
-
-    private void addStandardSetterFunction(String type, String name) {
-        javaClass
-                .addContent(getStandardSetterFunctionWithAssignment(type, name))
-                .addContent(EMPTY_LINE);
+        var function = getStandardSetterFunctionWithAssignment(column.getJavaType(), column.getJavaName());
+        if (column.isUniqueCodeField())
+            function.annotate("@Override");
+        javaClass.addContent(function).addContent(EMPTY_LINE);
     }
 
     private FunctionDeclaration getStandardSetterFunctionWithAssignment(Column column) {
@@ -1460,11 +1463,11 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         String functionName = "is" + capitalize(name) + "Unique";
 
         javaClass
-                .addContent(getUnicityCheckFunctionDeclaration(functionName)
+                .addContent(getUnicityCheckFunctionDeclaration(functionName, column)
                         .markAsFinal()
                         .addContent(new ReturnStatement(new FunctionCall(functionName).addArgument("null"))))
                 .addContent(EMPTY_LINE)
-                .addContent(getUnicityCheckFunctionDeclaration(functionName)
+                .addContent(getUnicityCheckFunctionDeclaration(functionName, column)
                         .addArgument(new FunctionArgument("DBTransaction", "transaction"))
                         .addContent(new IfBlock(new Condition("transaction == null"))
                                 .addContent(getUnicityCheckResult(column, false)))
@@ -1473,8 +1476,13 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
-    private FunctionDeclaration getUnicityCheckFunctionDeclaration(String functionName) {
-        return new FunctionDeclaration(functionName, "boolean");
+    private FunctionDeclaration getUnicityCheckFunctionDeclaration(String functionName, Column column) {
+        var function = new FunctionDeclaration(functionName, "boolean");
+
+        if (column.isUniqueCodeField())
+            function.annotate("@Override").visibility(Visibility.PUBLIC);
+
+        return function;
     }
 
     private ReturnStatement getUnicityCheckResult(Column column, boolean transaction) {

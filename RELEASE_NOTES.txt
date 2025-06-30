@@ -72,6 +72,9 @@ INCOMPATIBLES CHANGES:
 - refactored SingleElements editor retrieval functions to accept arguments of type E extends DbBeanEditorInterface
   instead of E extends DbBeanEditor ; the change does not strictly speaking introduce an incompatibility, but any
   calling code should probably be recompiled
+- Code management has been completely revamped, with liberal use of interfaces DbBeanWithUnicode and
+  DbBeanEditorWithUniqueCode, affected code will need to be regenerated and recompiled to take advantage of the
+  new functionality
 
 All generated code from version 2.2 must be regenerated. In editable files, overloaded functions related to file
 handling, data validation and naming and ordering beans should be checked.

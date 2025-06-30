@@ -166,6 +166,10 @@ public class Column {
         return unique;
     }
 
+    public boolean isUniqueCodeField() {
+        return getJavaName().equals("code") && isUnique();
+    }
+
     public void setJavaType(String javaType) {
         if (!JAVA_TYPES.contains(javaType))
             throw new IllegalArgumentException(javaType + " type cannot be used with BeanMaker");

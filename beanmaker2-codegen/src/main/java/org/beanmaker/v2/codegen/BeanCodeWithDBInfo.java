@@ -50,7 +50,7 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         String getterPrefix = (type.equals("Boolean") || type.equals("boolean")) ? "is" : "get";
 
         var getter = new FunctionDeclaration(getterPrefix + capitalize(name), type).visibility(Visibility.PUBLIC);
-        if (column.isId() || column.isItemOrder() || name.equals("idLabel"))
+        if (column.isId() || column.isItemOrder() || name.equals("idLabel") || column.isUniqueCodeField())
             getter.annotate("@Override");
         if (TEMPORAL_TYPES.contains(type))
             getter.addContent(new ReturnStatement(new FunctionCall("copy", "DBUtil").addArgument(name)));
