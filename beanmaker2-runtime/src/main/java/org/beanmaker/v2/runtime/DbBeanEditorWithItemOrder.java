@@ -24,7 +24,9 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
         dbBeanItemOrderManager = parameters.getItemOrderManager();
     }
 
-    protected void setItemOrder(long itemOrder) {
+    // !! public instead of protected because required for CSV import !!
+    // TODO: analyse implication - to be taken into account into item_order rewrite/debug/refactoring
+    public void setItemOrder(long itemOrder) {
         this.itemOrder = itemOrder;
     }
 
