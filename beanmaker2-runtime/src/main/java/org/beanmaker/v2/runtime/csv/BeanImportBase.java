@@ -101,8 +101,10 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
                         logger.trace("Recording data at line: {}", dataEntry.getLineNumber());
                         setupEditor(dataEntry);
                         setFields(dataEntry);
-                        if (validator.validate(editor, dataEntry))
-                            editor.updateDB(transaction);
+                        if (validator.validate(editor, dataEntry)) {
+                            long id = editor.updateDB(transaction);
+                            executeExtraUpdateActions(id, dataEntry, transaction);
+                        }
                     }
                 },
                 dbTransaction
@@ -122,6 +124,8 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
     }
 
     protected abstract void setFields(DataEntry dataEntry);
+
+    protected void executeExtraUpdateActions(long id, DataEntry dataEntry, DBTransaction transaction) { }
 
     protected String getStringValue(DataEntry dataEntry, String field) {
         return dataEntry.getStringValue(fieldToHeaderMap.get(field));
