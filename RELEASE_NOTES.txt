@@ -111,6 +111,9 @@ BUG FIXES:
 - bug fix for: null String saved as empty text instead of a SQL NULL value
 - bug fix for: MoneyFormat builder doesn't work correctly as default format is leaking in all builder format
                creation; doesn't work at all if builder is used to format strings
+- bug fix for: not losing the ID of a label during data validation: allows unicity test on label content and makes
+               sure that we are not creating orphaned label with every update (didn't seem to be the case, but
+               definitely cannot happen now)
 
 MINOR CHANGES:
 - code cleanup in master tables

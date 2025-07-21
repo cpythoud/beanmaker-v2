@@ -1526,10 +1526,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
             if (!labels.isEmpty()) {
                 fullResetFunction.addContent(EMPTY_LINE);
-                for (Column label: labels)
+                for (Column label: labels) {
+                    fullResetFunction.addContent(new Assignment(label.getJavaName(), "0"));
                     fullResetFunction.addContent(
                             new FunctionCall("fullReset", uncapitalize(chopID(label.getJavaName())))
                                     .byItself());
+                }
             }
 
             javaClass.addContent(fullResetFunction).addContent(EMPTY_LINE);
@@ -1559,7 +1561,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 String name = column.getJavaName();
                 switch (type) {
                     case "long":
-                        resetFunction.addContent(new Assignment(name, "0"));
+                        if (!column.isLabelReference())
+                            resetFunction.addContent(new Assignment(name, "0"));
                         break;
                     case "Boolean":
                         resetFunction.addContent(new Assignment(name, "null"));
