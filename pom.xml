@@ -47,9 +47,15 @@
     </properties>
 
     <distributionManagement>
+        <repository>
+            <id>beanmaker-releases</id>
+            <name>Beanmaker Releases</name>
+            <url>https://repository.beanmaker.org/releases</url>
+        </repository>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <id>beanmaker-snapshots</id>
+            <name>Beanmaker Snapshots</name>
+            <url>https://repository.beanmaker.org/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
