@@ -13,6 +13,10 @@ public abstract class DbBeanHTMLWrapperBase {
         this.language = language;
     }
 
+    public void setCode(String code) {
+        throw new UnsupportedOperationException("Bean identification through code is unsupported");
+    }
+
     protected DbBeanInterface getBean() {
         checkBean();
         return bean;

@@ -43,6 +43,8 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void addCoreFunctionality() {
         addSetIdFunction();
+        if (columns.hasUniqueCodeField())
+            addSetCodeFunction();
         addBeanGetter();
         addHtmlViewGetter();
     }
@@ -54,6 +56,19 @@ public class BeanHTMLWrapperBaseSourceFile extends BeanCodeWithDBInfo {
                         .addArgument(new FunctionArgument("long", "id"))
                         .addContent(new FunctionCall("setBean").byItself()
                                 .addArgument(new ObjectCreation(beanName).addArgument("id")))
+        ).addContent(EMPTY_LINE);
+    }
+
+    private void addSetCodeFunction() {
+        javaClass.addContent(
+                new FunctionDeclaration("setCode")
+                        .annotate("@Override")
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("String", "code"))
+                        .addContent(new FunctionCall("setBean").byItself()
+                                .addArgument(new FunctionCall(
+                                        "orElseThrow",
+                                        new FunctionCall("getFromCode", beanName).addArgument("code"))))
         ).addContent(EMPTY_LINE);
     }
 
