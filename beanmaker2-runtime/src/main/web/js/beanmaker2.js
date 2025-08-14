@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.7 -- 2025-04-15';
+    static VERSION = 'v0.2.8 -- 2025-08-14';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -115,6 +115,14 @@ class Beanmaker2 {
     static getLabel(element, name) {
         const jsonData = element.dataset.beanmaker2labels ? JSON.parse(element.dataset.beanmaker2labels) : {};
         return name in jsonData ? jsonData[name] : "[MISSING LABEL: " + name + "]";
+    }
+
+    static onDomReady(callback) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', callback, { once: true });
+        } else {
+            callback();
+        }
     }
 
     constructor(bean, nonDefaultParameters) {
