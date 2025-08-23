@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.9 -- 2025-08-22';
+    static VERSION = 'v0.2.10 -- 2025-08-23';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -299,8 +299,14 @@ class Beanmaker2 {
         else
             errorContainer = document.getElementById(this.parameters.errorContainerIDPrefix + this.bean + "_" + beanID);
 
-        if (!errorContainer)
-            throw new Error("Could not determine where to display error messages on page");
+        if (!errorContainer) {
+            let details;
+            if (this.parameters.errorContainerSelector)
+                details = "Could not find element with selector: " + this.parameters.errorContainerSelector;
+            else
+                details = "Could not find element with ID #" + this.parameters.errorContainerIDPrefix + this.bean + "_" + beanID;
+            throw new Error("Could not determine where to display error messages on page. " + details);
+        }
 
         return errorContainer;
     }
