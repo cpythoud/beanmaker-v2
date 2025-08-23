@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.10 -- 2025-08-23';
+    static VERSION = 'v0.2.11 -- 2025-08-23';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -36,7 +36,8 @@ class Beanmaker2 {
         fieldInErrorStyles: '',
         itemOrderMoveAfterFunction: function () { },
         itemOrderMoveBeforeFunction: function () { },
-        extraFormRequestParameters: [ ]
+        extraFormRequestParameters: [ ],
+        extraDeleteParameters: [ ]
     }
 
     static isStringEmpty(str) {
@@ -318,7 +319,7 @@ class Beanmaker2 {
                 event.preventDefault();
                 const id = Beanmaker2.getBeanID($link);
                 if (this.parameters.deleteConfirmationFunction(id, this.parameters.deleteConfirmationText)) {
-                    fetch(this.parameters.servletURL, this.getDeleteParameters(id))
+                    fetch(this.parameters.servletURL, this.getDeleteParameters(id, $link))
                         .then(response => {
                             if (response.ok && response.headers.get("Content-Type") === "text/json; charset=UTF-8")
                                 return response.json();
@@ -360,7 +361,7 @@ class Beanmaker2 {
         });
     }
 
-    getDeleteParameters(id) {
+    getDeleteParameters(id, $link) {
         const parameters = {
             method: 'POST',
             cache: 'no-store',
@@ -370,6 +371,14 @@ class Beanmaker2 {
         const formData = new FormData();
         formData.set('beanmaker_operation', 'delete');
         formData.set('id', id.toString());
+
+        this.parameters.extraDeleteParameters.forEach(attr => {
+            const dataAttr = `data-${attr}`;
+            const value = $link.getAttribute(dataAttr);
+            if (value !== null) {
+                formData.set(attr, value);
+            }
+        });
 
         parameters.body = new URLSearchParams(formData);
 
