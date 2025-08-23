@@ -118,4 +118,20 @@ public class DbBeanLocalization {
         return language.getLocale();
     }
 
+    public DbBeanLocalization newInstanceWithPrefix(String labelNamePrefix) {
+        return newInstance(labelNamePrefix, null);
+    }
+
+    public DbBeanLocalization newInstanceWithBeanClassName(String beanClassName) {
+        return newInstance(null, beanClassName);
+    }
+
+    public DbBeanLocalization newInstance(String labelNamePrefix, String beanClassName) {
+        return new DbBeanLocalization(
+                dbBeanLabelBasicFunctions,
+                labelNamePrefix == null ? this.labelNamePrefix : labelNamePrefix,
+                beanClassName == null ? this.beanClassName : beanClassName
+        );
+    }
+
 }

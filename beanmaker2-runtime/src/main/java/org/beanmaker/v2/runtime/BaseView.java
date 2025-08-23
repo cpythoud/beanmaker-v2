@@ -2,7 +2,7 @@ package org.beanmaker.v2.runtime;
 
 public class BaseView {
 
-    protected final DbBeanLocalization dbBeanLocalization;
+    protected DbBeanLocalization dbBeanLocalization;
 
     public BaseView(DbBeanLocalization dbBeanLocalization) {
         this.dbBeanLocalization = dbBeanLocalization;
