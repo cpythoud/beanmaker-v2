@@ -96,6 +96,10 @@ public class MasterTableCellDefinition {
         return new MasterTableCellDefinition(fieldName, "");
     }
 
+    public static MasterTableCellDefinition createTagCellDefinition(String fieldName, Tag tag) {
+        return new MasterTableCellDefinition(fieldName, tag);
+    }
+
     public String fieldName() {
         return fieldName;
     }
