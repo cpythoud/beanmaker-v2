@@ -63,6 +63,11 @@ public final class IsoWeek {
                 .with(WeekFields.ISO.dayOfWeek(), 7); // * 7 = Sunday
     }
 
+    public static IsoWeek getCurrent() {
+        var now = LocalDate.now();
+        return new IsoWeek(now.getYear(), now.get(WeekFields.ISO.weekOfWeekBasedYear()));
+    }
+
     public static List<IsoWeek> getWeeks(int year) {
         var weeks = new ArrayList<IsoWeek>();
         int maxWeeks = getWeekCount(year);
