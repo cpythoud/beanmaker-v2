@@ -75,6 +75,10 @@ INCOMPATIBLES CHANGES:
 - Code management has been completely revamped, with liberal use of interfaces DbBeanWithUnicode and
   DbBeanEditorWithUniqueCode, affected code will need to be regenerated and recompiled to take advantage of the
   new functionality
+- 2 functions in BaseMasterTableView have been made private (from protected): getTableCell() & getTableCellCssClasses(),
+  getTableCell() functions should never be called from now on, except for the one with a MasterTableCellDefinition
+  argument. Two getBasicTableCell() functions have been added to help with Integer and Long straightforward data
+  display.
 
 All generated code from version 2.2 must be regenerated. In editable files, overloaded functions related to file
 handling, data validation and naming and ordering beans should be checked.

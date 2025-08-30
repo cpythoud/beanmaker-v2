@@ -796,16 +796,34 @@ public abstract class BaseMasterTableView extends BaseView {
         return cell;
     }
 
-    protected TdTag getTableCell(String name, String value, String extraCssClasses) {
+    private TdTag getTableCell(String name, String value, String extraCssClasses) {
         return new TdTag(value).cssClass(getTableCellCssClasses(name, extraCssClasses));
     }
 
-    protected String getTableCellCssClasses(String name, String extraCssClasses) {
+    private String getTableCellCssClasses(String name, String extraCssClasses) {
         return "tb-" + name + (extraCssClasses == null ? "" : " " + extraCssClasses);
     }
 
     protected TdTag getBasicTableCell(String name, String value) {
         return getTableCell(name, value, null);
+    }
+
+    protected TdTag getBasicTableCell(String name, int value) {
+        return getTableCell(MasterTableCellDefinition.createIntegerCellDefinition(
+                name,
+                Integer.toString(value),
+                value,
+                zeroFilledMaxDigits
+        ));
+    }
+
+    protected TdTag getBasicTableCell(String name, long value) {
+        return getTableCell(MasterTableCellDefinition.createIntegerCellDefinition(
+                name,
+                Long.toString(value),
+                value,
+                zeroFilledMaxDigits
+        ));
     }
 
     protected TdTag getEmptyTableCell(String name) {
