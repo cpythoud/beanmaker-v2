@@ -419,6 +419,17 @@ public abstract class BaseMasterTableView extends BaseView {
         return getTableFilterCell().child(select);
     }
 
+    protected <T extends DbBeanInterface> ThTag getBeanBasedSelectFilterCell(String name, List<T> beans) {
+        return getAdvancedSelectFilterCell(name, IdNamePair.getPairs(beans, dbBeanLocalization));
+    }
+
+    protected <T extends DbBeanInterface> ThTag getBeanBasedSortedSelectFilterCell(String name, List<T> beans) {
+        return getAdvancedSelectFilterCell(
+                name,
+                IdNamePair.getPairs(beans, dbBeanLocalization, null, true)
+        );
+    }
+
     protected ThTag getEmptyFilterCell() {
         return new ThTag();
     }

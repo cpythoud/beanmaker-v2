@@ -100,6 +100,41 @@ public class MasterTableCellDefinition {
         return new MasterTableCellDefinition(fieldName, tag);
     }
 
+    public static MasterTableCellDefinition createBeanTextCellDefinition(
+            String fieldName,
+            DbBeanInterface bean,
+            DbBeanLocalization localization)
+    {
+        return createBeanTextCellDefinition(fieldName, bean, localization.getLanguage());
+    }
+
+    public static MasterTableCellDefinition createBeanValueCellDefinition(
+            String fieldName,
+            DbBeanInterface bean,
+            DbBeanLocalization localization,
+            int zeroFilledMaxDigits)
+    {
+        return createBeanValueCellDefinition(fieldName, bean, localization.getLanguage(), zeroFilledMaxDigits);
+    }
+
+    public static MasterTableCellDefinition createBeanTextCellDefinition(
+            String fieldName,
+            DbBeanInterface bean,
+            DbBeanLanguage language)
+    {
+        return new MasterTableCellDefinition(fieldName, bean.getNameForIdNamePairsAndTitles(language));
+    }
+
+    public static MasterTableCellDefinition createBeanValueCellDefinition(
+            String fieldName,
+            DbBeanInterface bean,
+            DbBeanLanguage language,
+            int zeroFilledMaxDigits)
+    {
+        return new MasterTableCellDefinition(fieldName, bean.getNameForIdNamePairsAndTitles(language))
+                .filteringValue(bean.getId(), zeroFilledMaxDigits);
+    }
+
     public String fieldName() {
         return fieldName;
     }
@@ -191,6 +226,14 @@ public class MasterTableCellDefinition {
             this.filteringValue = null;
         else
             this.filteringValue = filteringValue ? yesValue : noValue;
+        return this;
+    }
+
+    public MasterTableCellDefinition filteringValue(Long filteringValue, int zeroFilledMaxDigits) {
+        if (filteringValue == null)
+            this.filteringValue = null;
+        else
+            this.filteringValue = Strings.zeroFill(filteringValue, zeroFilledMaxDigits);
         return this;
     }
 

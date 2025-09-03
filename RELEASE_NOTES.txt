@@ -110,6 +110,8 @@ NEW FEATURES:
 - function to generate codes from label content ("My Data" -> my_data)
 - DbBeanLocalization in views (most important for master tables) is no longer final and can now be reassigned
   in super classes
+- add function to help creating select-based filter in tables when a small inventory of value (beans) is present
+  and strict type filtering is preferable to String-based filtering
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
