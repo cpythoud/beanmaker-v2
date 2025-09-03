@@ -97,7 +97,12 @@ public class IdNamePair implements Comparable<IdNamePair> {
 			String noSelectionLabelName,
 			boolean sortOnName)
 	{
-		return getPairs(beans, localization.getLanguage(), localization.getLabel(noSelectionLabelName), sortOnName);
+		return getPairs(
+                beans,
+                localization.getLanguage(),
+                noSelectionLabelName == null ? null : localization.getLabel(noSelectionLabelName),
+                sortOnName
+        );
 	}
 
 	public static <T extends DbBeanInterface> List<IdNamePair> getPairs(
