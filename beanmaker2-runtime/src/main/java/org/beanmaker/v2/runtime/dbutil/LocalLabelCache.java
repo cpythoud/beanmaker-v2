@@ -9,10 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LocalLabelCache {
 
-    private final Map<Long, String> cache;
+    private final Map<String, String> cache;
 
     public static LocalLabelCache createSimpleCache(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
         return builder(tableName, language, dbAccess).build();
@@ -49,6 +50,7 @@ public class LocalLabelCache {
         private String labelDataTableDataField = "`data`";
         private String labelDataTableLabelField = "id_label";
         private String labelDataTableLanguageField = "id_language";
+        private String idField = "id";
         private String labelField = "id_label";
         private final String tableName;
         private final DbBeanLanguage language;
@@ -83,6 +85,11 @@ public class LocalLabelCache {
             return this;
         }
 
+        public CacheBuilder idField(String idField) {
+            this.idField = idField;
+            return this;
+        }
+
         public CacheBuilder labelField(String labelField) {
             this.labelField = labelField;
             return this;
@@ -107,11 +114,12 @@ public class LocalLabelCache {
         // * INNER JOIN label_data ON label_data.id_label=table.id_xxx_label
         // * WHERE label_data.id_language=?
         private static final String QUERY_TEMPLATE =
-                "SELECT %s.id, %s.%s FROM %s INNER JOIN %s ON %s.%s=%s.%s WHERE %s.%s=?";
+                "SELECT %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s=%s.%s WHERE %s.%s=?";
 
         private String composeQuery() {
             String query = QUERY_TEMPLATE.formatted(
                     tableName,
+                    idField,
                     labelDataTable,
                     labelDataTableDataField,
                     tableName,
@@ -165,14 +173,14 @@ public class LocalLabelCache {
         }
 
         if (sorted) {
-            var rawMap = new HashMap<Long, String>();
+            var rawMap = new HashMap<String, String>();
             for (var actualLanguage : languages) {
                 dbAccess.processQuery(
                         query,
                         stat -> stat.setLong(1, actualLanguage.getId()),
                         rs -> {
                             while (rs.next())
-                                rawMap.putIfAbsent(rs.getLong(1), rs.getString(2));
+                                rawMap.putIfAbsent(rs.getString(1), rs.getString(2));
                         }
                 );
             }
@@ -188,20 +196,27 @@ public class LocalLabelCache {
                         stat -> stat.setLong(1, actualLanguage.getId()),
                         rs -> {
                             while (rs.next())
-                                cache.putIfAbsent(rs.getLong(1), rs.getString(2));
+                                cache.putIfAbsent(rs.getString(1), rs.getString(2));
                         }
                 );
             }
         }
     }
 
-    // ! L'ID est l'ID de l'élément dans la table, pas l'ID du label !
+    public String getLabel(String key) {
+        return cache.get(key);
+    }
+
     public String getLabel(long id) {
-        return cache.get(id);
+        return cache.get(String.valueOf(id));
+    }
+
+    public Set<String> getKeys() {
+        return cache.keySet();
     }
 
     public Set<Long> getIds() {
-        return cache.keySet();
+        return cache.keySet().stream().map(Long::valueOf).collect(Collectors.toSet());
     }
 
 }
