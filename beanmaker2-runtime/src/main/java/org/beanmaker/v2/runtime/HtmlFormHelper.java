@@ -73,6 +73,9 @@ public interface HtmlFormHelper {
     ButtonTag getButtonTag(HFHParameters params);
 
     Tag getHiddenInfo(String field, long idBean, String value);
+    default Tag getHiddenInfo(String field, long idBean, long idOtherBean) {
+        return getHiddenInfo(field, idBean, Long.toString(idOtherBean));
+    }
 
     default Tag getFormElementsContainer(Tag form) {
         return form;
