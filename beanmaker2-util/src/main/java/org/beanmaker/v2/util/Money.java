@@ -227,4 +227,8 @@ public final class Money implements Comparable<Money> {
         return new Money(val, format);
     }
 
+    public DecimalValue toDecimalValue() {
+        return DecimalValue.from(val, format.getDecimals());
+    }
+
 }

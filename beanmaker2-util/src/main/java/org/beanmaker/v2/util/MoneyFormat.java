@@ -37,6 +37,10 @@ public final class MoneyFormat {
         return new Builder();
     }
 
+    public int getDecimals() {
+        return decimals;
+    }
+
     /**
      * Checks if a String can be transformed in a value according to the current MoneyFormat.
      * @param val the String to be checked.
