@@ -278,7 +278,7 @@ public class ItemOrderManager {
                 stat -> {
                     stat.setLong(1, threshold);
                     if (parameters.length > 0) {
-                        int index = 1;
+                        int index = 0;
                         for (long parameter: parameters)
                             stat.setLong(++index, parameter);
                     }
