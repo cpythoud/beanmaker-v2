@@ -511,4 +511,43 @@ public class DecimalValueTest {
         assertEquals("Separator also present in decorators: [,], not allowed", ex.getMessage());
     }
 
+    @Test
+    public void testLenientParsingLimitCases() {
+        DecimalValueParser twoDecimalParser =
+                DecimalValueParser.builder()
+                        .decimals(2)
+                        .addSeparators(".", ",")
+                        .addDecorator(" ")
+                        .lenient(true)
+                        .build();
+
+        DecimalValue decimalValue = twoDecimalParser.parse("123.456");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(46, decimalValue.getFractionalPart());
+        assertEquals(46, decimalValue.getZeroPatchedFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("123.455");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(46, decimalValue.getFractionalPart());
+        assertEquals(46, decimalValue.getZeroPatchedFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("123.454");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(45, decimalValue.getFractionalPart());
+        assertEquals(45, decimalValue.getZeroPatchedFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("123.5555555");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(56, decimalValue.getFractionalPart());
+        assertEquals(56, decimalValue.getZeroPatchedFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+    }
+
 }

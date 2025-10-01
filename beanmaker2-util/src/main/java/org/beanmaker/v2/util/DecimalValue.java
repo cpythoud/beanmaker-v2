@@ -29,7 +29,7 @@ public class DecimalValue implements Comparable<DecimalValue> {
         long actualFractionalPart = fractionalPart;
         if (fractionalPart >= noDecimalMultiplier) {
             if (lenient) {
-                actualFractionalPart = calcActualFractionPart(fractionalPart, noDecimalMultiplier);
+                actualFractionalPart = calcActualFractionPart(fractionalPart, decimals);
             } else {
                 throw new IllegalArgumentException(
                         "You specified " + decimals + " decimals. Fraction part "  + fractionalPart + " is too large");
@@ -49,10 +49,22 @@ public class DecimalValue implements Comparable<DecimalValue> {
         return mul;
     }
 
-    private long calcActualFractionPart(long fractionalPart, long noDecimalMultiplier) {
-        return BigDecimal.valueOf(fractionalPart)
-                .divide(BigDecimal.valueOf(noDecimalMultiplier), 0, RoundingMode.HALF_UP)
-                .longValue();
+    private long calcActualFractionPart(long fractionalPart, int decimals) {
+        String digits = String.valueOf(fractionalPart);
+        long value = Long.parseLong(digits.substring(0, decimals));
+        boolean allFives = true;
+        for (int i = decimals; i < digits.length(); i++) {
+            int digit = Integer.parseInt(digits.substring(i, i + 1));
+            if (digit != 5) {
+                allFives = false;
+                if (digit > 5)
+                    ++value;
+                break;
+            }
+        }
+        if (allFives)
+            ++value;
+        return value;
     }
 
     public static DecimalValue from(BigDecimal bigDecimal, int decimals) {
@@ -64,7 +76,7 @@ public class DecimalValue implements Comparable<DecimalValue> {
         var scaled = bigDecimal.abs().setScale(decimals, RoundingMode.HALF_UP);
         long integerPart = scaled.longValue();
         long fractionalPart = scaled.remainder(BigDecimal.ONE)
-                .movePointRight(3)
+                .movePointRight(decimals)
                 .abs()
                 .longValueExact();
         return new DecimalValue(integerPart, fractionalPart, decimals, negative, false);
