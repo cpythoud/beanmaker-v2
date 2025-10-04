@@ -10,6 +10,9 @@ import java.util.Set;
 
 public class DecimalValueParser {
 
+    public static final DecimalValueParser DOT = DecimalValueParser.create(".");
+    public static final DecimalValueParser COMMA = DecimalValueParser.create(",");
+
     private final int decimals;
     private final List<String> separators;
     private final List<String> decorators;
@@ -35,10 +38,18 @@ public class DecimalValueParser {
     }
 
     public DecimalValue parse(String value) {
-        return parse(value, decimals);
+        return parse(value, decimals, lenient);
     }
 
     public DecimalValue parse(String value, int decimals) {
+        return parse(value, decimals, lenient);
+    }
+
+    public DecimalValue parse(String value, boolean lenient) {
+        return parse(value, decimals, lenient);
+    }
+
+    public DecimalValue parse(String value, int decimals, boolean lenient) {
         Objects.requireNonNull(value);
         if (Strings.isEmpty(value))
             throw new IllegalArgumentException("String value must not be empty");
@@ -57,10 +68,10 @@ public class DecimalValueParser {
                             + ") in value: " + value);
         }
 
-        return parse(value, decimals, selectedSeparator);
+        return parse(value, decimals, selectedSeparator, lenient);
     }
 
-    private DecimalValue parse(String value, int decimals, String separator) {
+    private DecimalValue parse(String value, int decimals, String separator, boolean lenient) {
         Objects.requireNonNull(value);
         if (Strings.isEmpty(value))
             throw new IllegalArgumentException("String value must not be empty");

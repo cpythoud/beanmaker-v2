@@ -548,6 +548,13 @@ public class DecimalValueTest {
         assertEquals(56, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("12.3879");
+        assertEquals(12, decimalValue.getIntegerPart());
+        assertEquals(39, decimalValue.getFractionalPart());
+        assertEquals(39, decimalValue.getZeroPatchedFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
     }
 
 }

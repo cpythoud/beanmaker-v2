@@ -31,7 +31,7 @@ public class DecimalValue implements Comparable<DecimalValue> {
             if (lenient) {
                 actualFractionalPart = calcActualFractionPart(fractionalPart, decimals);
             } else {
-                throw new IllegalArgumentException(
+                throw new NumberFormatException(
                         "You specified " + decimals + " decimals. Fraction part "  + fractionalPart + " is too large");
             }
         }
