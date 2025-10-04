@@ -74,7 +74,7 @@ public class DecimalValueFormat {
         if (digits.length() == value.getDecimals())
             return digits;
 
-        return digits + "0".repeat(Math.max(0, value.getDecimals() - digits.length()));
+        return "0".repeat(Math.max(0, value.getDecimals() - digits.length())) + digits;
     }
 
 }

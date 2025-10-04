@@ -15,7 +15,7 @@ public class DecimalValue implements Comparable<DecimalValue> {
     private final long noDecimalMultiplier;
     private final int negativeMultiplier;
 
-    public DecimalValue(long integerPart, long fractionalPart, int decimals, boolean negative, boolean lenient) {
+    public DecimalValue(long integerPart, long fractionalPart, int decimals, boolean negative) {
         if (integerPart < 0)
             throw new IllegalArgumentException("Integer part must be non-negative");
         if (fractionalPart < 0)
@@ -26,18 +26,12 @@ public class DecimalValue implements Comparable<DecimalValue> {
         noDecimalMultiplier = calcNoDecimalMultiplier(decimals);
         negativeMultiplier = negative ? -1 : 1;
 
-        long actualFractionalPart = fractionalPart;
-        if (fractionalPart >= noDecimalMultiplier) {
-            if (lenient) {
-                actualFractionalPart = calcActualFractionPart(fractionalPart, decimals);
-            } else {
-                throw new NumberFormatException(
-                        "You specified " + decimals + " decimals. Fraction part "  + fractionalPart + " is too large");
-            }
-        }
+        if (fractionalPart >= noDecimalMultiplier)
+            throw new NumberFormatException(
+                    "You specified " + decimals + " decimals. Fraction part "  + fractionalPart + " is too large");
 
         this.integerPart = integerPart;
-        this.fractionalPart = actualFractionalPart;
+        this.fractionalPart = fractionalPart;
         this.decimals = decimals;
         this.negative = negative;
     }
@@ -79,7 +73,7 @@ public class DecimalValue implements Comparable<DecimalValue> {
                 .movePointRight(decimals)
                 .abs()
                 .longValueExact();
-        return new DecimalValue(integerPart, fractionalPart, decimals, negative, false);
+        return new DecimalValue(integerPart, fractionalPart, decimals, negative);
     }
 
     public static DecimalValue from(long value, int decimals) {
@@ -96,7 +90,7 @@ public class DecimalValue implements Comparable<DecimalValue> {
         long noDecimalMultiplier = calcNoDecimalMultiplier(decimals);
         long integerPart = absValue / noDecimalMultiplier;
         long fractionalPart = absValue % noDecimalMultiplier;
-        return new DecimalValue(integerPart, fractionalPart, decimals, negative, false);
+        return new DecimalValue(integerPart, fractionalPart, decimals, negative);
     }
 
     public long getIntegerPart() {
@@ -120,17 +114,7 @@ public class DecimalValue implements Comparable<DecimalValue> {
     }
 
     public long toLong() {
-        return (integerPart * noDecimalMultiplier + getZeroPatchedFractionalPart()) * negativeMultiplier;
-    }
-
-    public long getZeroPatchedFractionalPart() {
-        if (fractionalPart == 0)
-            return 0;
-
-        long patchedFractionalPart = fractionalPart;
-        while (patchedFractionalPart * 10 < noDecimalMultiplier)
-            patchedFractionalPart *= 10;
-        return patchedFractionalPart;
+        return (integerPart * noDecimalMultiplier + fractionalPart) * negativeMultiplier;
     }
 
     public int toInt() {

@@ -26,7 +26,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = STANDARD_PARSER.parse("123.456", 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -40,21 +39,18 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(123456, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(123456L, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("123.456"), 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -64,7 +60,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = COMMA_SPACE_PARSER.parse("634 412 123,456");
         assertEquals(634412123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -81,14 +76,12 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(634412123456L, 3);
         assertEquals(634412123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("634412123.456"), 3);
         assertEquals(634412123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -101,7 +94,6 @@ public class DecimalValueTest {
         decimalValue = parser.parse("634 412 123,456");
         assertEquals(634412123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -114,7 +106,6 @@ public class DecimalValueTest {
         decimalValue = parser.parse("634 412 123,456");
         assertEquals(634412123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -126,7 +117,6 @@ public class DecimalValueTest {
         decimalValue = parser.parse("634 412 123,456");
         assertEquals(634412123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -137,7 +127,6 @@ public class DecimalValueTest {
         decimalValue = parser.parse("634412123.456");
         assertEquals(634412123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -147,7 +136,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = COMMA_SPACE_PARSER.parse("54 321,789");
         assertEquals(54321, decimalValue.getIntegerPart());
         assertEquals(789, decimalValue.getFractionalPart());
-        assertEquals(789, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -161,21 +149,18 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(54321789, 3);
         assertEquals(54321, decimalValue.getIntegerPart());
         assertEquals(789, decimalValue.getFractionalPart());
-        assertEquals(789, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(54321789L, 3);
         assertEquals(54321, decimalValue.getIntegerPart());
         assertEquals(789, decimalValue.getFractionalPart());
-        assertEquals(789, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("54321.789"), 3);
         assertEquals(54321, decimalValue.getIntegerPart());
         assertEquals(789, decimalValue.getFractionalPart());
-        assertEquals(789, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -185,7 +170,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = STANDARD_PARSER.parse("-123.456", 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertTrue(decimalValue.isNegative());
 
@@ -199,21 +183,18 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(-123456, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertTrue(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(-123456L, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertTrue(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("-123.456"), 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(456, decimalValue.getFractionalPart());
-        assertEquals(456, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertTrue(decimalValue.isNegative());
     }
@@ -223,7 +204,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = STANDARD_PARSER.parse("0", 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -237,28 +217,24 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(0, 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(0L, 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("0"), 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(BigDecimal.ZERO, 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -268,7 +244,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = STANDARD_PARSER.parse("-0", 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -282,21 +257,18 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(-0, 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(-0L, 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("-0"), 3);
         assertEquals(0, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -305,8 +277,7 @@ public class DecimalValueTest {
     public void testParseFewDecimals() {
         DecimalValue decimalValue = STANDARD_PARSER.parse("123.45", 3);
         assertEquals(123, decimalValue.getIntegerPart());
-        assertEquals(45, decimalValue.getFractionalPart());
-        assertEquals(450, decimalValue.getZeroPatchedFractionalPart());
+        assertEquals(450, decimalValue.getFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -320,21 +291,18 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(123450, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(450, decimalValue.getFractionalPart());
-        assertEquals(450, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(123450L, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(450, decimalValue.getFractionalPart());
-        assertEquals(450, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("123.45"), 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(450, decimalValue.getFractionalPart());
-        assertEquals(450, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -353,7 +321,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = LENIENT_PARSER.parse("123.456789", 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(457, decimalValue.getFractionalPart());
-        assertEquals(457, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -366,7 +333,6 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(new BigDecimal("123.456789"), 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(457, decimalValue.getFractionalPart());
-        assertEquals(457, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -376,7 +342,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = STANDARD_PARSER.parse("123", 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -390,21 +355,18 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(123000, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(123000L, 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("123"), 3);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(3, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -414,7 +376,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = STANDARD_PARSER.parse("123", 0);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(0, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -428,21 +389,18 @@ public class DecimalValueTest {
         decimalValue = DecimalValue.from(123, 0);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(0, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(123L, 0);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(0, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = DecimalValue.from(new BigDecimal("123"), 0);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(0, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
     }
@@ -457,7 +415,6 @@ public class DecimalValueTest {
         DecimalValue decimalValue = STANDARD_PARSER.parse("123.0", 0);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(0, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -471,7 +428,6 @@ public class DecimalValueTest {
         decimalValue = STANDARD_PARSER.parse("123.000", 0);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(0, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -485,7 +441,6 @@ public class DecimalValueTest {
         decimalValue = STANDARD_PARSER.parse("123.000000", 0);
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(0, decimalValue.getFractionalPart());
-        assertEquals(0, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(0, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
@@ -524,37 +479,92 @@ public class DecimalValueTest {
         DecimalValue decimalValue = twoDecimalParser.parse("123.456");
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(46, decimalValue.getFractionalPart());
-        assertEquals(46, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = twoDecimalParser.parse("123.455");
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(46, decimalValue.getFractionalPart());
-        assertEquals(46, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = twoDecimalParser.parse("123.454");
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(45, decimalValue.getFractionalPart());
-        assertEquals(45, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = twoDecimalParser.parse("123.5555555");
         assertEquals(123, decimalValue.getIntegerPart());
         assertEquals(56, decimalValue.getFractionalPart());
-        assertEquals(56, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
 
         decimalValue = twoDecimalParser.parse("12.3879");
         assertEquals(12, decimalValue.getIntegerPart());
         assertEquals(39, decimalValue.getFractionalPart());
-        assertEquals(39, decimalValue.getZeroPatchedFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
+    }
+
+    @Test
+    public void testZeroDecimalsFirstParsing() {
+        DecimalValue decimalValue = STANDARD_PARSER.parse("123.006", 3);
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(6, decimalValue.getFractionalPart());
+        assertEquals(3, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        assertEquals(123006, decimalValue.toInt());
+        assertEquals(123006, decimalValue.toLong());
+        assertEquals("123.006", decimalValue.toBigDecimal().toString());
+        assertEquals("123.006", DecimalValueFormat.DOT.format(decimalValue));
+        assertEquals("123,006", DecimalValueFormat.COMMA.format(decimalValue));
+        assertEquals("123,006", COMMA_APOSTROPHY.format(decimalValue));
+
+        decimalValue = DecimalValue.from(123006, 3);
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(6, decimalValue.getFractionalPart());
+        assertEquals(3, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        decimalValue = DecimalValue.from(123006L, 3);
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(6, decimalValue.getFractionalPart());
+        assertEquals(3, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        decimalValue = DecimalValue.from(new BigDecimal("123.006"), 3);
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(6, decimalValue.getFractionalPart());
+        assertEquals(3, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        decimalValue = STANDARD_PARSER.parse("123.000854", 3, true);
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(1, decimalValue.getFractionalPart());
+        assertEquals(3, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        assertEquals(123001, decimalValue.toInt());
+        assertEquals(123001, decimalValue.toLong());
+        assertEquals("123.001", decimalValue.toBigDecimal().toString());
+        assertEquals("123.001", DecimalValueFormat.DOT.format(decimalValue));
+        assertEquals("123,001", DecimalValueFormat.COMMA.format(decimalValue));
+        assertEquals("123,001", COMMA_APOSTROPHY.format(decimalValue));
+
+        decimalValue = STANDARD_PARSER.parse("123.000454", 3, true);
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(0, decimalValue.getFractionalPart());
+        assertEquals(3, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        assertEquals(123000, decimalValue.toInt());
+        assertEquals(123000, decimalValue.toLong());
+        assertEquals("123.000", decimalValue.toBigDecimal().toString());
+        assertEquals("123.000", DecimalValueFormat.DOT.format(decimalValue));
+        assertEquals("123,000", DecimalValueFormat.COMMA.format(decimalValue));
+        assertEquals("123,000", COMMA_APOSTROPHY.format(decimalValue));
     }
 
 }

@@ -96,10 +96,10 @@ public class DecimalValueParser {
         }
 
         long integerPart = 0;
-        long fractionalPart = 0;
+        String fractionalPart = null;
         if (decoratorLessValue.contains(separator)) {
             if (decoratorLessValue.startsWith(separator)) {
-                fractionalPart = Long.parseLong(decoratorLessValue.substring(separator.length()));
+                fractionalPart = decoratorLessValue.substring(separator.length());
             } else if (decoratorLessValue.endsWith(separator)) {
                 integerPart = Long.parseLong(
                         decoratorLessValue.substring(0, decoratorLessValue.length() - separator.length())
@@ -107,7 +107,7 @@ public class DecimalValueParser {
             } else {
                 int separatorIndex = decoratorLessValue.indexOf(separator);
                 integerPart = Long.parseLong(decoratorLessValue.substring(0, separatorIndex));
-                fractionalPart = Long.parseLong(decoratorLessValue.substring(separatorIndex + 1));
+                fractionalPart = decoratorLessValue.substring(separatorIndex + 1);
             }
         } else {
             integerPart = Long.parseLong(decoratorLessValue);
@@ -116,7 +116,12 @@ public class DecimalValueParser {
         if (integerPart == 0)
             negative = false;  // * We do not want a negative zero
 
-        return new DecimalValue(integerPart, fractionalPart, decimals, negative, lenient);
+        return new DecimalValue(
+                integerPart,
+                calcActualFractionPart(fractionalPart, decimals, lenient),
+                decimals,
+                negative
+        );
     }
 
     private static boolean hasTooManySeparators(String value, String separator) {
@@ -130,6 +135,43 @@ public class DecimalValueParser {
             from += separator.length();
         }
         return count;
+    }
+
+    private long calcActualFractionPart(String fractionalPart, int decimals, boolean lenient) {
+        if  (Strings.isEmpty(fractionalPart) || fractionalPart.matches("0+"))
+            return 0;
+
+        if (fractionalPart.length() == decimals)
+            return Long.parseLong(fractionalPart);
+        else if (!lenient && fractionalPart.length() > decimals)
+            throw new NumberFormatException(
+                "You specified " + decimals + " decimals. Fraction part "  + fractionalPart + " is too large");
+
+        if (fractionalPart.length() < decimals)
+            return zeroPadDigits(fractionalPart, decimals);
+
+        return roundFraction(fractionalPart, decimals);
+    }
+
+    private long zeroPadDigits(String fractionPart, int decimals) {
+        return Long.parseLong(fractionPart + "0".repeat(decimals - fractionPart.length()));
+    }
+
+    private long roundFraction(String fractionPart, int decimals) {
+        long value = Long.parseLong(fractionPart.substring(0, decimals));
+        boolean allFives = true;
+        for (int i = decimals; i < fractionPart.length(); i++) {
+            int digit = Integer.parseInt(fractionPart.substring(i, i + 1));
+            if (digit != 5) {
+                allFives = false;
+                if (digit > 5)
+                    ++value;
+                break;
+            }
+        }
+        if (allFives)
+            ++value;
+        return value;
     }
 
     public static class Builder {
