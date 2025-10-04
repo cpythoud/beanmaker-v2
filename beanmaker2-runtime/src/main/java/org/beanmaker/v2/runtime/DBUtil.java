@@ -1,5 +1,6 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
 
 import org.beanmaker.v2.util.Strings;
@@ -111,6 +112,13 @@ public final class DBUtil {
         return new Money(amount, formatter.getDefaultMoneyFormat());
     }
 
+    public static DecimalValue getDecimalValue(ResultSet rs, int index, int decimals) {
+        Long digits = getLong(rs, index);
+        if (digits == null)
+            return null;
+        return DecimalValue.from(digits, decimals);
+    }
+
     // ------------
 
     public static void setBoolean(PreparedStatement stat, int index, Boolean value) throws SQLException {
@@ -151,6 +159,17 @@ public final class DBUtil {
             setLong(stat, index, null, sqlType);
         else
             setLong(stat, index, value.getVal());
+    }
+
+    public static void setDecimalValue(PreparedStatement stat, int index, DecimalValue value) throws SQLException {
+        setDecimalValue(stat, index, value, Types.INTEGER);
+    }
+
+    public static void setDecimalValue(PreparedStatement stat, int index, DecimalValue value, int sqlType) throws SQLException {
+        if (value == null)
+            setLong(stat, index, null, sqlType);
+        else
+            setLong(stat, index, value.toLong());
     }
 
     public static void setID(PreparedStatement stat, int index, long id) throws SQLException {
@@ -317,6 +336,9 @@ public final class DBUtil {
                 break;
             case "org.beanmaker.v2.util.Money":
                 stat.setLong(1, ((Money) value).getVal());
+                break;
+            case "org.beanmaker.v2.util.DecimalValue":
+                stat.setLong(1, ((DecimalValue) value).toLong());
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported object type: " + typeName);

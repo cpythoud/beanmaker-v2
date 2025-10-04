@@ -133,6 +133,20 @@ public class Columns implements Iterable<Column> {
             throw new IllegalArgumentException("Column #" + index + " cannot have an associated bean.");
     }
 
+    public void setDecimals(int index, int decimals) {
+        if (index < 1 || index > columns.size())
+            throw new IndexOutOfBoundsException("There is no column number " + index);
+
+        columns.get(index - 1).setDecimals(decimals);
+    }
+
+    public void canBeNegative(int index, boolean negative) {
+        if (index < 1 || index > columns.size())
+            throw new IndexOutOfBoundsException("There is no column number " + index);
+
+        columns.get(index - 1).canBeNegative(negative);
+    }
+
     public void setItemOrderAssociatedField(int index, String itemOrderAssociatedField) {
         if (index < 1 || index > columns.size())
             throw new IndexOutOfBoundsException("There is no column number " + index);
@@ -252,6 +266,14 @@ public class Columns implements Iterable<Column> {
     public boolean hasOtherBeanReference() {
         for (Column column: columns)
             if (column.isBeanReference() && !(column.isId() || column.isLabelReference() || column.isFileReference()))
+                return true;
+
+        return false;
+    }
+
+    public boolean hasDecimalValue() {
+        for (Column column: columns)
+            if (column.isDecimalValue())
                 return true;
 
         return false;
@@ -485,6 +507,16 @@ public class Columns implements Iterable<Column> {
 
         for (Column column: getList())
             if (column.isLabelReference())
+                columns.add(column);
+
+        return columns;
+    }
+
+    public List<Column> getDecimalValues() {
+        var columns = new ArrayList<Column>();
+
+        for (Column column: getList())
+            if (column.isDecimalValue())
                 columns.add(column);
 
         return columns;

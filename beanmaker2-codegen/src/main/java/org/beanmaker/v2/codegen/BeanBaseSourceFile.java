@@ -61,6 +61,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("java.sql.Timestamp");
         if (types.contains("Money"))
             importsManager.addImport("org.beanmaker.v2.util.Money");
+        if (types.contains("DecimalValue"))
+            importsManager.addImport("org.beanmaker.v2.util.DecimalValue");
 
         if (columns.hasItemOrder())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanWithItemOrder");
@@ -244,6 +246,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         var functionCall = new FunctionCall(functionName, "DBUtil").addArguments("rs", Integer.toString(index));
         if (type.equals("Money"))
             functionCall.addArgument(formatterInstanceExpression);
+        if (type.equals("DecimalValue"))
+            functionCall.addArgument(Integer.toString(column.getDecimals()));
 
         return functionCall;
     }

@@ -1,6 +1,9 @@
 package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.Dates;
+import org.beanmaker.v2.util.DecimalValue;
+import org.beanmaker.v2.util.DecimalValueFormat;
+import org.beanmaker.v2.util.DecimalValueParser;
 import org.beanmaker.v2.util.Money;
 import org.beanmaker.v2.util.MoneyFormat;
 import org.beanmaker.v2.util.SimpleInputDateFormat;
@@ -15,6 +18,11 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 
 public interface DbBeanFormatter {
+
+    DecimalValueParser DEFAULT_DECIMAL_VALUE_PARSER =
+            DecimalValueParser.builder().addSeparators(".", ",").addDecorator(" ").build();
+    DecimalValueParser DEFAULT_LENIENT_DECIMAL_VALUE_PARSER =
+            DecimalValueParser.builder().addSeparators(".", ",").addDecorator(" ").lenient(true).build();
 
     default String formatString(String text) {
         if (text == null)
@@ -127,6 +135,13 @@ public interface DbBeanFormatter {
         return DbBeanFile.getLink(file).toString();
     }
 
+    default String formatDecimalValue(DecimalValue value, DecimalValueFormat format, DbBeanLocalization dbBeanLocalization) {
+        if (value == null)
+            return noData();
+
+        return format.format(value);
+    }
+
     default String noData() {
         return "";
     }
@@ -194,6 +209,14 @@ public interface DbBeanFormatter {
 
     default MoneyFormat getDefaultMoneyFormat() {
         return MoneyFormat.DEFAULT_FORMAT;
+    }
+
+    default DecimalValueFormat getDefaultDecimalValueFormat() {
+        return DecimalValueFormat.DOT;
+    }
+
+    default DecimalValueParser getDefaultDecimalValueParser() {
+        return DEFAULT_DECIMAL_VALUE_PARSER;
     }
 
 }

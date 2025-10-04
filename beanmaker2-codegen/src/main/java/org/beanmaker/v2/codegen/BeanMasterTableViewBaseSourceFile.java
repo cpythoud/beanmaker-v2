@@ -486,6 +486,14 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                                     .addArgument(new FunctionCall("get" + capitalize(name), new FunctionCall("get" + beanName, beanVarName)))
                                     .addArgument("zeroFilledMaxDigits"))));
                     break;
+                case "DecimalValue":
+                    function.addContent(new ReturnStatement(new FunctionCall("getTableCell")
+                            .addArgument(new FunctionCall("createDecimalValueCellDefinition", "MasterTableCellDefinition")
+                                    .addArgument(quickQuote(name))
+                                    .addArgument(new FunctionCall("get" + capitalize(name), beanVarName))
+                                    .addArgument(new FunctionCall("get" + capitalize(name), new FunctionCall("get" + beanName, beanVarName)))
+                                    .addArgument("zeroFilledMaxDigits"))));
+                    break;
                 default:
                     throw new AssertionError("Unknown/unsupported type: " + type);
             }

@@ -92,6 +92,8 @@ public class BeanEditorSourceFile extends BeanCodeWithDBInfo {
             superCall.addArgument(name);
             if (type.equals("Money"))
                 importsManager.addImport("org.beanmaker.v2.util.Money");
+            if (type.equals("DecimalValue"))
+                importsManager.addImport("org.beanmaker.v2.util.DecimalValue");
         }
 
         javaClass

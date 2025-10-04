@@ -59,8 +59,11 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
 
         javaClass.addContent(getter).addContent(EMPTY_LINE);
 
-        if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type) || type.equals("Money"))
+        if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type)
+                || type.equals("Money") || type.equals("DecimalValue"))
+        {
             addStrGetter(column);
+        }
 
         if (column.isBeanReference()) {
             if (column.isLabelReference())

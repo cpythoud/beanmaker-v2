@@ -140,9 +140,15 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
         else
             functionName = "format" + column.getJavaType();
 
-        return new FunctionCall(functionName, "formatter")
-                .addArgument(new FunctionCall(dataRetrievalFunction, beanVarName))
-                .addArgument("localization");
+        var functionCall = new FunctionCall(functionName, "formatter")
+                .addArgument(new FunctionCall(dataRetrievalFunction, beanVarName));
+
+        if (column.isDecimalValue())
+            functionCall.addArgument(new FunctionCall(
+                    "get" + capitalize(column.getJavaName() + "DecimalValueFormat"),
+                    beanName + "Parameters.INSTANCE"));
+
+        return functionCall.addArgument("localization");
     }
 
     private FunctionDeclaration getLabelWithLangArgFunction(Column column, String functionName, boolean langArgument, boolean safe) {

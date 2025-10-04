@@ -236,7 +236,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (type.equals("String"))
             parametersFunction.addContent(getParamSetterExpressionFromEditor("Value", capName));
-        else if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type) || type.equals("Money"))
+        else if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type) || type.equals("Money") || type.equals("DecimalValue"))
             parametersFunction.addContent(getParamSetterExpressionFromEditor("Value", capName + "Str"));
         else if (type.equals("Boolean"))
             parametersFunction.addContent(getParamSetterExpression(
@@ -275,7 +275,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
             case "Timestamp":
                 parametersFunction.addContent(getFieldInputType("DATETIME"));
                 break;
-            case "Money":
+            case "Money", "DecimalValue":
                 parametersFunction.addContent(getFieldInputType("TEXT"));
                 break;
             default:
@@ -460,6 +460,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                         case "Time":
                         case "Timestamp":
                         case "Money":
+                        case "DecimalValue":
                             allFieldsSetterFunction.addContent(
                                     new FunctionCall("set" + capName + "Str", editorObject)
                                             .byItself()

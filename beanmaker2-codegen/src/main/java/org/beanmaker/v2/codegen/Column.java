@@ -10,7 +10,8 @@ import java.util.Map;
 public class Column {
 
     public static final List<String> JAVA_TYPES =
-            Arrays.asList("long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money");
+            Arrays.asList("long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money",
+                    "DecimalValue");
 
     private static final List<String> SPECIAL_CASES = Arrays.asList("id", "last_update", "modified_by", "item_order");
     private static final Map<String, List<String>> SPECIAL_CASE_TYPES;
@@ -51,7 +52,18 @@ public class Column {
     private final boolean special;
     private final boolean bad;
 
-    public Column(String sqlTypeName, String sqlName, int displaySize, int precision, int scale, boolean autoincrement, boolean required) {
+    private int decimals = 2;
+    private boolean negativeAllowed = true;
+
+    public Column(
+            String sqlTypeName,
+            String sqlName,
+            int displaySize,
+            int precision,
+            int scale,
+            boolean autoincrement,
+            boolean required
+    ) {
         this.sqlTypeName = sqlTypeName;
         this.sqlName = sqlName;
         this.displaySize = displaySize;
@@ -112,6 +124,8 @@ public class Column {
         this.unique = col.unique;
         this.associatedBeanClass = col.associatedBeanClass;
         this.itemOrderAssociatedField = col.itemOrderAssociatedField;
+        this.decimals = col.decimals;
+        this.negativeAllowed = col.negativeAllowed;
     }
 
     public String getSqlTypeName() {
@@ -170,6 +184,14 @@ public class Column {
         return getJavaName().equals("code") && isUnique();
     }
 
+    public int getDecimals() {
+        return decimals;
+    }
+
+    public boolean canBeNegative() {
+        return negativeAllowed;
+    }
+
     public void setJavaType(String javaType) {
         if (!JAVA_TYPES.contains(javaType))
             throw new IllegalArgumentException(javaType + " type cannot be used with BeanMaker");
@@ -204,6 +226,14 @@ public class Column {
         this.unique = unique;
     }
 
+    public void setDecimals(int decimals) {
+        this.decimals = decimals;
+    }
+
+    public void canBeNegative(boolean negativeAllowed) {
+        this.negativeAllowed = negativeAllowed;
+    }
+
     public boolean isId() {
         return id;
     }
@@ -232,31 +262,35 @@ public class Column {
         return isId() || sqlName.startsWith("id_");
     }
 
+    public boolean isDecimalValue() {
+        return javaType.equals("DecimalValue");
+    }
+
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append(sqlTypeName);
-        buf.append(" ");
-        buf.append(sqlName);
-        buf.append(" (");
-        buf.append(displaySize);
-        buf.append(" / ");
-        buf.append(precision);
-        buf.append(",");
-        buf.append(scale);
-        if (autoincrement)
-            buf.append(" autoincrement");
-        buf.append(") = ");
-        buf.append(javaType);
-        buf.append(" ");
-        buf.append(javaName);
-        if (required)
-            buf.append(" required");
-        if (unique)
-            buf.append(" unique");
-
-        return buf.toString();
+        return "Column{" +
+                "bad=" + bad +
+                ", sqlTypeName='" + sqlTypeName + '\'' +
+                ", sqlName='" + sqlName + '\'' +
+                ", displaySize=" + displaySize +
+                ", precision=" + precision +
+                ", scale=" + scale +
+                ", autoincrement=" + autoincrement +
+                ", javaType='" + javaType + '\'' +
+                ", javaName='" + javaName + '\'' +
+                ", required=" + required +
+                ", shouldBeRequired=" + shouldBeRequired +
+                ", unique=" + unique +
+                ", associatedBeanClass='" + associatedBeanClass + '\'' +
+                ", itemOrderAssociatedField='" + itemOrderAssociatedField + '\'' +
+                ", id=" + id +
+                ", lastUpdate=" + lastUpdate +
+                ", modifiedBy=" + modifiedBy +
+                ", itemOrder=" + itemOrder +
+                ", special=" + special +
+                ", decimals=" + decimals +
+                ", negativeAllowed=" + negativeAllowed +
+                '}';
     }
 
     private void suggestType() {

@@ -1,5 +1,6 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
 import org.beanmaker.v2.util.Strings;
 
@@ -87,6 +88,15 @@ public class MasterTableCellDefinition {
             String fieldName,
             String text,
             Money value,
+            int zeroFilledMaxDigits)
+    {
+        return new MasterTableCellDefinition(fieldName, text).orderingValue(value, zeroFilledMaxDigits);
+    }
+
+    public static MasterTableCellDefinition createDecimalValueCellDefinition(
+            String fieldName,
+            String text,
+            DecimalValue value,
             int zeroFilledMaxDigits)
     {
         return new MasterTableCellDefinition(fieldName, text).orderingValue(value, zeroFilledMaxDigits);
@@ -205,6 +215,14 @@ public class MasterTableCellDefinition {
             this.orderingValue = null;
         else
             this.orderingValue = Strings.zeroFill(orderingValue.getVal(), zeroFilledMaxDigits);
+        return this;
+    }
+
+    public MasterTableCellDefinition orderingValue(DecimalValue orderingValue, int zeroFilledMaxDigits) {
+        if (orderingValue == null)
+            this.orderingValue = null;
+        else
+            this.orderingValue = Strings.zeroFill(orderingValue.toLong(), zeroFilledMaxDigits);
         return this;
     }
 

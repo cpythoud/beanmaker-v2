@@ -14,6 +14,7 @@ import static org.beanmaker.v2.codegen.BaseCode.createImportList;
 import static org.beanmaker.v2.codegen.BeanCode.chopID;
 import static org.beanmaker.v2.codegen.BeanCode.getLabelNamePrefix;
 
+import static org.beanmaker.v2.util.Strings.capitalize;
 import static org.beanmaker.v2.util.Strings.quickQuote;
 
 public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
@@ -41,6 +42,10 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanRequiredLanguages");
         if (columns.hasItemOrder())
             importsManager.addImport("org.beanmaker.v2.runtime.ItemOrderManager");
+        if (columns.hasDecimalValue()) {
+            importsManager.addImport("org.beanmaker.v2.util.DecimalValueFormat");
+            importsManager.addImport("org.beanmaker.v2.util.DecimalValueParser");
+        }
     }
 
     @Override
@@ -86,6 +91,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
         addNamingFunction();
         addOrderingFunction();
         addLabelFunctions();
+        addDecimalValueFunctions();
     }
 
     private void addLocalizationFunctions() {
@@ -170,6 +176,29 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                             .markAsDefault()
                             .addContent(new ReturnStatement("DBBEAN_REQUIRED_LANGUAGES")))
                     .addContent(EMPTY_LINE);
+    }
+
+    private void addDecimalValueFunctions() {
+        for (var decimalValue: columns.getDecimalValues()) {
+            String nameCap = capitalize(decimalValue.getJavaName());
+            javaInterface
+                    .addContent(new FunctionDeclaration(
+                            "get" + nameCap + "DecimalValueFormat",
+                            "DecimalValueFormat")
+                            .markAsDefault()
+                            .addContent(new ReturnStatement(new FunctionCall(
+                                    "getDefaultDecimalValueFormat",
+                                    "LocalDbBeanFormatter.INSTANCE"))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new FunctionDeclaration(
+                            "get" + nameCap + "DecimalValueParser",
+                            "DecimalValueParser")
+                            .markAsDefault()
+                            .addContent(new ReturnStatement(new FunctionCall(
+                                    "getDefaultDecimalValueParser",
+                                    "LocalDbBeanFormatter.INSTANCE"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
 }

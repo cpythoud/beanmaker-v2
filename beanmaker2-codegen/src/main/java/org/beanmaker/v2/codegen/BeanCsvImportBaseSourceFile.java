@@ -40,6 +40,8 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("java.sql.Timestamp");
         if (types.contains("Money"))
             importsManager.addImport("org.beanmaker.v2.util.Money");
+        if (types.contains("DecimalValue"))
+            importsManager.addImport("org.beanmaker.v2.util.DecimalValue");
     }
 
     @Override

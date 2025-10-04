@@ -90,6 +90,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.util.Money");
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
         }
+        if (types.contains("DecimalValue"))
+            importsManager.addImport("org.beanmaker.v2.util.DecimalValue");
 
         if (columns.hasLastUpdate())
             throw new UnsupportedOperationException("last_update field not supported in current implementation");
@@ -171,7 +173,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             } else
                 addProperty(type, name, false, null);
 
-            if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type))
+            if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type) || type.equals("DecimalValue"))
                 addProperty("String", name + "Str", false, new StringOrCode<>(EMPTY_STRING));
             if (column.isLabelReference())
                 addProperty("DbBeanLabelEditor", uncapitalize(chopID(name)), false, null);
@@ -267,6 +269,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             dbUtilCall.addArguments("rs", Integer.toString(++index));
             if (type.equals("Money"))
                 dbUtilCall.addArgument("LocalDbBeanFormatter.INSTANCE");
+            if (type.equals("DecimalValue"))
+                dbUtilCall.addArgument(Integer.toString(column.getDecimals()));
 
             initCall.addArgument(dbUtilCall);
         }
@@ -311,10 +315,13 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             String name = column.getJavaName();
 
             initFunction.addArgument(new FunctionArgument(type, name));
-            if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type) || type.equals("Money"))
+            if (type.equals("Integer") || type.equals("Long") || TEMPORAL_TYPES.contains(type)
+                    || type.equals("Money") || type.equals("DecimalValue"))
+            {
                 initFunction.addContent(new FunctionCall("set" + capitalize(name)).byItself().addArguments(name));
-            else
+            } else {
                 initFunction.addContent(new Assignment("this." + name, name));
+            }
         }
 
         for (var column: columns.getLabels())
@@ -421,7 +428,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 if (type.equals("Integer")
                         || type.equals("Long")
                         || TEMPORAL_TYPES.contains(type)
-                        || type.equals("Money"))
+                        || type.equals("Money")
+                        || type.equals("DecimalValue"))
                 {
                     String extraFieldName = name + "Str";
                     function.addContent(new FunctionCall("addField", "stringMaker")
@@ -460,6 +468,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 addTemporalDataSetterFunctions(column);
             else if (type.equals("Money"))
                 addMoneySetterFunctions(column);
+            else if (type.equals("DecimalValue"))
+                addDecimalValueSetterFunctions(column);
             else
                 addStandardSetterFunction(column);
         }
@@ -627,6 +637,51 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                                 new FunctionCall("toString", field))))))
                 .addContent(EMPTY_LINE)
                 .addContent(getStandardSetterFunctionWithAssignment("String", fieldStr))
+                .addContent(EMPTY_LINE);
+    }
+
+    private void addDecimalValueSetterFunctions(Column column) {
+        String field = column.getJavaName();
+        String fieldStr = field + "Str";
+        String fieldCap = capitalize(field);
+
+        javaClass.addContent(new FunctionDeclaration("set" + fieldCap)
+                .visibility(Visibility.PUBLIC)
+                .addArgument(new FunctionArgument("DecimalValue", field))
+                .addContent(new Assignment("this." + field, field))
+                .addContent(new Assignment(
+                        fieldStr,
+                        new FunctionCall("format" + fieldCap + "DecimalValue").addArgument(field))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("set" + capitalize(fieldStr))
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("String", fieldStr))
+                        .addContent(new Assignment("this." + fieldStr, fieldStr)))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("format" + fieldCap + "DecimalValue", "String")
+                        .addArgument(new FunctionArgument("DecimalValue", field))
+                        .addContent(new IfBlock(new Condition(field + " == null"))
+                                .addContent(new ReturnStatement(EMPTY_STRING)))
+                        .addContent(EMPTY_LINE)
+                        .addContent(new ReturnStatement(new FunctionCall(
+                                "format",
+                                new FunctionCall(
+                                        "get" + fieldCap + "DecimalValueFormat",
+                                        beanName + "Parameters.INSTANCE"))
+                                .addArgument(field))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("parse" + fieldCap + "DecimalValue", "DecimalValue")
+                        .addArgument(new FunctionArgument("String", fieldStr))
+                        .addContent(new IfBlock(new Condition(
+                                new FunctionCall("isEmpty", "Strings").addArgument(fieldStr)))
+                                .addContent(new ReturnStatement("null")))
+                        .addContent(EMPTY_LINE)
+                        .addContent(new ReturnStatement(new FunctionCall(
+                                "parse",
+                                new FunctionCall(
+                                        "get" + fieldCap + "DecimalValueParser",
+                                        beanName + "Parameters.INSTANCE"))
+                                .addArguments(fieldStr, Integer.toString(column.getDecimals())))))
                 .addContent(EMPTY_LINE);
     }
 
@@ -991,6 +1046,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 return new Assignment(name, getTemporalConversion(type, nameStr));
             case "Money":
                 return new Assignment(name, getMoneyConversion(nameStr));
+            case "DecimalValue":
+                return new Assignment(name, getDecimalValueConversion(name, nameStr));
         }
 
         throw new AssertionError("No processing defined for type: " + type);
@@ -1015,6 +1072,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new ObjectCreation("Money")
                 .addArgument(nameStr)
                 .addArgument(new FunctionCall("getDefaultMoneyFormat", "LocalDbBeanFormatter.INSTANCE"));
+    }
+
+    private FunctionCall getDecimalValueConversion(String name, String nameStr) {
+        return new FunctionCall("parse" + capitalize(name) + "DecimalValue").addArgument(nameStr);
     }
 
     private void addDataValidationFunctions() {
@@ -1252,6 +1313,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             functionDeclaration.addContent(getEmptyValidationFunctionList());
         else if (type.equals("Money"))
             functionDeclaration.addContent(getMoneyValidationFunctionList(column));
+        else if (type.equals("DecimalValue"))
+            functionDeclaration.addContent(getDecimalValueValidationFunctionList(column));
         else
             throw new AssertionError("Don't know how to process column:" + column);
 
@@ -1420,6 +1483,31 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return getValidationFunctionsListOfLambdas(lambda);
     }
 
+    private ReturnStatement getDecimalValueValidationFunctionList(Column column) {
+        importsManager.addImport("org.beanmaker.v2.runtime.FormatCheckHelper");
+        var lambda = createValidationFunctionLambda();
+
+        String name = column.getJavaName();
+        String nameStr = name + "Str";
+        String nameCap = capitalize(name);
+
+        lambda
+                .addContent(new IfBlock(new Condition(
+                        new FunctionCall(
+                                "isNumber",
+                                "FormatCheckHelper")
+                                .addArgument(nameStr)
+                                .addArgument(new FunctionCall(
+                                        "get" + nameCap + "DecimalValueParser",
+                                        beanName + "Parameters.INSTANCE"))
+                                .addArgument(Boolean.toString(!column.canBeNegative()))))
+                        .addContent(new ReturnStatement("FieldValidationResult.OK")))
+                .addContent(EMPTY_LINE)
+                .addContent(getDefaultFieldValidationErrorMessage(name));
+
+        return getValidationFunctionsListOfLambdas(lambda);
+    }
+
     private Lambda createValidationFunctionLambda() {
         return new Lambda().addLambdaParameter("transaction");
     }
@@ -1497,13 +1585,15 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private String getUnicityCheckValue(Column column) {
         StringOrCode<Expression> value;
         String type = column.getJavaType();
-        String nameStr = column.getJavaName() + "Str";
+        String name = column.getJavaName();
+        String nameStr = name + "Str";
 
         value = switch (type) {
             case "Integer" -> new StringOrCode<>(getNumericConversion("getIntVal", nameStr));
             case "Long" -> new StringOrCode<>(getNumericConversion("getLongVal", nameStr));
             case "Date", "Time", "Timestamp" -> new StringOrCode<>(getTemporalConversion(type, nameStr));
             case "Money" -> new StringOrCode<>(getMoneyConversion(nameStr));
+            case "DecimalValue" -> new StringOrCode<>(getDecimalValueConversion(name, nameStr));
             default -> new StringOrCode<>(column.getJavaName());
         };
 
@@ -1573,6 +1663,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                     case "Time":
                     case "Timestamp":
                     case "Money":
+                    case "DecimalValue":
                         resetFunction.addContent(new Assignment(name, "null"));
                         resetFunction.addContent(new Assignment(name + "Str", EMPTY_STRING));
                         break;
@@ -1622,7 +1713,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 else if (column.isItemOrder())
                     function.addContent(getFieldDBUpdateStatFunction("Long", name, index));
                 else if (type.equals("Boolean") || type.equals("Long") || type.equals("Money") || type.equals("String")
-                        || type.equals("Date")  || type.equals("Time") || type.equals("Timestamp"))
+                        || type.equals("Date")  || type.equals("Time") || type.equals("Timestamp")
+                        || type.equals("DecimalValue"))
                     function.addContent(getFieldDBUpdateDBUtilFunction(type, name, index));
                 else if (type.equals("Integer"))
                     function.addContent(getFieldDBUpdateDBUtilFunction("Int", name, index));
