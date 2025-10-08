@@ -2,6 +2,7 @@ package org.beanmaker.v2.util;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class DecimalValueFormat {
 
@@ -75,6 +76,24 @@ public class DecimalValueFormat {
             return digits;
 
         return "0".repeat(Math.max(0, value.getDecimals() - digits.length())) + digits;
+    }
+
+    public String scrapeTrailingZeros(DecimalValue value) {
+        String formatted = format(value);
+        var parts = formatted.split(Pattern.quote(separator));
+        if (parts.length == 1)
+            return formatted;
+        if (parts.length != 2)
+            throw new AssertionError("Invalid/impossible format: " + formatted);
+
+        String fractionalPart = parts[1];
+        while (fractionalPart.endsWith("0"))
+            fractionalPart = fractionalPart.substring(0, fractionalPart.length() - 1);
+
+        if (fractionalPart.isEmpty())
+            return parts[0];
+
+        return parts[0] + separator + fractionalPart;
     }
 
 }

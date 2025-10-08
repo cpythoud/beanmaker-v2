@@ -35,6 +35,9 @@ public class DecimalValueTest {
         assertEquals("123.456", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123,456", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123,456", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123.456", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,456", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,456", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(123456, 3);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -70,6 +73,9 @@ public class DecimalValueTest {
         assertEquals("634412123.456", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("634412123,456", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("634'412'123,456", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("634412123.456", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("634412123,456", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("634'412'123,456", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         // * DecimalValue.from(int) cannot be used here
 
@@ -145,6 +151,9 @@ public class DecimalValueTest {
         assertEquals("54321.789", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("54321,789", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("54'321,789", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("54321.789", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("54321,789", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("54'321,789", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(54321789, 3);
         assertEquals(54321, decimalValue.getIntegerPart());
@@ -179,6 +188,9 @@ public class DecimalValueTest {
         assertEquals("-123.456", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("-123,456", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("-123,456", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("-123.456", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("-123,456", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("-123,456", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(-123456, 3);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -213,6 +225,9 @@ public class DecimalValueTest {
         assertEquals("0.000", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("0,000", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("0,000", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("0", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("0", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("0", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(0, 3);
         assertEquals(0, decimalValue.getIntegerPart());
@@ -253,6 +268,9 @@ public class DecimalValueTest {
         assertEquals("0.000", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("0,000", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("0,000", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("0", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("0", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("0", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(-0, 3);
         assertEquals(0, decimalValue.getIntegerPart());
@@ -287,6 +305,9 @@ public class DecimalValueTest {
         assertEquals("123.450", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123,450", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123,450", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123.45", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,45", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,45", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(123450, 3);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -329,6 +350,9 @@ public class DecimalValueTest {
         assertEquals("123.457", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123,457", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123,457", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123.457", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,457", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,457", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(new BigDecimal("123.456789"), 3);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -351,6 +375,9 @@ public class DecimalValueTest {
         assertEquals("123.000", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123,000", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123,000", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(123000, 3);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -385,6 +412,9 @@ public class DecimalValueTest {
         assertEquals("123", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(123, 0);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -424,6 +454,9 @@ public class DecimalValueTest {
         assertEquals("123", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = STANDARD_PARSER.parse("123.000", 0);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -437,6 +470,9 @@ public class DecimalValueTest {
         assertEquals("123", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = STANDARD_PARSER.parse("123.000000", 0);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -450,6 +486,9 @@ public class DecimalValueTest {
         assertEquals("123", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
     }
 
     @Test
@@ -521,6 +560,9 @@ public class DecimalValueTest {
         assertEquals("123.006", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123,006", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123,006", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123.006", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,006", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,006", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = DecimalValue.from(123006, 3);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -552,6 +594,9 @@ public class DecimalValueTest {
         assertEquals("123.001", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123,001", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123,001", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123.001", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,001", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123,001", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
 
         decimalValue = STANDARD_PARSER.parse("123.000454", 3, true);
         assertEquals(123, decimalValue.getIntegerPart());
@@ -565,6 +610,9 @@ public class DecimalValueTest {
         assertEquals("123.000", DecimalValueFormat.DOT.format(decimalValue));
         assertEquals("123,000", DecimalValueFormat.COMMA.format(decimalValue));
         assertEquals("123,000", COMMA_APOSTROPHY.format(decimalValue));
+        assertEquals("123", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
+        assertEquals("123", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
     }
 
 }
