@@ -8,6 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -613,6 +614,62 @@ public class DecimalValueTest {
         assertEquals("123", DecimalValueFormat.DOT.scrapeTrailingZeros(decimalValue));
         assertEquals("123", DecimalValueFormat.COMMA.scrapeTrailingZeros(decimalValue));
         assertEquals("123", COMMA_APOSTROPHY.scrapeTrailingZeros(decimalValue));
+    }
+
+    @Test
+    public void testComparisonAndEquality() {
+        DecimalValue decimalValue = STANDARD_PARSER.parse("123.456", 3);
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(456, decimalValue.getFractionalPart());
+        assertEquals(3, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        DecimalValue decimalValue2 = decimalValue;
+        assertEquals(decimalValue, decimalValue2);
+        assertEquals(0, decimalValue.compareTo(decimalValue2));
+        DecimalValue decimalValue3 = COMMA_SPACE_PARSER.parse("123,456", 3);
+        assertEquals(decimalValue, decimalValue3);
+        assertEquals(0, decimalValue.compareTo(decimalValue3));
+
+        DecimalValue dv1 = STANDARD_PARSER.parse("12.45", 2);
+        DecimalValue dv2 = STANDARD_PARSER.parse("-72", 2);
+        DecimalValue dv3 = STANDARD_PARSER.parse("23.56", 2);
+        assertNotEquals(dv1, dv2);
+        assertNotEquals(dv1, dv3);
+        assertNotEquals(dv2, dv3);
+        assertNotEquals(dv1.hashCode(), dv2.hashCode());
+        assertNotEquals(dv1.hashCode(), dv3.hashCode());
+        assertNotEquals(dv2.hashCode(), dv3.hashCode());
+        assertTrue(dv1.compareTo(dv2) > 0);
+        assertTrue(dv1.compareTo(dv3) < 0);
+        assertTrue(dv2.compareTo(dv1) < 0);
+        assertTrue(dv2.compareTo(dv3) < 0);
+        assertTrue(dv3.compareTo(dv1) > 0);
+        assertTrue(dv3.compareTo(dv2) > 0);
+        assertTrue(dv1.compareNumerically(dv2) > 0);
+        assertTrue(dv1.compareNumerically(dv3) < 0);
+        assertTrue(dv2.compareNumerically(dv1) < 0);
+        assertTrue(dv2.compareNumerically(dv3) < 0);
+        assertTrue(dv3.compareNumerically(dv1) > 0);
+        assertTrue(dv3.compareNumerically(dv2) > 0);
+
+        DecimalValue dv4 = STANDARD_PARSER.parse("17.875", 3);
+        var ex = assertThrows(IllegalArgumentException.class, () -> dv4.compareTo(dv1));
+        assertEquals(
+                "Cannot compare DecimalValue instances with different decimal precision: 3 vs 2",
+                ex.getMessage()
+        );
+        assertTrue(dv4.compareNumerically(dv1) > 0);
+        assertTrue(dv4.compareNumerically(dv2) > 0);
+        assertTrue(dv4.compareNumerically(dv3) < 0);
+
+        DecimalValue dv5 = STANDARD_PARSER.parse("17.875", 5);
+        ex = assertThrows(IllegalArgumentException.class, () -> dv4.compareTo(dv5));
+        assertEquals(
+                "Cannot compare DecimalValue instances with different decimal precision: 3 vs 5",
+                ex.getMessage()
+        );
+        assertEquals(0, dv4.compareNumerically(dv5));
     }
 
 }
