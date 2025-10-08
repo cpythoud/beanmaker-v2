@@ -112,6 +112,10 @@ NEW FEATURES:
   in super classes
 - add function to help creating select-based filter in tables when a small inventory of value (beans) is present
   and strict type filtering is preferable to String-based filtering
+- introduce new DecimalValue class to be used as an available data type for code generation; this will allow easy
+  management of numeric values with decimals, while keeping them stored as integers in the database and thus
+  avoiding rounding errors; this class should be used instead of Money from now on; class Money will be deprecated
+  in next version and later removed
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
