@@ -3,6 +3,9 @@ package org.beanmaker.v2.runtime.csv;
 import org.beanmaker.v2.runtime.DbBeanEditor;
 import org.beanmaker.v2.runtime.dbutil.Transactions;
 
+import org.beanmaker.v2.util.DecimalValue;
+import org.beanmaker.v2.util.DecimalValueParser;
+
 import org.dbbeans.sql.DBTransaction;
 
 import org.slf4j.Logger;
@@ -145,6 +148,10 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     protected Integer getIntegerValue(DataEntry dataEntry, String field) {
         return dataEntry.getIntegerValue(fieldToHeaderMap.get(field));
+    }
+
+    protected DecimalValue getDecimalValue(DataEntry dataEntry, String field, DecimalValueParser parser) {
+        return dataEntry.getDecimalValue(fieldToHeaderMap.get(field), parser);
     }
 
 }

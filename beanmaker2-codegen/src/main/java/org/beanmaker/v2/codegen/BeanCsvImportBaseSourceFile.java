@@ -117,14 +117,22 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
     private void addFieldGetters() {
         for (var column: columns) {
             if (!column.isId()) {
+                String type = column.getCapitalizedJavaType();
+                String dataEntryFunctionName = "get" + type + (type.equals("DecimalValue") ? "" : "Value");
+                var dataEntryFunction = new FunctionCall(dataEntryFunctionName)
+                        .addArgument("dataEntry")
+                        .addArgument(Strings.quickQuote(column.getJavaName()));
+                if (type.equals("DecimalValue")) {
+                    dataEntryFunction.addArgument(
+                            new FunctionCall(
+                                    "get" + column.getCapitalizedJavaName() + "DecimalValueParser",
+                                    beanName + "Parameters.INSTANCE")
+                    );
+                }
                 javaClass.addContent(
                         new FunctionDeclaration("get" + column.getCapitalizedJavaName(), column.getJavaType())
                                 .addArgument(new FunctionArgument("DataEntry", "dataEntry"))
-                                .addContent(new ReturnStatement(
-                                        new FunctionCall("get" + column.getCapitalizedJavaType() + "Value")
-                                                .addArgument("dataEntry")
-                                                .addArgument(Strings.quickQuote(column.getJavaName()))
-                                ))
+                                .addContent(new ReturnStatement(dataEntryFunction))
                 ).addContent(EMPTY_LINE);
             }
         }

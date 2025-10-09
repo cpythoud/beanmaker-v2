@@ -1,5 +1,7 @@
 package org.beanmaker.v2.runtime.csv;
 
+import org.beanmaker.v2.util.DecimalValue;
+import org.beanmaker.v2.util.DecimalValueParser;
 import org.beanmaker.v2.util.Strings;
 
 import java.util.Map;
@@ -73,6 +75,19 @@ public class DataEntry {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "Cannot convert value [" + value + "] to Integer @line #" + lineNumber, e);
+        }
+    }
+
+    public DecimalValue getDecimalValue(String header, DecimalValueParser parser) {
+        String value = getStringValue(header);
+        if (value == null)
+            return null;
+
+        try {
+            return parser.parse(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Cannot convert value [" + value + "] to DecimalValue @line #" + lineNumber, e);
         }
     }
 
