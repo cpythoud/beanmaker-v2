@@ -219,4 +219,11 @@ public interface DbBeanFormatter {
         return DEFAULT_DECIMAL_VALUE_PARSER;
     }
 
+    default DecimalValueParser getDefaultDecimalValueParser(int decimals) {
+        if (decimals <= 0)
+            throw new IllegalArgumentException("Decimals must be positive");
+
+        return DecimalValueParser.from(getDefaultDecimalValueParser(), decimals);
+    }
+
 }

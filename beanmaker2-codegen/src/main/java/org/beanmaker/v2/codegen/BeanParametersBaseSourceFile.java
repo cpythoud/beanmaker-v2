@@ -196,7 +196,8 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                             .markAsDefault()
                             .addContent(new ReturnStatement(new FunctionCall(
                                     "getDefaultDecimalValueParser",
-                                    "LocalDbBeanFormatter.INSTANCE"))))
+                                    "LocalDbBeanFormatter.INSTANCE")
+                                    .addArgument(Integer.toString(decimalValue.getDecimals())))))
                     .addContent(EMPTY_LINE);
         }
     }
