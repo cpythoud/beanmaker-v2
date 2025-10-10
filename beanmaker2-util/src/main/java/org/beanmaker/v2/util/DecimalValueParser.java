@@ -1,6 +1,5 @@
 package org.beanmaker.v2.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -35,6 +34,45 @@ public class DecimalValueParser {
 
     public static DecimalValueParser create(String separator, int decimals) {
         return builder().addSeparator(separator).decimals(decimals).build();
+    }
+
+    public static DecimalValueParser create(String separator, boolean lenient) {
+        return builder().addSeparator(separator).lenient(lenient).build();
+    }
+
+    public static DecimalValueParser create(String separator, int decimals, boolean lenient) {
+        return builder().addSeparator(separator).decimals(decimals).lenient(lenient).build();
+    }
+
+    public static DecimalValueParser from(DecimalValueParser parser, int decimals) {
+        Objects.requireNonNull(parser, "source parser must not be null");
+        if (parser.decimals == decimals)
+            return parser;
+
+        return createFromOtherParser(parser, decimals, parser.lenient);
+    }
+
+    public static DecimalValueParser from(DecimalValueParser parser, boolean lenient) {
+        Objects.requireNonNull(parser, "source parser must not be null");
+        if (parser.lenient == lenient)
+            return parser;
+
+        return createFromOtherParser(parser, parser.decimals, lenient);
+    }
+
+    public static DecimalValueParser from(DecimalValueParser parser, int decimals, boolean lenient) {
+        Objects.requireNonNull(parser, "source parser must not be null");
+        if (parser.decimals == decimals && parser.lenient == lenient)
+            return parser;
+
+        return createFromOtherParser(parser, decimals, lenient);
+    }
+
+    private static DecimalValueParser createFromOtherParser(DecimalValueParser parser, int decimals, boolean lenient) {
+        if (decimals <= 0)
+            throw new IllegalArgumentException("Decimals must be positive");
+
+        return new DecimalValueParser(decimals, parser.separators, parser.decorators, lenient);
     }
 
     public DecimalValue parse(String value) {
@@ -248,8 +286,8 @@ public class DecimalValueParser {
 
             return new DecimalValueParser(
                     decimals,
-                    new ArrayList<>(separators),
-                    new ArrayList<>(decorators),
+                    List.copyOf(separators),
+                    List.copyOf(decorators),
                     lenient
             );
         }
