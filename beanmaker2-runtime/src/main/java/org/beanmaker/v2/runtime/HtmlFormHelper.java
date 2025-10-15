@@ -88,7 +88,7 @@ public interface HtmlFormHelper {
     default void addErrorMessagesContainer(Tag form, String formName, long idBean) { }
 
     static Tag getDefaultErrorMessageContainer(String formName, long idBean) {
-        return new DivTag().id("error_messages_" + formName + "_" + idBean);
+        return new DivTag().id("error_messages_" + formName + "_" + idBean).cssClass("form_error_messages");
     }
 
 }
