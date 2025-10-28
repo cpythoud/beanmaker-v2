@@ -102,7 +102,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     protected DivTag getCheckbox(HFHParameters params) {
         var labelTag = new LabelTag(
                 params.getFieldLabel(),
-                getFieldId(params.getField(), params.getIdBean(), params.isReadonly())
+                getFieldId(params.getField(), params.getIdBean(), params.getIdNameSuffix(), params.isReadonly())
         ).cssClass("form-check-label");
 
         if (params.hasLabelExtraCssClasses())
