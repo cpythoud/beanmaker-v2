@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.11 -- 2025-08-23';
+    static VERSION = 'v0.2.12 -- 2025-11-03';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -132,6 +132,13 @@ class Beanmaker2 {
         window.location.href = url.toString();
     }
 
+    static navigateWithParams(params) {
+        const url = new URL(window.location.href);
+        for (const [key, value] of Object.entries(params)) {
+            url.searchParams.set(key, String(value));
+        }
+        window.location.href = url.toString();
+    }
 
     constructor(bean, nonDefaultParameters) {
         console.log("Beanmaker2 -- " + bean + " -- " + Beanmaker2.VERSION);
