@@ -119,6 +119,17 @@ public final class IsoWeek {
                 + DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(locale).format(sunday);
     }
 
+    public IsoWeek plusWeeks(int weeks) {
+        if (weeks == 0)
+            return this;
+
+        var targetMonday = monday.plusWeeks(weeks);
+        int targetYear = targetMonday.get(WeekFields.ISO.weekBasedYear());
+        int targetWeek = targetMonday.get(WeekFields.ISO.weekOfWeekBasedYear());
+
+        return new IsoWeek(targetYear, targetWeek);
+    }
+
     @Override
     public String toString() {
         return "IsoWeek{year=" + year + ", week=" + week + ", monday=" + monday + ", sunday=" + sunday + '}';
