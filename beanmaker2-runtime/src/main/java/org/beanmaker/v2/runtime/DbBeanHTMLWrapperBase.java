@@ -40,12 +40,12 @@ public abstract class DbBeanHTMLWrapperBase {
 
     protected void checkBean() {
         if (bean == null)
-            throw new IllegalArgumentException("No bean set");
+            throw new IllegalStateException("No bean set");
     }
 
     protected void checkLanguage() {
         if (language == null)
-            throw new IllegalArgumentException("No language set");
+            throw new IllegalStateException("No language set");
     }
 
     protected void checkParameters() {
