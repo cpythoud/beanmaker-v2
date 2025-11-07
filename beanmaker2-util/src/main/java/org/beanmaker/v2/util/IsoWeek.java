@@ -111,6 +111,19 @@ public final class IsoWeek {
         return !date.isBefore(monday) && !date.isAfter(sunday);
     }
 
+    public boolean isInThePast() {
+        return sunday.isBefore(LocalDate.now());
+    }
+
+    public boolean isCurrentWeek() {
+        var today = LocalDate.now();
+        return !today.isBefore(monday) && !today.isAfter(sunday);
+    }
+
+    public boolean isInTheFuture() {
+        return monday.isAfter(LocalDate.now());
+    }
+
     public String print(FormatStyle formatStyle, Locale locale) {
         Objects.requireNonNull(formatStyle, "formatStyle");
         Objects.requireNonNull(locale, "locale");
@@ -128,6 +141,14 @@ public final class IsoWeek {
         int targetWeek = targetMonday.get(WeekFields.ISO.weekOfWeekBasedYear());
 
         return new IsoWeek(targetYear, targetWeek);
+    }
+
+    public IsoWeek getPreviousWeek() {
+        return plusWeeks(-1);
+    }
+
+    public IsoWeek getNextWeek() {
+        return plusWeeks(1);
     }
 
     @Override
