@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #67");
+        console.info("CCTABLE2: build #68");
 
         // * FILTERING *
 
@@ -83,6 +83,18 @@ let CCTable2 = (function () {
         }
     }
 
+    // * TEXT NORMALIZATION FOR FILTERING & SORTING *
+
+    function normalize(text, instance) {
+        let result = text.trim().toLowerCase();
+
+        for (const [searchChar, replaceChar] of Object.entries(instance._settings.normalizationCharMap)) {
+            result = result.split(searchChar).join(replaceChar);
+        }
+
+        return result;
+    }
+
 
     // * FILTERING *
 
@@ -90,15 +102,15 @@ let CCTable2 = (function () {
         let didFilter = false;
         instance._table.querySelectorAll('.' + instance._settings.formElementFilterCssClass).forEach(function (filterField) {
             const filterName = filterField.name;
-            const filterVal = filterField.value.trim().toLowerCase();
+            const filterVal = normalize(filterField.value, instance);
             if (filterVal !== '') {
                 instance._table.querySelectorAll('td.' + filterName).forEach(function (cell) {
                     if (!cell.parentElement.classList.contains(instance._settings.sumLineCssClass)) {
                         let content;
                         if (cell.dataset.filterValue)
-                            content = cell.dataset.filterValue.toLowerCase();
+                            content = normalize(cell.dataset.filterValue, instance);
                         else
-                            content = cell.textContent.toLowerCase();
+                            content = normalize(cell.textContent, instance);
                         if (content.indexOf(filterVal) > -1) {
                             if (!didFilter)
                                 cell.parentElement.classList.remove(instance._settings.filteredCssClass);
@@ -167,9 +179,9 @@ let CCTable2 = (function () {
                     if (!cell.parentElement.classList.contains(instance._settings.sumLineCssClass)) {
                         let content;
                         if (cell.dataset.filterValue)
-                            content = cell.dataset.filterValue.toLowerCase();
+                            content = normalize(cell.dataset.filterValue, instance);
                         else
-                            content = cell.textContent.toLowerCase();
+                            content = normalize(cell.textContent, instance);
                         let foundAll = true;
                         for (let i = 0; i < keywordList.length; ++i) {
                             if (content.indexOf(keywordList[i]) === -1) {
@@ -186,9 +198,9 @@ let CCTable2 = (function () {
                     if (!cell.parentElement.classList.contains(instance._settings.sumLineCssClass)) {
                         let content;
                         if (cell.dataset.filterValue)
-                            content = cell.dataset.filterValue.toLowerCase();
+                            content = normalize(cell.dataset.filterValue, instance);
                         else
-                            content = cell.textContent.toLowerCase();
+                            content = normalize(cell.textContent, instance);
                         let missing = true;
                         for (let i = 0; i < keywordList.length; ++i) {
                             if (content.indexOf(keywordList[i]) > -1) {
@@ -259,9 +271,9 @@ let CCTable2 = (function () {
             else {
                 let val;
                 if (cell.dataset.sortValue)
-                    val = cell.dataset.sortValue;
+                    val = normalize(cell.dataset.sortValue, instance);
                 else
-                    val = cell.textContent;
+                    val = normalize(cell.textContent, instance);
                 val += '~' + index;
                 sortVals.push(val);
                 tds[val] = cell.parentElement;
@@ -419,6 +431,24 @@ let CCTable2 = (function () {
 
     let Constructor = function (tableRef, options = { }) {
         let settings = Object.assign({
+            // * TEXT NORMALIZATION *
+
+            normalizationCharMap: {
+                // Accents
+                'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a', 'ã': 'a',
+                'é': 'e', 'è': 'e', 'ë': 'e', 'ê': 'e',
+                'í': 'i', 'ì': 'i', 'ï': 'i', 'î': 'i',
+                'ó': 'o', 'ò': 'o', 'ö': 'o', 'ô': 'o', 'õ': 'o',
+                'ú': 'u', 'ù': 'u', 'ü': 'u', 'û': 'u',
+                'ñ': 'n', 'ç': 'c',
+
+                'œ': 'oe',
+                'æ': 'ae',
+                'ﬁ': 'fi',
+                'ﬂ': 'fl',
+                'ß': 'ss'
+            },
+
             // * FILTERING *
             formElementFilterCssClass: 'tb-filter',
             removeFilteringLinkCssClass: 'tb-nofilter',
