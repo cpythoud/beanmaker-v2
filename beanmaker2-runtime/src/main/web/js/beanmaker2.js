@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.12 -- 2025-11-03';
+    static VERSION = 'v0.2.13 -- 2025-11-08';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -110,7 +110,7 @@ class Beanmaker2 {
         const jsonData = element.dataset.beanmaker2labels ? JSON.parse(element.dataset.beanmaker2labels) : {};
         jsonData[name] = value;
         element.dataset.beanmaker2labels = JSON.stringify(jsonData);
-        console.log(`Updated data-info: ${element.dataset.beanmaker2labels}`);
+        //console.log(`Updated data-info: ${element.dataset.beanmaker2labels}`);
     }
 
     static getLabel(element, name) {
