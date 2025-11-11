@@ -185,18 +185,30 @@ public abstract class BaseMasterTableView extends BaseView {
     protected boolean excelExportDownloadLinkAlreadyShown = false;
     protected Map<String, String> excelExportExtraParameters = new HashMap<>();
 
+    protected long masterTableRenderingTimeInMillis = 0;
+
     public BaseMasterTableView(String tableId, DbBeanLocalization dbBeanLocalization) {
         super(dbBeanLocalization);
         this.tableId = tableId;
     }
 
     public String getMasterTable() {
+        return composeMasterTable();
+    }
+
+    protected String composeMasterTable() {
+        long startTime = System.nanoTime();
+        executePreRenderingExtraActions();
+
         columnCount = 0;
 
         excelExportDownloadLinkAlreadyShown = false;
         initExcelExportExtraParameters();
 
-        return getMasterTableTag().toString();
+        String table = getMasterTableTag().toString();
+        masterTableRenderingTimeInMillis = (System.nanoTime() - startTime) / 1_000_000;
+        logMasterTableRenderingTime();
+        return table;
     }
 
     public void setShowAllData(boolean showAllData) {
@@ -1118,4 +1130,13 @@ public abstract class BaseMasterTableView extends BaseView {
 
         return adjustSorting(cell, Strings.getLongVal(value));
     }
+
+    protected void executePreRenderingExtraActions() { }
+
+    protected void logMasterTableRenderingTime() { }
+
+    public long getMasterTableRenderingTimeInMillis() {
+        return masterTableRenderingTimeInMillis;
+    }
+
 }
