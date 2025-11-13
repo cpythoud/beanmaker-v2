@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseMasterTableView extends BaseView {
+public abstract class BaseMasterTableView extends BaseView implements MasterTableView {
 
     protected String tableId;
 
@@ -192,6 +192,7 @@ public abstract class BaseMasterTableView extends BaseView {
         this.tableId = tableId;
     }
 
+    @Override
     public String getMasterTable() {
         return composeMasterTable();
     }
@@ -912,6 +913,7 @@ public abstract class BaseMasterTableView extends BaseView {
         return multiColTitle;
     }
 
+    @Override
     public String getSummaryInfo() {
         return getSummaryInfoCode().toString();
     }

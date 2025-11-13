@@ -1,6 +1,7 @@
 package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.Strings;
+import org.beanmaker.v2.util.Types;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,10 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
             case CHANGE_ORDER -> {
                 response.setContentType("text/json; charset=UTF-8");
                 response.getWriter().println(changeOrder(requestParameters));
+            }
+            case DISPLAY_TABLE -> {
+                response.setContentType("text/html; charset=UTF-8");
+                response.getWriter().println(displayTable(requestParameters));
             }
             default ->
                     throw new AssertionError("Unidentified operation: " + getOperation(requestParameters));
@@ -102,5 +107,29 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
             long companionId,
             HttpRequestParameters requestParameters
     );
+
+    protected String displayTable(HttpRequestParameters requestParameters) {
+        var table = retrieveTable(requestParameters);
+        initTable(table, requestParameters);
+        return getTableSummaryInfo(table) + getTable(table);
+    }
+
+    protected MasterTableView retrieveTable(HttpRequestParameters requestParameters) {
+        var table = Types.createInstanceOf(getTableClass(), MasterTableView.class);
+        table.setLanguage(getLanguage(requestParameters.getSession()));
+        return table;
+    }
+
+    protected abstract String getTableClass();
+
+    protected void initTable(MasterTableView table, HttpRequestParameters requestParameters) { }
+
+    protected String getTableSummaryInfo(MasterTableView table) {
+        return table.getSummaryInfo();
+    }
+
+    protected String getTable(MasterTableView table) {
+        return table.getMasterTable();
+    }
 
 }

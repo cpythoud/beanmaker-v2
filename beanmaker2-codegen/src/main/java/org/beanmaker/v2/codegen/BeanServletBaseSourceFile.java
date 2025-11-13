@@ -52,6 +52,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
         addGetSubmitBeanIdFunction();
         addGetInstanceFunction();
         addChangeOrderFunction();
+        addDisplayTableFunction();
     }
 
     private void addGetHTMLViewFunction() {
@@ -137,6 +138,20 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                     .addArgument(quickQuote(beanName + " beans have no ordering. (No itemOrder field present.)")));
 
         javaClass.addContent(functionDeclaration).addContent(EMPTY_LINE);
+    }
+
+    private void addDisplayTableFunction() {
+        javaClass
+                .addContent(
+                        new FunctionDeclaration("getTableClass", "String")
+                                .annotate("@Override")
+                                .visibility(Visibility.PROTECTED)
+                                .addContent(
+                                        new ReturnStatement(
+                                                quickQuote(packageName + "." + beanName + "MasterTableView")
+                                        )
+                                )
+        ).addContent(EMPTY_LINE);
     }
 
 }

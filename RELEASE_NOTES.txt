@@ -116,6 +116,8 @@ NEW FEATURES:
   management of numeric values with decimals, while keeping them stored as integers in the database and thus
   avoiding rounding errors; this class should be used instead of Money from now on; class Money will be deprecated
   in next version and later removed
+- introduce a new servlet operation to display a MasterTable: this allow to download a table from an ajax request
+  and allow, among other things, to display a loading indicator while downloading large tables.
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
