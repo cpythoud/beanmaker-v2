@@ -30,7 +30,8 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         SUBMIT_FORM(2, "submit"),
         DELETE_BEAN(3, "delete"),
         CHANGE_ORDER(4, "order"),
-        DISPLAY_TABLE(5,"display_table");
+        DISPLAY_TABLE(5,"display_table"),
+        GET_FORM_BUTTONS(6, "buttons");
 
         private final int index;
         private final String paramValue;

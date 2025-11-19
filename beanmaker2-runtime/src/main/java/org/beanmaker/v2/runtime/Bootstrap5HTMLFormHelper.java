@@ -23,6 +23,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     private String verticalFormElementSpacing = "mb-3";
     private boolean formInModale = true;
     private boolean floatingLabels = false;
+    private boolean buttonsSeparated = false;
 
     public String getVerticalFormElementSpacing() {
         return verticalFormElementSpacing;
@@ -46,6 +47,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     public void setFloatingLabels(boolean floatingLabels) {
         this.floatingLabels = floatingLabels;
+    }
+
+    public boolean areButtonsSeparated() {
+        return buttonsSeparated;
+    }
+
+    public void setButtonsSeparated(boolean buttonsSeparated) {
+        this.buttonsSeparated = buttonsSeparated;
     }
 
     @Override
@@ -291,7 +300,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     @Override
     public Tag getFormElementsContainer(Tag form) {
-        if (isFormInModale())
+        if (isFormInModale() && !areButtonsSeparated())
             return new DivTag().cssClass("modal-body");
 
         return super.getFormElementsContainer(form);
@@ -312,7 +321,11 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     @Override
     public ButtonTag getButtonTag(HFHParameters params) {
-        return super.getButtonTag(params).appendCssClasses("btn btn-primary");
+        var button = super.getButtonTag(params);
+        button.appendCssClasses("btn btn-primary");
+        if (buttonsSeparated)
+            button.form(getHtmlId(params.getBeanName(), params.getIdBean()));
+        return button;
     }
 
     public static ButtonTag getDefaultCancelButton(String label) {

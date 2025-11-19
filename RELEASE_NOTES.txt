@@ -117,7 +117,11 @@ NEW FEATURES:
   avoiding rounding errors; this class should be used instead of Money from now on; class Money will be deprecated
   in next version and later removed
 - introduce a new servlet operation to display a MasterTable: this allow to download a table from an ajax request
-  and allow, among other things, to display a loading indicator while downloading large tables.
+  and allow, among other things, to display a loading indicator while downloading large tables
+- introduce a new servlet operation to separate generation of the HTML form and of the buttons that control it
+  (should be useful when these need to be split like in modals; support for this has been added in the runtime and
+   in beanmaker2.js; support has also been added for this in the experimental Bootstrap 5 implementation of
+   HtmlFormHelper).
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field

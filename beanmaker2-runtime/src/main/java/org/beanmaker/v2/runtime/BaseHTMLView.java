@@ -19,6 +19,7 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     protected String formName;
     protected boolean horizontal = false;
     protected boolean readonly = false;
+    protected boolean displayButtonsSeparately = false;
 
     protected int uploadedFileSizeThreshold = HttpRequestParameters.DEFAULT_UPLOADED_FILE_SIZE_THRESHOLD;
 
@@ -65,6 +66,10 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
 
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
+    }
+
+    public void setDisplayButtonsSeparately(boolean displayButtonsSeparately) {
+        this.displayButtonsSeparately = displayButtonsSeparately;
     }
 
     @Override
@@ -130,6 +135,22 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
             form.child(formButtonsContainer);
 
         return form;
+    }
+
+    @Override
+    public String getStandaloneFormButtons() {
+        return getStandaloneFormButtonsTag().toString();
+    }
+
+    @Override
+    public Tag getStandaloneFormButtonsTag() {
+        var buttons = getStandaloneFormButtonsContainer();
+        composeButtons(buttons);
+        return buttons;
+    }
+
+    protected Tag getStandaloneFormButtonsContainer() {
+        return htmlFormHelper.getStandaloneFormButtonsContainer();
     }
 
     @Override

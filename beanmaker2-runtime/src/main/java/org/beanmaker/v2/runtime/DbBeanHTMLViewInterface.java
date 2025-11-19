@@ -1,6 +1,7 @@
 package org.beanmaker.v2.runtime;
 
 import org.jcodegen.html.FormTag;
+import org.jcodegen.html.Tag;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,10 @@ public interface DbBeanHTMLViewInterface extends DbBeanViewInterface {
     String getHtmlForm();
 
     FormTag getHtmlFormTag();
+
+    String getStandaloneFormButtons();
+
+    Tag getStandaloneFormButtonsTag();
 
     void setAllFields(ServletRequest request);
 

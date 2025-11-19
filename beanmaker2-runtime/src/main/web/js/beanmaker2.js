@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.2.13 -- 2025-11-08';
+    static VERSION = 'v0.3 -- 2025-11-19';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -28,6 +28,7 @@ class Beanmaker2 {
             document.getElementById(dialogID).style.display='block';
         },
         formContainerInDialogClass: 'form-content',
+        buttonContainerInDialogClass: undefined,
         // * CSS classes
         loadingClass: '',
         errorContainerStyles: '',
@@ -166,8 +167,9 @@ class Beanmaker2 {
             const $form = event.target;
             if ($form.getAttribute('name') === this.bean) {
                 event.preventDefault();
+                const $submitter = event.submitter;
                 const multipart = $form.getAttribute('enctype') === 'multipart/form-data';
-                this.showLoadingStatus($form);
+                this.showLoadingStatus($form, $submitter);
                 fetch(this.getSubmitFormAction($form), this.getSubmitFormParameters($form, multipart))
                     .then(response => {
                         if (response.ok && response.headers.get("Content-Type") === "text/json; charset=UTF-8")
@@ -195,10 +197,15 @@ class Beanmaker2 {
                                 if (this.parameters.errorFunction === undefined) {
                                     this.showErrorMessages($form, data.errors);
                                     if (this.parameters.elementToScrollUpOnError) {
-                                        if (this.parameters.elementToScrollUpOnError === 'body')
+                                        if (this.parameters.elementToScrollUpOnError === 'body') {
                                             window.scrollTo(0, 0);
-                                        else
-                                            document.querySelector(this.parameters.elementToScrollUpOnError).scrollIntoView();
+                                        } else {
+                                            const scrollTarget =
+                                                document.querySelector(this.parameters.elementToScrollUpOnError);
+                                            scrollTarget.scrollTop = 0;
+                                            scrollTarget.scrollIntoView();
+                                        }
+
                                     }
                                 } else {
                                     this.parameters.errorFunction();
@@ -209,28 +216,48 @@ class Beanmaker2 {
                                 console.log(data.status);
                                 alert('An unexpected error has occurred. See console output for more information.');
                         }
-                        this.removeLoadingStatus($form);
+                        this.removeLoadingStatus($form, $submitter);
                     })
                     .catch(error => {
                         // TODO: improve error reporting
                         console.log(error);
                         alert('An unexpected error has occurred. See console output for more information.');
-                        this.removeLoadingStatus($form);
+                        this.removeLoadingStatus($form, $submitter);
                     });
             }
         })
     }
 
-    showLoadingStatus($form) {
-        if (this.parameters.loadingClass)
-            Beanmaker2.addClasses($form.querySelector(this.parameters.loadingStatusElement), this.parameters.loadingClass);
-        $form.querySelector(this.parameters.submitElement).setAttribute('disabled', 'disabled');
+    getSubmitButton($form, $submitter) {
+        if ($submitter) return $submitter;
+
+        // * Fallback 1: Look inside the form
+        let btn = $form.querySelector(this.parameters.submitElement);
+
+        // * Fallback 2: Look outside the form using the form attribute
+        if (!btn && $form.id) {
+            const selector = `${this.parameters.submitElement}[form="${$form.id}"]`;
+            btn = document.querySelector(selector);
+        }
+        return btn;
     }
 
-    removeLoadingStatus($form) {
+    showLoadingStatus($form, $submitter) {
+        if (this.parameters.loadingClass)
+            Beanmaker2.addClasses($form.querySelector(this.parameters.loadingStatusElement), this.parameters.loadingClass);
+
+        const $btn = this.getSubmitButton($form, $submitter);
+        if ($btn)
+            $btn.setAttribute('disabled', 'disabled');
+    }
+
+    removeLoadingStatus($form, $submitter) {
         if (this.parameters.loadingClass)
             Beanmaker2.removeClasses($form.querySelector(this.parameters.loadingStatusElement), this.parameters.loadingClass);
-        $form.querySelector(this.parameters.submitElement).removeAttribute('disabled');
+
+        const $btn = this.getSubmitButton($form, $submitter);
+        if ($btn)
+            $btn.removeAttribute('disabled');
     }
 
     removeErrorMarking($form) {
@@ -412,6 +439,25 @@ class Beanmaker2 {
                             '#' + this.parameters.dialogID + ' .' + this.parameters.formContainerInDialogClass
                         ).innerHTML = data;
                         this.getErrorContainer(id).innerHTML = "";
+
+                        if (this.parameters.buttonContainerInDialogClass) {
+                            return fetch(this.parameters.servletURL, this.getButtonsParameters($link, id))
+                                .then(response => {
+                                    if (response.ok && response.headers.get("Content-Type") === "text/html; charset=UTF-8")
+                                        return response.text();
+
+                                    console.log(response.text());
+
+                                    throw new Error(`Unexpected response status ${response.status} or content type`);
+                                })
+                                .then(data => {
+                                    document.querySelector(
+                                        '#' + this.parameters.dialogID + ' .' + this.parameters.buttonContainerInDialogClass
+                                    ).innerHTML = data;
+                                });
+                        }
+                    })
+                    .then(() => {
                         this.parameters.showFormDialogFunction(this.parameters.dialogID);
                     })
                     .catch(error => {
@@ -432,6 +478,29 @@ class Beanmaker2 {
 
         const formData = new FormData();
         formData.set('beanmaker_operation', 'get');
+        formData.set('id', id.toString());
+        this.parameters.extraFormRequestParameters.forEach(attr => {
+            const dataAttr = `data-${attr}`;
+            const value = $link.getAttribute(dataAttr);
+            if (value !== null) {
+                formData.set(attr, value);
+            }
+        });
+
+        parameters.body = new URLSearchParams(formData);
+
+        return parameters;
+    }
+
+    getButtonsParameters($link, id) {
+        const parameters = {
+            method: 'POST',
+            cache: 'no-store',
+            credentials: 'same-origin'
+        };
+
+        const formData = new FormData();
+        formData.set('beanmaker_operation', 'buttons');
         formData.set('id', id.toString());
         this.parameters.extraFormRequestParameters.forEach(attr => {
             const dataAttr = `data-${attr}`;

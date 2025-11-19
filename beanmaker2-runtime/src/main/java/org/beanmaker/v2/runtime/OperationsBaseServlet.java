@@ -38,6 +38,10 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
                 response.setContentType("text/html; charset=UTF-8");
                 response.getWriter().println(displayTable(requestParameters));
             }
+            case GET_FORM_BUTTONS -> {
+                response.setContentType("text/html; charset=UTF-8");
+                response.getWriter().println(getFormButtons(requestParameters));
+            }
             default ->
                     throw new AssertionError("Unidentified operation: " + getOperation(requestParameters));
         }
@@ -130,6 +134,20 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
 
     protected String getTable(MasterTableView table) {
         return table.getMasterTable();
+    }
+
+    protected String getFormButtons(HttpRequestParameters requestParameters) throws ServletException {
+        return getFormButtonsPrefix(requestParameters) +
+                getHTMLView(getBeanId(requestParameters, "id"), requestParameters).getStandaloneFormButtons() +
+                getFormButtonsSuffix(requestParameters);
+    }
+
+    protected String getFormButtonsPrefix(HttpRequestParameters requestParameters) {
+        return "";
+    }
+
+    protected String getFormButtonsSuffix(HttpRequestParameters requestParameters) {
+        return "";
     }
 
 }

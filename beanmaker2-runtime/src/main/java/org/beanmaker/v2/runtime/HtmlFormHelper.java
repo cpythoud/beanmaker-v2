@@ -91,4 +91,8 @@ public interface HtmlFormHelper {
         return new DivTag().id("error_messages_" + formName + "_" + idBean).cssClass("form_error_messages");
     }
 
+    default Tag getStandaloneFormButtonsContainer() {
+        return new DivTag();
+    }
+
 }

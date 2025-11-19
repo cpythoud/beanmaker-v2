@@ -181,7 +181,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
 
         formTagFunction
                 .addContent(new FunctionCall("composeAdditionalHtmlFormFields").byItself().addArgument("fields"))
-                .addContent(new IfBlock(new Condition("readonly"))
+                .addContent(new IfBlock(new Condition("readonly || displayButtonsSeparately"))
                         .addContent(new ReturnStatement(
                                 new FunctionCall("finalizeForm").addArguments("form", "fields"))))
                 .addContent(EMPTY_LINE)
