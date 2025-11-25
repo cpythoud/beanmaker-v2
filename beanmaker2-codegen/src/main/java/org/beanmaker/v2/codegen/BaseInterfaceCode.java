@@ -1,12 +1,14 @@
 package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Version;
+
 import org.jcodegen.java.EmptyLine;
 import org.jcodegen.java.ImportsManager;
 import org.jcodegen.java.InterfaceSourceFile;
 import org.jcodegen.java.JavaInterface;
 
 import java.time.Instant;
+
 import java.util.List;
 
 import static org.beanmaker.v2.util.Strings.uncapitalize;
@@ -26,7 +28,13 @@ public abstract class BaseInterfaceCode implements BeanMakerSourceFile {
 
     protected static final EmptyLine EMPTY_LINE = new EmptyLine();
 
-    public BaseInterfaceCode(String beanName, String packageName, String interfaceNameExtension, Columns columns, ProjectParameters projectParameters) {
+    public BaseInterfaceCode(
+            String beanName,
+            String packageName,
+            String interfaceNameExtension,
+            Columns columns,
+            ProjectParameters projectParameters)
+    {
         this.beanName = beanName;
         beanVarName = uncapitalize(beanName);
         this.packageName = packageName;

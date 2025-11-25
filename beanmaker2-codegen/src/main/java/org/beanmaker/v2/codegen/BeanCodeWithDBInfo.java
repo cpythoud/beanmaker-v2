@@ -17,7 +17,14 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
     protected final Columns columns;
     protected final String tableName;
 
-    public BeanCodeWithDBInfo(String beanName, String packageName, String namePrefix, String nameSuffix, Columns columns, ProjectParameters projectParameters) {
+    public BeanCodeWithDBInfo(
+            String beanName,
+            String packageName,
+            String namePrefix,
+            String nameSuffix,
+            Columns columns,
+            ProjectParameters projectParameters)
+    {
         super(beanName, packageName, namePrefix, nameSuffix, projectParameters);
 
         if (!columns.isOK())
@@ -49,9 +56,11 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         String name = column.getJavaName();
         String getterPrefix = (type.equals("Boolean") || type.equals("boolean")) ? "is" : "get";
 
-        var getter = new FunctionDeclaration(getterPrefix + capitalize(name), type).visibility(Visibility.PUBLIC);
-        if (column.isId() || column.isItemOrder() || name.equals("idLabel") || column.isUniqueCodeField())
-            getter.annotate("@Override");
+        var getter = new FunctionDeclaration(getterPrefix + capitalize(name), type)
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC);
+        /*if (column.isId() || column.isItemOrder() || name.equals("idLabel") || column.isUniqueCodeField())
+            getter.annotate("@Override");*/
         if (TEMPORAL_TYPES.contains(type))
             getter.addContent(new ReturnStatement(new FunctionCall("copy", "DBUtil").addArgument(name)));
         else
@@ -111,6 +120,7 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         String name = column.getJavaName();
         javaClass
                 .addContent(new FunctionDeclaration("get" + chopID(name), "DbBeanFile")
+                        .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new FunctionCall("get", "LocalFileManager")
                                 .addArgument(name))))
@@ -122,6 +132,7 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         String name = column.getJavaName();
         javaClass
                 .addContent(new FunctionDeclaration("get" + chopID(name), type)
+                        .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new ObjectCreation(type).addArgument(name))))
                 .addContent(EMPTY_LINE);

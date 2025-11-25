@@ -143,6 +143,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.hasUniqueCodeField())
             javaClass.implementsInterface("DbBeanEditorWithUniqueCode");
+
+        javaClass.implementsInterface(beanName + "DataModel");
     }
 
     @Override
@@ -761,10 +763,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         var labelFunction = getLabelGetterFunction(idName, labelName, false);
         var perLanguageLabelFunction = getPerLanguageLabelGetterFunction(labelName, labelNameCap, false);
 
-        if (idName.equals("idLabel")) {
+        /*if (idName.equals("idLabel")) {
             labelFunction.annotate("@Override");
             perLanguageLabelFunction.annotate("@Override");
-        }
+        }*/
 
         javaClass
                 .addContent(labelFunction)
@@ -809,6 +811,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                     .addArguments("dbBeanLabelEditor", labelName)));
         } else {
             labelFunction
+                    .annotate("@Override")
                     .markAsFinal()
                     .addContent(new ReturnStatement(new FunctionCall(labelFunctionName).addArgument("(DBTransaction) null")));
         }
@@ -835,6 +838,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                             new FunctionCall("get", labelName).addArgument("dbBeanLanguage")));
         } else {
             perLanguageLabelFunction
+                    .annotate("@Override")
                     .markAsFinal()
                     .addContent(new ReturnStatement(new FunctionCall(perLanguageLabelFunctionName)
                             .addArguments("dbBeanLanguage", "null")));
@@ -1271,6 +1275,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(new FunctionDeclaration(
                         "is" + capitalize(column.getJavaName()) + "Empty", "boolean")
+                        .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(getEmptyFieldTest(column))))
                 .addContent(EMPTY_LINE);

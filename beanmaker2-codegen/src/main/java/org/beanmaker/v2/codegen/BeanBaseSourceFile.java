@@ -101,6 +101,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.hasUniqueCodeField())
             javaClass.implementsInterface("DbBeanWithUniqueCode");
+
+        javaClass.implementsInterface(beanName + "DataModel");
     }
 
     @Override
@@ -331,6 +333,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         String functionName = "get" + chopID(fieldName);
         FunctionDeclaration labelFunction =
                 new FunctionDeclaration(functionName, "DbBeanLabel")
+                        .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(
                                 new FunctionCall("get", "LabelManager")
@@ -338,6 +341,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
         FunctionDeclaration perLanguageLabelFunction =
                 new FunctionDeclaration(functionName, "String")
+                        .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
                         .addContent(new ReturnStatement(
@@ -353,8 +357,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                                         .addArgument("dbBeanLanguage")));
 
         if (fieldName.equals("idLabel")) {
-            labelFunction.annotate("@Override");
-            perLanguageLabelFunction.annotate("@Override");
+            //labelFunction.annotate("@Override");
+            //perLanguageLabelFunction.annotate("@Override");
             perLanguageSafeLabelFunction.annotate("@Override");
         }
 
@@ -398,7 +402,9 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private FunctionDeclaration getIsEmptyFunctionDeclaration(Column column) {
-        return new FunctionDeclaration(getIsEmptyFunctionName(column), "boolean").visibility(Visibility.PUBLIC);
+        return new FunctionDeclaration(getIsEmptyFunctionName(column), "boolean")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC);
     }
 
     private void addBeanReferenceEmptyCheck(Column column) {
