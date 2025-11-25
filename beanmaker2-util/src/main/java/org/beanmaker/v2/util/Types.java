@@ -29,4 +29,8 @@ public final class Types {
         return instance;
     }
 
+    public static boolean implementsInterface(Object object, Class<?> interfaceClass) {
+        return interfaceClass.isAssignableFrom(object.getClass());
+    }
+
 }
