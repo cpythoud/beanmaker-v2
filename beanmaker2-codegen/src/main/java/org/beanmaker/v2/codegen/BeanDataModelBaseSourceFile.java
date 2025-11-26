@@ -34,6 +34,9 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
         if (types.contains("DecimalValue"))
             importsManager.addImport("org.beanmaker.v2.util.DecimalValue");
 
+        if (columns.hasLastUpdate())
+            throw new UnsupportedOperationException("last_update field not supported in current implementation");
+
         if (columns.hasLabels()) {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLabel");
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLanguage");
