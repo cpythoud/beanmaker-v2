@@ -301,6 +301,7 @@ public class Columns implements Iterable<Column> {
         return false;
     }
 
+    @Deprecated
     public boolean containsFinancialData() {
         for (Column column: columns)
             if (column.getJavaType().equals("Money"))
@@ -475,7 +476,7 @@ public class Columns implements Iterable<Column> {
     }
 
     public boolean hasExtraFields() {
-        return extraFields.size() > 0;
+        return !extraFields.isEmpty();
     }
 
     public String getSuggestedBeanName() {
