@@ -1,5 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
+import org.beanmaker.v2.runtime.DbBeanInterface;
 import org.beanmaker.v2.runtime.DbBeanLabel;
 import org.beanmaker.v2.runtime.DbBeanLabelEditor;
 import org.beanmaker.v2.runtime.DbBeanLanguage;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -372,6 +374,19 @@ public class LabelHelper {
 
     public String createUniqueLabelName() {
         return labelAutoNamePrefix + Dates.getMeaningfulTimeStamp() + "-" + LABEL_CODE_EXTRA_CHARS.create();
+    }
+
+    public long duplicate(DBTransaction transaction, DbBeanLabel label, List<DbBeanLanguage> languages) {
+        return createLabel(transaction, extractContent(label, languages));
+    }
+
+    public Map<DbBeanLanguage, String> extractContent(DbBeanLabel label, List<DbBeanLanguage> languages) {
+        var map = new HashMap<DbBeanLanguage, String>();
+        for (var language: languages) {
+            if (label.hasDataFor(language))
+                map.put(language, label.get(language));
+        }
+        return map;
     }
 
     public void cacheLabelsFromDB(

@@ -73,6 +73,7 @@ public class LabelManagerSourceFile extends BaseCode {
 
         addNonImplementedStaticFunction("DbBeanLabelEditor", "createEditorInstance");
         addNonImplementedStaticFunction("DbBeanLabel", "duplicate", LABEL_ARG);
+        addNonImplementedStaticFunction("long", "duplicateAndGetId", LABEL_ARG, TRANSACTION_ARG);
         addNonImplementedStaticFunction("DbBeanLanguage", "getDefaultLanguage");
         addNonImplementedStaticFunction("List<DbBeanLanguage>", "getAllActiveLanguages");
         addNonImplementedStaticFunction("DbBeanLanguage", "getLanguage", ID_ARG);
