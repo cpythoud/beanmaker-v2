@@ -50,7 +50,7 @@ public interface DbBeanParameters {
         return "SELECT * FROM %s WHERE %s=?".formatted(reference.table(), reference.field());
     }
 
-    default boolean isReferenced(DbBeanInterface bean, DBAccess dbAccess) {
+    default boolean isReferenced(IdBasedReference bean, DBAccess dbAccess) {
         for (var reference: getDatabaseReferences()) {
             if (dbAccess.processQuery(
                     getReferenceQuery(reference),
@@ -61,7 +61,7 @@ public interface DbBeanParameters {
         return false;
     }
 
-    default boolean isReferenced(DbBeanInterface bean, DBTransaction transaction) {
+    default boolean isReferenced(IdBasedReference bean, DBTransaction transaction) {
         for (var reference: getDatabaseReferences()) {
             if (transaction.addQuery(
                     getReferenceQuery(reference),

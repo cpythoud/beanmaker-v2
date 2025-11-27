@@ -4,12 +4,11 @@ import org.dbbeans.sql.DBTransaction;
 
 import java.util.List;
 
-public interface DbBeanEditorInterface {
+public interface DbBeanEditorInterface extends IdBasedReference {
 
     void setId(long id);
     void setId(long id,  DBTransaction transaction);
     void resetId();
-    long getId();
 
     void updateDB();
     long updateDB(DBTransaction transaction);
