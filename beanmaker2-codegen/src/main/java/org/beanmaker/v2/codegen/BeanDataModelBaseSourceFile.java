@@ -102,7 +102,7 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
     }
 
     private void addBeanGetterFunction(Column column) {
-        String type = column.getAssociatedBeanClass();
+        String type = column.isOriginalBeanId() ? beanName : column.getAssociatedBeanClass();
         String name = column.getJavaName();
         javaInterface.addContent(new FunctionDeclaration("get" + chopID(name), type).emptyBody());
     }

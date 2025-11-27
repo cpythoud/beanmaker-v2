@@ -2,27 +2,30 @@ package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Column {
 
+    // TODO: put all special field in public static String-s
+    // TODO: established a distinction between java types in use, and authorized java types
+    // ! int and long are automatic and specific, but should not be allowed as user types
+
     public static final List<String> JAVA_TYPES =
-            Arrays.asList("long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money",
+            List.of("int", "long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money",
                     "DecimalValue");
 
-    private static final List<String> SPECIAL_CASES = Arrays.asList("id", "last_update", "modified_by", "item_order");
-    private static final Map<String, List<String>> SPECIAL_CASE_TYPES;
+    public static final List<String> SPECIAL_CASE_FIELDS =
+            List.of("id", "last_update", "modified_by", "item_order", "bean_version", "id_original_bean");
 
-    static {
-        SPECIAL_CASE_TYPES = new HashMap<>();
-        SPECIAL_CASE_TYPES.put("id", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"));
-        SPECIAL_CASE_TYPES.put("last_update", List.of("BIGINT UNSIGNED"));
-        SPECIAL_CASE_TYPES.put("modified_by", List.of("CHAR", "VARCHAR"));
-        SPECIAL_CASE_TYPES.put("item_order", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"));
-    }
+    public static final Map<String, List<String>> SPECIAL_CASE_FIELD_TYPES = Map.of(
+            "id", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
+            "last_update", List.of("BIGINT UNSIGNED"),
+            "modified_by", List.of("CHAR", "VARCHAR"),
+            "item_order", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
+            "bean_version", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED"),
+            "id_original_bean", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED")
+    );
 
     private static final String DEFAULT_LABEL_CLASS = "DbBeanLabel";
     private static final String DEFAULT_FILE_CLASS  = "DbBeanFile";
@@ -48,9 +51,11 @@ public class Column {
     private final boolean lastUpdate;
     private final boolean modifiedBy;
     private final boolean itemOrder;
+    private final boolean versionField;
+    private final boolean originalBeanId;
 
     private final boolean special;
-    private final boolean bad;
+    private final boolean incompatibleSqlType;
 
     private int decimals = 2;
     private boolean negativeAllowed = true;
@@ -73,9 +78,9 @@ public class Column {
         this.required = required;
         shouldBeRequired = required;
 
-        if (SPECIAL_CASES.contains(sqlName)) {
+        if (SPECIAL_CASE_FIELDS.contains(sqlName)) {
             special = true;
-            bad = !SPECIAL_CASE_TYPES.get(sqlName).contains(sqlTypeName);
+            incompatibleSqlType = !SPECIAL_CASE_FIELD_TYPES.get(sqlName).contains(sqlTypeName);
             if (sqlName.equals("id")) {
                 id = true;
                 unique = true;
@@ -90,13 +95,17 @@ public class Column {
             } else {
                 itemOrder = false;
             }
+            versionField = sqlName.equals("bean_version");
+            originalBeanId = sqlName.equals("id_original_bean");
         } else {
             special = false;
-            bad = false;
+            incompatibleSqlType = false;
             id = false;
             lastUpdate = false;
             modifiedBy = false;
             itemOrder = false;
+            versionField = false;
+            originalBeanId = false;
         }
 
         suggestType();
@@ -112,7 +121,7 @@ public class Column {
         this.scale = col.scale;
         this.autoincrement = col.autoincrement;
         this.special = col.special;
-        this.bad = col.bad;
+        this.incompatibleSqlType = col.incompatibleSqlType;
         this.id = col.id;
         this.lastUpdate = col.lastUpdate;
         this.modifiedBy = col.modifiedBy;
@@ -126,6 +135,8 @@ public class Column {
         this.itemOrderAssociatedField = col.itemOrderAssociatedField;
         this.decimals = col.decimals;
         this.negativeAllowed = col.negativeAllowed;
+        this.versionField = col.versionField;
+        this.originalBeanId = col.originalBeanId;
     }
 
     public String getSqlTypeName() {
@@ -254,8 +265,13 @@ public class Column {
         return special;
     }
 
+    @Deprecated
     public boolean isBad() {
-        return bad;
+        return incompatibleSqlType();
+    }
+
+    public boolean incompatibleSqlType() {
+        return incompatibleSqlType;
     }
 
     public boolean isBeanReference() {
@@ -266,10 +282,18 @@ public class Column {
         return javaType.equals("DecimalValue");
     }
 
+    public boolean isVersionField() {
+        return versionField;
+    }
+
+    public boolean isOriginalBeanId() {
+        return originalBeanId;
+    }
+
     @Override
     public String toString() {
         return "Column{" +
-                "bad=" + bad +
+                "incompatibleTypes=" + incompatibleSqlType +
                 ", sqlTypeName='" + sqlTypeName + '\'' +
                 ", sqlName='" + sqlName + '\'' +
                 ", displaySize=" + displaySize +
@@ -290,7 +314,9 @@ public class Column {
                 ", special=" + special +
                 ", decimals=" + decimals +
                 ", negativeAllowed=" + negativeAllowed +
-                '}';
+                ", versionField=" + versionField +
+                ", originalBeanId=" + originalBeanId +
+                "}";
     }
 
     private void suggestType() {
@@ -298,8 +324,10 @@ public class Column {
     }
 
     public String getSuggestedType() {
-        if (id || itemOrder || sqlName.startsWith("id_"))
+        if (id || itemOrder || originalBeanId || sqlName.startsWith("id_"))
             return "long";
+        if (versionField)
+            return "int";
 
         return getSuggestedType(sqlTypeName, precision);
     }

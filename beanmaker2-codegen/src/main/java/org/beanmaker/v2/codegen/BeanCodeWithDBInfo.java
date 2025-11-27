@@ -1,6 +1,7 @@
 package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
+
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ObjectCreation;
@@ -8,6 +9,8 @@ import org.jcodegen.java.ReturnStatement;
 import org.jcodegen.java.StringOrCode;
 import org.jcodegen.java.VarDeclaration;
 import org.jcodegen.java.Visibility;
+
+import java.util.List;
 
 import static org.beanmaker.v2.util.Strings.capitalize;
 import static org.beanmaker.v2.util.Strings.quickQuote;
@@ -27,11 +30,21 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
     {
         super(beanName, packageName, namePrefix, nameSuffix, projectParameters);
 
-        if (!columns.isOK())
-            throw new IllegalArgumentException("columns not ok");
+        var errors = columns.getFormatErrors();
+        if (!errors.isEmpty())
+            throw new IllegalArgumentException(composeColumnErrorsExceptionText(errors));
 
         this.columns = columns;
         tableName = columns.getTable();
+    }
+
+    private String composeColumnErrorsExceptionText(List<FieldFormatError.FieldAssociatedError> errors) {
+        var errorText = new StringBuilder();
+        errorText.append("Field errors: ");
+        for (var error: errors)
+            errorText.append(error.formatMessage()).append(", ");
+        errorText.delete(errorText.length() - 2, errorText.length());
+        return errorText.toString();
     }
 
     protected void addProperty(String type, String name, boolean isFinal, StringOrCode<FunctionCall> initializer) {
@@ -59,8 +72,6 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         var getter = new FunctionDeclaration(getterPrefix + capitalize(name), type)
                 .annotate("@Override")
                 .visibility(Visibility.PUBLIC);
-        /*if (column.isId() || column.isItemOrder() || name.equals("idLabel") || column.isUniqueCodeField())
-            getter.annotate("@Override");*/
         if (TEMPORAL_TYPES.contains(type))
             getter.addContent(new ReturnStatement(new FunctionCall("copy", "DBUtil").addArgument(name)));
         else
@@ -128,7 +139,7 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
     }
 
     protected void addBeanGetterFunction(Column column) {
-        String type = column.getAssociatedBeanClass();
+        String type = column.isOriginalBeanId() ? beanName : column.getAssociatedBeanClass();
         String name = column.getJavaName();
         javaClass
                 .addContent(new FunctionDeclaration("get" + chopID(name), type)

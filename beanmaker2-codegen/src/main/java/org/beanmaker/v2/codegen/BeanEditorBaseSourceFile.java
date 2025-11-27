@@ -265,6 +265,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 dbUtilCall = new FunctionCall("getItemOrder", "DBUtil");
             else if (type.equals("Integer"))
                 dbUtilCall = new FunctionCall("getInt", "DBUtil");
+            else if (column.isVersionField())
+                dbUtilCall = new FunctionCall("getBeanVersion", "DBUtil");
             else
                 dbUtilCall = new FunctionCall("get" + type, "DBUtil");
 
@@ -293,6 +295,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return javaClass.createConstructor().addContent(superCall);
     }
 
+    // TODO: for versioning: consider if this function should be disallowed or modified
     private void addCopyDataFunction() {
         String beanEditorClass = beanName + "Editor";
         String beanEditorVar = uncapitalize(beanEditorClass);
@@ -332,6 +335,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass.addContent(initFunction).addContent(EMPTY_LINE);
     }
 
+    // TODO: for versioning: consider if the copy part should be disallowed or modified
     private void addBeanInitFunction() {
         var initCall = new FunctionCall("init").byItself();
 
@@ -447,7 +451,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addSetters() {
         for (Column column: columns.getList())
-            if (!column.isId())
+            if (!column.isId() && !column.isVersionField() && !column.isOriginalBeanId())
                 addSetterFunctions(column);
     }
 
@@ -1089,15 +1093,23 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .collect(Collectors.toList());
 
         addDataOKFunction(columns);
-        for (Column column: columns)
-            addCheckDataFunctions(column);
+        for (Column column: columns) {
+            if (!column.isVersionField() && !column.isOriginalBeanId())
+                addCheckDataFunctions(column);
+        }
         addGlobalCheckDataFunction();
-        for (Column column: columns)
-            addEmptyCheckFunction(column);
-        for (Column column: columns)
-            addValidationFunctionListFunctions(column);
-        for (Column column: columns)
-            addUnicityTestFunctions(column);
+        for (Column column: columns) {
+            if (!column.isVersionField() && !column.isOriginalBeanId())
+                addEmptyCheckFunction(column);
+        }
+        for (Column column: columns) {
+            if (!column.isVersionField() && !column.isOriginalBeanId())
+                addValidationFunctionListFunctions(column);
+        }
+        for (Column column: columns) {
+            if (!column.isVersionField() && !column.isOriginalBeanId())
+                addUnicityTestFunctions(column);
+        }
     }
 
     private void addDataOKFunction(List<Column> columns) {
@@ -1118,8 +1130,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             function.addContent(EMPTY_LINE);
 
         int index = 0;
-        for (Column column: columns)
-            function.addContent(getDataCheckCall(column, ++index));
+        for (Column column: columns) {
+            if (!column.isVersionField() && !column.isOriginalBeanId())
+                function.addContent(getDataCheckCall(column, ++index));
+        }
 
         function.addContent(EMPTY_LINE).addContent(getGlobalDataCheckCall());
 
@@ -1610,11 +1624,16 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass.addContent(getResetFunction(labels)).addContent(EMPTY_LINE);
 
-        if (columns.hasItemOrder() || !labels.isEmpty()) {
+        if (columns.hasItemOrder() || !labels.isEmpty() || columns.isVersioned()) {
             var fullResetFunction = new FunctionDeclaration("fullReset")
                     .annotate("@Override")
                     .visibility(Visibility.PUBLIC)
                     .addContent(new FunctionCall("fullReset", "super").byItself());
+
+            if (columns.isVersioned()) {
+                fullResetFunction.addContent(new Assignment("beanVersion", "0"));
+                fullResetFunction.addContent(new Assignment("idOriginalBean", "0"));
+            }
 
             if (columns.hasItemOrder())
                 fullResetFunction.addContent(new Assignment("itemOrder", "0"));
@@ -1651,7 +1670,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         }
 
         for (Column column: columns.getList()) {
-            if (!column.isId() && !column.isItemOrder()) {
+            if (!column.isId() && !column.isItemOrder() && !column.isVersionField() && !column.isOriginalBeanId()) {
                 String type = column.getJavaType();
                 String name = column.getJavaName();
                 switch (type) {
@@ -1717,6 +1736,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                     function.addContent(getFieldDBUpdateDBUtilFunction("ID", name, index));
                 else if (column.isItemOrder())
                     function.addContent(getFieldDBUpdateStatFunction("Long", name, index));
+                else if (column.isVersionField())
+                    function.addContent(getFieldDBUpdateStatFunction("Int", name, index));
                 else if (type.equals("Boolean") || type.equals("Long") || type.equals("Money") || type.equals("String")
                         || type.equals("Date")  || type.equals("Time") || type.equals("Timestamp")
                         || type.equals("DecimalValue"))

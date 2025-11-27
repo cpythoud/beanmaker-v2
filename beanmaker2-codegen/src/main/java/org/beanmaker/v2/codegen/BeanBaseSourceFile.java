@@ -242,6 +242,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
             functionName = "getItemOrder";
         else if (type.equals("Integer"))
             functionName = "getInt";
+        else if (column.isVersionField())
+            functionName = "getBeanVersion";
         else
             functionName = "get" + type;
 

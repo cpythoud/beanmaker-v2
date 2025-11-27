@@ -4,7 +4,6 @@ import org.beanmaker.v2.util.English;
 import org.beanmaker.v2.util.Strings;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,9 +23,9 @@ public class Columns implements Iterable<Column> {
     private final List<ExtraField> extraFields = new ArrayList<>();
 
     private static final List<String> NAMING_CANDIDATE_FIELDS =
-            Arrays.asList("name", "id_name_label", "id_label", "description", "id_description_label", "code");
+            List.of("name", "id_name_label", "id_label", "description", "id_description_label", "code");
     private static final List<String> ORDER_BY_CANDIDATE_FIELDS =
-            Arrays.asList("item_order", "name", "description", "code");
+            List.of("item_order", "name", "description", "code");
 
 
     public Columns(DatabaseServer server, String db, String table) {
@@ -39,7 +38,7 @@ public class Columns implements Iterable<Column> {
         // ? To be reintroduced in ProjectParameters ?
         /*detectedOneToManyRelationships = server.getDetectedOneToManyRelationship(db, table);
         oneToManyRelationships = new ArrayList<>(detectedOneToManyRelationships);*/
-        detectedOneToManyRelationships = Collections.emptyList();
+        detectedOneToManyRelationships = List.of();
         oneToManyRelationships = new ArrayList<>();
     }
 
@@ -157,13 +156,9 @@ public class Columns implements Iterable<Column> {
             throw new IllegalArgumentException("Column #" + index + " is not an item order field.");
     }
 
+    @Deprecated
     public boolean hasBadField() {
-        for (Column column: columns) {
-            if (column.isBad())
-                return true;
-        }
-
-        return false;
+        return !checkForIncompatibleTypes().isEmpty();
     }
 
     public boolean hasId() {
@@ -211,24 +206,9 @@ public class Columns implements Iterable<Column> {
         return Optional.empty();
     }
 
+    @Deprecated
     public boolean hasDuplicatedSpecialField() {
-        int idCount = 0;
-        int lastUpdateCount = 0;
-        int modifiedByCount = 0;
-        int itemOrderCount = 0;
-
-        for (Column column: columns) {
-            if (column.isId())
-                idCount++;
-            if (column.isLastUpdate())
-                lastUpdateCount++;
-            if (column.isModifiedBy())
-                modifiedByCount++;
-            if (column.isItemOrder())
-                itemOrderCount++;
-        }
-
-        return idCount > 1 || lastUpdateCount > 1 || modifiedByCount > 1 || itemOrderCount > 1;
+        return !checkDuplicatedSpecialFields().isEmpty();
     }
 
     public boolean hasLabels() {
@@ -279,8 +259,9 @@ public class Columns implements Iterable<Column> {
         return false;
     }
 
+    @Deprecated
     public boolean isOK() {
-        return hasId() && !hasBadField() && !hasDuplicatedSpecialField();
+        return !getFormatErrors().isEmpty();
     }
 
     public Set<String> getJavaTypes() {
@@ -292,6 +273,7 @@ public class Columns implements Iterable<Column> {
         return types;
     }
 
+    // ?? utility ??
     public boolean containsNumericalData() {
         for (Column column: columns)
             if (column.getJavaType().equals("Integer") || column.getJavaType().equals("Long"))
@@ -383,7 +365,7 @@ public class Columns implements Iterable<Column> {
     }
 
     public boolean hasOneToManyRelationships() {
-        return oneToManyRelationships.size() > 0;
+        return !oneToManyRelationships.isEmpty();
     }
 
     public String getNamingField() {
@@ -534,6 +516,81 @@ public class Columns implements Iterable<Column> {
     @Override
     public Iterator<Column> iterator() {
         return columns.iterator();
+    }
+
+    public boolean isVersioned() {
+        var status = getVersionedStatus();
+        return status.versionField && status.originalBeanIdField;
+    }
+
+    private record VersionedStatus(boolean versionField, boolean originalBeanIdField) { }
+
+    private VersionedStatus getVersionedStatus() {
+        boolean hasVersionField = false;
+        boolean hasOriginalBeanIdField = false;
+
+        for (Column column: columns) {
+            if (column.isVersionField())
+                hasVersionField = true;
+            if (column.isOriginalBeanId())
+                hasOriginalBeanIdField = true;
+        }
+
+        return new VersionedStatus(hasVersionField, hasOriginalBeanIdField);
+    }
+
+    public List<FieldFormatError.FieldAssociatedError> getFormatErrors() {
+        var errors = new ArrayList<FieldFormatError.FieldAssociatedError>();
+
+        errors.addAll(checkIdPresent());
+        errors.addAll(checkForIncompatibleTypes());
+        errors.addAll(checkDuplicatedSpecialFields());
+        errors.addAll(checkVersioningFields());
+
+        return errors;
+    }
+
+    private List<FieldFormatError.FieldAssociatedError> checkIdPresent() {
+        if (!hasId())
+            return List.of(FieldFormatError.MISSING_ID.associateField("id"));
+
+        return List.of();
+    }
+
+    private List<FieldFormatError.FieldAssociatedError> checkForIncompatibleTypes() {
+        var errors = new ArrayList<FieldFormatError.FieldAssociatedError>();
+        for (Column column: columns) {
+            if (column.incompatibleSqlType())
+                errors.add(FieldFormatError.BAD_SQL_TYPE.associateField(column.getSqlName()));
+        }
+
+        return errors;
+    }
+
+    private List<FieldFormatError.FieldAssociatedError> checkDuplicatedSpecialFields() {
+        var errors = new ArrayList<FieldFormatError.FieldAssociatedError>();
+        for (String field: Column.SPECIAL_CASE_FIELDS) {
+            int count = 0;
+            for (Column column: columns) {
+                if (column.getSqlName().equals(field))
+                    ++count;
+            }
+            if (count > 1)
+                errors.add(FieldFormatError.DUPLICATE_SPECIAL_FIELD.associateField(field));
+        }
+
+        return errors;
+    }
+
+    private List<FieldFormatError.FieldAssociatedError> checkVersioningFields() {
+        var status = getVersionedStatus();
+
+        if (status.versionField && !status.originalBeanIdField)
+            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField("id_original_bean"));
+        if (status.originalBeanIdField && !status.versionField)
+            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField("bean_version"));
+
+        return List.of();
     }
 
 }

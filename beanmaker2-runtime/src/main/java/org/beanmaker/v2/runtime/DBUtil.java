@@ -65,6 +65,14 @@ public final class DBUtil {
         }
     }
 
+    public static int getBeanVersion(ResultSet rs, int index) {
+        try {
+            return rs.getInt(index);
+        } catch (SQLException sqlEx) {
+            throw new SQLRuntimeException(sqlEx);
+        }
+    }
+
     public static long getItemOrder(ResultSet rs, int index) {
         try {
             return rs.getLong(index);
