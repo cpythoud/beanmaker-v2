@@ -69,22 +69,20 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
     }
 
     private void addGetter(Column column) {
-        if (!column.isItemOrder()) {
-            String type = column.getJavaType();
-            var getter = new FunctionDeclaration(getGetterFunctionName(column), type).emptyBody();
+        String type = column.getJavaType();
+        var getter = new FunctionDeclaration(getGetterFunctionName(column), type).emptyBody();
 
-            javaInterface.addContent(getter);
-            if (column.isId())
-                javaInterface.addContent(EMPTY_LINE);
+        javaInterface.addContent(getter);
+        if (column.isId())
+            javaInterface.addContent(EMPTY_LINE);
 
-            if (column.isBeanReference()) {
-                if (column.isLabelReference())
-                    addLabelSpecificGetterFunctions(column);
-                else if (column.isFileReference())
-                    addFileGetterFunction(column);
-                else if (!column.isId())
-                    addBeanGetterFunction(column);
-            }
+        if (column.isBeanReference()) {
+            if (column.isLabelReference())
+                addLabelSpecificGetterFunctions(column);
+            else if (column.isFileReference())
+                addFileGetterFunction(column);
+            else if (!column.isId())
+                addBeanGetterFunction(column);
         }
     }
 
