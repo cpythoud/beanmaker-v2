@@ -77,8 +77,11 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         }
         if (columns.hasFiles())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanFile");
-        if (columns.hasUniqueCodeField()) {
-            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanWithUniqueCode");
+        if (columns.hasUniqueCodeField() || columns.hasVersionedCodeField()) {
+            if (columns.hasUniqueCodeField())
+                importsManager.addImport("org.beanmaker.v2.runtime.DbBeanWithUniqueCode");
+            if (columns.hasVersionedCodeField())
+                importsManager.addImport("org.beanmaker.v2.runtime.VersionedDbBeanWithUniqueCode");
             importsManager.addImport("org.beanmaker.v2.runtime.dbutil.Codes");
             importsManager.addImport("java.util.Optional");
         }
@@ -101,6 +104,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.hasUniqueCodeField())
             javaClass.implementsInterface("DbBeanWithUniqueCode");
+        if (columns.hasVersionedCodeField())
+            javaClass.implementsInterface("VersionedDbBeanWithUniqueCode");
 
         javaClass.implementsInterface(beanName + "DataModel");
     }
@@ -542,16 +547,25 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addUniqueCodeFunction() {
-        if (columns.hasUniqueCodeField()) {
+        String beanRetrievalFunction = null;
+        if (columns.hasUniqueCodeField())
+            beanRetrievalFunction = "getBean";
+        if (columns.hasVersionedCodeField()) {
+            if (beanRetrievalFunction != null)
+                throw new IllegalStateException("Versioned bean with unique code cannot work");
+            beanRetrievalFunction = "getVersionedBean";
+        }
+
+        if (beanRetrievalFunction != null) {
             javaClass.addContent(new FunctionDeclaration("getFromCode", "Optional<" + beanName + ">")
-                    .visibility(Visibility.PUBLIC)
-                    .markAsStatic()
-                    .addArgument(new FunctionArgument("String", "code"))
-                    .addContent(new ReturnStatement(new FunctionCall("getBean", "Codes")
-                            .addArgument(beanName + ".class")
-                            .addArgument(beanName + "Parameters.INSTANCE")
-                            .addArgument("code")
-                            .addArgument("DbBeans.dbAccess"))))
+                            .visibility(Visibility.PUBLIC)
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("String", "code"))
+                            .addContent(new ReturnStatement(new FunctionCall(beanRetrievalFunction, "Codes")
+                                    .addArgument(beanName + ".class")
+                                    .addArgument(beanName + "Parameters.INSTANCE")
+                                    .addArgument("code")
+                                    .addArgument("DbBeans.dbAccess"))))
                     .addContent(EMPTY_LINE);
         }
     }

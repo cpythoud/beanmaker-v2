@@ -115,8 +115,14 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasOtherBeanReference())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
 
-        if (columns.hasUniqueCodeField())
-            importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditorWithUniqueCode");
+        if (columns.hasUniqueCodeField() || columns.hasVersionedCodeField()) {
+            if (columns.hasUniqueCodeField())
+                importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditorWithUniqueCode");
+            if (columns.hasVersionedCodeField())
+                importsManager.addImport("org.beanmaker.v2.runtime.VersionedDbBeanEditorWithUniqueCode");
+            importsManager.addImport("org.beanmaker.v2.runtime.dbutil.Codes");
+            importsManager.addImport("java.util.Optional");
+        }
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
@@ -143,6 +149,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.hasUniqueCodeField())
             javaClass.implementsInterface("DbBeanEditorWithUniqueCode");
+        if (columns.hasVersionedCodeField())
+            javaClass.implementsInterface("VersionedDbBeanEditorWithUniqueCode");
 
         javaClass.implementsInterface(beanName + "DataModel");
     }
@@ -389,6 +397,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addDataValidationFunctions();
         addResetFunctions();
         addDatabaseFunctions();
+        addUniqueCodeFunction();
     }
 
     private void addToBeanFunctions() {
@@ -692,7 +701,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addStandardSetterFunction(Column column) {
         var function = getStandardSetterFunctionWithAssignment(column.getJavaType(), column.getJavaName());
-        if (column.isUniqueCodeField())
+        if (column.isUniqueCodeField() || (column.isCodeField() && columns.isVersioned()))
             function.annotate("@Override");
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
@@ -1585,7 +1594,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private FunctionDeclaration getUnicityCheckFunctionDeclaration(String functionName, Column column) {
         var function = new FunctionDeclaration(functionName, "boolean");
 
-        if (column.isUniqueCodeField())
+        if (column.isUniqueCodeField() || (column.isCodeField() && columns.isVersioned()))
             function.annotate("@Override").visibility(Visibility.PUBLIC);
 
         return function;
@@ -2139,6 +2148,30 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(
                                 new FunctionCall("createDBTransaction", "DbBeans"))))
                 .addContent(EMPTY_LINE);
+    }
+
+    private void addUniqueCodeFunction() {
+        String beanRetrievalFunction = null;
+        if (columns.hasUniqueCodeField())
+            beanRetrievalFunction = "getEditor";
+        if (columns.hasVersionedCodeField()) {
+            if (beanRetrievalFunction != null)
+                throw new IllegalStateException("Versioned bean with unique code cannot work");
+            beanRetrievalFunction = "getVersionedEditor";
+        }
+
+        if (beanRetrievalFunction != null) {
+            javaClass.addContent(new FunctionDeclaration("getFromCode", "Optional<" + beanName + "Editor>")
+                            .visibility(Visibility.PUBLIC)
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("String", "code"))
+                            .addContent(new ReturnStatement(new FunctionCall(beanRetrievalFunction, "Codes")
+                                    .addArgument(new ObjectCreation(beanName + "Editor"))
+                                    .addArgument(beanName + "Parameters.INSTANCE")
+                                    .addArgument("code")
+                                    .addArgument("DbBeans.dbAccess"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
 }

@@ -485,6 +485,16 @@ public class Columns implements Iterable<Column> {
         return false;
     }
 
+    public boolean hasVersionedCodeField() {
+        if (isVersioned()) {
+            for (Column column: columns)
+                if (column.getJavaName().equals("code"))
+                    return true;
+        }
+
+        return false;
+    }
+
     public List<Column> getLabels() {
         var columns = new ArrayList<Column>();
 

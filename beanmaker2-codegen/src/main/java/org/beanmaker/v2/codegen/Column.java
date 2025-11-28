@@ -195,6 +195,10 @@ public class Column {
         return getJavaName().equals("code") && isUnique();
     }
 
+    public boolean isCodeField() {
+        return getJavaName().equals("code");
+    }
+
     public int getDecimals() {
         return decimals;
     }

@@ -2,6 +2,7 @@ package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
 
+import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
 import org.jcodegen.java.ObjectCreation;
@@ -206,6 +207,21 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                                 .addArgument(new FunctionCall("getId"))
                                 .addArgument("dbAccess"))))
                 .addContent(EMPTY_LINE);
+    }
+
+    protected void insertUniqueCodeFunction(String beanRetrievalFunction) {
+        if (beanRetrievalFunction != null) {
+            javaClass.addContent(new FunctionDeclaration("getFromCode", "Optional<" + beanName + ">")
+                            .visibility(Visibility.PUBLIC)
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("String", "code"))
+                            .addContent(new ReturnStatement(new FunctionCall(beanRetrievalFunction, "Codes")
+                                    .addArgument(beanName + ".class")
+                                    .addArgument(beanName + "Parameters.INSTANCE")
+                                    .addArgument("code")
+                                    .addArgument("DbBeans.dbAccess"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
 }
