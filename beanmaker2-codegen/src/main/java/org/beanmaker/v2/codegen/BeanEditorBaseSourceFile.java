@@ -295,7 +295,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return javaClass.createConstructor().addContent(superCall);
     }
 
-    // TODO: for versioning: consider if this function should be disallowed or modified
     private void addCopyDataFunction() {
         String beanEditorClass = beanName + "Editor";
         String beanEditorVar = uncapitalize(beanEditorClass);
@@ -303,7 +302,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(new FunctionDeclaration("copyData", beanEditorClass)
                         .markAsStatic()
-                        .addArgument(new FunctionArgument(beanName, beanVarName))
+                        .addArgument(new FunctionArgument(beanName + "DataModel", beanVarName))
                         .addContent(VarDeclaration.declareAndInit(beanEditorClass, beanEditorVar))
                         .addContent(new FunctionCall("init", beanEditorVar)
                                 .byItself()
@@ -355,7 +354,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass
                 .addContent(new FunctionDeclaration("init")
-                        .addArgument(new FunctionArgument(beanName, beanVarName))
+                        .addArgument(new FunctionArgument(beanName + "DataModel", beanVarName))
                         .addArgument(new FunctionArgument("boolean", "copy"))
                         .addContent(initCall))
                 .addContent(EMPTY_LINE);
@@ -1717,8 +1716,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addDatabaseFunctions() {
         addDBUpdateInnerClasses();
+        if (columns.isVersioned())
+            addInitBeanVersioningFunction();
         addCreateRecordFunction();
         addUpdateRecordFunction();
+        if (columns.isVersioned())
+            addDatabaseVersioningFunctions();
         addUpdateLabelsFunction();
         addTransactionGetter();
     }
@@ -1786,6 +1789,16 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addArguments(Integer.toString(index), fieldName);
     }
 
+    private void addInitBeanVersioningFunction() {
+        javaClass.addContent(
+                new FunctionDeclaration("initBeanVersioning")
+                        .annotate("@Override")
+                        .visibility(Visibility.PROTECTED)
+                        .addContent(new Assignment("beanVersion", "1"))
+                        .addContent(new Assignment("idOriginalBean", "0"))
+        ).addContent(EMPTY_LINE);
+    }
+
     private void addCreateRecordFunction() {
         var function = getDBUpdateFunction("createRecord", true)
                 .addContent(new FunctionCall("preCreateExtraDbActions").byItself().addArgument("transaction"));
@@ -1846,28 +1859,154 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addUpdateRecordFunction() {
-        var function = getDBUpdateFunction("updateRecord", false)
-                .addContent(new FunctionCall("preUpdateExtraDbActions").byItself().addArgument("transaction"));
+        var function = getDBUpdateFunction("updateRecord", false);
+
+        if (columns.isVersioned()) {
+            var newVersionTest = new IfBlock(new Condition(
+                    new FunctionCall("newVersionedBeanNeeded").addArgument("transaction")
+            )).addContent(
+                    new FunctionCall("createVersionedRecord").byItself().addArgument("transaction")
+            );
+            var elseBlock = new ElseBlock();
+            addStandardUpdateRecordFunctionalityTo(elseBlock);
+            newVersionTest.elseClause(elseBlock);
+            function.addContent(newVersionTest);
+        } else {
+            addStandardUpdateRecordFunctionalityTo(function);
+        }
+
+        javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
+    private void addStandardUpdateRecordFunctionalityTo(JavaCodeBlock<?> codeBlock) {
+        codeBlock.addContent(
+                new FunctionCall("preUpdateExtraDbActions")
+                        .byItself()
+                        .addArgument("transaction")
+        );
 
         var labels = columns.getLabels();
         for (Column label: labels)
-            function.addContent(new FunctionCall("init" + chopID(label.getJavaName()))
+            codeBlock.addContent(new FunctionCall("init" + chopID(label.getJavaName()))
                     .byItself()
                     .addArgument("transaction"));
         for (Column label: labels)
-            function.addContent(getUpdateLabelFunctionCalls(label));
+            codeBlock.addContent(getUpdateLabelFunctionCalls(label));
 
-        function.addContent(new FunctionCall("addUpdate", "transaction")
+        codeBlock.addContent(new FunctionCall("addUpdate", "transaction")
                 .byItself()
                 .addArgument(getBeanUpdateQuery())
                 .addArgument(new ObjectCreation("RecordUpdateSetup")));
 
         if (!labels.isEmpty())
-            function.addContent(new FunctionCall("updateLabels").byItself().addArgument("transaction"));
+            codeBlock.addContent(new FunctionCall("updateLabels").byItself().addArgument("transaction"));
 
-        function.addContent(new FunctionCall("updateExtraDbActions").byItself().addArgument("transaction"));
+        codeBlock.addContent(new FunctionCall("updateExtraDbActions").byItself().addArgument("transaction"));
+    }
+
+    private void addDatabaseVersioningFunctions() {
+        addNewVersionNeededCheckFunction();
+        addContentEqualityCheckFunction();
+        addVersionedRecordCreationFunction();
+        if (columns.hasLabels())
+            addVersionedLabelManagementFunction();
+        addVersionIncrementFunction();
+    }
+
+    private void addNewVersionNeededCheckFunction() {
+        javaClass.addContent(
+                new FunctionDeclaration("newVersionedBeanNeeded", "boolean")
+                        .visibility(Visibility.PROTECTED)
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(
+                                new ReturnStatement(
+                                        new Condition(
+                                                new FunctionCall(
+                                                        "isReferenced",
+                                                        beanName + "Parameters.INSTANCE"
+                                                ).addArguments("this", "transaction")
+                                        ).andCondition(new Condition(
+                                                new FunctionCall("beanContentIsDifferent")
+                                        ))
+                                )
+                        )
+        ).addContent(EMPTY_LINE);
+    }
+
+    private void addContentEqualityCheckFunction() {
+        var function = new FunctionDeclaration("beanContentIsDifferent", "boolean")
+                .visibility(Visibility.PROTECTED)
+                .addContent(new VarDeclaration(
+                        "var",
+                        "original",
+                        new ObjectCreation(beanName)
+                                .addArgument(new FunctionCall("getId")))
+                )
+                .addContent(
+                        new IfBlock(new Condition(
+                                new FunctionCall("isContentIdentical", "!original").addArgument("this")
+                        )).addContent(new ReturnStatement("true"))
+                )
+                .addContent(EMPTY_LINE);
+
+        if (columns.hasLabels()) {
+            for (var column: columns.getLabels()) {
+                String choppedId = chopID(column.getJavaName());
+                String labelName = uncapitalize(choppedId);
+                String getLabelFunctionName = "get" + choppedId;
+                function.addContent(
+                        new IfBlock(new Condition(
+                                new FunctionCall("isContentIdenticalTo", "!" + labelName)
+                                        .addArgument(new FunctionCall(getLabelFunctionName, "original"))
+                        )).addContent(new ReturnStatement("true"))
+                );
+            }
+            function.addContent(EMPTY_LINE);
+        }
+
+        function.addContent(new ReturnStatement("false"));
+        javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
+    private void addVersionedRecordCreationFunction() {
+        var function = new FunctionDeclaration("createVersionedRecord")
+                .visibility(Visibility.PROTECTED)
+                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addContent(new VarDeclaration("var", "editor", new FunctionCall("copyData").addArgument("this")));
+
+        if (columns.hasLabels())
+            function.addContent(new FunctionCall("manageLabels").byItself().addArgument("editor"));
+
+        function.addContent(new FunctionCall("incrementVersionedData").byItself().addArgument("editor"))
+                .addContent(new FunctionCall("createRecord", "editor").byItself().addArgument("transaction"));
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
+    private void addVersionedLabelManagementFunction() {
+        var function = new FunctionDeclaration("manageLabels")
+                .visibility(Visibility.PROTECTED)
+                .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"));
+
+        for (var column: columns.getLabels()) {
+            String labelVar = uncapitalize(chopID(column.getJavaName()));
+            function.addContent(new Assignment("editor." + labelVar, labelVar + ".duplicateContent()"));
+        }
+
+        javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
+    private void addVersionIncrementFunction() {
+        javaClass.addContent(
+                new FunctionDeclaration("incrementVersionedData")
+                        .visibility(Visibility.PROTECTED)
+                        .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"))
+                        .addContent(new Assignment("editor.beanVersion", "beanVersion + 1"))
+                        .addContent(new Assignment(
+                                "editor.idOriginalBean",
+                                "idOriginalBean == 0 ? id : idOriginalBean")
+                        )
+        ).addContent(EMPTY_LINE);
     }
 
     private void addUpdateLabelsFunction() {

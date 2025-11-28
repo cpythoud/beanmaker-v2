@@ -1,7 +1,13 @@
 package org.beanmaker.v2.codegen;
 
+import org.jcodegen.java.Condition;
 import org.jcodegen.java.FunctionArgument;
+import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
+import org.jcodegen.java.ReturnStatement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.beanmaker.v2.codegen.BaseCode.DEFAULT_PROJECT_PARAMETERS;
 import static org.beanmaker.v2.codegen.BeanCode.chopID;
@@ -43,29 +49,29 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
         }
         if (columns.hasFiles())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanFile");
+
+        importsManager.addStaticImport("org.beanmaker.v2.runtime.FieldEquality.areEqual");
     }
 
     @Override
     protected void addFunctionDeclarations() {
+        addGetters();
+        javaInterface.addContent(EMPTY_LINE);
+        addEmptyCheckFunctions();
+        javaInterface.addContent(EMPTY_LINE);
+        addIdenticalContentComparisonFunction();
+        javaInterface.addContent(EMPTY_LINE);
+    }
+
+    private void addGetters() {
         for (Column column: columns.getList())
             addGetter(column);
-
-        javaInterface.addContent(EMPTY_LINE);
-
-        for (Column column: columns.getList())
-            if (!column.isSpecial())
-                addEmptyCheck(column);
-
-        javaInterface.addContent(EMPTY_LINE);
     }
 
     private void addGetter(Column column) {
         if (!column.isItemOrder()) {
             String type = column.getJavaType();
-            String name = column.getJavaName();
-            String getterPrefix = (type.equals("Boolean") || type.equals("boolean")) ? "is" : "get";
-
-            var getter = new FunctionDeclaration(getterPrefix + capitalize(name), type).emptyBody();
+            var getter = new FunctionDeclaration(getGetterFunctionName(column), type).emptyBody();
 
             javaInterface.addContent(getter);
             if (column.isId())
@@ -80,6 +86,13 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
                     addBeanGetterFunction(column);
             }
         }
+    }
+
+    private String getGetterFunctionName(Column column) {
+        String type = column.getJavaType();
+        String name = column.getJavaName();
+        String getterPrefix = (type.equals("Boolean") || type.equals("boolean")) ? "is" : "get";
+        return getterPrefix + capitalize(name);
     }
 
     private void addLabelSpecificGetterFunctions(Column column) {
@@ -107,7 +120,13 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
         javaInterface.addContent(new FunctionDeclaration("get" + chopID(name), type).emptyBody());
     }
 
-    private void addEmptyCheck(Column column) {
+    private void addEmptyCheckFunctions() {
+        for (Column column: columns.getList())
+            if (!column.isSpecial())
+                addEmptyCheckFunction(column);
+    }
+
+    private void addEmptyCheckFunction(Column column) {
         javaInterface.addContent(getIsEmptyFunctionDeclaration(column));
     }
 
@@ -117,6 +136,41 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
 
     private String getIsEmptyFunctionName(Column column) {
         return "is" + capitalize(column.getJavaName()) + "Empty";
+    }
+
+    private void addIdenticalContentComparisonFunction() {
+        var function = new FunctionDeclaration("isContentIdentical", "boolean")
+                .markAsDefault()
+                .addArgument(new FunctionArgument(beanName + "DataModel", beanVarName));
+
+        var comparisonFunctionCalls = getComparisonFunctionCalls();
+        if (comparisonFunctionCalls.isEmpty()) {
+            function.addContent(new ReturnStatement("true"));
+        } else if (comparisonFunctionCalls.size() == 1) {
+            function.addContent(new ReturnStatement(comparisonFunctionCalls.get(0)));
+        } else {
+            var condition = new Condition(comparisonFunctionCalls.get(0));
+            for (int i = 1; i < comparisonFunctionCalls.size(); ++i)
+                condition.andCondition(new Condition(comparisonFunctionCalls.get(i)));
+            function.addContent(new ReturnStatement(condition));
+        }
+
+        javaInterface.addContent(function);
+    }
+
+    private List<FunctionCall> getComparisonFunctionCalls() {
+        var functionCalls = new ArrayList<FunctionCall>();
+        for (Column column: columns.getList()) {
+            if (!column.isSpecial()) {
+                String functionName = getGetterFunctionName(column);
+                functionCalls.add(
+                        new FunctionCall("areEqual")
+                                .addArgument(new FunctionCall(functionName))
+                                .addArgument(new FunctionCall(functionName, beanVarName))
+                );
+            }
+        }
+        return functionCalls;
     }
 
 }

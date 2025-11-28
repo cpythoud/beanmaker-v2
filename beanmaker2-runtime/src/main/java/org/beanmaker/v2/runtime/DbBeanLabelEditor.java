@@ -20,4 +20,7 @@ public interface DbBeanLabelEditor extends DbBeanLabel {
     void reset();
     void fullReset();
 
+    DbBeanLabelEditor duplicateContent();
+    boolean isContentIdenticalTo(DbBeanLabel label);
+
 }

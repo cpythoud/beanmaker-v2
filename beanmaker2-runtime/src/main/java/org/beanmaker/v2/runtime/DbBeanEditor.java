@@ -51,6 +51,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         preUpdateConversions(transaction);
 
         if (id == 0) {
+            initBeanVersioning();
             id = createRecord(transaction);
             return id;
         }
@@ -62,6 +63,8 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
         throw new IllegalStateException("id < 0");
     }
+
+    protected void initBeanVersioning() { }
 
     protected abstract long createRecord(DBTransaction transaction);
 
