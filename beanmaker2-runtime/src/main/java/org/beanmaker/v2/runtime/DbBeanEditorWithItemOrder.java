@@ -93,4 +93,11 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
         deleteExtraDbActions(transaction);
     }
 
+    protected void versionedItemOrderQuickUpdate(DBTransaction transaction) {
+        transaction.addUpdate(
+                "UPDATE %s SET item_order=?",
+                stat -> stat.setLong(1, getItemOrder())
+        );
+    }
+
 }

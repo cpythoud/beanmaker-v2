@@ -1874,8 +1874,20 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             var newVersionTest = new IfBlock(new Condition(
                     new FunctionCall("newVersionedBeanNeeded").addArgument("transaction")
             )).addContent(
-                    new FunctionCall("createVersionedRecord").byItself().addArgument("transaction")
+                    new VarDeclaration(
+                            "var",
+                            "newVersionEditor",
+                            new FunctionCall("createVersionedRecord").addArgument("transaction"))
             );
+            if (columns.hasItemOrder()) {
+                newVersionTest.addContent(
+                        new FunctionCall("versionedItemOrderQuickUpdate").byItself().addArgument("transaction")
+                );
+            }
+            newVersionTest.addContent(
+                    new FunctionCall("copyData").byItself().addArgument("newVersionEditor")
+            );
+
             var elseBlock = new ElseBlock();
             addStandardUpdateRecordFunctionalityTo(elseBlock);
             newVersionTest.elseClause(elseBlock);
@@ -1920,6 +1932,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasLabels())
             addVersionedLabelManagementFunction();
         addVersionIncrementFunction();
+        if (columns.hasItemOrder())
+            addVersionedManageItemOrderFunction();
     }
 
     private void addNewVersionNeededCheckFunction() {
@@ -1978,7 +1992,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addVersionedRecordCreationFunction() {
-        var function = new FunctionDeclaration("createVersionedRecord")
+        var function = new FunctionDeclaration("createVersionedRecord", beanName + "Editor")
                 .visibility(Visibility.PROTECTED)
                 .addArgument(new FunctionArgument("DBTransaction", "transaction"))
                 .addContent(new VarDeclaration("var", "editor", new FunctionCall("copyData").addArgument("this")));
@@ -1986,8 +2000,15 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasLabels())
             function.addContent(new FunctionCall("manageLabels").byItself().addArgument("editor"));
 
-        function.addContent(new FunctionCall("incrementVersionedData").byItself().addArgument("editor"))
-                .addContent(new FunctionCall("createRecord", "editor").byItself().addArgument("transaction"));
+        function.addContent(new FunctionCall("incrementVersionedData").byItself().addArgument("editor"));
+
+        if (columns.hasItemOrder())
+            function.addContent(
+                    new FunctionCall("manageVersionedItemOrder").byItself().addArguments("transaction", "editor")
+            );
+
+        function.addContent(new FunctionCall("createRecord", "editor").byItself().addArgument("transaction"))
+                .addContent(new ReturnStatement("editor"));
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
@@ -2015,6 +2036,32 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 "editor.idOriginalBean",
                                 "idOriginalBean == 0 ? id : idOriginalBean")
                         )
+        ).addContent(EMPTY_LINE);
+    }
+
+    private void addVersionedManageItemOrderFunction() {
+        javaClass.addContent(
+                new FunctionDeclaration("manageVersionedItemOrder")
+                        .visibility(Visibility.PROTECTED)
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"))
+                        .addContent(new Assignment("editor.itemOrder", "itemOrder"))
+                        .addContent(
+                                new Assignment(
+                                        "itemOrder",
+                                        getItemOrderPlusOneExpression(
+                                                getMaxItemOrderFunctionCallStart()
+                                                        .addArgument(
+                                                                new FunctionCall(
+                                                                        "getItemOrderMaxQuery",
+                                                                        "dbBeanItemOrderManager"
+                                                                )
+                                                        )
+                                        )
+                                )
+
+                        )
+
         ).addContent(EMPTY_LINE);
     }
 
