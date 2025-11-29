@@ -2040,29 +2040,66 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addVersionedManageItemOrderFunction() {
-        javaClass.addContent(
-                new FunctionDeclaration("manageVersionedItemOrder")
-                        .visibility(Visibility.PROTECTED)
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
-                        .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"))
-                        .addContent(new Assignment("editor.itemOrder", "itemOrder"))
-                        .addContent(
-                                new Assignment(
-                                        "itemOrder",
-                                        getItemOrderPlusOneExpression(
-                                                getMaxItemOrderFunctionCallStart()
-                                                        .addArgument(
-                                                                new FunctionCall(
-                                                                        "getItemOrderMaxQuery",
-                                                                        "dbBeanItemOrderManager"
-                                                                )
-                                                        )
-                                        )
-                                )
+        var function = new FunctionDeclaration("manageVersionedItemOrder")
+                .visibility(Visibility.PROTECTED)
+                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"))
+                .addContent(new Assignment("editor.itemOrder", "itemOrder"));
 
-                        )
+        var itemOrderColumn = columns.getItemOrderColumn().orElseThrow();
+        if (Strings.isEmpty(itemOrderColumn.getItemOrderAssociatedField())) {
+            function.addContent(
+                    new Assignment(
+                            "itemOrder",
+                            getItemOrderPlusOneExpression(
+                                    getMaxItemOrderFunctionCallStart()
+                                            .addArgument(
+                                                    new FunctionCall(
+                                                            "getItemOrderMaxQuery",
+                                                            "dbBeanItemOrderManager"
+                                                    )
+                                            )
+                            )
+                    )
 
-        ).addContent(EMPTY_LINE);
+            );
+        } else {
+            String secondaryField = getItemOrderSecondaryFieldJavaName(itemOrderColumn);
+            function.addContent(
+                    new IfBlock(new Condition(secondaryField + " == 0"))
+                            .addContent(new Assignment(
+                                    "itemOrder",
+                                    getItemOrderPlusOneExpression(
+                                            getMaxItemOrderFunctionCallStart()
+                                                    .addArgument(
+                                                            new FunctionCall(
+                                                                    "getItemOrderMaxQueryWithNullSecondaryField",
+                                                                    "dbBeanItemOrderManager"
+                                                            )
+                                                    )
+                                    )
+                            ))
+                            .elseClause(new ElseBlock()
+                                    .addContent(
+                                            new Assignment(
+                                                    "itemOrder",
+                                                    getItemOrderPlusOneExpression(
+                                                            getMaxItemOrderFunctionCallStart()
+                                                                    .addArgument(
+                                                                            new FunctionCall(
+                                                                                    "getItemOrderMaxQuery",
+                                                                                    "dbBeanItemOrderManager"
+                                                                            )
+                                                                    )
+                                                                    .addArgument(secondaryField)
+                                                    )
+                                            )
+                                    )
+                            )
+            );
+        }
+
+        javaClass.addContent(function).addContent(EMPTY_LINE);
     }
 
     private void addUpdateLabelsFunction() {
