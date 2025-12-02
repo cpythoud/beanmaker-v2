@@ -124,6 +124,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("java.util.Optional");
         }
 
+        if (columns.isVersioned())
+            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
+
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
 
@@ -153,6 +156,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             javaClass.implementsInterface("VersionedDbBeanEditorWithUniqueCode");
 
         javaClass.implementsInterface(beanName + "DataModel");
+        if (columns.isVersioned())
+            javaClass.implementsInterface("VersionedBean");
     }
 
     @Override
@@ -741,6 +746,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         for (Column column: columns.getList())
             if (!column.isId() && !column.isItemOrder())
                 addGetter(column);
+
+        if (columns.isVersioned())
+            addLatestVersionCheckFunctions("dbBeanParameters");
 
         columns.getItemOrderColumn().ifPresent(column -> {
             if (!Strings.isEmpty(column.getItemOrderAssociatedField()))

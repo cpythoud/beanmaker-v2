@@ -85,6 +85,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.runtime.dbutil.Codes");
             importsManager.addImport("java.util.Optional");
         }
+        if (columns.isVersioned())
+            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
@@ -108,6 +110,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
             javaClass.implementsInterface("VersionedDbBeanWithUniqueCode");
 
         javaClass.implementsInterface(beanName + "DataModel");
+        if (columns.isVersioned())
+            javaClass.implementsInterface("VersionedBean");
     }
 
     @Override
@@ -381,6 +385,9 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     private void addGetters() {
         for (Column column: columns.getList())
             addGetter(column);
+
+        if (columns.isVersioned())
+            addLatestVersionCheckFunctions(beanName + "Parameters.INSTANCE");
     }
 
     private void addEmptyChecks() {

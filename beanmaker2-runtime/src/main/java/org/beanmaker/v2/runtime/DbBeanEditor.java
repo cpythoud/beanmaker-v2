@@ -2,6 +2,8 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.runtime.dbutil.Transactions;
 
+import org.beanmaker.v2.util.Types;
+
 import org.dbbeans.sql.DBTransaction;
 
 import java.util.Collections;
@@ -9,14 +11,14 @@ import java.util.List;
 
 public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
+    protected final DbBeanParameters dbBeanParameters;
     protected final DbBeanLocalization dbBeanLocalization;
-    private final String tableName;
 
     protected long id = 0;
 
     protected DbBeanEditor(DbBeanParameters parameters) {
+        dbBeanParameters = parameters;
         dbBeanLocalization = parameters.getLocalization();
-        tableName = parameters.getDatabaseTableName();
     }
 
     public final void setId(long id) {
@@ -116,8 +118,15 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
     }
 
     protected void delete(DBTransaction transaction) {
+        if (dbBeanParameters.isReferenced(this, transaction))
+            throw new IllegalStateException("Bean cannot be deleted because it is referenced in other data sets");
+        if (Types.implementsInterface(this, VersionedBean.class) && !(((VersionedBean) this).isLatestVersionedBean()))
+            throw new IllegalStateException("Only latest version of versioned bean can be deleted");
         preDeleteExtraDbActions(transaction);
-        transaction.addUpdate("DELETE FROM " + tableName + " WHERE id=?", stat -> stat.setLong(1, id));
+        transaction.addUpdate(
+                "DELETE FROM " + dbBeanParameters.getDatabaseTableName() + " WHERE id=?",
+                stat -> stat.setLong(1, id)
+        );
         deleteExtraDbActions(transaction);
     }
 

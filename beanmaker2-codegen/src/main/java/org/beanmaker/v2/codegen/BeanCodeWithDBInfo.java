@@ -150,6 +150,38 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                 .addContent(EMPTY_LINE);
     }
 
+    protected void addLatestVersionCheckFunctions(String parameterArgument) {
+        javaClass
+                .addContent(
+                        getLatestVersionFunctionDeclaration(false)
+                                .addContent(getLatestVersionedBeanCheck(parameterArgument, "dbAccess"))
+                )
+                .addContent(EMPTY_LINE)
+                .addContent(
+                        getLatestVersionFunctionDeclaration(true)
+                                .addContent(getLatestVersionedBeanCheck(parameterArgument, "transaction"))
+                )
+                .addContent(EMPTY_LINE);
+    }
+
+    protected FunctionDeclaration getLatestVersionFunctionDeclaration(boolean transaction) {
+        var function = new FunctionDeclaration("isLatestVersionedBean", "boolean")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC);
+
+        if (transaction)
+            function.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        return function;
+    }
+
+    protected ReturnStatement getLatestVersionedBeanCheck(String parameters, String dbArgument) {
+        return new ReturnStatement(
+                new FunctionCall("isLatestVersionedBean", "VersionedBean")
+                        .addArguments("this", parameters, dbArgument)
+        );
+    }
+
     protected void addItemOrderEdgeStatusCheckFunctions() {
         javaClass
                 .addContent(new FunctionDeclaration("isFirstInItemOrder", "boolean")
