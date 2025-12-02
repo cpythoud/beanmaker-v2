@@ -1,10 +1,8 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.runtime.DbBeanEditorWithUniqueCode;
+import org.beanmaker.v2.runtime.DbBeanEditorInterface;
 import org.beanmaker.v2.runtime.DbBeanParameters;
-import org.beanmaker.v2.runtime.DbBeanWithUniqueCode;
-import org.beanmaker.v2.runtime.VersionedDbBeanEditorWithUniqueCode;
-import org.beanmaker.v2.runtime.VersionedDbBeanWithUniqueCode;
+import org.beanmaker.v2.runtime.DbBeanInterface;
 
 import org.beanmaker.v2.util.Strings;
 
@@ -32,8 +30,8 @@ public final class Codes {
         return pattern.matcher(code).matches();
     }
 
-    public static <B extends DbBeanWithUniqueCode> Optional<B> getBean(
-            Class<? extends DbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
             DBAccess dbAccess)
@@ -41,8 +39,8 @@ public final class Codes {
         return getBean(beanClass, parameters, "code", code, dbAccess);
     }
 
-    public static <B extends VersionedDbBeanWithUniqueCode> Optional<B> getVersionedBean(
-            Class<? extends VersionedDbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getVersionedBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
             DBAccess dbAccess)
@@ -50,8 +48,8 @@ public final class Codes {
         return getVersionedBean(beanClass, parameters, "code", code, dbAccess);
     }
 
-    public static <B extends DbBeanWithUniqueCode> Optional<B> getBean(
-            Class<? extends DbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String codeField,
             String code,
@@ -65,8 +63,8 @@ public final class Codes {
         );
     }
 
-    public static <B extends VersionedDbBeanWithUniqueCode> Optional<B> getVersionedBean(
-            Class<? extends VersionedDbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getVersionedBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String codeField,
             String code,
@@ -80,8 +78,8 @@ public final class Codes {
         );
     }
 
-    public static <B extends DbBeanWithUniqueCode> Optional<B> getBean(
-            Class<? extends DbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
             DBTransaction transaction)
@@ -89,8 +87,8 @@ public final class Codes {
         return getBean(beanClass, parameters, "code", code, transaction);
     }
 
-    public static <B extends VersionedDbBeanWithUniqueCode> Optional<B> getVersionedBean(
-            Class<? extends VersionedDbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getVersionedBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
             DBTransaction transaction)
@@ -98,8 +96,8 @@ public final class Codes {
         return getVersionedBean(beanClass, parameters, "code", code, transaction);
     }
 
-    public static <B extends DbBeanWithUniqueCode> Optional<B> getBean(
-            Class<? extends DbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String codeField,
             String code,
@@ -113,8 +111,8 @@ public final class Codes {
         );
     }
 
-    public static <B extends VersionedDbBeanWithUniqueCode> Optional<B> getVersionedBean(
-            Class<? extends VersionedDbBeanWithUniqueCode> beanClass,
+    public static <B extends DbBeanInterface> Optional<B> getVersionedBean(
+            Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String codeField,
             String code,
@@ -136,7 +134,7 @@ public final class Codes {
         return "SELECT id FROM " + parameters.getDatabaseTableName() + " WHERE " + codeField + "=?";
     }
 
-    public static <E extends DbBeanEditorWithUniqueCode> Optional<E> getEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
@@ -145,7 +143,7 @@ public final class Codes {
         return getEditor(returnedEditor, parameters, "code", code, dbAccess);
     }
 
-    public static <E extends VersionedDbBeanEditorWithUniqueCode> Optional<E> getVersionedEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getVersionedEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
@@ -154,7 +152,7 @@ public final class Codes {
         return getVersionedEditor(returnedEditor, parameters, "code", code, dbAccess);
     }
 
-    public static <E extends DbBeanEditorWithUniqueCode> Optional<E> getEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String codeField,
@@ -169,7 +167,7 @@ public final class Codes {
         );
     }
 
-    public static <E extends VersionedDbBeanEditorWithUniqueCode> Optional<E> getVersionedEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getVersionedEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String codeField,
@@ -184,7 +182,7 @@ public final class Codes {
         );
     }
 
-    public static <E extends DbBeanEditorWithUniqueCode> Optional<E> getEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
@@ -193,7 +191,7 @@ public final class Codes {
         return getEditor(returnedEditor, parameters, "code", code, transaction);
     }
 
-    public static <E extends VersionedDbBeanEditorWithUniqueCode> Optional<E> getVersionedEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getVersionedEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
@@ -202,7 +200,7 @@ public final class Codes {
         return getVersionedEditor(returnedEditor, parameters, "code", code, transaction);
     }
 
-    public static <E extends DbBeanEditorWithUniqueCode> Optional<E> getEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String codeField,
@@ -217,7 +215,7 @@ public final class Codes {
         );
     }
 
-    public static <E extends VersionedDbBeanEditorWithUniqueCode> Optional<E> getVersionedEditor(
+    public static <E extends DbBeanEditorInterface> Optional<E> getVersionedEditor(
             E returnedEditor,
             DbBeanParameters parameters,
             String codeField,
@@ -384,7 +382,7 @@ public final class Codes {
         return getVersionedId(parameters, codeField, code, transaction) > 0;
     }
 
-    public static void adjustCopyCode(DbBeanEditorWithUniqueCode copy) {
+    /*public static void adjustCopyCode(DbBeanEditorWithUniqueCode copy) {
         copy.setCode(copy.getCode() + "_copy");
         if (!copy.isCodeUnique()) {
             String baseCode = copy.getCode();
@@ -394,13 +392,13 @@ public final class Codes {
                 ++index;
             } while (!copy.isCodeUnique());
         }
-    }
+    }*/
 
     public static String createStandardizedCode(String source) {
         return Strings.replaceUnknownChars(Strings.removeAccents(source).toLowerCase(), STANDARD_CODE_CHARACTERS);
     }
 
-    public static void standardizeCodes(List<DbBeanEditorWithUniqueCode> beans, DBTransaction dbTransaction) {
+    public static void standardizeCodes(List<DbBeanEditorInterface> beans, DBTransaction dbTransaction) {
         Transactions.wrap(
                 transaction -> {
                     for (var bean : beans) {

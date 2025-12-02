@@ -116,10 +116,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
 
         if (columns.hasUniqueCodeField() || columns.hasVersionedCodeField()) {
-            if (columns.hasUniqueCodeField())
-                importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditorWithUniqueCode");
-            if (columns.hasVersionedCodeField())
-                importsManager.addImport("org.beanmaker.v2.runtime.VersionedDbBeanEditorWithUniqueCode");
             importsManager.addImport("org.beanmaker.v2.runtime.dbutil.Codes");
             importsManager.addImport("java.util.Optional");
         }
@@ -149,11 +145,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanEditor");
             javaClass.extendsClass("DbBeanEditor");
         });
-
-        if (columns.hasUniqueCodeField())
-            javaClass.implementsInterface("DbBeanEditorWithUniqueCode");
-        if (columns.hasVersionedCodeField())
-            javaClass.implementsInterface("VersionedDbBeanEditorWithUniqueCode");
 
         javaClass.implementsInterface(beanName + "DataModel");
         if (columns.isVersioned())
@@ -706,8 +697,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addStandardSetterFunction(Column column) {
         var function = getStandardSetterFunctionWithAssignment(column.getJavaType(), column.getJavaName());
-        if (column.isUniqueCodeField() || (column.isCodeField() && columns.isVersioned()))
-            function.annotate("@Override");
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
 
@@ -1600,12 +1589,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private FunctionDeclaration getUnicityCheckFunctionDeclaration(String functionName, Column column) {
-        var function = new FunctionDeclaration(functionName, "boolean");
-
-        if (column.isUniqueCodeField() || (column.isCodeField() && columns.isVersioned()))
-            function.annotate("@Override").visibility(Visibility.PUBLIC);
-
-        return function;
+        return new FunctionDeclaration(functionName, "boolean");
     }
 
     private ReturnStatement getUnicityCheckResult(Column column, boolean transaction) {

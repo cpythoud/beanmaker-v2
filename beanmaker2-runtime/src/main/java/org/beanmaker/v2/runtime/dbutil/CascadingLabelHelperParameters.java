@@ -1,7 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
 import org.beanmaker.v2.runtime.DbBeanLanguage;
-import org.beanmaker.v2.runtime.DbBeanWithUniqueCode;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -81,10 +80,10 @@ public class CascadingLabelHelperParameters {
             return this;
         }
 
-        public Builder defaultValue(DbBeanWithUniqueCode bean) {
+        /*public Builder defaultValue(DbBeanWithUniqueCode bean) {
             defaultValue = "[" + bean.getCode() + "]";
             return this;
-        }
+        }*/
 
         public CascadingLabelHelperParameters build() {
             if (parameterMap != null) {

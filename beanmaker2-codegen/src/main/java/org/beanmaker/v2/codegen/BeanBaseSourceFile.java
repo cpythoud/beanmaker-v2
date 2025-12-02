@@ -78,10 +78,6 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasFiles())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanFile");
         if (columns.hasUniqueCodeField() || columns.hasVersionedCodeField()) {
-            if (columns.hasUniqueCodeField())
-                importsManager.addImport("org.beanmaker.v2.runtime.DbBeanWithUniqueCode");
-            if (columns.hasVersionedCodeField())
-                importsManager.addImport("org.beanmaker.v2.runtime.VersionedDbBeanWithUniqueCode");
             importsManager.addImport("org.beanmaker.v2.runtime.dbutil.Codes");
             importsManager.addImport("java.util.Optional");
         }
@@ -103,11 +99,6 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.hasLabelField())
             javaClass.implementsInterface("DbBeanMultilingual");
-
-        if (columns.hasUniqueCodeField())
-            javaClass.implementsInterface("DbBeanWithUniqueCode");
-        if (columns.hasVersionedCodeField())
-            javaClass.implementsInterface("VersionedDbBeanWithUniqueCode");
 
         javaClass.implementsInterface(beanName + "DataModel");
         if (columns.isVersioned())

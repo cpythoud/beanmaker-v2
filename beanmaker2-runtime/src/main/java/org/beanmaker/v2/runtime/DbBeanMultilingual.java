@@ -1,8 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-public interface DbBeanMultilingual {
-
-    long getId();
+public interface DbBeanMultilingual extends CodeBasedReference {
 
     long getIdLabel();
 

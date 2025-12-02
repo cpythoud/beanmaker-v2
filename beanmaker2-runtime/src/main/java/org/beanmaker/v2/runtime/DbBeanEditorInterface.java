@@ -4,7 +4,7 @@ import org.dbbeans.sql.DBTransaction;
 
 import java.util.List;
 
-public interface DbBeanEditorInterface extends IdBasedReference {
+public interface DbBeanEditorInterface extends CodeBasedReference {
 
     void setId(long id);
     void setId(long id,  DBTransaction transaction);
@@ -24,5 +24,9 @@ public interface DbBeanEditorInterface extends IdBasedReference {
     void delete();
 
     void setCurrentDbBeanLanguage(DbBeanLanguage language);
+
+    default void setCode(String code) {
+        throw new UnsupportedOperationException("bean doesn't contain a code field");
+    }
 
 }

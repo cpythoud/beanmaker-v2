@@ -59,14 +59,14 @@ public class SafeLabels {
         return alternativeValue;
     }
 
-    public String get(DbBeanMultilingualWithUniqueCode bean, DbBeanLanguage language, Object... parameters) {
+    public String getFromCode(DbBeanMultilingual bean, DbBeanLanguage language, Object... parameters) {
         if (parameters == null || parameters.length == 0)
-            return get(bean, language, Collections.emptyList());
+            return getFromCode(bean, language, Collections.emptyList());
 
-        return get(bean, language, Arrays.asList(parameters));
+        return getFromCode(bean, language, Arrays.asList(parameters));
     }
 
-    public String get(DbBeanMultilingualWithUniqueCode bean, DbBeanLanguage language, List<Object> parameters) {
+    public String getFromCode(DbBeanMultilingual bean, DbBeanLanguage language, List<Object> parameters) {
         if (bean == null || language == null)
             return formatCode(bean, language, parameters);
         if (bean.getIdLabel() == 0)
@@ -79,7 +79,7 @@ public class SafeLabels {
     }
 
     protected String formatCode(
-            DbBeanMultilingualWithUniqueCode bean,
+            DbBeanMultilingual bean,
             DbBeanLanguage language,
             List<Object> parameters)
     {
