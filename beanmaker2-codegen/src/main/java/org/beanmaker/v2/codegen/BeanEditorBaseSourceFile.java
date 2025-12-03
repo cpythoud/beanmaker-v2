@@ -1871,11 +1871,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                             "newVersionEditor",
                             new FunctionCall("createVersionedRecord").addArgument("transaction"))
             );
-            if (columns.hasItemOrder()) {
-                newVersionTest.addContent(
-                        new FunctionCall("versionedItemOrderQuickUpdate").byItself().addArgument("transaction")
-                );
-            }
+            // ! save this space for adding extra operations if needed
             newVersionTest.addContent(
                     new FunctionCall("copyData").byItself().addArgument("newVersionEditor")
             );
@@ -2038,7 +2034,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"))
                 .addContent(new Assignment("editor.itemOrder", "itemOrder"));
 
-        var itemOrderColumn = columns.getItemOrderColumn().orElseThrow();
+        // ! save space for adding extra operations if needed
+
+        /*var itemOrderColumn = columns.getItemOrderColumn().orElseThrow();
         if (Strings.isEmpty(itemOrderColumn.getItemOrderAssociatedField())) {
             function.addContent(
                     new Assignment(
@@ -2089,7 +2087,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                     )
                             )
             );
-        }
+        }*/
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
