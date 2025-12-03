@@ -3,3 +3,6 @@
 target/
 local-scripts/
 pom.xml.versionsBackup
+beanmaker2-runtime/src/main/diagrams/*.pdf
+beanmaker2-runtime/src/main/diagrams/*.png
+beanmaker2-runtime/src/main/diagrams/*.svg
