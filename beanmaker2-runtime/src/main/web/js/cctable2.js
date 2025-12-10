@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #68");
+        console.info("CCTABLE2: build #69");
 
         // * FILTERING *
 
@@ -165,7 +165,8 @@ let CCTable2 = (function () {
         const keywords = $form.querySelector('textarea[name="tb-search-keywords"]').value.trim();
         const andModality = $form.querySelector('input[name="tb-filter-mods"]:checked').value === 'AND';
 
-        const keywordList = keywords === '' ? [] : keywords.split(/\s+/);
+        const keywordList = keywords === '' ? [] : keywords.split(/\s+/)
+            .map(keyword => normalize(keyword, instance));
 
         // * All basic search elements removed before advanced search (combination would make no sense)
         instance._table.querySelectorAll('.' + instance._settings.formElementFilterCssClass).forEach(function (filterField) {
