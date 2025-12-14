@@ -3,7 +3,7 @@ let CCTable2 = (function () {
     'use strict';
 
     function createEventListeners(instance) {
-        console.info("CCTABLE2: build #69");
+        console.info("CCTABLE2: build #70 - 2025-12-14");
 
         // * FILTERING *
 
@@ -164,11 +164,26 @@ let CCTable2 = (function () {
         const filterName = $form.querySelector('input[name="tb-filter-name"]').value;
         const keywords = $form.querySelector('textarea[name="tb-search-keywords"]').value.trim();
         const andModality = $form.querySelector('input[name="tb-filter-mods"]:checked').value === 'AND';
+        const keywordsOnly = $form.querySelector('input[name="tb-search-keywords-only"]')?.checked === true;
+
+        function escapeRegExp(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function containsKeyword(content, keyword) {
+            if (!keywordsOnly) {
+                return content.indexOf(keyword) > -1;
+            }
+
+            // * "Full word" match: keyword must be delimited by non [a-z0-9] or string edges.
+            const re = new RegExp('(^|[^a-z0-9])' + escapeRegExp(keyword) + '([^a-z0-9]|$)');
+            return re.test(content);
+        }
 
         const keywordList = keywords === '' ? [] : keywords.split(/\s+/)
             .map(keyword => normalize(keyword, instance));
 
-        // * All basic search elements removed before advanced search (combination would make no sense)
+        // * All basic search elements removed before advanced search (combining them would make no sense)
         instance._table.querySelectorAll('.' + instance._settings.formElementFilterCssClass).forEach(function (filterField) {
             filterField.value = '';
         });
@@ -185,7 +200,7 @@ let CCTable2 = (function () {
                             content = normalize(cell.textContent, instance);
                         let foundAll = true;
                         for (let i = 0; i < keywordList.length; ++i) {
-                            if (content.indexOf(keywordList[i]) === -1) {
+                            if (!containsKeyword(content, keywordList[i])) {
                                 foundAll = false;
                                 break;
                             }
@@ -204,7 +219,7 @@ let CCTable2 = (function () {
                             content = normalize(cell.textContent, instance);
                         let missing = true;
                         for (let i = 0; i < keywordList.length; ++i) {
-                            if (content.indexOf(keywordList[i]) > -1) {
+                            if (containsKeyword(content, keywordList[i])) {
                                 missing = false;
                                 break;
                             }
