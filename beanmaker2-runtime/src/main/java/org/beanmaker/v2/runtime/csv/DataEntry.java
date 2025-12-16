@@ -93,4 +93,27 @@ public class DataEntry {
 
     // TODO: code other data types (numeric, bean reference, etc.)
 
+
+    @Override
+    public String toString() {
+        return "DataEntry{" +
+                "lineNumber = " + lineNumber +
+                ", data = " + dataToString() +
+                '}';
+    }
+
+    private String dataToString() {
+        if (data.isEmpty())
+            return "[ ]";
+
+        var content = new StringBuilder();
+        content.append("[ ");
+        for (var entry: data.entrySet())
+            content.append("\"").append(entry.getKey()).append("\": \"").append(entry.getValue()).append("\", ");
+        content.delete(content.length() - 2, content.length());
+        content.append(" ]");
+
+        return content.toString();
+    }
+
 }
