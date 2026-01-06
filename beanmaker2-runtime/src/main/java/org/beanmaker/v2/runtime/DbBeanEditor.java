@@ -118,16 +118,24 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
     }
 
     protected void delete(DBTransaction transaction) {
-        if (dbBeanParameters.isReferenced(this, transaction))
-            throw new IllegalStateException("Bean cannot be deleted because it is referenced in other data sets");
-        if (Types.implementsInterface(this, VersionedBean.class) && !(((VersionedBean) this).isLatestVersionedBean()))
-            throw new IllegalStateException("Only latest version of versioned bean can be deleted");
+        checkReferenced();
+        checkVersionedBean();
         preDeleteExtraDbActions(transaction);
         transaction.addUpdate(
                 "DELETE FROM " + dbBeanParameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id)
         );
         deleteExtraDbActions(transaction);
+    }
+
+    protected void checkReferenced() {
+        if (dbBeanParameters.isReferenced(this, createDBTransaction()))
+            throw new IllegalStateException("Bean cannot be deleted because it is referenced in other data sets");
+    }
+
+    protected void checkVersionedBean() {
+        if (Types.implementsInterface(this, VersionedBean.class) && !(((VersionedBean) this).isLatestVersionedBean()))
+            throw new IllegalStateException("Only latest version of versioned bean can be deleted");
     }
 
     protected void preDeleteExtraDbActions(DBTransaction transaction) { }

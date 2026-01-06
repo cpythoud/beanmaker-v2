@@ -81,6 +81,8 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
 
     @Override
     protected void delete(DBTransaction transaction) {
+        checkReferenced();
+        checkVersionedBean();
         preDeleteExtraDbActions(transaction);
         long curItemOrder;
         if (isLastInItemOrder())

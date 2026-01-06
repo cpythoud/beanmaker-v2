@@ -21,6 +21,8 @@ public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanE
 
     @Override
     protected void delete(DBTransaction transaction) {
+        checkReferenced();
+        checkVersionedBean();
         preDeleteExtraDbActions(transaction);
         long curItemOrder;
         if (isLastInItemOrder())
