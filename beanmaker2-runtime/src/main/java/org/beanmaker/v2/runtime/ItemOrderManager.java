@@ -56,7 +56,7 @@ public class ItemOrderManager {
         if (secondaryField == null)
             return baseQuery;
 
-        return baseQuery + " AND " + secondaryField + " IS NULL";
+        return baseQuery + " AND " + secondaryField + "=?";
     }
 
     public String getUpdateItemOrdersAboveQueryWithNullSecondaryField() {
@@ -278,7 +278,7 @@ public class ItemOrderManager {
                 stat -> {
                     stat.setLong(1, threshold);
                     if (parameters.length > 0) {
-                        int index = 0;
+                        int index = 1;
                         for (long parameter: parameters)
                             stat.setLong(++index, parameter);
                     }

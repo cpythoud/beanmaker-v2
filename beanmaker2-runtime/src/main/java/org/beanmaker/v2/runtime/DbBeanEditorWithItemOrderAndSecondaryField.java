@@ -28,11 +28,22 @@ public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanE
         else
             curItemOrder = itemOrder;
         transaction.addUpdate("DELETE FROM " + tableName + " WHERE id=?", stat -> stat.setLong(1, id));
-        if (curItemOrder > 0)
-            if (getItemOrderSecondaryFieldID() == 0)
-                dbBeanItemOrderManager.updateItemOrdersAbove(dbBeanItemOrderManager.getUpdateItemOrdersAboveQueryWithNullSecondaryField(), transaction, curItemOrder);
+        if (curItemOrder > 0) {
+            long itemOrderSecondaryFieldID = getItemOrderSecondaryFieldID();
+            if (itemOrderSecondaryFieldID == 0)
+                dbBeanItemOrderManager.updateItemOrdersAbove(
+                        dbBeanItemOrderManager.getUpdateItemOrdersAboveQueryWithNullSecondaryField(),
+                        transaction,
+                        curItemOrder
+                );
             else
-                dbBeanItemOrderManager.updateItemOrdersAbove(dbBeanItemOrderManager.getUpdateItemOrdersAboveQuery(), transaction, curItemOrder, getItemOrderSecondaryFieldID());
+                dbBeanItemOrderManager.updateItemOrdersAbove(
+                        dbBeanItemOrderManager.getUpdateItemOrdersAboveQuery(),
+                        transaction,
+                        curItemOrder,
+                        itemOrderSecondaryFieldID
+                );
+        }
         deleteExtraDbActions(transaction);
     }
 
