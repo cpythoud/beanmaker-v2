@@ -47,14 +47,14 @@ public class CascadingLabelHelper extends LabelHelper {
             CascadingLabelHelperParameters parameters)
     {
         String labelText = dbAccess.processQuery(
-                idBasedDataQuery,
+                labelDataQuery,
                 setProcessingParameters(id, language),
                 getResult());
 
         if (Strings.isEmpty(labelText)) {
             if (!language.isBareLanguage()) {
                 labelText = dbAccess.processQuery(
-                        idBasedDataQuery,
+                        labelDataQuery,
                         setProcessingParameters(id, language.getBareLanguage()),
                         getResult());
             }
@@ -62,7 +62,7 @@ public class CascadingLabelHelper extends LabelHelper {
                 var defaultLanguage = parameters.getDefaultLanguage();
                 if (!language.isDefaultLanguage() && defaultLanguage != null) {
                     labelText = dbAccess.processQuery(
-                            idBasedDataQuery,
+                            labelDataQuery,
                             setProcessingParameters(id, defaultLanguage),
                             getResult());
                 }
@@ -86,7 +86,7 @@ public class CascadingLabelHelper extends LabelHelper {
             DbBeanLanguage defaultLanguage)
     {
         return dbAccess.processQuery(
-                idBasedDataQuery,
+                labelDataQuery,
                 setProcessingParameters(id, language),
                 rs -> {
                     if (rs.next())
@@ -135,14 +135,14 @@ public class CascadingLabelHelper extends LabelHelper {
             CascadingLabelHelperParameters parameters)
     {
         String labelText = transaction.addQuery(
-                idBasedDataQuery,
+                labelDataQuery,
                 setProcessingParameters(id, language),
                 getResult());
 
         if (Strings.isEmpty(labelText)) {
             if (!language.isBareLanguage()) {
                 labelText = transaction.addQuery(
-                        idBasedDataQuery,
+                        labelDataQuery,
                         setProcessingParameters(id, language.getBareLanguage()),
                         getResult());
             }
@@ -150,7 +150,7 @@ public class CascadingLabelHelper extends LabelHelper {
                 var defaultLanguage = parameters.getDefaultLanguage();
                 if (!language.isDefaultLanguage() && defaultLanguage != null) {
                     labelText = transaction.addQuery(
-                            idBasedDataQuery,
+                            labelDataQuery,
                             setProcessingParameters(id, defaultLanguage),
                             getResult());
                 }
@@ -165,7 +165,7 @@ public class CascadingLabelHelper extends LabelHelper {
 
     public boolean hasCascadingDataFor(DBTransaction transaction, long id, DbBeanLanguage dbBeanLanguage) {
         return transaction.addQuery(
-                idBasedDataQuery,
+                labelDataQuery,
                 setProcessingParameters(id, dbBeanLanguage),
                 rs -> {
                     if (rs.next())

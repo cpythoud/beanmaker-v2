@@ -1,6 +1,5 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.runtime.DbBeanInterface;
 import org.beanmaker.v2.runtime.DbBeanLabel;
 import org.beanmaker.v2.runtime.DbBeanLabelEditor;
 import org.beanmaker.v2.runtime.DbBeanLanguage;
@@ -48,9 +47,9 @@ public class LabelHelper {
     private final String labelDataTable;
     private final String labelAutoNamePrefix;
 
-    final String idBasedDataQuery;
+    final String labelDataQuery;
     private final String idFromNameQuery;
-    private final String labelDataQuery;
+    private final String idCheckQuery;
 
     public LabelHelper(String labelTable, String labelDataTable) {
         this(labelTable, labelDataTable, DEFAULT_AUTO_LABEL_NAME_PREFIX);
@@ -61,9 +60,9 @@ public class LabelHelper {
         this.labelDataTable = labelDataTable;
         this.labelAutoNamePrefix = labelAutoNamePrefix;
 
-        idBasedDataQuery = "SELECT `data` FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
+        labelDataQuery  = "SELECT `data` FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
         idFromNameQuery = "SELECT id FROM " + labelTable + " WHERE `name`=?";
-        labelDataQuery = "SELECT data FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
+        idCheckQuery    = "SELECT id FROM " + labelDataTable + " WHERE id=?";
     }
 
     public String get(DBAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
@@ -77,7 +76,7 @@ public class LabelHelper {
         return processParameters(
                 processResult(
                         dbAccess.processQuery(
-                                idBasedDataQuery,
+                                labelDataQuery,
                                 setProcessingParameters(id, dbBeanLanguage),
                                 getResult()),
                         id,
@@ -139,7 +138,7 @@ public class LabelHelper {
         return processParameters(
                 processResult(
                         dbAccess.processQuery(
-                                idBasedDataQuery,
+                                labelDataQuery,
                                 setProcessingParameters(id, dbBeanLanguage),
                                 getResult()),
                         id,
@@ -160,7 +159,7 @@ public class LabelHelper {
 
     public boolean hasDataFor(DBAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage) {
         return dbAccess.processQuery(
-                idBasedDataQuery,
+                labelDataQuery,
                 setProcessingParameters(id, dbBeanLanguage),
                 ResultSet::next
         );
@@ -177,7 +176,7 @@ public class LabelHelper {
         return processParameters(
                 processResult(
                         transaction.addQuery(
-                                idBasedDataQuery,
+                                labelDataQuery,
                                 setProcessingParameters(id, dbBeanLanguage),
                                 getResult()),
                         id,
@@ -196,7 +195,7 @@ public class LabelHelper {
         return processParameters(
                 processResult(
                         transaction.addQuery(
-                                idBasedDataQuery,
+                                labelDataQuery,
                                 setProcessingParameters(id, dbBeanLanguage),
                                 getResult()),
                         id,
@@ -208,8 +207,24 @@ public class LabelHelper {
 
     public boolean hasDataFor(DBTransaction transaction, long id, DbBeanLanguage dbBeanLanguage) {
         return transaction.addQuery(
-                idBasedDataQuery,
+                labelDataQuery,
                 setProcessingParameters(id, dbBeanLanguage),
+                ResultSet::next
+        );
+    }
+
+    public boolean isIdOK(DBAccess dbAccess, long id) {
+        return dbAccess.processQuery(
+                idCheckQuery,
+                stat -> stat.setLong(1, id),
+                ResultSet::next
+        );
+    }
+
+    public boolean isIdOK(DBTransaction transaction, long id) {
+        return transaction.addQuery(
+                idCheckQuery,
+                stat -> stat.setLong(1, id),
                 ResultSet::next
         );
     }
