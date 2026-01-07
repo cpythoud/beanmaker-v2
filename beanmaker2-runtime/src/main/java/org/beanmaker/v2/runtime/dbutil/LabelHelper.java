@@ -50,6 +50,8 @@ public class LabelHelper {
     final String labelDataQuery;
     private final String idFromNameQuery;
     private final String idCheckQuery;
+    private final String deleteUpdate;
+    private final String autoLabelDeleteUpdate;
 
     public LabelHelper(String labelTable, String labelDataTable) {
         this(labelTable, labelDataTable, DEFAULT_AUTO_LABEL_NAME_PREFIX);
@@ -60,9 +62,11 @@ public class LabelHelper {
         this.labelDataTable = labelDataTable;
         this.labelAutoNamePrefix = labelAutoNamePrefix;
 
-        labelDataQuery  = "SELECT `data` FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
-        idFromNameQuery = "SELECT id FROM " + labelTable + " WHERE `name`=?";
-        idCheckQuery    = "SELECT id FROM " + labelDataTable + " WHERE id=?";
+        labelDataQuery   = "SELECT `data` FROM " + labelDataTable + " WHERE id_label=? AND id_language=?";
+        idFromNameQuery  = "SELECT id FROM " + labelTable + " WHERE `name`=?";
+        idCheckQuery     = "SELECT id FROM " + labelTable + " WHERE id=?";
+        deleteUpdate     = "DELETE FROM " + labelTable + " WHERE id=?";
+        autoLabelDeleteUpdate = "DELETE FROM " + labelTable + " WHERE id=? AND `name` LIKE ?";
     }
 
     public String get(DBAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
@@ -506,6 +510,34 @@ public class LabelHelper {
                     stat.setString(3, text);
                 },
                 ResultSet::next
+        );
+    }
+
+    public void deleteLabel(DBAccess dbAccess, long id) {
+        dbAccess.processUpdate(deleteUpdate, stat -> stat.setLong(1, id));
+    }
+
+    public void deleteLabel(DBTransaction transaction, long id) {
+        transaction.addUpdate(deleteUpdate, stat -> stat.setLong(1, id));
+    }
+
+    public void deleteAutoLabel(DBAccess dbAccess, long id) {
+        dbAccess.processUpdate(
+                autoLabelDeleteUpdate,
+                stat -> {
+                    stat.setLong(1, id);
+                    stat.setString(2, labelAutoNamePrefix + "%");
+                }
+        );
+    }
+
+    public void deleteAutoLabel(DBTransaction transaction, long id) {
+        transaction.addUpdate(
+                autoLabelDeleteUpdate,
+                stat -> {
+                    stat.setLong(1, id);
+                    stat.setString(2, labelAutoNamePrefix + "%");
+                }
         );
     }
 

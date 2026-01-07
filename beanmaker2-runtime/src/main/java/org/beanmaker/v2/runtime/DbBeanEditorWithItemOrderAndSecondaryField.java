@@ -46,6 +46,7 @@ public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanE
                         itemOrderSecondaryFieldID
                 );
         }
+        deleteLabels(transaction);
         deleteExtraDbActions(transaction);
     }
 

@@ -125,6 +125,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
                 "DELETE FROM " + dbBeanParameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id)
         );
+        deleteLabels(transaction);
         deleteExtraDbActions(transaction);
     }
 
@@ -139,6 +140,8 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
     }
 
     protected void preDeleteExtraDbActions(DBTransaction transaction) { }
+
+    protected void deleteLabels(DBTransaction transaction) { }
 
     protected void deleteExtraDbActions(DBTransaction transaction) { }
 

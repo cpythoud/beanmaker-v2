@@ -121,7 +121,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         }
 
         if (columns.isVersioned())
-            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
+            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBeanEditor");
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
@@ -148,7 +148,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass.implementsInterface(beanName + "DataModel");
         if (columns.isVersioned())
-            javaClass.implementsInterface("VersionedBean");
+            javaClass.implementsInterface("VersionedBeanEditor");
     }
 
     @Override
@@ -393,6 +393,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addDataValidationFunctions();
         addResetFunctions();
         addDatabaseFunctions();
+        if (columns.hasLabels())
+            addDeleteLabelsFunction();
         addUniqueCodeFunction();
     }
 
@@ -736,8 +738,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             if (!column.isId() && !column.isItemOrder())
                 addGetter(column);
 
-        if (columns.isVersioned())
+        if (columns.isVersioned()) {
             addLatestVersionCheckFunctions("dbBeanParameters");
+            addIsVersionedBeanComponentOverloadedFunction();
+        }
 
         columns.getItemOrderColumn().ifPresent(column -> {
             if (!Strings.isEmpty(column.getItemOrderAssociatedField()))
@@ -2222,6 +2226,30 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(
                                 new FunctionCall("createDBTransaction", "DbBeans"))))
                 .addContent(EMPTY_LINE);
+    }
+
+    private void addDeleteLabelsFunction() {
+        var deleteLabelsFunction = new FunctionDeclaration("deleteLabels", "void")
+                .annotate("@Override")
+                .visibility(Visibility.PROTECTED)
+                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        for (var label: columns.getLabels()) {
+            String idVarName = label.getJavaName();
+            String labelVarName = uncapitalize(chopID(idVarName));
+            deleteLabelsFunction.addContent(
+                    new FunctionCall("deleteAutoLabel", "LabelManager")
+                            .addArgument(idVarName)
+                            .addArgument("transaction")
+                            .byItself()
+            ).addContent(
+                    new Assignment(idVarName, "0")
+            ).addContent(
+                    new Assignment(labelVarName, "null")
+            );
+        }
+
+        javaClass.addContent(deleteLabelsFunction).addContent(EMPTY_LINE);
     }
 
     private void addUniqueCodeFunction() {

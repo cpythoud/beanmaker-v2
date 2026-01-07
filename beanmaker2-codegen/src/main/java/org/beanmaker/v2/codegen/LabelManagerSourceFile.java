@@ -80,6 +80,12 @@ public class LabelManagerSourceFile extends BaseCode {
 
         addReplaceDataFunction();
         addFunctionsWithOptionalResults();
+
+        addNonImplementedStaticFunction("void", "deleteLabel", ID_ARG);
+        addNonImplementedStaticFunction("void", "deleteLabel", ID_ARG, TRANSACTION_ARG);
+        addNonImplementedStaticFunction("void", "deleteAutoLabel", ID_ARG);
+        addNonImplementedStaticFunction("void", "deleteAutoLabel", ID_ARG, TRANSACTION_ARG);
+
         addBasicFunctionsClass();
 
         addJavascriptLabelsFunctions();
