@@ -39,7 +39,7 @@ public interface DbBeanParameters {
         var list = new ArrayList<DatabaseReference>();
         for (String table: tables)
             list.add(new DatabaseReference(table, field));
-        return list;
+        return List.copyOf(list);
     }
 
     default List<DatabaseReference> getDatabaseReferences() {
