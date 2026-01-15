@@ -102,11 +102,16 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
                 transaction -> {
                     for (var dataEntry: dataEntries) {
                         logger.trace("Recording data at line: {}", dataEntry.getLineNumber());
-                        setupEditor(dataEntry);
-                        setFields(dataEntry);
-                        if (validator.validate(editor, dataEntry)) {
-                            long id = editor.updateDB(transaction);
-                            executeExtraUpdateActions(id, dataEntry, transaction);
+                        try {
+                            setupEditor(dataEntry);
+                            setFields(dataEntry);
+                            if (validator.validate(editor, dataEntry)) {
+                                long id = editor.updateDB(transaction);
+                                executeExtraUpdateActions(id, dataEntry, transaction);
+                            }
+                        } catch (Exception ex) {
+                            logger.error("Exception thrown at line: {}", dataEntry.getLineNumber());
+                            throw ex;
                         }
                     }
                 },
