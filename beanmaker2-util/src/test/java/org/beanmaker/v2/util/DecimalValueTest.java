@@ -545,6 +545,18 @@ public class DecimalValueTest {
         assertEquals(39, decimalValue.getFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("173.9968");
+        assertEquals(174, decimalValue.getIntegerPart());
+        assertEquals(0, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("107.996");
+        assertEquals(108, decimalValue.getIntegerPart());
+        assertEquals(0, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertFalse(decimalValue.isNegative());
     }
 
     @Test

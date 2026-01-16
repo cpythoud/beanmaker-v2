@@ -154,9 +154,17 @@ public class DecimalValueParser {
         if (integerPart == 0)
             negative = false;  // * We do not want a negative zero
 
+        long fractionPart = calcActualFractionPart(fractionalPart, decimals, lenient);
+        if (lenient) {
+            if (isOversized(fractionPart)) {
+                fractionPart = 0;
+                integerPart++;
+            }
+        }
+
         return new DecimalValue(
                 integerPart,
-                calcActualFractionPart(fractionalPart, decimals, lenient),
+                fractionPart,
                 decimals,
                 negative
         );
@@ -210,6 +218,10 @@ public class DecimalValueParser {
         if (allFives)
             ++value;
         return value;
+    }
+
+    private boolean isOversized(long fractionPart) {
+        return Long.toString(fractionPart).length() > decimals;
     }
 
     public static class Builder {
