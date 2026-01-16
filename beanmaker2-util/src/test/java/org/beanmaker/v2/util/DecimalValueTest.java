@@ -557,6 +557,48 @@ public class DecimalValueTest {
         assertEquals(0, decimalValue.getFractionalPart());
         assertEquals(2, decimalValue.getDecimals());
         assertFalse(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("-123.456");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(46, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertTrue(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("-123.455");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(46, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertTrue(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("-123.454");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(45, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertTrue(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("-123.5555555");
+        assertEquals(123, decimalValue.getIntegerPart());
+        assertEquals(56, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertTrue(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("-12.3879");
+        assertEquals(12, decimalValue.getIntegerPart());
+        assertEquals(39, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertTrue(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("-173.9968");
+        assertEquals(174, decimalValue.getIntegerPart());
+        assertEquals(0, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertTrue(decimalValue.isNegative());
+
+        decimalValue = twoDecimalParser.parse("-107.996");
+        assertEquals(108, decimalValue.getIntegerPart());
+        assertEquals(0, decimalValue.getFractionalPart());
+        assertEquals(2, decimalValue.getDecimals());
+        assertTrue(decimalValue.isNegative());
     }
 
     @Test
