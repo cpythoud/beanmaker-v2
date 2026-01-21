@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class DecimalValueParser {
+public final class DecimalValueParser {
 
     public static final DecimalValueParser DOT = DecimalValueParser.create(".");
     public static final DecimalValueParser COMMA = DecimalValueParser.create(",");

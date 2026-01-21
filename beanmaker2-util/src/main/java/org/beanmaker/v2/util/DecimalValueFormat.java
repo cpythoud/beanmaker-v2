@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class DecimalValueFormat {
+public final class DecimalValueFormat {
 
     public static final DecimalValueFormat DOT = new DecimalValueFormat(".");
     public static final DecimalValueFormat COMMA = new DecimalValueFormat(",");

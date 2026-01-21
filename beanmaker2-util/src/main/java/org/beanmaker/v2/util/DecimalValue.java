@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 
 import java.util.Objects;
 
-public class DecimalValue implements Comparable<DecimalValue> {
+public final class DecimalValue implements Comparable<DecimalValue> {
 
     private final long integerPart;
     private final long fractionalPart;
