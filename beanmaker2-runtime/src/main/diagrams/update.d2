@@ -1,4 +1,4 @@
-is_versioned: "bean is versioned?" {
+is_versioned: "bean is versioned?\n[codegen]" {
 	shape: hexagon
 }
 
@@ -6,7 +6,7 @@ std_update: "standard update process"
 is_versioned -> std_update: NO
 std_update -> no_processing
 
-component_has_changes: "data modified?" {
+component_has_changes: "data modified?\n[editor]" {
 	shape: hexagon
 }
 is_versioned -> component_has_changes: YES
@@ -14,12 +14,12 @@ is_versioned -> component_has_changes: YES
 no_processing: "no more processing required"
 component_has_changes -> no_processing: NO
 
-is_component: "is VB component?" {
+is_component: "is VB component?\n[codegen]" {
 	shape: hexagon
 }
 component_has_changes -> is_component: YES
 
-container_in_use: "is container in use?" {
+container_in_use: "is container in use?\n[interface/user-defined]" {
 	shape: hexagon
 }
 is_component -> container_in_use: YES
@@ -31,7 +31,7 @@ copy_all_components: "duplicate all sibling components with incremented version 
 container_in_use -> container_duplicate: YES
 container_duplicate -> copy_component_inc -> copy_all_components
 
-is_container1: "is VB container?" {
+is_container1: "is VB container?\n[codegen]" {
 	shape: hexagon
 }
 copy_all_components -> is_container1
@@ -42,13 +42,13 @@ is_container1 -> components_duplicate: YES
 components_duplicate -> no_processing
 
 
-is_in_use: "is VB in use?" {
+is_in_use: "is VB in use?\n[interface/user-defined]" {
 	shape: hexagon
 }
 is_component -> is_in_use: NO
 is_in_use -> std_update: NO
 
-is_version_required: "is versioning required" {
+is_version_required: "is versioning required?\n[interface/user-defined]" {
 	shape: hexagon
 }
 is_in_use -> is_version_required: YES
@@ -57,7 +57,7 @@ is_version_required -> std_update: NO
 container_duplicate2: "duplicate VB & increment version"
 is_version_required -> container_duplicate2: YES
 
-is_container2: "is VB container?" {
+is_container2: "is VB container?\n[codegen]" {
 	shape: hexagon
 }
 container_duplicate2 -> is_container2
