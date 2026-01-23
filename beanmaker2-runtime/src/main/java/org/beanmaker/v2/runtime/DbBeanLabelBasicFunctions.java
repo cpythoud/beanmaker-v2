@@ -2,6 +2,8 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.Strings;
 
+import org.dbbeans.sql.DBTransaction;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +46,8 @@ public abstract class DbBeanLabelBasicFunctions {
     public abstract boolean isNameOK(String labelName);
 
     public abstract DbBeanLanguage getDefaultLanguage();
+
+    public abstract long duplicateLabel(DbBeanLabel label, DBTransaction transaction);
 
     protected boolean lenient() {
         return true;

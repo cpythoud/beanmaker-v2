@@ -120,8 +120,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("java.util.Optional");
         }
 
-        if (columns.isVersioned())
+        if (columns.isVersioned()) {
+            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
             importsManager.addImport("org.beanmaker.v2.runtime.VersionedBeanEditor");
+        }
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
@@ -339,6 +341,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     // TODO: for versioning: consider if the copy part should be disallowed or modified
+    // TODO: also, now that we have duplicate(), reconsider utility of function outside of initialization
     private void addBeanInitFunction() {
         var initCall = new FunctionCall("init").byItself();
 
@@ -396,6 +399,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasLabels())
             addDeleteLabelsFunction();
         addUniqueCodeFunction();
+        addDuplicationFunction();
+        if (columns.isVersioned())
+            addEditorDuplicationFunction();
     }
 
     private void addToBeanFunctions() {
@@ -775,11 +781,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         var labelFunction = getLabelGetterFunction(idName, labelName, false);
         var perLanguageLabelFunction = getPerLanguageLabelGetterFunction(labelName, labelNameCap, false);
-
-        /*if (idName.equals("idLabel")) {
-            labelFunction.annotate("@Override");
-            perLanguageLabelFunction.annotate("@Override");
-        }*/
 
         javaClass
                 .addContent(labelFunction)
@@ -1725,8 +1726,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             addInitBeanVersioningFunction();
         addCreateRecordFunction();
         addUpdateRecordFunction();
-        if (columns.isVersioned())
-            addDatabaseVersioningFunctions();
         addUpdateLabelsFunction();
         addTransactionGetter();
     }
@@ -1797,10 +1796,22 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private void addInitBeanVersioningFunction() {
         javaClass.addContent(
                 new FunctionDeclaration("initBeanVersioning")
-                        .annotate("@Override")
                         .visibility(Visibility.PROTECTED)
-                        .addContent(new Assignment("beanVersion", "1"))
-                        .addContent(new Assignment("idOriginalBean", "0"))
+                        .markAsFinal()
+                        .addArgument(new FunctionArgument("int", "beanVersion"))
+                        .addArgument(new FunctionArgument("long", "idOriginalBean"))
+                        .addContent(
+                                new IfBlock(new Condition("beanVersion != 0"))
+                                        .addContent(
+                                                ExceptionThrow.getThrowExpression(
+                                                        "IllegalStateException",
+                                                        "Versioning already initialized"
+                                                )
+                                        )
+                        )
+                        .addContent(EMPTY_LINE)
+                        .addContent(new Assignment("this.beanVersion", "beanVersion"))
+                        .addContent(new Assignment("this.idOriginalBean", "idOriginalBean"))
         ).addContent(EMPTY_LINE);
     }
 
@@ -1866,27 +1877,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private void addUpdateRecordFunction() {
         var function = getDBUpdateFunction("updateRecord", false);
 
-        if (columns.isVersioned()) {
-            var newVersionTest = new IfBlock(new Condition(
-                    new FunctionCall("newVersionedBeanNeeded").addArgument("transaction")
-            )).addContent(
-                    new VarDeclaration(
-                            "var",
-                            "newVersionEditor",
-                            new FunctionCall("createVersionedRecord").addArgument("transaction"))
-            );
-            // ! save this space for adding extra operations if needed
-            newVersionTest.addContent(
-                    new FunctionCall("copyData").byItself().addArgument("newVersionEditor")
-            );
-
-            var elseBlock = new ElseBlock();
-            addStandardUpdateRecordFunctionalityTo(elseBlock);
-            newVersionTest.elseClause(elseBlock);
-            function.addContent(newVersionTest);
-        } else {
-            addStandardUpdateRecordFunctionalityTo(function);
-        }
+        addStandardUpdateRecordFunctionalityTo(function);
 
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
@@ -1915,185 +1906,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             codeBlock.addContent(new FunctionCall("updateLabels").byItself().addArgument("transaction"));
 
         codeBlock.addContent(new FunctionCall("updateExtraDbActions").byItself().addArgument("transaction"));
-    }
-
-    private void addDatabaseVersioningFunctions() {
-        addNewVersionNeededCheckFunction();
-        addContentEqualityCheckFunction();
-        addVersionedRecordCreationFunction();
-        if (columns.hasLabels())
-            addVersionedLabelManagementFunction();
-        addVersionIncrementFunction();
-        if (columns.hasItemOrder())
-            addVersionedManageItemOrderFunction();
-    }
-
-    private void addNewVersionNeededCheckFunction() {
-        javaClass.addContent(
-                new FunctionDeclaration("newVersionedBeanNeeded", "boolean")
-                        .visibility(Visibility.PROTECTED)
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
-                        .addContent(
-                                new ReturnStatement(
-                                        new Condition(
-                                                new FunctionCall(
-                                                        "isReferenced",
-                                                        beanName + "Parameters.INSTANCE"
-                                                ).addArguments("this", "transaction")
-                                        ).andCondition(new Condition(
-                                                new FunctionCall("beanContentIsDifferent")
-                                        ))
-                                )
-                        )
-        ).addContent(EMPTY_LINE);
-    }
-
-    private void addContentEqualityCheckFunction() {
-        var function = new FunctionDeclaration("beanContentIsDifferent", "boolean")
-                .visibility(Visibility.PROTECTED)
-                .addContent(new VarDeclaration(
-                        "var",
-                        "original",
-                        new ObjectCreation(beanName)
-                                .addArgument(new FunctionCall("getId")))
-                )
-                .addContent(
-                        new IfBlock(new Condition(
-                                new FunctionCall("isContentIdentical", "!original").addArgument("this")
-                        )).addContent(new ReturnStatement("true"))
-                )
-                .addContent(EMPTY_LINE);
-
-        if (columns.hasLabels()) {
-            for (var column: columns.getLabels()) {
-                String choppedId = chopID(column.getJavaName());
-                String labelName = uncapitalize(choppedId);
-                String getLabelFunctionName = "get" + choppedId;
-                function.addContent(
-                        new IfBlock(new Condition(
-                                new FunctionCall("isContentIdenticalTo", "!" + labelName)
-                                        .addArgument(new FunctionCall(getLabelFunctionName, "original"))
-                        )).addContent(new ReturnStatement("true"))
-                );
-            }
-            function.addContent(EMPTY_LINE);
-        }
-
-        function.addContent(new ReturnStatement("false"));
-        javaClass.addContent(function).addContent(EMPTY_LINE);
-    }
-
-    private void addVersionedRecordCreationFunction() {
-        var function = new FunctionDeclaration("createVersionedRecord", beanName + "Editor")
-                .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
-                .addContent(new VarDeclaration("var", "editor", new FunctionCall("copyData").addArgument("this")));
-
-        if (columns.hasLabels())
-            function.addContent(new FunctionCall("manageLabels").byItself().addArgument("editor"));
-
-        function.addContent(new FunctionCall("incrementVersionedData").byItself().addArgument("editor"));
-
-        if (columns.hasItemOrder())
-            function.addContent(
-                    new FunctionCall("manageVersionedItemOrder").byItself().addArguments("transaction", "editor")
-            );
-
-        function.addContent(new FunctionCall("createRecord", "editor").byItself().addArgument("transaction"))
-                .addContent(new ReturnStatement("editor"));
-
-        javaClass.addContent(function).addContent(EMPTY_LINE);
-    }
-
-    private void addVersionedLabelManagementFunction() {
-        var function = new FunctionDeclaration("manageLabels")
-                .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"));
-
-        for (var column: columns.getLabels()) {
-            String labelVar = uncapitalize(chopID(column.getJavaName()));
-            function.addContent(new Assignment("editor." + labelVar, labelVar + ".duplicateContent()"));
-        }
-
-        javaClass.addContent(function).addContent(EMPTY_LINE);
-    }
-
-    private void addVersionIncrementFunction() {
-        javaClass.addContent(
-                new FunctionDeclaration("incrementVersionedData")
-                        .visibility(Visibility.PROTECTED)
-                        .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"))
-                        .addContent(new Assignment("editor.beanVersion", "beanVersion + 1"))
-                        .addContent(new Assignment(
-                                "editor.idOriginalBean",
-                                "idOriginalBean == 0 ? id : idOriginalBean")
-                        )
-        ).addContent(EMPTY_LINE);
-    }
-
-    private void addVersionedManageItemOrderFunction() {
-        var function = new FunctionDeclaration("manageVersionedItemOrder")
-                .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
-                .addArgument(new FunctionArgument(beanName + "EditorBase", "editor"))
-                .addContent(new Assignment("editor.itemOrder", "itemOrder"));
-
-        // ! save space for adding extra operations if needed
-
-        /*var itemOrderColumn = columns.getItemOrderColumn().orElseThrow();
-        if (Strings.isEmpty(itemOrderColumn.getItemOrderAssociatedField())) {
-            function.addContent(
-                    new Assignment(
-                            "itemOrder",
-                            getItemOrderPlusOneExpression(
-                                    getMaxItemOrderFunctionCallStart()
-                                            .addArgument(
-                                                    new FunctionCall(
-                                                            "getItemOrderMaxQuery",
-                                                            "dbBeanItemOrderManager"
-                                                    )
-                                            )
-                            )
-                    )
-
-            );
-        } else {
-            String secondaryField = getItemOrderSecondaryFieldJavaName(itemOrderColumn);
-            function.addContent(
-                    new IfBlock(new Condition(secondaryField + " == 0"))
-                            .addContent(new Assignment(
-                                    "itemOrder",
-                                    getItemOrderPlusOneExpression(
-                                            getMaxItemOrderFunctionCallStart()
-                                                    .addArgument(
-                                                            new FunctionCall(
-                                                                    "getItemOrderMaxQueryWithNullSecondaryField",
-                                                                    "dbBeanItemOrderManager"
-                                                            )
-                                                    )
-                                    )
-                            ))
-                            .elseClause(new ElseBlock()
-                                    .addContent(
-                                            new Assignment(
-                                                    "itemOrder",
-                                                    getItemOrderPlusOneExpression(
-                                                            getMaxItemOrderFunctionCallStart()
-                                                                    .addArgument(
-                                                                            new FunctionCall(
-                                                                                    "getItemOrderMaxQuery",
-                                                                                    "dbBeanItemOrderManager"
-                                                                            )
-                                                                    )
-                                                                    .addArgument(secondaryField)
-                                                    )
-                                            )
-                                    )
-                            )
-            );
-        }*/
-
-        javaClass.addContent(function).addContent(EMPTY_LINE);
     }
 
     private void addUpdateLabelsFunction() {
@@ -2274,6 +2086,89 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                     .addArgument("DbBeans.dbAccess"))))
                     .addContent(EMPTY_LINE);
         }
+    }
+
+    private void addDuplicationFunction() {
+        var duplicateFunction = new FunctionDeclaration("duplicate", beanName + "Editor")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC)
+                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addContent(
+                        new VarDeclaration(
+                                "var",
+                                "duplicator",
+                                new FunctionCall("getBeanDuplicator", beanName + "Parameters.INSTANCE")
+                                        .addArgument("transaction")
+                                        .addArgument(new FunctionCall("getBasicFunctions", "LabelManager"))
+                        )
+                )
+                .addContent(new VarDeclaration("var", "editor", new ObjectCreation(beanName + "Editor")));
+
+        for (var column: columns) {
+            if (!column.isSpecial())
+                duplicateFunction.addContent(getDuplicateEditorAssignment(column));
+        }
+
+        if (columns.isVersioned())
+            duplicateFunction.addContent(getInitVersioningFunctionCall());
+
+        duplicateFunction.addContent(
+                new FunctionCall("extraDuplicatingActions")
+                        .addArguments("transaction", "duplicator", "editor")
+                        .byItself()
+        );
+        duplicateFunction.addContent(new ReturnStatement("editor"));
+
+        javaClass.addContent(duplicateFunction).addContent(EMPTY_LINE);
+    }
+
+    private FunctionCall getDuplicateEditorAssignment(Column column) {
+        var functionCall = new FunctionCall("set" + capitalize(column.getJavaName()), "editor").byItself();
+        if (column.isLabelReference()) {
+            functionCall.addArgument(
+                            getDuplicatorFunctionCall("Label")
+                                    .addArgument(new FunctionCall("get" + chopID(column.getJavaName()))
+                                            .addArgument("transaction")))
+                    .addArgument("transaction");
+        } else if (column.isFileReference()) {
+            functionCall.addArgument(getDuplicatorFunctionCall("File").addArgument(column.getJavaName()));
+        } else if (column.isBeanReference()) {
+            functionCall.addArgument(
+                    getDuplicatorFunctionCall("Bean")
+                            .addArgument(new ObjectCreation(column.getAssociatedBeanClass() + "Editor")
+                                    .addArgument(column.getJavaName())
+                                    .addArgument("transaction"))
+            );
+        } else {
+            functionCall.addArgument(
+                    getDuplicatorFunctionCall(column.getJavaType()).addArgument(column.getJavaName())
+            );
+        }
+        return functionCall;
+    }
+
+    private FunctionCall getDuplicatorFunctionCall(String type) {
+        return new FunctionCall("duplicate" + type, "duplicator");
+    }
+
+    private FunctionCall getInitVersioningFunctionCall() {
+        return new FunctionCall("initBeanVersioning", "editor")
+                .byItself()
+                .addArgument(new FunctionCall("getNextBeanVersion", "duplicator").addArgument("this"))
+                .addArgument(new FunctionCall("getOriginalBeanId", "duplicator").addArgument("this"));
+    }
+
+    private void addEditorDuplicationFunction() {
+        javaClass.addContent(
+                new FunctionDeclaration("newVersionedEditor", beanName + "Editor")
+                        .visibility(Visibility.PUBLIC)
+                        .addContent(new ReturnStatement(new FunctionCall(
+                                "newVersionedEditor",
+                                "(" + beanName + "Editor) VersionedBeanEditor")
+                                .addArgument("this")
+                                .addArgument(new FunctionCall("createDBTransaction")))
+                        )
+        ).addContent(EMPTY_LINE);
     }
 
 }

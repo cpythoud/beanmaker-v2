@@ -7,24 +7,29 @@ import java.util.Map;
 
 public class Column {
 
-    // TODO: put all special field in public static String-s
     // TODO: established a distinction between java types in use, and authorized java types
     // ! int and long are automatic and specific, but should not be allowed as user types
-
     public static final List<String> JAVA_TYPES =
             List.of("int", "long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money",
                     "DecimalValue");
 
+    public static final String ID_FIELD = "id";
+    public static final String UPDATE_FIELD = "last_update";
+    public static final String MODIFIER_FIELD = "modified_by";  // TODO: implement or remove...
+    public static final String ORDERING_FIELD = "item_order";  // TODO: implement or remove...
+    public static final String VERSION_FIELD = "bean_version";
+    public static final String ID_FIRST_VERSION_FIELD = "id_original_bean";
+
     public static final List<String> SPECIAL_CASE_FIELDS =
-            List.of("id", "last_update", "modified_by", "item_order", "bean_version", "id_original_bean");
+            List.of(ID_FIELD, UPDATE_FIELD, MODIFIER_FIELD, ORDERING_FIELD, VERSION_FIELD, ID_FIRST_VERSION_FIELD);
 
     public static final Map<String, List<String>> SPECIAL_CASE_FIELD_TYPES = Map.of(
-            "id", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
-            "last_update", List.of("BIGINT UNSIGNED"),
-            "modified_by", List.of("CHAR", "VARCHAR"),
-            "item_order", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
-            "bean_version", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED"),
-            "id_original_bean", List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED")
+            ID_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
+            UPDATE_FIELD, List.of("BIGINT UNSIGNED"),
+            MODIFIER_FIELD, List.of("CHAR", "VARCHAR"),
+            ORDERING_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
+            VERSION_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED"),
+            ID_FIRST_VERSION_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED")
     );
 
     private static final String DEFAULT_LABEL_CLASS = "DbBeanLabel";
@@ -81,22 +86,22 @@ public class Column {
         if (SPECIAL_CASE_FIELDS.contains(sqlName)) {
             special = true;
             incompatibleSqlType = !SPECIAL_CASE_FIELD_TYPES.get(sqlName).contains(sqlTypeName);
-            if (sqlName.equals("id")) {
+            if (sqlName.equals(ID_FIELD)) {
                 id = true;
                 unique = true;
             } else {
                 id = false;
             }
-            lastUpdate = sqlName.equals("last_update");
-            modifiedBy = sqlName.equals("modified_by");
-            if (sqlName.equals("item_order")) {
+            lastUpdate = sqlName.equals(UPDATE_FIELD);
+            modifiedBy = sqlName.equals(MODIFIER_FIELD);
+            if (sqlName.equals(ORDERING_FIELD)) {
                 itemOrder = true;
                 unique = true;  // ???
             } else {
                 itemOrder = false;
             }
-            versionField = sqlName.equals("bean_version");
-            originalBeanId = sqlName.equals("id_original_bean");
+            versionField = sqlName.equals(VERSION_FIELD);
+            originalBeanId = sqlName.equals(ID_FIRST_VERSION_FIELD);
         } else {
             special = false;
             incompatibleSqlType = false;

@@ -72,4 +72,8 @@ public interface DbBeanParameters {
         return false;
     }
 
+    default BeanDuplicator getBeanDuplicator(DBTransaction transaction, DbBeanLabelBasicFunctions labelBasicFunctions) {
+        return new DefaultBeanDuplicator(transaction, labelBasicFunctions, this);
+    }
+
 }

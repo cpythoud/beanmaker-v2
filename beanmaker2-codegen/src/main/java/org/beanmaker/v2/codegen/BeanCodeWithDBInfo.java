@@ -182,6 +182,19 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         );
     }
 
+    protected void addIsVersionedBeanComponentOverloadedFunction() {
+        columns.getItemOrderColumn().ifPresent(column -> {
+            if (!Strings.isEmpty(column.getItemOrderAssociatedField())) {
+                javaClass.addContent(
+                        new FunctionDeclaration("isVersionedBeanComponent", "boolean")
+                                .annotate("@Override")
+                                .visibility(Visibility.PUBLIC)
+                                .addContent(new ReturnStatement("true"))
+                ).addContent(EMPTY_LINE);
+            }
+        });
+    }
+
     protected void addItemOrderEdgeStatusCheckFunctions() {
         javaClass
                 .addContent(new FunctionDeclaration("isFirstInItemOrder", "boolean")

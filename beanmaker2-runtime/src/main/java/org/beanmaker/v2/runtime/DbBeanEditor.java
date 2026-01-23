@@ -159,4 +159,10 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
     protected abstract DBTransaction createDBTransaction();
 
+    protected void extraDuplicatingActions(
+            DBTransaction transaction,
+            BeanDuplicator duplicator,
+            DbBeanEditorInterface editor
+    ) { }
+
 }

@@ -11,7 +11,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.beanmaker.v2.codegen.Column.ID_FIELD;
+import static org.beanmaker.v2.codegen.Column.ID_FIRST_VERSION_FIELD;
+import static org.beanmaker.v2.codegen.Column.ORDERING_FIELD;
+import static org.beanmaker.v2.codegen.Column.VERSION_FIELD;
+
 public class Columns implements Iterable<Column> {
+
+    private static final List<String> NAMING_CANDIDATE_FIELDS =
+            List.of("name", "id_name_label", "id_label", "description", "id_description_label", "code");
+    private static final List<String> ORDER_BY_CANDIDATE_FIELDS =
+            List.of(ORDERING_FIELD, "name", "description", "code");
 
     private final DatabaseServer server;
     private final String db;
@@ -21,12 +31,6 @@ public class Columns implements Iterable<Column> {
     private final List<OneToManyRelationship> detectedOneToManyRelationships;
     private final List<OneToManyRelationship> oneToManyRelationships;
     private final List<ExtraField> extraFields = new ArrayList<>();
-
-    private static final List<String> NAMING_CANDIDATE_FIELDS =
-            List.of("name", "id_name_label", "id_label", "description", "id_description_label", "code");
-    private static final List<String> ORDER_BY_CANDIDATE_FIELDS =
-            List.of("item_order", "name", "description", "code");
-
 
     public Columns(DatabaseServer server, String db, String table) {
         this.server = server;
@@ -374,7 +378,7 @@ public class Columns implements Iterable<Column> {
                 if (col.getSqlName().equalsIgnoreCase(candidate))
                     return candidate;
 
-        return "id";
+        return ID_FIELD;
     }
 
     public List<String> getOrderByFields() {
@@ -384,7 +388,7 @@ public class Columns implements Iterable<Column> {
             var itemOrder = getItemOrderField();
             if (!itemOrder.isUnique())
                 list.add(itemOrder.getItemOrderAssociatedField());
-            list.add("item_order");
+            list.add(ORDERING_FIELD);
         } else {
             for (String candidate: ORDER_BY_CANDIDATE_FIELDS) {
                 for (Column col: columns)
@@ -396,7 +400,7 @@ public class Columns implements Iterable<Column> {
         }
 
         if (list.isEmpty())
-            list.add("id");
+            list.add(ID_FIELD);
         return list;
     }
 
@@ -562,7 +566,7 @@ public class Columns implements Iterable<Column> {
 
     private List<FieldFormatError.FieldAssociatedError> checkIdPresent() {
         if (!hasId())
-            return List.of(FieldFormatError.MISSING_ID.associateField("id"));
+            return List.of(FieldFormatError.MISSING_ID.associateField(ID_FIELD));
 
         return List.of();
     }
@@ -596,11 +600,21 @@ public class Columns implements Iterable<Column> {
         var status = getVersionedStatus();
 
         if (status.versionField && !status.originalBeanIdField)
-            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField("id_original_bean"));
+            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField(ID_FIRST_VERSION_FIELD));
         if (status.originalBeanIdField && !status.versionField)
-            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField("bean_version"));
+            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField(VERSION_FIELD));
 
         return List.of();
+    }
+
+    public Column getBeanVersionField() {
+        if (!isVersioned())
+            throw new IllegalStateException("Bean cannot be versioned. Check the versioning fields.");
+        for (Column column: columns) {
+            if (column.isVersionField())
+                return column;
+        }
+        throw new AssertionError("Missing bean_version field in versioned bean: impossible situation.");
     }
 
 }

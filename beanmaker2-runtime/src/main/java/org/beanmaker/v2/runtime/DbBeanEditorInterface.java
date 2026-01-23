@@ -29,4 +29,6 @@ public interface DbBeanEditorInterface extends CodeBasedReference {
         throw new UnsupportedOperationException("bean doesn't contain a code field");
     }
 
+    DbBeanEditorInterface duplicate(DBTransaction transaction);
+
 }
