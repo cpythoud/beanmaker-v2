@@ -121,7 +121,8 @@ NEW FEATURES:
 - introduce a new servlet operation to separate generation of the HTML form and of the buttons that control it
   (should be useful when these need to be split like in modals; support for this has been added in the runtime and
    in beanmaker2.js; support has also been added for this in the experimental Bootstrap 5 implementation of
-   HtmlFormHelper).
+   HtmlFormHelper)
+ - introduced versioned beans: a mechanism to preserve modification history for some data structures.
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field
