@@ -746,7 +746,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.isVersioned()) {
             addLatestVersionCheckFunctions("dbBeanParameters");
-            addIsVersionedBeanComponentOverloadedFunction();
+            String parametersReference = beanName + "Parameters.INSTANCE";
+            addNewVersionNeededFunction(parametersReference, false);
+            addNewVersionNeededFunction(parametersReference, true);
+            addIsVersionedBeanComponentOverloadedFunction();  // TODO: remove and block versioning for item_order beans
         }
 
         columns.getItemOrderColumn().ifPresent(column -> {

@@ -46,6 +46,8 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
             importsManager.addImport("org.beanmaker.v2.util.DecimalValueFormat");
             importsManager.addImport("org.beanmaker.v2.util.DecimalValueParser");
         }
+        if (columns.isVersioned())
+            importsManager.addImport("org.dbbeans.sql.DBTransaction");
     }
 
     @Override
@@ -92,6 +94,8 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
         addOrderingFunction();
         addLabelFunctions();
         addDecimalValueFunctions();
+        if (columns.isVersioned())
+            addVersionFunctions();
     }
 
     private void addLocalizationFunctions() {
@@ -200,6 +204,28 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                                     .addArgument(Integer.toString(decimalValue.getDecimals())))))
                     .addContent(EMPTY_LINE);
         }
+    }
+
+    private void addVersionFunctions() {
+        javaInterface.addContent(
+                getNewVersionFunction(false).addContent(
+                        new ReturnStatement(new FunctionCall("isNewBeanVersionRequired")
+                                .addArguments(beanVarName, "null"))
+                )
+        ).addContent(EMPTY_LINE).addContent(
+                getNewVersionFunction(true).addContent(
+                        new ReturnStatement("false")
+                )
+        ).addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getNewVersionFunction(boolean transaction) {
+        var declaration = new FunctionDeclaration("isNewBeanVersionRequired", "boolean")
+                .markAsDefault()
+                .addArgument(new FunctionArgument(beanName + "DataModel", beanVarName));
+        if (transaction)
+            declaration.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+        return declaration;
     }
 
 }

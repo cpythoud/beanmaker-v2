@@ -182,6 +182,22 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         );
     }
 
+    protected void addNewVersionNeededFunction(String parameterObject, boolean transaction) {
+        var functionDeclaration = new FunctionDeclaration("needsNewBeanVersion", "boolean")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC);
+        if (transaction)
+            functionDeclaration.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        var parametersFunctionCall = new FunctionCall("isNewBeanVersionRequired", parameterObject).addArgument("this");
+        if (transaction)
+            parametersFunctionCall.addArgument("transaction");
+
+        functionDeclaration.addContent(new ReturnStatement(parametersFunctionCall));
+
+        javaClass.addContent(functionDeclaration).addContent(EMPTY_LINE);
+    }
+
     protected void addIsVersionedBeanComponentOverloadedFunction() {
         columns.getItemOrderColumn().ifPresent(column -> {
             if (!Strings.isEmpty(column.getItemOrderAssociatedField())) {

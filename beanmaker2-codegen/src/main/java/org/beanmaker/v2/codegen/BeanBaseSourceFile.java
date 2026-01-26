@@ -377,8 +377,12 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         for (Column column: columns.getList())
             addGetter(column);
 
-        if (columns.isVersioned())
-            addLatestVersionCheckFunctions(beanName + "Parameters.INSTANCE");
+        if (columns.isVersioned()) {
+            String parametersReference = beanName + "Parameters.INSTANCE";
+            addLatestVersionCheckFunctions(parametersReference);
+            addNewVersionNeededFunction(parametersReference, false);
+            addNewVersionNeededFunction(parametersReference, true);
+        }
     }
 
     private void addEmptyChecks() {
