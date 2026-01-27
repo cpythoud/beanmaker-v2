@@ -63,9 +63,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                             "DbBeanRequiredLanguages",
                             "DBBEAN_REQUIRED_LANGUAGES",
                             new ObjectCreation("DbBeanRequiredLanguages")
-                                    .addArgument(new FunctionCall("getAllActiveLanguages", "LabelManager")))
-                            .markAsStatic()
-                            .markAsFinal())
+                                    .addArgument(new FunctionCall("getAllActiveLanguages", "LabelManager"))))
                     .addContent(EMPTY_LINE);
 
         if (columns.hasItemOrder()) {
