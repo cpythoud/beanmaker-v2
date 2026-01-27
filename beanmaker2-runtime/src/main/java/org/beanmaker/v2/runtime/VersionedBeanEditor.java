@@ -8,6 +8,8 @@ public interface VersionedBeanEditor extends VersionedBean {
 
     DbBeanEditorInterface duplicate(DBTransaction transaction);
 
+    VersionedBeanEditor newVersionedEditor();
+
     static DbBeanEditorInterface newVersionedEditor(VersionedBeanEditor editor, DBTransaction dbTransaction) {
         DbBeanEditorInterface[] newEditor = { null };
         Transactions.wrap(transaction -> {

@@ -42,6 +42,10 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
                 response.setContentType("text/html; charset=UTF-8");
                 response.getWriter().println(getFormButtons(requestParameters));
             }
+            case NEW_VERSION -> {
+                response.setContentType("text/json; charset=UTF-8");
+                response.getWriter().println(newVersion(requestParameters));
+            }
             default ->
                     throw new AssertionError("Unidentified operation: " + getOperation(requestParameters));
         }
@@ -148,6 +152,28 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
 
     protected String getFormButtonsSuffix(HttpRequestParameters requestParameters) {
         return "";
+    }
+
+    protected String newVersion(HttpRequestParameters requestParameters) throws ServletException {
+        long id = getBeanId(requestParameters, "id");
+
+        var editor = getVersionedBeanEditor(id, requestParameters);
+        if (!editor.isLatestVersionedBean())
+            throw new ServletException("New version can only be created from the latest version of the bean");
+        if (!editor.needsNewBeanVersion())
+            throw new ServletException("Creating a new version is not required at this time");
+
+        var newVersion = editor.newVersionedEditor();
+        return getStartJsonOk() + "\"id\": " + newVersion.getId() + " }";
+    }
+
+    protected VersionedBeanEditor getVersionedBeanEditor(long id, HttpRequestParameters requestParameters)
+            throws ServletException
+    {
+        throw new ServletException(
+                "NEW_VERSION is not supported here: bean is not versioned or getVersionedBeanEditor() was not overridden.",
+                new UnsupportedOperationException("getVersionedBeanEditor() not implemented")
+        );
     }
 
 }

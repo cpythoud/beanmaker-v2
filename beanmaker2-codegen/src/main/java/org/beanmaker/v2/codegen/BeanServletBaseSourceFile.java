@@ -38,6 +38,9 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
         addImports(BM_RUNTIME_IMPORTS);
 
         importsManager.addImport("javax.servlet.ServletException");
+
+        if (columns.isVersioned())
+            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBeanEditor");
     }
 
     @Override
@@ -53,6 +56,8 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
         addGetInstanceFunction();
         addChangeOrderFunction();
         addDisplayTableFunction();
+        if (columns.isVersioned())
+            addVersionedEditorFunction();
     }
 
     private void addGetHTMLViewFunction() {
@@ -152,6 +157,22 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                                         )
                                 )
         ).addContent(EMPTY_LINE);
+    }
+
+    private void addVersionedEditorFunction() {
+        javaClass
+                .addContent(
+                        new FunctionDeclaration("getVersionedBeanEditor", "VersionedBeanEditor")
+                                .annotate("@Override")
+                                .visibility(Visibility.PROTECTED)
+                                .addArgument(new FunctionArgument("long", "id"))
+                                .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"))
+                                .addException("ServletException")
+                                .addContent(
+                                        new ReturnStatement(new ObjectCreation(beanName + "Editor").addArgument("id"))
+                                )
+                )
+                .addContent(EMPTY_LINE);
     }
 
 }

@@ -401,7 +401,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addUniqueCodeFunction();
         addDuplicationFunction();
         if (columns.isVersioned())
-            addEditorDuplicationFunction();
+            addNewVersionFunction();
     }
 
     private void addToBeanFunctions() {
@@ -2161,9 +2161,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addArgument(new FunctionCall("getOriginalBeanId", "duplicator").addArgument("this"));
     }
 
-    private void addEditorDuplicationFunction() {
+    private void addNewVersionFunction() {
         javaClass.addContent(
                 new FunctionDeclaration("newVersionedEditor", beanName + "Editor")
+                        .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new FunctionCall(
                                 "newVersionedEditor",
