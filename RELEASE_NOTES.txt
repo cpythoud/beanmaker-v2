@@ -122,6 +122,9 @@ NEW FEATURES:
   (should be useful when these need to be split like in modals; support for this has been added in the runtime and
    in beanmaker2.js; support has also been added for this in the experimental Bootstrap 5 implementation of
    HtmlFormHelper)
+ - introduced two functions showEditLink() and showDetailLink() in BaseMasterTableView to determine on a line-by-line
+   basis when to display edit and detail links; by default the functions return the value of showEditLinks and
+   showDetailLinks respectively; they are to be overloaded in super classes
  - introduced versioned beans: a mechanism to preserve modification history for some data structures.
 
 BUG FIXES:

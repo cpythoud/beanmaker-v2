@@ -492,17 +492,17 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
 
     public <B extends DbBeanInterface> TrTag getTableLine(B bean) {
         TrTag line;
-        if (showEditLinks || showDetailLinks)
+        if (showEditLink(bean) || showDetailLink(bean))
             line = getTrTag(bean.getId());
         else
             line = getTableLine(bean.getId());
 
-        if (showEditLinks || showDetailLinks)
+        if (showEditLink(bean) || showDetailLink(bean))
             line.child(getEditCell(bean));
         if (displayId)
             line.child(getIdTableCell(bean));
         addDataToLine(line, bean);
-        if (showEditLinks && okToDelete(bean))
+        if (showEditLink(bean) && okToDelete(bean))
             line.child(getDeleteCell(bean));
 
         return line;
@@ -510,17 +510,17 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
 
     public <B extends DbBeanWithItemOrder> TrTag getItemOrderTableLine(B bean) {
         TrTag line;
-        if (showEditLinks || showOrderingLinks || enableDragNDrop || showDetailLinks)
+        if (showEditLink(bean) || showOrderingLinks || enableDragNDrop || showDetailLink(bean))
             line = getTrTag(bean.getId());
         else
             line = getTableLine(bean.getId());
 
-        if (showEditLinks || showOrderingLinks || enableDragNDrop || showDetailLinks)
+        if (showEditLink(bean) || showOrderingLinks || enableDragNDrop || showDetailLink(bean))
             line.child(getOperationCell(bean));
         if (displayId)
             line.child(getIdTableCell(bean));
         addDataToLine(line, bean);
-        if (showEditLinks && okToDelete(bean))
+        if (showEditLink(bean) && okToDelete(bean))
             line.child(getDeleteCell(bean));
 
         return line;
@@ -1017,14 +1017,14 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         if (enableDragNDrop)
             cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon + " " + dragNDropDragElementCssClass));
 
-        if (showEditLinks)
+        if (showEditLink(bean))
             cell.child(getEditLineLink(
                     bean.getId(),
                     beanName,
                     "edit_" + beanName,
                     editTooltip));
 
-        if (showDetailLinks)
+        if (showDetailLink(bean))
             cell.child(getGotoDetailLink(
                 bean.getId(),
                 beanName + "_detail",
@@ -1032,6 +1032,14 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
                 detailTooltip));
 
         return cell;
+    }
+
+    protected boolean showEditLink(DbBeanInterface bean) {
+        return showEditLinks;
+    }
+
+    protected boolean showDetailLink(DbBeanInterface bean) {
+        return showDetailLinks;
     }
 
     protected TdTag getDeleteCell(
