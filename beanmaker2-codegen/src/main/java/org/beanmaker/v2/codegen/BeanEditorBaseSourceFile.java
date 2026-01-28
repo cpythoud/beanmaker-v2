@@ -112,8 +112,10 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             }
         }
 
-        if (columns.hasOtherBeanReference())
+        if (columns.hasOtherBeanReference()) {
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
+            importsManager.addImport("org.beanmaker.v2.runtime.BeanDuplicator");
+        }
 
         if (columns.hasUniqueCodeField() || columns.hasVersionedCodeField()) {
             importsManager.addImport("org.beanmaker.v2.runtime.dbutil.Codes");
@@ -2123,6 +2125,13 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         duplicateFunction.addContent(new ReturnStatement("editor"));
 
         javaClass.addContent(duplicateFunction).addContent(EMPTY_LINE);
+
+        if (columns.hasOtherBeanReference()) {
+            for (var column: columns) {
+                if (column.isOtherBeanReference())
+                    addBeanIdDuplicationFunction(column);
+            }
+        }
     }
 
     private FunctionCall getDuplicateEditorAssignment(Column column) {
@@ -2137,10 +2146,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             functionCall.addArgument(getDuplicatorFunctionCall("File").addArgument(column.getJavaName()));
         } else if (column.isBeanReference()) {
             functionCall.addArgument(
-                    getDuplicatorFunctionCall("Bean")
-                            .addArgument(new ObjectCreation(column.getAssociatedBeanClass() + "Editor")
-                                    .addArgument(column.getJavaName())
-                                    .addArgument("transaction"))
+                    new FunctionCall("getDuplicated" + capitalize(column.getJavaName()))
+                            .addArguments("duplicator", "transaction")
             );
         } else {
             functionCall.addArgument(
@@ -2152,6 +2159,23 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private FunctionCall getDuplicatorFunctionCall(String type) {
         return new FunctionCall("duplicate" + type, "duplicator");
+    }
+
+    private void addBeanIdDuplicationFunction(Column column) {
+        javaClass.addContent(
+                new FunctionDeclaration("getDuplicated" + capitalize(column.getJavaName()), "long")
+                        .visibility(Visibility.PROTECTED)
+                        .addArgument(new FunctionArgument("BeanDuplicator", "duplicator"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(
+                                new ReturnStatement(
+                                        getDuplicatorFunctionCall("Bean").addArgument(
+                                                new ObjectCreation(column.getAssociatedBeanClass() + "Editor")
+                                                        .addArgument(column.getJavaName())
+                                                        .addArgument("transaction"))
+                                )
+                        )
+        ).addContent(EMPTY_LINE);
     }
 
     private FunctionCall getInitVersioningFunctionCall() {

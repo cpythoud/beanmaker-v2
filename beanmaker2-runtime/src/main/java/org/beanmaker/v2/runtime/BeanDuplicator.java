@@ -31,6 +31,8 @@ public interface BeanDuplicator {
 
     long duplicateBean(DbBeanEditorInterface editor);
 
+    long duplicateIdBean(long id);
+
     long duplicateFile(long id);
 
     int getNextBeanVersion(VersionedBean bean);

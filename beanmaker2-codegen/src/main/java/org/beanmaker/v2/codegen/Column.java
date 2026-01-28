@@ -461,4 +461,8 @@ public class Column {
         return shouldBeRequired;
     }
 
+    public boolean isOtherBeanReference() {
+        return isBeanReference() && !isSpecial() && !isLabelReference() && !isFileReference();
+    }
+
 }

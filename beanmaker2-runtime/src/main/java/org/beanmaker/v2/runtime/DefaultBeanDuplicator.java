@@ -82,6 +82,10 @@ public class DefaultBeanDuplicator implements BeanDuplicator {
         return duplicata.getId();
     }
 
+    public long duplicateIdBean(long id) {
+        return id;
+    }
+
     @Override
     public long duplicateFile(long id) {
         return id;  // * For now

@@ -249,7 +249,7 @@ public class Columns implements Iterable<Column> {
 
     public boolean hasOtherBeanReference() {
         for (Column column: columns)
-            if (column.isBeanReference() && !(column.isId() || column.isLabelReference() || column.isFileReference()))
+            if (column.isOtherBeanReference())
                 return true;
 
         return false;
