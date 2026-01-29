@@ -150,6 +150,38 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                 .addContent(EMPTY_LINE);
     }
 
+    protected void addGetLatestVersionIdFunctions(String parameterArgument) {
+        javaClass
+                .addContent(
+                        getLatestVersionIdFunctionDeclaration(false)
+                                .addContent(getLatestVersionIdReturnStatement(parameterArgument, "dbAccess"))
+                )
+                .addContent(EMPTY_LINE)
+                .addContent(
+                        getLatestVersionIdFunctionDeclaration(true)
+                                .addContent(getLatestVersionIdReturnStatement(parameterArgument, "transaction"))
+                )
+                .addContent(EMPTY_LINE);
+    }
+
+    protected FunctionDeclaration getLatestVersionIdFunctionDeclaration(boolean transaction) {
+        var function = new FunctionDeclaration("getIdLatestVersionedBean", "long")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC);
+
+        if (transaction)
+            function.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        return function;
+    }
+
+    protected ReturnStatement getLatestVersionIdReturnStatement(String parameters, String dbArgument) {
+        return new ReturnStatement(
+                new FunctionCall("getIdLatestVersionedBean", "VersionedBean")
+                        .addArguments("this", parameters, dbArgument)
+        );
+    }
+
     protected void addLatestVersionCheckFunctions(String parameterArgument) {
         javaClass
                 .addContent(

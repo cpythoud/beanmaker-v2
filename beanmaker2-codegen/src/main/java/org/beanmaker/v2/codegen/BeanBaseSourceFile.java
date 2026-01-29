@@ -379,6 +379,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
         if (columns.isVersioned()) {
             String parametersReference = beanName + "Parameters.INSTANCE";
+            addGetLatestVersionIdFunctions(parametersReference);
             addLatestVersionCheckFunctions(parametersReference);
             addNewVersionNeededFunction(parametersReference, false);
             addNewVersionNeededFunction(parametersReference, true);

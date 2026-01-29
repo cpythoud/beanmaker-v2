@@ -11,6 +11,10 @@ public interface VersionedBean extends IdBasedReference {
 
     long getIdOriginalBean();
 
+    long getIdLatestVersionedBean();
+
+    long getIdLatestVersionedBean(DBTransaction transaction);
+
     boolean isLatestVersionedBean();
 
     boolean isLatestVersionedBean(DBTransaction transaction);
@@ -19,11 +23,21 @@ public interface VersionedBean extends IdBasedReference {
 
     boolean needsNewBeanVersion(DBTransaction transaction);
 
+    static long getIdLatestVersionedBean(VersionedBean bean, DbBeanParameters parameters, DBAccess dbAccess) {
+        return getIdLatest(dbAccess, parameters.getDatabaseTableName(), getOriginalID(bean));
+    }
+
+    static long getIdLatestVersionedBean(VersionedBean bean, DbBeanParameters parameters, DBTransaction transaction) {
+        return getIdLatest(transaction, parameters.getDatabaseTableName(), getOriginalID(bean));
+    }
+
+    // TODO: rewrite by composing other functions in this class
     static boolean isLatestVersionedBean(VersionedBean bean, DbBeanParameters parameters, DBAccess dbAccess) {
         long idLatest = getIdLatest(dbAccess, parameters.getDatabaseTableName(), getOriginalID(bean));
         return isTheLatestBean(bean, idLatest);
     }
 
+    // TODO: rewrite by composing other functions in this class
     static boolean isLatestVersionedBean(VersionedBean bean, DbBeanParameters parameters, DBTransaction transaction) {
         long idLatest = getIdLatest(transaction, parameters.getDatabaseTableName(), getOriginalID(bean));
         return isTheLatestBean(bean, idLatest);

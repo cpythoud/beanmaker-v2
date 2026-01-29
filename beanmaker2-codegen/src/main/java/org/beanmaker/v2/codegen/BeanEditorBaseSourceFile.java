@@ -747,6 +747,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 addGetter(column);
 
         if (columns.isVersioned()) {
+            addGetLatestVersionIdFunctions("dbBeanParameters");
             addLatestVersionCheckFunctions("dbBeanParameters");
             String parametersReference = beanName + "Parameters.INSTANCE";
             addNewVersionNeededFunction(parametersReference, false);
