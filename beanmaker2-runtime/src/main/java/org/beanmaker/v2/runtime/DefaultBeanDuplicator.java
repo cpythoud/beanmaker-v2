@@ -75,6 +75,13 @@ public class DefaultBeanDuplicator implements BeanDuplicator {
         return labelBasicFunctions.duplicateLabel(label, transaction);
     }
 
+    public long duplicateLabel(long idLabel, DBTransaction transaction) {
+        if (idLabel == 0)
+            return 0;
+
+        return duplicateLabel(labelBasicFunctions.getLabel(idLabel, transaction));
+    }
+
     @Override
     public long duplicateBean(DbBeanEditorInterface editor) {
         var duplicata = editor.duplicate(transaction);

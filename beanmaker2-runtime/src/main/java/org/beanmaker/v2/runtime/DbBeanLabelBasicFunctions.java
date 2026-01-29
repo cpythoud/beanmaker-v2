@@ -41,6 +41,8 @@ public abstract class DbBeanLabelBasicFunctions {
 
     public abstract DbBeanLabel getLabel(long id);
 
+    public abstract DbBeanLabel getLabel(long id, DBTransaction transaction);
+
     public abstract Optional<DbBeanLabel> getPossibleLabel(String labelName);
 
     public abstract boolean isNameOK(String labelName);

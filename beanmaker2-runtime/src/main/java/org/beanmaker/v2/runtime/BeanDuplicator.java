@@ -3,6 +3,8 @@ package org.beanmaker.v2.runtime;
 import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
 
+import org.dbbeans.sql.DBTransaction;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -28,6 +30,8 @@ public interface BeanDuplicator {
     DecimalValue duplicateDecimalValue(DecimalValue value);
 
     long duplicateLabel(DbBeanLabel label);
+
+    long duplicateLabel(long idLabel, DBTransaction transaction);
 
     long duplicateBean(DbBeanEditorInterface editor);
 
