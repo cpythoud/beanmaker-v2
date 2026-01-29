@@ -401,7 +401,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasLabels())
             addDeleteLabelsFunction();
         addUniqueCodeFunction();
-        addDuplicationFunction();
+        addDuplicationFunctions();
         if (columns.isVersioned())
             addNewVersionFunction();
     }
@@ -1727,8 +1727,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addDatabaseFunctions() {
         addDBUpdateInnerClasses();
-        if (columns.isVersioned())
-            addInitBeanVersioningFunction();
         addCreateRecordFunction();
         addUpdateRecordFunction();
         addUpdateLabelsFunction();
@@ -1796,28 +1794,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new FunctionCall("set" + type, "stat")
                 .byItself()
                 .addArguments(Integer.toString(index), fieldName);
-    }
-
-    private void addInitBeanVersioningFunction() {
-        javaClass.addContent(
-                new FunctionDeclaration("initBeanVersioning")
-                        .visibility(Visibility.PROTECTED)
-                        .markAsFinal()
-                        .addArgument(new FunctionArgument("int", "beanVersion"))
-                        .addArgument(new FunctionArgument("long", "idOriginalBean"))
-                        .addContent(
-                                new IfBlock(new Condition("beanVersion != 0"))
-                                        .addContent(
-                                                ExceptionThrow.getThrowExpression(
-                                                        "IllegalStateException",
-                                                        "Versioning already initialized"
-                                                )
-                                        )
-                        )
-                        .addContent(EMPTY_LINE)
-                        .addContent(new Assignment("this.beanVersion", "beanVersion"))
-                        .addContent(new Assignment("this.idOriginalBean", "idOriginalBean"))
-        ).addContent(EMPTY_LINE);
     }
 
     private void addCreateRecordFunction() {
@@ -2093,7 +2069,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         }
     }
 
-    private void addDuplicationFunction() {
+    private void addDuplicationFunctions() {
         var duplicateFunction = new FunctionDeclaration("duplicate", beanName + "Editor")
                 .annotate("@Override")
                 .visibility(Visibility.PUBLIC)
@@ -2132,15 +2108,16 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                     addBeanIdDuplicationFunction(column);
             }
         }
+
+        if (columns.isVersioned())
+            addInitBeanVersioningFunction();
     }
 
     private FunctionCall getDuplicateEditorAssignment(Column column) {
         var functionCall = new FunctionCall("set" + capitalize(column.getJavaName()), "editor").byItself();
         if (column.isLabelReference()) {
-            functionCall.addArgument(
-                            getDuplicatorFunctionCall("Label")
-                                    .addArgument(new FunctionCall("get" + chopID(column.getJavaName()))
-                                            .addArgument("transaction")))
+            functionCall
+                    .addArgument(getDuplicatorFunctionCall("Label").addArguments(column.getJavaName(), "transaction"))
                     .addArgument("transaction");
         } else if (column.isFileReference()) {
             functionCall.addArgument(getDuplicatorFunctionCall("File").addArgument(column.getJavaName()));
@@ -2183,6 +2160,18 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .byItself()
                 .addArgument(new FunctionCall("getNextBeanVersion", "duplicator").addArgument("this"))
                 .addArgument(new FunctionCall("getOriginalBeanId", "duplicator").addArgument("this"));
+    }
+
+    private void addInitBeanVersioningFunction() {
+        javaClass.addContent(
+                new FunctionDeclaration("initBeanVersioning")
+                        .visibility(Visibility.PROTECTED)
+                        .markAsFinal()
+                        .addArgument(new FunctionArgument("int", "beanVersion"))
+                        .addArgument(new FunctionArgument("long", "idOriginalBean"))
+                        .addContent(new Assignment("this.beanVersion", "beanVersion"))
+                        .addContent(new Assignment("this.idOriginalBean", "idOriginalBean"))
+        ).addContent(EMPTY_LINE);
     }
 
     private void addNewVersionFunction() {
