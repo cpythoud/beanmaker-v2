@@ -1,6 +1,6 @@
 class Beanmaker2 {
 
-    static VERSION = 'v0.3 -- 2025-11-19';
+    static VERSION = 'v0.4 -- 2026-01-28';
 
     static DEFAULT_PARAMETERS = {
         // * config
@@ -29,6 +29,14 @@ class Beanmaker2 {
         },
         formContainerInDialogClass: 'form-content',
         buttonContainerInDialogClass: undefined,
+        duplicateLinkClass: undefined,  // * if undefined, default to 'duplicate_bean'
+        duplicateSuccessFunction: undefined,
+        duplicateSuccessURL: undefined,
+        duplicateErrorFunction: undefined,
+        duplicateConfirmationText: 'Duplicate?',
+        duplicateConfirmationFunction: (id, message) => {
+            return confirm(message);
+        },
         // * CSS classes
         loadingClass: '',
         errorContainerStyles: '',
@@ -38,7 +46,8 @@ class Beanmaker2 {
         itemOrderMoveAfterFunction: function () { },
         itemOrderMoveBeforeFunction: function () { },
         extraFormRequestParameters: [ ],
-        extraDeleteParameters: [ ]
+        extraDeleteParameters: [ ],
+        extraDuplicateParameters: [ ]
     }
 
     static isStringEmpty(str) {
@@ -152,6 +161,8 @@ class Beanmaker2 {
             this.parameters.editLinkClass = 'edit_' + Beanmaker2.uncapitalize(bean);
         if (!this.parameters.dialogID)
             this.parameters.dialogID = bean + 'Dialog';
+        if (!this.parameters.duplicateLinkClass)
+            this.parameters.duplicateLinkClass = 'duplicate_' + Beanmaker2.uncapitalize(bean);
 
         this.createEventListeners();
     }
@@ -160,6 +171,7 @@ class Beanmaker2 {
         this.addSubmitOperation();
         this.addDeleteOperation();
         this.addEditOperation();
+        this.addDuplicateOperation();
     }
 
     addSubmitOperation() {
@@ -539,6 +551,80 @@ class Beanmaker2 {
                 this.parameters.itemOrderMoveBeforeFunction
             );
         };
+    }
+
+    addDuplicateOperation() {
+        document.addEventListener('click', event => {
+            const $link = event.target.closest('.' + this.parameters.duplicateLinkClass);
+            if ($link) {
+                event.preventDefault();
+                const id = Beanmaker2.getBeanID($link);
+                if (this.parameters.duplicateConfirmationFunction(id, this.parameters.duplicateConfirmationText)) {
+                    fetch(this.parameters.servletURL, this.getDuplicateParameters(id, $link))
+                        .then(response => {
+                            if (response.ok && response.headers.get("Content-Type") === "text/json; charset=UTF-8")
+                                return response.json();
+
+                            console.log(response.text());
+
+                            throw new Error(`Unexpected response status ${response.status} or content type`);
+                        })
+                        .then(data => {
+                            switch (data.status) {
+                                // ! on the model of the delete operation (might need to be adjusted)
+                                case 'ok':
+                                    if (this.parameters.duplicateSuccessFunction)
+                                        this.parameters.duplicateSuccessFunction(id, data);
+                                    else if (this.parameters.duplicateSuccessURL)
+                                        window.location.href = this.parameters.duplicateSuccessURL;
+                                    else
+                                        window.location.reload();
+                                    break;
+                                case 'no session':
+                                    window.location.href = this.parameters.noSessionURL;
+                                    break;
+                                case 'errors':
+                                    if (this.parameters.duplicateErrorFunction)
+                                        this.parameters.duplicateErrorFunction(id, data);
+                                    break;
+                                default:
+                                    // TODO: improve error reporting
+                                    console.log(data.status);
+                                    alert('An unexpected error has occurred. See console output for more information.');
+                            }
+                        })
+                        .catch(error => {
+                            // TODO: improve error reporting
+                            console.log(error);
+                            alert('An unexpected error has occurred. See console output for more information.');
+                        });
+                }
+            }
+        });
+    }
+
+    getDuplicateParameters(id, $link) {
+        const parameters = {
+            method: 'POST',
+            cache: 'no-store',
+            credentials: 'same-origin'
+        };
+
+        const formData = new FormData();
+        formData.set('beanmaker_operation', 'new_version');
+        formData.set('id', id.toString());
+
+        this.parameters.extraDuplicateParameters.forEach(attr => {
+            const dataAttr = `data-${attr}`;
+            const value = $link.getAttribute(dataAttr);
+            if (value !== null) {
+                formData.set(attr, value);
+            }
+        });
+
+        parameters.body = new URLSearchParams(formData);
+
+        return parameters;
     }
 
 }
