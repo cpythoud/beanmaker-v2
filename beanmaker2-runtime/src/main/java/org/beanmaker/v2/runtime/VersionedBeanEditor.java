@@ -14,7 +14,9 @@ public interface VersionedBeanEditor extends VersionedBean {
         DbBeanEditorInterface[] newEditor = { null };
         Transactions.wrap(transaction -> {
             newEditor[0] = editor.duplicate(transaction);
-            newEditor[0].updateDB(transaction);
+            // * if id != 0, updateDB() has already been called (typically in extraDuplicatingActions())
+            if (newEditor[0].getId() == 0)
+                newEditor[0].updateDB(transaction);
         }, dbTransaction);
         return newEditor[0];
     }
