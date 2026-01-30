@@ -306,10 +306,11 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addInventoryFunction() {
+        String inventoryFunction = columns.isVersioned() ? "getAllVersioned" : "getAll";
         javaClass
                 .addContent(new FunctionDeclaration("get" + beanName + "Inventory", "List<" + beanName + ">")
                         .addContent(new ReturnStatement(new FunctionCall("getBeansInLocalOrder")
-                                .addArgument(new FunctionCall("getAll", beanName)))))
+                                .addArgument(new FunctionCall(inventoryFunction, beanName)))))
                 .addContent(EMPTY_LINE);
     }
 

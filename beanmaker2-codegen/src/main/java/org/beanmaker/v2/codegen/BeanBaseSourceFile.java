@@ -267,6 +267,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         addListAndCountOfBeansInRelationshipFunctions(Visibility.PUBLIC);
         addNamingFunction();
         addInventoriesAndCountFunctions();
+        if (columns.isVersioned())
+            addVersionedInventoriesAndCountFunctions();
         addIDCheckFunctions();
         addListFunction();
         addUniqueCodeFunction();
@@ -504,6 +506,68 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .visibility(Visibility.PUBLIC)
                         .markAsStatic()
                         .addContent(new ReturnStatement(new FunctionCall("getFullCount", "DBUtil")
+                                .addArguments(parametersInstanceExpression, "dbAccess"))))
+                .addContent(EMPTY_LINE);
+    }
+
+    private void addVersionedInventoriesAndCountFunctions() {
+        javaClass
+                .addContent(new FunctionDeclaration("getAllVersioned", "List<" + beanName + ">")
+                        .visibility(Visibility.PUBLIC)
+                        .markAsStatic()
+                        .addContent(new ReturnStatement(new FunctionCall("getAllVersioned")
+                                .addArgument(parametersInstanceExpression + ".getOrderByFields()"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getAllVersioned", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "orderBy"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                .addArguments("null", "orderBy", "null"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                .addArguments("whereClause", "null"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                .addArguments("whereClause", parametersInstanceExpression + ".getOrderByFields()", "setup"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("String", "orderBy"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection", "DBUtil")
+                                .addArguments(
+                                        parametersInstanceExpression,
+                                        "whereClause",
+                                        "orderBy",
+                                        "setup",
+                                        beanName + "::getList",
+                                        "dbAccess"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelectionCount", "long")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelectionCount")
+                                .addArguments("whereClause", "null"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelectionCount", "long")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelectionCount", "DBUtil")
+                                .addArguments(parametersInstanceExpression, "whereClause", "setup", "dbAccess"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedCount", "long")
+                        .visibility(Visibility.PUBLIC)
+                        .markAsStatic()
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedFullCount", "DBUtil")
                                 .addArguments(parametersInstanceExpression, "dbAccess"))))
                 .addContent(EMPTY_LINE);
     }

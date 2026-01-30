@@ -236,11 +236,31 @@ public final class DBUtil {
             Function<ResultSet, List<B>> listFunction,
             DBAccess dbAccess)
     {
+        return getSelection(
+                parameters.getDatabaseTableName(),
+                parameters.getDatabaseFieldList(),
+                whereClause,
+                orderBy,
+                setup,
+                listFunction,
+                dbAccess
+        );
+    }
+
+    public static <B> List<B> getSelection(
+            String databaseTableName,
+            String databaseFieldList,
+            String whereClause,
+            String orderBy,
+            DBQuerySetup setup,
+            Function<ResultSet, List<B>> listFunction,
+            DBAccess dbAccess)
+    {
         if (whereClause == null && setup != null)
             throw new IllegalArgumentException("Cannot accept setup code without a WHERE clause.");
 
         StringBuilder query = new StringBuilder();
-        query.append("SELECT ").append(parameters.getDatabaseFieldList()).append(" FROM ").append(parameters.getDatabaseTableName());
+        query.append("SELECT ").append(databaseFieldList).append(" FROM ").append(databaseTableName);
         if (whereClause != null)
             query.append(" WHERE ").append(whereClause);
         if (orderBy != null)
@@ -252,8 +272,22 @@ public final class DBUtil {
         return dbAccess.processQuery(query.toString(), setup, listFunction::apply);
     }
 
-    public static long getSelectionCount(DbBeanParameters parameters, String whereClause, DBQuerySetup setup, DBAccess dbAccess) {
-        String query = "SELECT COUNT(id) FROM " + parameters.getDatabaseTableName() + " WHERE " + whereClause;
+    public static long getSelectionCount(
+            DbBeanParameters parameters,
+            String whereClause,
+            DBQuerySetup setup,
+            DBAccess dbAccess)
+    {
+        return getSelectionCount(parameters.getDatabaseTableName(), whereClause, setup, dbAccess);
+    }
+
+    public static long getSelectionCount(
+            String databaseTableName,
+            String whereClause,
+            DBQuerySetup setup,
+            DBAccess dbAccess)
+    {
+        String query = "SELECT COUNT(id) FROM " + databaseTableName + " WHERE " + whereClause;
 
         if (setup == null)
             return dbAccess.processQuery(query, DBUtil::getCount);
@@ -262,6 +296,38 @@ public final class DBUtil {
     }
 
     public static long getFullCount(DbBeanParameters parameters, DBAccess dbAccess) {
+        return dbAccess.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
+    }
+
+    public static <B> List<B> getVersionedSelection(
+            DbBeanParameters parameters,
+            String whereClause,
+            String orderBy,
+            DBQuerySetup setup,
+            Function<ResultSet, List<B>> listFunction,
+            DBAccess dbAccess)
+    {
+        return getSelection(
+                parameters.getVersionedDatabaseViewName(),
+                parameters.getVersionedDatabaseFieldList(),
+                whereClause,
+                orderBy,
+                setup,
+                listFunction,
+                dbAccess
+        );
+    }
+
+    public static long getVersionedSelectionCount(
+            DbBeanParameters parameters,
+            String whereClause,
+            DBQuerySetup setup,
+            DBAccess dbAccess)
+    {
+        return getSelectionCount(parameters.getVersionedDatabaseViewName(), whereClause, setup, dbAccess);
+    }
+
+    public static long getVersionedFullCount(DbBeanParameters parameters, DBAccess dbAccess) {
         return dbAccess.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
     }
 

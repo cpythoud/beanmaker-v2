@@ -132,15 +132,28 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                         .addContent(new ReturnStatement(quickQuote(columns.getTable()))))
                 .addContent(EMPTY_LINE)
                 .addContent(getFunctionDeclaration("String", "getDatabaseFieldList")
-                        .addContent(new ReturnStatement(quickQuote(getTableFieldList()))))
+                        .addContent(new ReturnStatement(quickQuote(getTableFieldList(false)))))
                 .addContent(EMPTY_LINE);
+
+        if (columns.isVersioned()) {
+            javaInterface
+                    .addContent(getFunctionDeclaration("String", "getVersionedDatabaseViewName")
+                            .addContent(new ReturnStatement(quickQuote("versioned_" + columns.getTable()))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(getFunctionDeclaration("String", "getVersionedDatabaseFieldList")
+                            .addContent(new ReturnStatement(quickQuote(getTableFieldList(true)))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
-    private String getTableFieldList() {
+    private String getTableFieldList(boolean versioned) {
         var list = new StringBuilder();
 
-        for (Column column: columns.getList())
+        for (Column column: columns.getList()) {
+            if (versioned)
+                list.append("versioned_");
             list.append(columns.getTable()).append(".").append(column.getSqlName()).append(", ");
+        }
         list.delete(list.length() - 2, list.length());
 
         return list.toString();
