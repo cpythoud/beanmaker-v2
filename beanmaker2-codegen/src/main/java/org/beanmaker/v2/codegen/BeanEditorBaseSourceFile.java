@@ -2147,10 +2147,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addArgument(new FunctionArgument("DBTransaction", "transaction"))
                         .addContent(
                                 new ReturnStatement(
-                                        getDuplicatorFunctionCall("Bean").addArgument(
-                                                new ObjectCreation(column.getAssociatedBeanClass() + "Editor")
-                                                        .addArgument(column.getJavaName())
-                                                        .addArgument("transaction"))
+                                        getDuplicatorFunctionCall("IdBean").addArgument(column.getJavaName())
                                 )
                         )
         ).addContent(EMPTY_LINE);
