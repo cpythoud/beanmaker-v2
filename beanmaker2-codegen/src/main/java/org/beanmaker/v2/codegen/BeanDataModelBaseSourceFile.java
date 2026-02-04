@@ -50,7 +50,18 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
         if (columns.hasFiles())
             importsManager.addImport("org.beanmaker.v2.runtime.DbBeanFile");
 
+        if (columns.isVersioned()) {
+            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
+            importsManager.addImport("org.dbbeans.sql.DBTransaction");
+        }
+
         importsManager.addStaticImport("org.beanmaker.v2.runtime.FieldEquality.areEqual");
+    }
+
+    @Override
+    protected void decorateJavaInterface() {
+        if (columns.isVersioned())
+            javaInterface.extendsInterface("VersionedBean");
     }
 
     @Override
@@ -61,6 +72,8 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
         javaInterface.addContent(EMPTY_LINE);
         addIdenticalContentComparisonFunction();
         javaInterface.addContent(EMPTY_LINE);
+        if (columns.isVersioned())
+            addVersioningFunctions();
     }
 
     private void addGetters() {
@@ -169,6 +182,99 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
             }
         }
         return functionCalls;
+    }
+
+    private void addVersioningFunctions() {
+        addGetLatestVersionIdFunctions();
+        addLatestVersionCheckFunctions();
+        addNewVersionNeededFunction(false);
+        addNewVersionNeededFunction(true);
+    }
+
+    private void addGetLatestVersionIdFunctions() {
+        String parameterArgument = beanName + "Parameters.INSTANCE";
+        javaInterface
+                .addContent(
+                        getLatestVersionIdFunctionDeclaration(false)
+                                .addContent(getLatestVersionIdReturnStatement(parameterArgument, "DbBeans.dbAccess"))
+                )
+                .addContent(EMPTY_LINE)
+                .addContent(
+                        getLatestVersionIdFunctionDeclaration(true)
+                                .addContent(getLatestVersionIdReturnStatement(parameterArgument, "transaction"))
+                )
+                .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getLatestVersionIdFunctionDeclaration(boolean transaction) {
+        var function = new FunctionDeclaration("getIdLatestVersionedBean", "long")
+                .annotate("@Override")
+                .markAsDefault();
+
+        if (transaction)
+            function.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        return function;
+    }
+
+    private ReturnStatement getLatestVersionIdReturnStatement(String parameters, String dbArgument) {
+        return new ReturnStatement(
+                new FunctionCall("getIdLatestVersionedBean", "VersionedBean")
+                        .addArguments("this", parameters, dbArgument)
+        );
+    }
+
+    private void addLatestVersionCheckFunctions() {
+        String parameterArgument = beanName + "Parameters.INSTANCE";
+        javaInterface
+                .addContent(
+                        getLatestVersionFunctionDeclaration(false)
+                                .addContent(getLatestVersionedBeanCheck(parameterArgument, "DbBeans.dbAccess"))
+                )
+                .addContent(EMPTY_LINE)
+                .addContent(
+                        getLatestVersionFunctionDeclaration(true)
+                                .addContent(getLatestVersionedBeanCheck(parameterArgument, "transaction"))
+                )
+                .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getLatestVersionFunctionDeclaration(boolean transaction) {
+        var function = new FunctionDeclaration("isLatestVersionedBean", "boolean")
+                .annotate("@Override")
+                .markAsDefault();
+
+        if (transaction)
+            function.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        return function;
+    }
+
+    private ReturnStatement getLatestVersionedBeanCheck(String parameters, String dbArgument) {
+        return new ReturnStatement(
+                new FunctionCall("isLatestVersionedBean", "VersionedBean")
+                        .addArguments("this", parameters, dbArgument)
+        );
+    }
+
+    private void addNewVersionNeededFunction(boolean transaction) {
+        String parameterObject = beanName + "Parameters.INSTANCE";
+        String castedThisArgument = "(%sDataModel) this".formatted(beanName);
+
+        var functionDeclaration = new FunctionDeclaration("needsNewBeanVersion", "boolean")
+                .annotate("@Override")
+                .markAsDefault();
+        if (transaction)
+            functionDeclaration.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+
+        var parametersFunctionCall =
+                new FunctionCall("isNewBeanVersionRequired", parameterObject).addArgument(castedThisArgument);
+        if (transaction)
+            parametersFunctionCall.addArgument("transaction");
+
+        functionDeclaration.addContent(new ReturnStatement(parametersFunctionCall));
+
+        javaInterface.addContent(functionDeclaration).addContent(EMPTY_LINE);
     }
 
 }

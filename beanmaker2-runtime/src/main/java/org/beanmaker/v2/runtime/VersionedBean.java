@@ -23,6 +23,10 @@ public interface VersionedBean extends IdBasedReference {
 
     boolean needsNewBeanVersion(DBTransaction transaction);
 
+    default boolean isBeanVersioningActive() {
+        return true;
+    }
+
     static long getIdLatestVersionedBean(VersionedBean bean, DbBeanParameters parameters, DBAccess dbAccess) {
         return getIdLatest(dbAccess, parameters.getDatabaseTableName(), getOriginalID(bean));
     }

@@ -122,10 +122,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             importsManager.addImport("java.util.Optional");
         }
 
-        if (columns.isVersioned()) {
-            importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
+        if (columns.isVersioned())
             importsManager.addImport("org.beanmaker.v2.runtime.VersionedBeanEditor");
-        }
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
@@ -745,15 +743,6 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         for (Column column: columns.getList())
             if (!column.isId() && !column.isItemOrder())
                 addGetter(column);
-
-        if (columns.isVersioned()) {
-            addGetLatestVersionIdFunctions("dbBeanParameters");
-            addLatestVersionCheckFunctions("dbBeanParameters");
-            String parametersReference = beanName + "Parameters.INSTANCE";
-            addNewVersionNeededFunction(parametersReference, false);
-            addNewVersionNeededFunction(parametersReference, true);
-            addIsVersionedBeanComponentOverloadedFunction();  // TODO: remove and block versioning for item_order beans
-        }
 
         columns.getItemOrderColumn().ifPresent(column -> {
             if (!Strings.isEmpty(column.getItemOrderAssociatedField()))
