@@ -12,15 +12,20 @@ public interface VersionedBeanEditor extends VersionedBean {
 
     VersionedBeanEditor newVersionedEditor(DBTransaction transaction);
 
-    static DbBeanEditorInterface newVersionedEditor(VersionedBeanEditor editor, DBTransaction dbTransaction) {
-        DbBeanEditorInterface[] newEditor = { null };
+    static VersionedBeanEditor commitNewVersion(VersionedBeanEditor editor, DBTransaction dbTransaction) {
+        VersionedBeanEditor[] newEditor = { null };
         Transactions.wrap(transaction -> {
-            newEditor[0] = editor.duplicate(transaction);
-            // * if id != 0, updateDB() has already been called (typically in extraDuplicatingActions())
-            if (newEditor[0].getId() == 0)
-                newEditor[0].updateDB(transaction);
+            newEditor[0] = editor.newVersionedEditor(transaction);
         }, dbTransaction);
         return newEditor[0];
+    }
+
+    static VersionedBeanEditor initializeNewVersion(VersionedBeanEditor editor, DBTransaction transaction) {
+        var newEditor = editor.duplicate(transaction);
+        // * if id != 0, updateDB() has already been called (typically in extraDuplicatingActions())
+        if (newEditor.getId() == 0)
+            newEditor.updateDB(transaction);
+        return (VersionedBeanEditor) newEditor;
     }
 
 }

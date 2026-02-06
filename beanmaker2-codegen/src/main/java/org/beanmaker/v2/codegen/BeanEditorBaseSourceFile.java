@@ -2167,9 +2167,11 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         new FunctionDeclaration("newVersionedEditor", beanName + "Editor")
                                 .annotate("@Override")
                                 .visibility(Visibility.PUBLIC)
-                                .addContent(new ReturnStatement(
-                                        new FunctionCall("newVersionedEditor")
-                                                .addArgument(new FunctionCall("createDBTransaction"))))
+                                .addContent(new ReturnStatement(new FunctionCall(
+                                        "commitNewVersion",
+                                        "(" + beanName + "Editor) VersionedBeanEditor")
+                                        .addArgument("this")
+                                        .addArgument(new FunctionCall("createDBTransaction"))))
                 )
                 .addContent(EMPTY_LINE)
                 .addContent(
@@ -2178,7 +2180,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 .visibility(Visibility.PUBLIC)
                                 .addArgument(new FunctionArgument("DBTransaction", "transaction"))
                                 .addContent(new ReturnStatement(new FunctionCall(
-                                        "newVersionedEditor",
+                                        "initializeNewVersion",
                                         "(" + beanName + "Editor) VersionedBeanEditor")
                                         .addArguments("this", "transaction")))
                 )
