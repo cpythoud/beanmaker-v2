@@ -10,6 +10,8 @@ public interface VersionedBeanEditor extends VersionedBean {
 
     VersionedBeanEditor newVersionedEditor();
 
+    VersionedBeanEditor newVersionedEditor(DBTransaction transaction);
+
     static DbBeanEditorInterface newVersionedEditor(VersionedBeanEditor editor, DBTransaction dbTransaction) {
         DbBeanEditorInterface[] newEditor = { null };
         Transactions.wrap(transaction -> {

@@ -401,7 +401,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addUniqueCodeFunction();
         addDuplicationFunctions();
         if (columns.isVersioned())
-            addNewVersionFunction();
+            addNewVersionFunctions();
     }
 
     private void addToBeanFunctions() {
@@ -2161,18 +2161,28 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         ).addContent(EMPTY_LINE);
     }
 
-    private void addNewVersionFunction() {
-        javaClass.addContent(
-                new FunctionDeclaration("newVersionedEditor", beanName + "Editor")
-                        .annotate("@Override")
-                        .visibility(Visibility.PUBLIC)
-                        .addContent(new ReturnStatement(new FunctionCall(
-                                "newVersionedEditor",
-                                "(" + beanName + "Editor) VersionedBeanEditor")
-                                .addArgument("this")
-                                .addArgument(new FunctionCall("createDBTransaction")))
-                        )
-        ).addContent(EMPTY_LINE);
+    private void addNewVersionFunctions() {
+        javaClass
+                .addContent(
+                        new FunctionDeclaration("newVersionedEditor", beanName + "Editor")
+                                .annotate("@Override")
+                                .visibility(Visibility.PUBLIC)
+                                .addContent(new ReturnStatement(
+                                        new FunctionCall("newVersionedEditor")
+                                                .addArgument(new FunctionCall("createDBTransaction"))))
+                )
+                .addContent(EMPTY_LINE)
+                .addContent(
+                        new FunctionDeclaration("newVersionedEditor", beanName + "Editor")
+                                .annotate("@Override")
+                                .visibility(Visibility.PUBLIC)
+                                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                                .addContent(new ReturnStatement(new FunctionCall(
+                                        "newVersionedEditor",
+                                        "(" + beanName + "Editor) VersionedBeanEditor")
+                                        .addArguments("this", "transaction")))
+                )
+                .addContent(EMPTY_LINE);
     }
 
 }
