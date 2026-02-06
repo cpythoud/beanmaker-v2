@@ -267,8 +267,11 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         addListAndCountOfBeansInRelationshipFunctions(Visibility.PUBLIC);
         addNamingFunction();
         addInventoriesAndCountFunctions();
-        if (columns.isVersioned())
+        addTransactedInventoriesAndCountFunctions();
+        if (columns.isVersioned()) {
             addVersionedInventoriesAndCountFunctions();
+            addTransactedVersionedInventoriesAndCountFunctions();
+        }
         addIDCheckFunctions();
         addListFunction();
         addUniqueCodeFunction();
@@ -458,7 +461,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .markAsStatic()
                         .addArgument(new FunctionArgument("String", "whereClause"))
                         .addContent(new ReturnStatement(new FunctionCall("getSelection")
-                                .addArguments("whereClause", "null"))))
+                                .addArguments("whereClause", "(DBQuerySetup) null"))))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("getSelection", "List<" + beanName + ">")
                         .markAsStatic()
@@ -485,7 +488,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .markAsStatic()
                         .addArgument(new FunctionArgument("String", "whereClause"))
                         .addContent(new ReturnStatement(new FunctionCall("getSelectionCount")
-                                .addArguments("whereClause", "null"))))
+                                .addArguments("whereClause", "(DBQuerySetup) null"))))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("getSelectionCount", "long")
                         .markAsStatic()
@@ -499,6 +502,82 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .markAsStatic()
                         .addContent(new ReturnStatement(new FunctionCall("getFullCount", "DBUtil")
                                 .addArguments(parametersInstanceExpression, "dbAccess"))))
+                .addContent(EMPTY_LINE);
+    }
+
+    private void addTransactedInventoriesAndCountFunctions() {
+        javaClass
+                .addContent(new FunctionDeclaration("getAll", "List<" + beanName + ">")
+                        .visibility(Visibility.PUBLIC)
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getAll")
+                                .addArgument(parametersInstanceExpression + ".getOrderByFields()")
+                                .addArgument("transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getAll", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "orderBy"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getSelection")
+                                .addArguments("null", "orderBy", "null", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getSelection")
+                                .addArguments("whereClause", "null", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getSelection")
+                                .addArguments(
+                                        "whereClause",
+                                        parametersInstanceExpression + ".getOrderByFields()",
+                                        "setup",
+                                        "transaction"
+                                ))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("String", "orderBy"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getSelection", "DBUtil")
+                                .addArguments(
+                                        parametersInstanceExpression,
+                                        "whereClause",
+                                        "orderBy",
+                                        "setup",
+                                        beanName + "::getList",
+                                        "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getSelectionCount", "long")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getSelectionCount")
+                                .addArguments("whereClause", "null", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getSelectionCount", "long")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getSelectionCount", "DBUtil")
+                                .addArguments(parametersInstanceExpression, "whereClause", "setup", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getCount", "long")
+                        .visibility(Visibility.PUBLIC)
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getFullCount", "DBUtil")
+                                .addArguments(parametersInstanceExpression, "transaction"))))
                 .addContent(EMPTY_LINE);
     }
 
@@ -520,7 +599,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .markAsStatic()
                         .addArgument(new FunctionArgument("String", "whereClause"))
                         .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
-                                .addArguments("whereClause", "null"))))
+                                .addArguments("whereClause", "(DBQuerySetup) null"))))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("getVersionedSelection", "List<" + beanName + ">")
                         .markAsStatic()
@@ -547,7 +626,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .markAsStatic()
                         .addArgument(new FunctionArgument("String", "whereClause"))
                         .addContent(new ReturnStatement(new FunctionCall("getVersionedSelectionCount")
-                                .addArguments("whereClause", "null"))))
+                                .addArguments("whereClause", "(DBQuerySetup) null"))))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("getVersionedSelectionCount", "long")
                         .markAsStatic()
@@ -561,6 +640,81 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .markAsStatic()
                         .addContent(new ReturnStatement(new FunctionCall("getVersionedFullCount", "DBUtil")
                                 .addArguments(parametersInstanceExpression, "dbAccess"))))
+                .addContent(EMPTY_LINE);
+    }
+
+    private void addTransactedVersionedInventoriesAndCountFunctions() {
+        javaClass
+                .addContent(new FunctionDeclaration("getAllVersioned", "List<" + beanName + ">")
+                        .visibility(Visibility.PUBLIC)
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getAllVersioned")
+                                .addArgument(parametersInstanceExpression + ".getOrderByFields()")
+                                .addArgument("transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getAllVersioned", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "orderBy"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                .addArguments("null", "orderBy", "null", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                .addArguments("whereClause", "null", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                .addArguments(
+                                        "whereClause",
+                                        parametersInstanceExpression + ".getOrderByFields()",
+                                        "setup",
+                                        "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelection", "List<" + beanName + ">")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("String", "orderBy"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection", "DBUtil")
+                                .addArguments(
+                                        parametersInstanceExpression,
+                                        "whereClause",
+                                        "orderBy",
+                                        "setup",
+                                        beanName + "::getList",
+                                        "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelectionCount", "long")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelectionCount")
+                                .addArguments("whereClause", "null", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedSelectionCount", "long")
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("String", "whereClause"))
+                        .addArgument(new FunctionArgument("DBQuerySetup", "setup"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedSelectionCount", "DBUtil")
+                                .addArguments(parametersInstanceExpression, "whereClause", "setup", "transaction"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getVersionedCount", "long")
+                        .visibility(Visibility.PUBLIC)
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("getVersionedFullCount", "DBUtil")
+                                .addArguments(parametersInstanceExpression, "transaction"))))
                 .addContent(EMPTY_LINE);
     }
 

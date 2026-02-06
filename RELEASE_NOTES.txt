@@ -125,7 +125,8 @@ NEW FEATURES:
  - introduced two functions showEditLink() and showDetailLink() in BaseMasterTableView to determine on a line-by-line
    basis when to display edit and detail links; by default the functions return the value of showEditLinks and
    showDetailLinks respectively; they are to be overloaded in super classes
- - introduced versioned beans: a mechanism to preserve modification history for some data structures.
+ - introduced versioned beans: a mechanism to preserve modification history for some data structures
+ - introduced transacted version of the getSelection(), getSelectionCount(), getCount() functions in BeanBase.
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field

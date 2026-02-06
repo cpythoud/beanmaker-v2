@@ -333,6 +333,111 @@ public final class DBUtil {
 
     // ------------
 
+    public static <B> List<B> getSelection(
+            DbBeanParameters parameters,
+            String whereClause,
+            String orderBy,
+            DBQuerySetup setup,
+            Function<ResultSet, List<B>> listFunction,
+            DBTransaction transaction)
+    {
+        return getSelection(
+                parameters.getDatabaseTableName(),
+                parameters.getDatabaseFieldList(),
+                whereClause,
+                orderBy,
+                setup,
+                listFunction,
+                transaction
+        );
+    }
+
+    public static <B> List<B> getSelection(
+            String databaseTableName,
+            String databaseFieldList,
+            String whereClause,
+            String orderBy,
+            DBQuerySetup setup,
+            Function<ResultSet, List<B>> listFunction,
+            DBTransaction transaction)
+    {
+        if (whereClause == null && setup != null)
+            throw new IllegalArgumentException("Cannot accept setup code without a WHERE clause.");
+
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT ").append(databaseFieldList).append(" FROM ").append(databaseTableName);
+        if (whereClause != null)
+            query.append(" WHERE ").append(whereClause);
+        if (orderBy != null)
+            query.append(" ORDER BY ").append(orderBy);
+
+        if (whereClause == null || setup == null)
+            return transaction.addQuery(query.toString(), listFunction::apply);
+
+        return transaction.addQuery(query.toString(), setup, listFunction::apply);
+    }
+
+    public static long getSelectionCount(
+            DbBeanParameters parameters,
+            String whereClause,
+            DBQuerySetup setup,
+            DBTransaction transaction)
+    {
+        return getSelectionCount(parameters.getDatabaseTableName(), whereClause, setup, transaction);
+    }
+
+    public static long getSelectionCount(
+            String databaseTableName,
+            String whereClause,
+            DBQuerySetup setup,
+            DBTransaction transaction)
+    {
+        String query = "SELECT COUNT(id) FROM " + databaseTableName + " WHERE " + whereClause;
+
+        if (setup == null)
+            return transaction.addQuery(query, DBUtil::getCount);
+
+        return transaction.addQuery(query, setup, DBUtil::getCount);
+    }
+
+    public static long getFullCount(DbBeanParameters parameters, DBTransaction transaction) {
+        return transaction.addQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
+    }
+
+    public static <B> List<B> getVersionedSelection(
+            DbBeanParameters parameters,
+            String whereClause,
+            String orderBy,
+            DBQuerySetup setup,
+            Function<ResultSet, List<B>> listFunction,
+            DBTransaction transaction)
+    {
+        return getSelection(
+                parameters.getVersionedDatabaseViewName(),
+                parameters.getVersionedDatabaseFieldList(),
+                whereClause,
+                orderBy,
+                setup,
+                listFunction,
+                transaction
+        );
+    }
+
+    public static long getVersionedSelectionCount(
+            DbBeanParameters parameters,
+            String whereClause,
+            DBQuerySetup setup,
+            DBTransaction transaction)
+    {
+        return getSelectionCount(parameters.getVersionedDatabaseViewName(), whereClause, setup, transaction);
+    }
+
+    public static long getVersionedFullCount(DbBeanParameters parameters, DBTransaction transaction) {
+        return transaction.addQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
+    }
+
+    // ------------
+
     public static <B extends DbBeanInterface> List<B> getInventory(
             DbBeanParameters parameters,
             String fieldName,
