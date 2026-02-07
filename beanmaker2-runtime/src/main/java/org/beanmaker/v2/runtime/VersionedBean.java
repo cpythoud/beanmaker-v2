@@ -28,11 +28,17 @@ public interface VersionedBean extends IdBasedReference {
     }
 
     static long getIdLatestVersionedBean(VersionedBean bean, DbBeanParameters parameters, DBAccess dbAccess) {
-        return getIdLatest(dbAccess, parameters.getDatabaseTableName(), getOriginalID(bean));
+        long idLatest = getIdLatest(dbAccess, parameters.getDatabaseTableName(), getOriginalID(bean));
+        if (idLatest == 0)
+            return bean.getId();
+        return idLatest;
     }
 
     static long getIdLatestVersionedBean(VersionedBean bean, DbBeanParameters parameters, DBTransaction transaction) {
-        return getIdLatest(transaction, parameters.getDatabaseTableName(), getOriginalID(bean));
+        long idLatest = getIdLatest(transaction, parameters.getDatabaseTableName(), getOriginalID(bean));
+        if (idLatest == 0)
+            return bean.getId();
+        return idLatest;
     }
 
     // TODO: rewrite by composing other functions in this class
