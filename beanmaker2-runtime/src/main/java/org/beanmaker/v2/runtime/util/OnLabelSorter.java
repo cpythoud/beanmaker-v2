@@ -5,6 +5,7 @@ import org.beanmaker.v2.runtime.DbBeanLanguage;
 import org.beanmaker.v2.runtime.DbBeanLocalization;
 
 import java.text.Collator;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,6 +23,17 @@ public class OnLabelSorter<B extends DbBeanInterface> {
             this.label = label;
             this.bean = bean;
         }
+    }
+
+    public static <B extends DbBeanInterface> List<B> sort(List<B> beans, DbBeanLocalization localization) {
+        return sort(beans, localization.getLanguage());
+    }
+
+    public static <B extends DbBeanInterface> List<B> sort(List<B> beans, DbBeanLanguage language) {
+        var sorter = new OnLabelSorter<B>();
+        for (var bean: beans)
+            sorter.add(bean.getNameForIdNamePairsAndTitles(language), bean);
+        return sorter.getSortedBeans(language);
     }
 
     public void clear() {
