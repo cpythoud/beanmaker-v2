@@ -280,7 +280,18 @@ public class HttpRequestParameters {
         public InputStream getInputStream() throws IOException {
             return fileItem.getInputStream();
         }
+    }
 
+    public Map<Long, String> getPrefixedValues(String parameterNamePrefix) {
+        var values = new HashMap<Long, String>();
+        for (var entry: parameters.entrySet()) {
+            if (entry.getKey().startsWith(parameterNamePrefix)) {
+                long id = Strings.getLongVal(entry.getKey().substring(parameterNamePrefix.length()));
+                if (id > 0)
+                    values.put(id, entry.getValue());
+            }
+        }
+        return values;
     }
 
 }
