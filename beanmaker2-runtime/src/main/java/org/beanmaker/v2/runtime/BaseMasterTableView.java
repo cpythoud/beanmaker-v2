@@ -850,6 +850,16 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         ));
     }
 
+    protected TdTag getBasicTableCell(String name, boolean value) {
+        return getTableCell(MasterTableCellDefinition.createBooleanCellDefinition(
+                name,
+                value ? yesName() : noName(),
+                value,
+                yesValue,
+                noValue
+        ));
+    }
+
     protected TdTag getEmptyTableCell(String name) {
         return getTableCell(MasterTableCellDefinition.createEmptyCellDefinition(name));
     }
