@@ -1631,7 +1631,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                     .addContent(new FunctionCall("fullReset", "super").byItself());
 
             if (columns.isVersioned()) {
-                fullResetFunction.addContent(new Assignment("beanVersion", "0"));
+                fullResetFunction.addContent(new Assignment("beanVersion", "1"));
                 fullResetFunction.addContent(new Assignment("idOriginalBean", "0"));
             }
 
@@ -1706,6 +1706,13 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 resetFunction.addContent(
                         new FunctionCall("clearCache", uncapitalize(chopID(label.getJavaName())))
                                 .byItself());
+        }
+
+        if (columns.isVersioned()) {
+            resetFunction.addContent(EMPTY_LINE);
+            resetFunction.addContent(
+                    new Assignment("beanVersion", "beanVersion == 0 ? 1 : beanVersion")
+            );
         }
 
         resetFunction
