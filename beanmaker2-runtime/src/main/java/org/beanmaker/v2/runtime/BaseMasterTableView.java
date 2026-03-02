@@ -375,49 +375,62 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     }
 
     protected ThTag getStringFilterCell(String name) {
-        var filter = new InputTag(InputTag.InputType.TEXT)
+        return getTableFilterCell().child(getStringFilterTag(name));
+    }
+
+    protected InputTag getStringFilterTag(String name) {
+        var filterField = new InputTag(InputTag.InputType.TEXT)
                 .name("tb-" + name)
                 .cssClass(formElementFilterCssClass)
                 .attribute("autocomplete", "off");
 
         if (inputTagSize > 0)
-            filter.size(inputTagSize);
+            filterField.size(inputTagSize);
 
-        return getTableFilterCell().child(filter);
+        return filterField;
     }
 
     protected ThTag getBooleanFilterCell(String name) {
-        return getTableFilterCell().child(
-                new SelectTag().name("tb-" + name).cssClass(formElementFilterCssClass).child(
-                        new OptionTag("", "").selected()
-                ).child(
-                        new OptionTag(yesName(), yesValue)
-                ).child(
-                        new OptionTag(noName(), noValue)
-                )
-        );
+        return getTableFilterCell().child(getBooleanFilterTag(name));
+    }
+
+    protected SelectTag getBooleanFilterTag(String name) {
+        return new SelectTag()
+                .name("tb-" + name)
+                .cssClass(formElementFilterCssClass)
+                .child(new OptionTag("", "").selected())
+                .child(new OptionTag(yesName(), yesValue))
+                .child(new OptionTag(noName(), noValue));
     }
 
     protected ThTag getBasicSelectFilterCell(String name, List<String> values) {
-        SelectTag select = new SelectTag().name("tb-" + name).cssClass(formElementFilterCssClass);
+        return getTableFilterCell().child(getBasicSelectFilterTag(name, values));
+    }
+
+    protected SelectTag getBasicSelectFilterTag(String name, List<String> values) {
+        var select = new SelectTag().name("tb-" + name).cssClass(formElementFilterCssClass);
 
         select.child(new OptionTag("", "").selected());
         for (String value: values)
             select.child(new OptionTag(value));
 
-        return getTableFilterCell().child(select);
+        return select;
     }
 
-    protected static record FilterNameValuePair(String name, String value) { }
+    protected record FilterNameValuePair(String name, String value) { }
 
     protected ThTag getPairBasedSelectFilterCell(String name, List<FilterNameValuePair> nameValuePairs) {
-        SelectTag select = new SelectTag().name("tb-" + name).cssClass(formElementFilterCssClass);
+        return getTableFilterCell().child(getPairBasedSelectFilterTag(name, nameValuePairs));
+    }
+
+    protected SelectTag getPairBasedSelectFilterTag(String name, List<FilterNameValuePair> nameValuePairs) {
+        var select = new SelectTag().name("tb-" + name).cssClass(formElementFilterCssClass);
 
         select.child(new OptionTag("", "").selected());
         for (var pair: nameValuePairs)
             select.child(new OptionTag(pair.name(), pair.value()));
 
-        return getTableFilterCell().child(select);
+        return select;
     }
 
     protected ThTag getAdvancedSelectFilterCell(String name, List<IdNamePair> pairs) {
