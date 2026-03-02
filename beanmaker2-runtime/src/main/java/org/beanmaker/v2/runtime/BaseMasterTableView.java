@@ -945,20 +945,40 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
                 .id(tableId + idPostfix);
     }
 
+    protected ATag getEditLineLink(DbBeanInterface bean, String idPrefix, String cssClass, String tooltip) {
+        return getEditLineLink(bean.getId(), idPrefix, cssClass, tooltip);
+    }
+
     protected ATag getEditLineLink(long id, String idPrefix, String cssClass, String tooltip) {
         return getOperationLink(id, idPrefix, cssClass, editIcon, tooltip);
+    }
+
+    protected ATag getGotoDetailLink(DbBeanInterface bean, String idPrefix, String cssClass, String tooltip) {
+        return getGotoDetailLink(bean.getId(), idPrefix, cssClass, tooltip);
     }
 
     protected ATag getGotoDetailLink(long id, String idPrefix, String cssClass, String tooltip) {
         return getOperationLink(id, idPrefix, cssClass, detailIcon, tooltip);
     }
 
+    protected ATag getDeleteLineLink(DbBeanInterface bean, String idPrefix, String cssClass, String tooltip) {
+        return getDeleteLineLink(bean.getId(), idPrefix, cssClass, tooltip);
+    }
+
     protected ATag getDeleteLineLink(long id, String idPrefix, String cssClass, String tooltip) {
         return getOperationLink(id, idPrefix, cssClass, deleteIcon, tooltip);
     }
 
+    protected ATag getMoveUpLink(DbBeanInterface bean, String idPrefix, String cssClass) {
+        return getMoveUpLink(bean.getId(), idPrefix, cssClass);
+    }
+
     protected ATag getMoveUpLink(long id, String idPrefix, String cssClass) {
         return getOperationLink(id, idPrefix, cssClass, moveUpIcon, moveUpLabel());
+    }
+
+    protected ATag getMoveDownLink(DbBeanInterface bean, String idPrefix, String cssClass) {
+        return getMoveDownLink(bean.getId(), idPrefix, cssClass);
     }
 
     protected ATag getMoveDownLink(long id, String idPrefix, String cssClass) {
@@ -1001,16 +1021,10 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
 
         if (showOrderingLinks) {
             if (!bean.isFirstInItemOrder())
-                cell.child(getMoveUpLink(
-                        bean.getId(),
-                        beanName + "Up",
-                        "move_up_" + beanName));
+                cell.child(getMoveUpLink(bean, beanName + "Up", "move_up_" + beanName));
 
             if (!bean.isLastInItemOrder())
-                cell.child(getMoveDownLink(
-                        bean.getId(),
-                        beanName + "Down",
-                        "move_down_" + beanName));
+                cell.child(getMoveDownLink(bean, beanName + "Down", "move_down_" + beanName));
         }
 
         return cell;
@@ -1028,18 +1042,10 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
             cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon + " " + dragNDropDragElementCssClass));
 
         if (showEditLink(bean))
-            cell.child(getEditLineLink(
-                    bean.getId(),
-                    beanName,
-                    "edit_" + beanName,
-                    editTooltip));
+            cell.child(getEditLineLink(bean, beanName, "edit_" + beanName, editTooltip));
 
         if (showDetailLink(bean))
-            cell.child(getGotoDetailLink(
-                bean.getId(),
-                beanName + "_detail",
-                "goto_detail_" + beanName,
-                detailTooltip));
+            cell.child(getGotoDetailLink(bean, beanName + "_detail", "goto_detail_" + beanName, detailTooltip));
 
         return cell;
     }
