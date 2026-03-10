@@ -43,7 +43,7 @@ public class ItemOrderManager {
         if (secondaryField == null)
             return baseQuery;
 
-        return baseQuery + " AND " + secondaryField + " IS NULL";
+        return baseQuery + " AND " + secondaryField + "=?";
     }
 
     // ! Non référencé, TODO: supprimer après tests
