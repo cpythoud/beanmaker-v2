@@ -46,11 +46,6 @@ public class ItemOrderManager {
         return baseQuery + " AND " + secondaryField + "=?";
     }
 
-    // ! Non référencé, TODO: supprimer après tests
-    /*private String getIdFromItemOrderQueryWithNullSecondaryField() {
-        return "SELECT id FROM " + table + " WHERE item_order=? AND " + secondaryField + " IS NULL";
-    }*/
-
     public String getUpdateItemOrdersAboveQuery() {
         String baseQuery = "UPDATE " + table + " SET item_order=item_order-1 WHERE item_order > ?";
         if (secondaryField == null)
@@ -60,7 +55,8 @@ public class ItemOrderManager {
     }
 
     public String getUpdateItemOrdersAboveQueryWithNullSecondaryField() {
-        return "UPDATE " + table + " SET item_order=item_order-1 WHERE item_order > ? AND " + secondaryField + " IS NULL";
+        return "UPDATE " + table + " SET item_order=item_order-1 WHERE item_order > ? AND "
+                + secondaryField + " IS NULL";
     }
 
     private String getDecreaseItemOrderBetweenQuery() {
@@ -72,7 +68,8 @@ public class ItemOrderManager {
     }
 
     private String getDecreaseItemOrderBetweenQueryWithNullSecondaryField() {
-        return "UPDATE " + table + " SET item_order=item_order-1 WHERE item_order > ? AND item_order < ? AND " + secondaryField + " IS NULL";
+        return "UPDATE " + table + " SET item_order=item_order-1 WHERE item_order > ? AND item_order < ? AND "
+                + secondaryField + " IS NULL";
     }
 
     private String getIncreaseItemOrderBetweenQuery() {
@@ -84,7 +81,8 @@ public class ItemOrderManager {
     }
 
     private String getIncreaseItemOrderBetweenQueryWithNullSecondaryField() {
-        return "UPDATE " + table + " SET item_order=item_order+1 WHERE item_order > ? AND item_order < ? AND " + secondaryField + " IS NULL";
+        return "UPDATE " + table + " SET item_order=item_order+1 WHERE item_order > ? AND item_order < ? AND "
+                + secondaryField + " IS NULL";
     }
 
     private String getPushItemOrdersUpQuery() {
@@ -92,7 +90,8 @@ public class ItemOrderManager {
     }
 
     private String getPushItemOrdersUpQueryWithNullSecondaryField() {
-        return "UPDATE " + table + " SET item_order=item_order+1 WHERE item_order > ? AND " + secondaryField + " IS NULL";
+        return "UPDATE " + table + " SET item_order=item_order+1 WHERE item_order > ? AND "
+                + secondaryField + " IS NULL";
     }
 
     private String getPushItemOrdersDownQuery() {
@@ -100,20 +99,11 @@ public class ItemOrderManager {
     }
 
     private String getPushItemOrdersDownQueryWithNullSecondaryField() {
-        return "UPDATE " + table + " SET item_order=item_order-1 WHERE item_order > ? AND " + secondaryField + " IS NULL";
+        return "UPDATE " + table + " SET item_order=item_order-1 WHERE item_order > ? AND "
+                + secondaryField + " IS NULL";
     }
 
     // * Database operations
-
-    // ! doublon, TODO: supprimer après tests de validation
-    /*public static long getMaxItemOrder(DBAccess dbAccess, String query) {
-        return dbAccess.processQuery(
-                query,
-                rs -> {
-                    rs.next();
-                    return rs.getLong(1);
-                });
-    }*/
 
     private long getMaxItemOrder(DBAccess dbAccess, String query, long... parameters) {
         return dbAccess.processQuery(
@@ -148,26 +138,6 @@ public class ItemOrderManager {
         return list;
     }
 
-    // ! doublons + non référencés, TODO: supprimer après tests de validation
-    /*private long getMaxItemOrder(DBTransaction transaction, String query) {
-        return transaction.addQuery(
-                query,
-                rs -> {
-                    rs.next();
-                    return rs.getLong(1);
-                });
-    }
-
-    private long getMaxItemOrder(DBTransaction transaction, String query, long... parameters) {
-        return transaction.addQuery(
-                query,
-                stat -> setupParameters(stat, 1, toList(parameters)),
-                rs -> {
-                    rs.next();
-                    return rs.getLong(1);
-                });
-    }*/
-
     private long getItemOrderSwapValue(long itemOrder, boolean moveUp) {
         if (moveUp)
             return itemOrder - 1;
@@ -198,7 +168,9 @@ public class ItemOrderManager {
                     if (rs.next())
                         return rs.getLong(1);
 
-                    throw new IllegalArgumentException("No such item order # " + composeIdForException(editor.getId(), parameters) + ". Cannot effect change.  Please check database integrity.");
+                    throw new IllegalArgumentException("No such item order # "
+                            + composeIdForException(editor.getId(), parameters)
+                            + ". Cannot effect change.  Please check database integrity.");
                 });
 
         if (moveUp) {
@@ -267,11 +239,6 @@ public class ItemOrderManager {
         itemOrderMove(db, editor, toList(parameters), false);
     }
 
-    // ! doublon, TODO: supprimer après tests de validation
-    /*private void updateItemOrdersAbove(String query, DBTransaction transaction, long threshold) {
-        updateItemOrdersAbove(query, transaction, threshold, null);
-    }*/
-
     public void updateItemOrdersAbove(String query, DBTransaction transaction, long threshold, long... parameters) {
         transaction.addUpdate(
                 query,
@@ -285,12 +252,13 @@ public class ItemOrderManager {
                 });
     }
 
-    // ! doublon, TODO: supprimer après tests de validation
-    /*public static void updateItemOrdersInBetween(String query, DBTransaction transaction, long lowerBound, long upperBound) {
-        updateItemOrdersInBetween(query, transaction, lowerBound, upperBound, null);
-    }*/
-
-    private void updateItemOrdersInBetween(String query, DBTransaction transaction, long lowerBound, long upperBound, long... parameters) {
+    private void updateItemOrdersInBetween(
+            String query,
+            DBTransaction transaction,
+            long lowerBound,
+            long upperBound,
+            long... parameters)
+    {
         transaction.addUpdate(
                 query,
                 stat -> {
@@ -308,28 +276,33 @@ public class ItemOrderManager {
 
     public boolean isFirstInItemOrder(BasicItemOrderOperations itemOrderEntity) {
         if (itemOrderEntity.getId() == 0)
-            throw new IllegalArgumentException("Item Order operations not allowed on beans that have not been saved to the database");
+            throw new IllegalArgumentException(
+                    "Item Order operations not allowed on beans that have not been saved to the database");
 
         return itemOrderEntity.getItemOrder() == 1;
     }
 
     public boolean isLastInItemOrder(BasicItemOrderOperations itemOrderEntity, DBAccess dbAccess) {
         if (itemOrderEntity.getId() == 0)
-            throw new IllegalArgumentException("Item Order operations not allowed on beans that have not been saved to the database");
+            throw new IllegalArgumentException(
+                    "Item Order operations not allowed on beans that have not been saved to the database");
 
         if (secondaryField == null)
             return itemOrderEntity.getItemOrder() == getMaxItemOrder(dbAccess, getItemOrderMaxQuery());
 
         if (itemOrderEntity.getItemOrderSecondaryFieldID() == 0) {
-            return itemOrderEntity.getItemOrder() == getMaxItemOrder(dbAccess, getItemOrderMaxQueryWithNullSecondaryField());
+            return itemOrderEntity.getItemOrder() ==
+                    getMaxItemOrder(dbAccess, getItemOrderMaxQueryWithNullSecondaryField());
 
         }
-        return itemOrderEntity.getItemOrder() == getMaxItemOrder(dbAccess, getItemOrderMaxQuery(), itemOrderEntity.getItemOrderSecondaryFieldID());
+        return itemOrderEntity.getItemOrder() ==
+                getMaxItemOrder(dbAccess, getItemOrderMaxQuery(), itemOrderEntity.getItemOrderSecondaryFieldID());
     }
 
     public void itemOrderMoveUp(DbBeanEditorWithItemOrder editor, DB db) {
         if (editor.getId() == 0)
-            throw new IllegalArgumentException("Item Order operations not allowed on beans that have not been saved to the database");
+            throw new IllegalArgumentException(
+                    "Item Order operations not allowed on beans that have not been saved to the database");
 
         if (isFirstInItemOrder(editor))
             throw new IllegalArgumentException("Cannot move Item Order above position 1 which it currently occupies");
@@ -348,7 +321,8 @@ public class ItemOrderManager {
 
     public void itemOrderMoveDown(DbBeanEditorWithItemOrder editor, DB db) {
         if (editor.getId() == 0)
-            throw new IllegalArgumentException("Item Order operations not allowed on beans that have not been saved to the database");
+            throw new IllegalArgumentException(
+                    "Item Order operations not allowed on beans that have not been saved to the database");
 
         if (isLastInItemOrder(editor, new DBAccess(db)))
             throw new IllegalArgumentException("Cannot move Item Order below max position: " + editor.getItemOrder());
@@ -368,21 +342,65 @@ public class ItemOrderManager {
     public void itemOrderMoveAfter(DbBeanEditorWithItemOrder editor, BasicItemOrderOperations otherItem, DB db) {
         if (secondaryField == null) {
             if (editor.getItemOrder() > otherItem.getItemOrder())
-                itemOrderMove(editor, otherItem.getItemOrder() + 1, getIncreaseItemOrderBetweenQuery(), otherItem.getItemOrder(), editor.getItemOrder(), db);
+                itemOrderMove(
+                        editor,
+                        otherItem.getItemOrder() + 1,
+                        getIncreaseItemOrderBetweenQuery(),
+                        otherItem.getItemOrder(),
+                        editor.getItemOrder(),
+                        db
+                );
             else
-                itemOrderMove(editor, otherItem.getItemOrder(), getDecreaseItemOrderBetweenQuery(), editor.getItemOrder(), otherItem.getItemOrder() + 1, db);
+                itemOrderMove(
+                        editor,
+                        otherItem.getItemOrder(),
+                        getDecreaseItemOrderBetweenQuery(),
+                        editor.getItemOrder(),
+                        otherItem.getItemOrder() + 1,
+                        db
+                );
         } else {
             if (editor.getItemOrderSecondaryFieldID() == otherItem.getItemOrderSecondaryFieldID()) {
                 if (editor.getItemOrder() > otherItem.getItemOrder()) {
                     if (editor.getItemOrderSecondaryFieldID() == 0)
-                        itemOrderMove(editor, otherItem.getItemOrder() + 1, getIncreaseItemOrderBetweenQueryWithNullSecondaryField(), otherItem.getItemOrder(), editor.getItemOrder(), db);
+                        itemOrderMove(
+                                editor,
+                                otherItem.getItemOrder() + 1,
+                                getIncreaseItemOrderBetweenQueryWithNullSecondaryField(),
+                                otherItem.getItemOrder(),
+                                editor.getItemOrder(),
+                                db
+                        );
                     else
-                        itemOrderMove(editor, otherItem.getItemOrder() + 1, getIncreaseItemOrderBetweenQuery(), otherItem.getItemOrder(), editor.getItemOrder(), db, editor.getItemOrderSecondaryFieldID());
+                        itemOrderMove(
+                                editor,
+                                otherItem.getItemOrder() + 1,
+                                getIncreaseItemOrderBetweenQuery(),
+                                otherItem.getItemOrder(),
+                                editor.getItemOrder(),
+                                db,
+                                editor.getItemOrderSecondaryFieldID()
+                        );
                 } else
                 if (editor.getItemOrderSecondaryFieldID() == 0)
-                    itemOrderMove(editor, otherItem.getItemOrder(), getDecreaseItemOrderBetweenQueryWithNullSecondaryField(), editor.getItemOrder(), otherItem.getItemOrder() + 1, db);
+                    itemOrderMove(
+                            editor,
+                            otherItem.getItemOrder(),
+                            getDecreaseItemOrderBetweenQueryWithNullSecondaryField(),
+                            editor.getItemOrder(),
+                            otherItem.getItemOrder() + 1,
+                            db
+                    );
                 else
-                    itemOrderMove(editor, otherItem.getItemOrder(), getDecreaseItemOrderBetweenQuery(), editor.getItemOrder(), otherItem.getItemOrder() + 1, db, editor.getItemOrderSecondaryFieldID());
+                    itemOrderMove(
+                            editor,
+                            otherItem.getItemOrder(),
+                            getDecreaseItemOrderBetweenQuery(),
+                            editor.getItemOrder(),
+                            otherItem.getItemOrder() + 1,
+                            db,
+                            editor.getItemOrderSecondaryFieldID()
+                    );
             } else
                 itemOrderMove(editor, otherItem.getItemOrder() + 1, otherItem, db);
         }
@@ -391,42 +409,131 @@ public class ItemOrderManager {
     public void itemOrderMoveBefore(DbBeanEditorWithItemOrder editor, BasicItemOrderOperations otherItem, DB db) {
         if (secondaryField == null) {
             if (editor.getItemOrder() > otherItem.getItemOrder())
-                itemOrderMove(editor, otherItem.getItemOrder(), getIncreaseItemOrderBetweenQuery(), otherItem.getItemOrder() - 1, editor.getItemOrder(), db);
+                itemOrderMove(
+                        editor,
+                        otherItem.getItemOrder(),
+                        getIncreaseItemOrderBetweenQuery(),
+                        otherItem.getItemOrder() - 1,
+                        editor.getItemOrder(),
+                        db
+                );
             else
-                itemOrderMove(editor, otherItem.getItemOrder() - 1, getDecreaseItemOrderBetweenQuery(), editor.getItemOrder(), otherItem.getItemOrder(), db);
+                itemOrderMove(
+                        editor,
+                        otherItem.getItemOrder() - 1,
+                        getDecreaseItemOrderBetweenQuery(),
+                        editor.getItemOrder(),
+                        otherItem.getItemOrder(),
+                        db
+                );
         } else {
             if (editor.getItemOrderSecondaryFieldID() == otherItem.getItemOrderSecondaryFieldID()) {
                 if (editor.getItemOrder() > otherItem.getItemOrder()) {
                     if (editor.getItemOrderSecondaryFieldID() == 0)
-                        itemOrderMove(editor, otherItem.getItemOrder(), getIncreaseItemOrderBetweenQueryWithNullSecondaryField(), otherItem.getItemOrder() - 1, editor.getItemOrder(), db);
+                        itemOrderMove(
+                                editor,
+                                otherItem.getItemOrder(),
+                                getIncreaseItemOrderBetweenQueryWithNullSecondaryField(),
+                                otherItem.getItemOrder() - 1,
+                                editor.getItemOrder(),
+                                db
+                        );
                     else
-                        itemOrderMove(editor, otherItem.getItemOrder(), getIncreaseItemOrderBetweenQuery(), otherItem.getItemOrder() - 1, editor.getItemOrder(), db, editor.getItemOrderSecondaryFieldID());
+                        itemOrderMove(
+                                editor,
+                                otherItem.getItemOrder(),
+                                getIncreaseItemOrderBetweenQuery(),
+                                otherItem.getItemOrder() - 1,
+                                editor.getItemOrder(),
+                                db,
+                                editor.getItemOrderSecondaryFieldID()
+                        );
                 } else
                 if (editor.getItemOrderSecondaryFieldID() == 0)
-                    itemOrderMove(editor, otherItem.getItemOrder() - 1, getDecreaseItemOrderBetweenQueryWithNullSecondaryField(), editor.getItemOrder(), otherItem.getItemOrder(), db);
+                    itemOrderMove(
+                            editor,
+                            otherItem.getItemOrder() - 1,
+                            getDecreaseItemOrderBetweenQueryWithNullSecondaryField(),
+                            editor.getItemOrder(),
+                            otherItem.getItemOrder(),
+                            db
+                    );
                 else
-                    itemOrderMove(editor, otherItem.getItemOrder() - 1, getDecreaseItemOrderBetweenQuery(), editor.getItemOrder(), otherItem.getItemOrder(), db, editor.getItemOrderSecondaryFieldID());
+                    itemOrderMove(
+                            editor,
+                            otherItem.getItemOrder() - 1,
+                            getDecreaseItemOrderBetweenQuery(),
+                            editor.getItemOrder(),
+                            otherItem.getItemOrder(),
+                            db,
+                            editor.getItemOrderSecondaryFieldID()
+                    );
             } else
                 itemOrderMove(editor, otherItem.getItemOrder(), otherItem, db);
         }
     }
 
-    private void itemOrderMove(DbBeanEditorWithItemOrder editor, long newItemOrder, String query, long lowerBound, long upperBound, DB db, long... parameters) {
+    private void itemOrderMove(
+            DbBeanEditorWithItemOrder editor,
+            long newItemOrder,
+            String query,
+            long lowerBound,
+            long upperBound,
+            DB db,
+            long... parameters)
+    {
         DBTransaction transaction = new DBTransaction(db);
         updateItemOrdersInBetween(query, transaction, lowerBound, upperBound, parameters);
         itemOrderMoveCompleteTransaction(editor, newItemOrder, transaction);
     }
 
-    private void itemOrderMove(DbBeanEditorWithItemOrder editor, long newItemOrder, BasicItemOrderOperations otherItem, DB db) {
+    private void itemOrderMove(
+            DbBeanEditorWithItemOrder editor,
+            long newItemOrder,
+            BasicItemOrderOperations otherItem,
+            DB db)
+    {
         if (editor.getItemOrderSecondaryFieldID() == 0)
-            itemOrderMove(editor, newItemOrder, getPushItemOrdersUpQueryWithNullSecondaryField(), newItemOrder - 1, getPushItemOrdersDownQuery(), otherItem, db);
+            itemOrderMove(
+                    editor,
+                    newItemOrder,
+                    getPushItemOrdersUpQueryWithNullSecondaryField(),
+                    newItemOrder - 1,
+                    getPushItemOrdersDownQuery(),
+                    otherItem,
+                    db
+            );
         else if (otherItem.getItemOrderSecondaryFieldID() == 0)
-            itemOrderMove(editor, newItemOrder, getPushItemOrdersUpQuery(), newItemOrder - 1, getPushItemOrdersDownQueryWithNullSecondaryField(), otherItem, db);
+            itemOrderMove(
+                    editor,
+                    newItemOrder,
+                    getPushItemOrdersUpQuery(),
+                    newItemOrder - 1,
+                    getPushItemOrdersDownQueryWithNullSecondaryField(),
+                    otherItem,
+                    db
+            );
         else
-            itemOrderMove(editor, newItemOrder, getPushItemOrdersUpQuery(), newItemOrder - 1, getPushItemOrdersDownQuery(), otherItem, db);
+            itemOrderMove(
+                    editor,
+                    newItemOrder,
+                    getPushItemOrdersUpQuery(),
+                    newItemOrder - 1,
+                    getPushItemOrdersDownQuery(),
+                    otherItem,
+                    db
+            );
     }
 
-    private void itemOrderMove(DbBeanEditorWithItemOrder editor, long newItemOrder, String queryDest, long destLowerBound, String queryOrig, BasicItemOrderOperations item, DB db) {
+    private void itemOrderMove(
+            DbBeanEditorWithItemOrder editor,
+            long newItemOrder,
+            String queryDest,
+            long destLowerBound,
+            String queryOrig,
+            BasicItemOrderOperations item,
+            DB db)
+    {
         DBTransaction transaction = new DBTransaction(db);
         if (editor.getItemOrderSecondaryFieldID() == 0)
             updateItemOrdersAbove(queryDest, transaction, destLowerBound);
@@ -456,14 +563,27 @@ public class ItemOrderManager {
         else
             newItemOrder = getMaxItemOrder(transaction, getItemOrderMaxQuery(), secondaryFieldID) + 1;
         if (editor.getItemOrderSecondaryFieldID() == 0)
-            updateItemOrdersAbove(getUpdateItemOrdersAboveQueryWithNullSecondaryField(), transaction, editor.getItemOrder());
+            updateItemOrdersAbove(
+                    getUpdateItemOrdersAboveQueryWithNullSecondaryField(),
+                    transaction,
+                    editor.getItemOrder()
+            );
         else
-            updateItemOrdersAbove(getUpdateItemOrdersAboveQuery(), transaction, editor.getItemOrder(), editor.getItemOrderSecondaryFieldID());
+            updateItemOrdersAbove(
+                    getUpdateItemOrdersAboveQuery(),
+                    transaction,
+                    editor.getItemOrder(),
+                    editor.getItemOrderSecondaryFieldID()
+            );
         editor.setItemOrderSecondaryFieldID(secondaryFieldID);
         itemOrderMoveCompleteTransaction(editor, newItemOrder, transaction);
     }
 
-    private void itemOrderMoveCompleteTransaction(DbBeanEditorWithItemOrder editor, long newItemOrder, DBTransaction transaction) {
+    private void itemOrderMoveCompleteTransaction(
+            DbBeanEditorWithItemOrder editor,
+            long newItemOrder,
+            DBTransaction transaction)
+    {
         editor.setItemOrder(newItemOrder);
         editor.updateRecordForItemOrder(transaction);
         transaction.commit();
