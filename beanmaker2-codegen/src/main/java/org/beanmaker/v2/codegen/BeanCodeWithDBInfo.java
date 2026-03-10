@@ -65,7 +65,7 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         javaClass.addContent(varDeclaration.visibility(Visibility.PRIVATE));
     }
 
-    protected void addGetter(Column column) {
+    protected void addGetter(Column column, boolean editor) {
         String type = column.getJavaType();
         String name = column.getJavaName();
         String getterPrefix = (type.equals("Boolean") || type.equals("boolean")) ? "is" : "get";
@@ -98,7 +98,15 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         if (column.isItemOrder()) {
             addItemOrderEdgeStatusCheckFunctions();
 
-            if (!Strings.isEmpty(column.getItemOrderAssociatedField()))
+            if (!Strings.isEmpty(column.getItemOrderAssociatedField())) {
+                if (!editor)
+                    javaClass
+                            .addContent(new FunctionDeclaration("isItemOrderLinkedToSecondaryField", "boolean")
+                                            .annotate("@Override")
+                                            .visibility(Visibility.PUBLIC)
+                                            .addContent(new ReturnStatement("true")))
+                            .addContent(EMPTY_LINE);
+
                 javaClass
                         .addContent(new FunctionDeclaration("getItemOrderSecondaryFieldID", "long")
                                 .annotate("@Override")
@@ -107,6 +115,7 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                                         new FunctionCall(
                                                 "get" + capitalize(getItemOrderSecondaryFieldJavaName(column))))))
                         .addContent(EMPTY_LINE);
+            }
         }
     }
 

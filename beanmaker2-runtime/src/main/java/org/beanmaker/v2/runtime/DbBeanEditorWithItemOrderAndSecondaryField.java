@@ -15,6 +15,11 @@ public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanE
         tableName = parameters.getDatabaseTableName();
     }
 
+    @Override
+    public boolean isItemOrderLinkedToSecondaryField() {
+        return true;
+    }
+
     public void itemOrderReassociateWith(long idAssociatedBean) {
         dbBeanItemOrderManager.itemOrderReassociateWith(this, idAssociatedBean, db);
     }

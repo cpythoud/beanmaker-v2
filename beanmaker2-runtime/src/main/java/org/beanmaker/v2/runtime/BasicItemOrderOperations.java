@@ -8,6 +8,10 @@ public interface BasicItemOrderOperations {
     boolean isFirstInItemOrder();
     boolean isLastInItemOrder();
 
+    default boolean isItemOrderLinkedToSecondaryField() {
+        return false;
+    }
+
     default long getItemOrderSecondaryFieldID() {
         throw new UnsupportedOperationException();
     }

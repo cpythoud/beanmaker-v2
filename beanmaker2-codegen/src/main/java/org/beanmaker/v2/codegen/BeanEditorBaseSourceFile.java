@@ -742,7 +742,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private void addGetters() {
         for (Column column: columns.getList())
             if (!column.isId() && !column.isItemOrder())
-                addGetter(column);
+                addGetter(column, true);
 
         columns.getItemOrderColumn().ifPresent(column -> {
             if (!Strings.isEmpty(column.getItemOrderAssociatedField()))

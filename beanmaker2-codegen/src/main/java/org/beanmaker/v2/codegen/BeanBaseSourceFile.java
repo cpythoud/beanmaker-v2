@@ -380,7 +380,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addGetters() {
         for (Column column: columns.getList())
-            addGetter(column);
+            addGetter(column, false);
     }
 
     private void addEmptyChecks() {
