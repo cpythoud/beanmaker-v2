@@ -169,6 +169,19 @@ public final class DecimalValue implements Comparable<DecimalValue> {
         return this.negative ? -fracComparison : fracComparison;
     }
 
+    public int compareNumerically(BigDecimal value) {
+        Objects.requireNonNull(value);
+        return this.toBigDecimal().compareTo(value);
+    }
+
+    public int compareNumerically(long value) {
+        return compareNumerically(BigDecimal.valueOf(value));
+    }
+
+    public int compareNumerically(double value) {
+        return compareNumerically(BigDecimal.valueOf(value));
+    }
+
     /**
      * Compares the numerical values of two DecimalValue instances, ignoring decimal precision.
      * This method converts both values to BigDecimal for comparison.
@@ -178,7 +191,8 @@ public final class DecimalValue implements Comparable<DecimalValue> {
      *         equal to, or greater than the specified object
      */
     public int compareNumerically(DecimalValue other) {
-        return this.toBigDecimal().compareTo(other.toBigDecimal());
+        Objects.requireNonNull(other);
+        return compareNumerically(other.toBigDecimal());
     }
 
     @Override
