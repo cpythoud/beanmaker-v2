@@ -120,6 +120,13 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     protected String deleteTooltip = dbBeanLocalization.getLabel("tooltip_delete");
     protected String detailTooltip = dbBeanLocalization.getLabel("tooltip_detail");
 
+    protected String editIdSuffix = "";
+    protected String editCssClassPrefix = "edit_";
+    protected String detailIdSuffix = "_detail";
+    protected String detailCssClassPrefix = "goto_detail_";
+    protected String deleteIdSuffix = "Del";
+    protected String deleteCssClassPrefix = "delete_";
+
 
     protected String editLabel() {
         return editTooltip;
@@ -1055,10 +1062,12 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
             cell.child(new SpanTag().cssClass(iconLibrary + dragNDropActiveIcon + " " + dragNDropDragElementCssClass));
 
         if (showEditLink(bean))
-            cell.child(getEditLineLink(bean, beanName, "edit_" + beanName, editTooltip));
+            cell.child(getEditLineLink(bean, beanName + editIdSuffix, editCssClassPrefix + beanName, editTooltip));
 
         if (showDetailLink(bean))
-            cell.child(getGotoDetailLink(bean, beanName + "_detail", "goto_detail_" + beanName, detailTooltip));
+            cell.child(
+                    getGotoDetailLink(bean, beanName + detailIdSuffix, detailCssClassPrefix + beanName, detailTooltip)
+            );
 
         return cell;
     }
@@ -1080,8 +1089,8 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
                 .cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get())
                 .child(getDeleteLineLink(
                         bean.getId(),
-                        beanName + "Del",
-                        "delete_" + beanName,
+                        beanName + deleteIdSuffix,
+                        deleteCssClassPrefix + beanName,
                         tooltip));
     }
 
