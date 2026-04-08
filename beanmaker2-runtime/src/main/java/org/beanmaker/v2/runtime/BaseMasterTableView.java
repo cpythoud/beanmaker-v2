@@ -522,7 +522,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         if (displayId)
             line.child(getIdTableCell(bean));
         addDataToLine(line, bean);
-        if (showEditLink(bean) && okToDelete(bean))
+        if (showDeleteLink(bean) && okToDelete(bean))
             line.child(getDeleteCell(bean));
 
         return line;
@@ -540,7 +540,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         if (displayId)
             line.child(getIdTableCell(bean));
         addDataToLine(line, bean);
-        if (showEditLink(bean) && okToDelete(bean))
+        if (showDeleteLink(bean) && okToDelete(bean))
             line.child(getDeleteCell(bean));
 
         return line;
@@ -1074,6 +1074,10 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
 
     protected boolean showEditLink(DbBeanInterface bean) {
         return showEditLinks;
+    }
+
+    protected boolean showDeleteLink(DbBeanInterface bean) {
+        return showEditLink(bean);
     }
 
     protected boolean showDetailLink(DbBeanInterface bean) {
