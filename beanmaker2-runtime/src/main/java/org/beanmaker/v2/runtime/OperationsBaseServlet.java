@@ -81,7 +81,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
 
         if (htmlView.isDataOK()) {
             htmlView.updateDB();
-            return getJsonOk(htmlView);
+            return getJsonStatusObject("ok").put("id", htmlView.getId()).toString();
         }
 
         return getJsonStatusObject("errors")
