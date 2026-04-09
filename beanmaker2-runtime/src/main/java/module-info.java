@@ -12,6 +12,7 @@ module org.beanmaker.v2.runtime {
     requires org.apache.commons.csv;
 
     requires org.slf4j;
+    requires org.json;
 
     exports org.beanmaker.v2.runtime;
     exports org.beanmaker.v2.runtime.annotations;

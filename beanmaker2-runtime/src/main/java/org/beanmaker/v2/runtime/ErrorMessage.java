@@ -12,6 +12,7 @@ public class ErrorMessage extends PlatformMessage {
         super(beanId, message);
     }
 
+    @Deprecated
     public static String toJson(List<ErrorMessage> errorMessages) {
         return PlatformMessage.toJson(errorMessages, "errors");
     }

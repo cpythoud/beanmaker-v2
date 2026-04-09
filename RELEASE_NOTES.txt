@@ -146,3 +146,4 @@ MINOR CHANGES:
 - improve some exception messages
 - various small improvements and fixes
 - various utility functions added
+- replaced manual composition of JSON Strings with org.json library calls

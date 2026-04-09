@@ -3,6 +3,9 @@ package org.beanmaker.v2.runtime;
 import org.beanmaker.v2.util.MimeTypes;
 import org.beanmaker.v2.util.Strings;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.servlet.ServletException;
 
 import javax.servlet.http.HttpServlet;
@@ -85,17 +88,14 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
     }
 
     protected String getErrorsInJson(List<ErrorMessage> errorMessages) {
-        StringBuilder buf = new StringBuilder();
+        var jsonObject = new JSONObject().put("ok", false);
 
-        buf.append("{ \"ok\": false, \"errors\": [ ");
+        var jsonArray = new JSONArray();
+        for (var errorMessage: errorMessages)
+            jsonArray.put(errorMessage.toJsonObject());
 
-        for (ErrorMessage errorMessage: errorMessages)
-            buf.append(errorMessage.toJson()).append(", ");
-
-        buf.delete(buf.length() - 2, buf.length());
-        buf.append(" ] }");
-
-        return buf.toString();
+        jsonObject.put("errors", jsonArray);
+        return jsonObject.toString();
     }
 
     protected long getBeanId(HttpRequestParameters requestParameters, String parameterName) {
@@ -107,7 +107,11 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
     }
 
     protected String getJsonSimpleStatus(String status) {
-        return "{ \"status\": \"" + status + "\" }";
+        return getJsonStatusObject(status).toString();
+    }
+
+    protected JSONObject getJsonStatusObject(String status) {
+        return new JSONObject().put("status", status);
     }
 
     protected String getJsonOk() {
@@ -118,10 +122,12 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return getJsonSimpleStatus("no session");
     }
 
+    @Deprecated
     protected String getStartJsonErrors() {
         return "{ \"status\": \"errors\", ";
     }
 
+    @Deprecated
     protected String getStartJsonOk() {
         return "{ \"status\": \"ok\", ";
     }
@@ -157,7 +163,9 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
             return getJsonOk();
         }
 
-        return getStartJsonErrors() + ErrorMessage.toJson(htmlView.getErrorMessages()) + " }";
+        return getJsonStatusObject("errors")
+                .put("errors", ErrorMessage.toJsonArray(htmlView.getErrorMessages()))
+                .toString();
     }
 
     protected record BeanIDPair(String beanName, long id) { }

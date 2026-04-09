@@ -84,12 +84,16 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
             return getJsonOk(htmlView);
         }
 
-        return getStartJsonErrors() + ErrorMessage.toJson(htmlView.getErrorMessages()) + " }";
+        return getJsonStatusObject("errors")
+                .put("errors", ErrorMessage.toJsonArray(htmlView.getErrorMessages()))
+                .toString();
     }
 
     protected String getJsonOk(DbBeanHTMLViewInterface htmlView) {
         if (htmlView.hasWarnings())
-            return getStartJsonOk() + WarningMessage.toJson(htmlView.getWarningMessages()) + " }";
+            return getJsonStatusObject("ok")
+                    .put("warnings", WarningMessage.toJsonArray(htmlView.getErrorMessages()))
+                    .toString();
 
         return getJsonOk();
     }
@@ -164,7 +168,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
             throw new ServletException("Creating a new version is not required at this time");
 
         var newVersion = editor.newVersionedEditor();
-        return getStartJsonOk() + "\"id\": " + newVersion.getId() + " }";
+        return getJsonStatusObject("ok").put("id", newVersion.getId()).toString();
     }
 
     protected VersionedBeanEditor getVersionedBeanEditor(long id, HttpRequestParameters requestParameters)

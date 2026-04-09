@@ -1,5 +1,8 @@
 package org.beanmaker.v2.runtime;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
 class PlatformMessage {
@@ -38,9 +41,18 @@ class PlatformMessage {
         return message;
     }
 
+    @Deprecated
     public String toJson() {
         return "{ \"idBean\": %d, \"fieldName\": \"%s\", \"fieldLabel\": \"%s\", \"message\": \"%s\" }"
                 .formatted(beanId, fieldName, fieldLabel, message);
+    }
+
+    public JSONObject toJsonObject() {
+        return new JSONObject()
+                .put("idBean", beanId)
+                .put("fieldName", fieldName)
+                .put("fieldLabel", fieldLabel)
+                .put("message", message);
     }
 
     @Override
@@ -58,6 +70,7 @@ class PlatformMessage {
         return buf.toString();
     }
 
+    @Deprecated
     public static <T extends PlatformMessage> String toJson(List<T> messages, String jsonKey) {
         if (messages.isEmpty())
             throw new IllegalArgumentException("List of messages is empty.");
@@ -74,6 +87,18 @@ class PlatformMessage {
         buf.append(" ]");
 
         return buf.toString();
+    }
+
+    public static <T extends PlatformMessage> JSONArray toJsonArray(List<T> messages) {
+        if (messages.isEmpty())
+            throw new IllegalArgumentException("List of messages is empty.");
+
+        var jsonArray = new JSONArray();
+
+        for (T message: messages)
+            jsonArray.put(message.toJsonObject());
+
+        return jsonArray;
     }
 
 }

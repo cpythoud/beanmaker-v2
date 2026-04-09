@@ -12,6 +12,7 @@ public class WarningMessage extends PlatformMessage {
         super(beanId, message);
     }
 
+    @Deprecated
     public static String toJson(List<WarningMessage> warningMessages) {
         return PlatformMessage.toJson(warningMessages, "warnings");
     }
