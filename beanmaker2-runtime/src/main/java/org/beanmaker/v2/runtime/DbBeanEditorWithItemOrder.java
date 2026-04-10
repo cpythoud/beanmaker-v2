@@ -80,7 +80,7 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
     }
 
     @Override
-    protected void delete(DBTransaction transaction) {
+    public void delete(DBTransaction transaction) {
         checkReferenced();
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);

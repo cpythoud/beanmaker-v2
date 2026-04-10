@@ -117,7 +117,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         fullReset();
     }
 
-    protected void delete(DBTransaction transaction) {
+    public void delete(DBTransaction transaction) {
         checkReferenced();
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);

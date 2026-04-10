@@ -25,7 +25,7 @@ public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanE
     }
 
     @Override
-    protected void delete(DBTransaction transaction) {
+    public void delete(DBTransaction transaction) {
         checkReferenced();
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);
