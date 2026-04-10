@@ -81,7 +81,7 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
 
     @Override
     public void delete(DBTransaction transaction) {
-        checkReferenced();
+        checkReferenced(transaction);
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);
         long curItemOrder;
@@ -95,12 +95,5 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
         deleteLabels(transaction);
         deleteExtraDbActions(transaction);
     }
-
-    /*protected void versionedItemOrderQuickUpdate(DBTransaction transaction) {
-        transaction.addUpdate(
-                "UPDATE %s SET item_order=?",
-                stat -> stat.setLong(1, getItemOrder())
-        );
-    }*/
 
 }

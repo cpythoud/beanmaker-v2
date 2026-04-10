@@ -118,7 +118,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
     }
 
     public void delete(DBTransaction transaction) {
-        checkReferenced();
+        checkReferenced(transaction);
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);
         transaction.addUpdate(
@@ -129,8 +129,8 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         deleteExtraDbActions(transaction);
     }
 
-    protected void checkReferenced() {
-        if (dbBeanParameters.isReferenced(this, createDBTransaction()))
+    protected void checkReferenced(DBTransaction transaction) {
+        if (dbBeanParameters.isReferenced(this, transaction))
             throw new IllegalStateException("Bean cannot be deleted because it is referenced in other data sets");
     }
 
