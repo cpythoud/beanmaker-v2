@@ -503,6 +503,22 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall("getFullCount", "DBUtil")
                                 .addArguments(parametersInstanceExpression, "dbAccess"))))
                 .addContent(EMPTY_LINE);
+
+        if (columns.hasActiveField()) {
+            javaClass
+                    .addContent(new FunctionDeclaration("getAllActive", "List<" + beanName + ">")
+                            .visibility(Visibility.PUBLIC)
+                            .markAsStatic()
+                            .addContent(new ReturnStatement(new FunctionCall("getAllActive")
+                                    .addArgument(parametersInstanceExpression + ".getOrderByFields()"))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new FunctionDeclaration("getAllActive", "List<" + beanName + ">")
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("String", "orderBy"))
+                            .addContent(new ReturnStatement(new FunctionCall("getSelection")
+                                    .addArguments(quickQuote("active > 0"), "orderBy", "null"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
     private void addTransactedInventoriesAndCountFunctions() {
@@ -579,6 +595,25 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall("getFullCount", "DBUtil")
                                 .addArguments(parametersInstanceExpression, "transaction"))))
                 .addContent(EMPTY_LINE);
+
+        if (columns.hasActiveField()) {
+            javaClass
+                    .addContent(new FunctionDeclaration("getAllActive", "List<" + beanName + ">")
+                            .visibility(Visibility.PUBLIC)
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                            .addContent(new ReturnStatement(new FunctionCall("getAllActive")
+                                    .addArgument(parametersInstanceExpression + ".getOrderByFields()")
+                                    .addArgument("transaction"))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new FunctionDeclaration("getAllActive", "List<" + beanName + ">")
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("String", "orderBy"))
+                            .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                            .addContent(new ReturnStatement(new FunctionCall("getSelection")
+                                    .addArguments(quickQuote("active > 0"), "orderBy", "null", "transaction"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
     private void addVersionedInventoriesAndCountFunctions() {
@@ -641,6 +676,22 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall("getVersionedFullCount", "DBUtil")
                                 .addArguments(parametersInstanceExpression, "dbAccess"))))
                 .addContent(EMPTY_LINE);
+
+        if (columns.hasActiveField()) {
+            javaClass
+                    .addContent(new FunctionDeclaration("getAllActiveVersioned", "List<" + beanName + ">")
+                            .visibility(Visibility.PUBLIC)
+                            .markAsStatic()
+                            .addContent(new ReturnStatement(new FunctionCall("getAllActiveVersioned")
+                                    .addArgument(parametersInstanceExpression + ".getOrderByFields()"))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new FunctionDeclaration("getAllActiveVersioned", "List<" + beanName + ">")
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("String", "orderBy"))
+                            .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                    .addArguments(quickQuote("active > 0"), "orderBy", "null"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
     private void addTransactedVersionedInventoriesAndCountFunctions() {
@@ -716,6 +767,25 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall("getVersionedFullCount", "DBUtil")
                                 .addArguments(parametersInstanceExpression, "transaction"))))
                 .addContent(EMPTY_LINE);
+
+        if (columns.hasActiveField()) {
+            javaClass
+                    .addContent(new FunctionDeclaration("getAllActiveVersioned", "List<" + beanName + ">")
+                            .visibility(Visibility.PUBLIC)
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                            .addContent(new ReturnStatement(new FunctionCall("getAllActiveVersioned")
+                                    .addArgument(parametersInstanceExpression + ".getOrderByFields()")
+                                    .addArgument("transaction"))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new FunctionDeclaration("getAllActiveVersioned", "List<" + beanName + ">")
+                            .markAsStatic()
+                            .addArgument(new FunctionArgument("String", "orderBy"))
+                            .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                            .addContent(new ReturnStatement(new FunctionCall("getVersionedSelection")
+                                    .addArguments(quickQuote("active > 0"), "orderBy", "null", "transaction"))))
+                    .addContent(EMPTY_LINE);
+        }
     }
 
     private void addIDCheckFunctions() {

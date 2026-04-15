@@ -499,6 +499,14 @@ public class Columns implements Iterable<Column> {
         return false;
     }
 
+    public boolean hasActiveField() {
+        for (Column column: columns)
+            if (column.getJavaName().equals("active") && column.getJavaType().equals("Boolean"))
+                return true;
+
+        return false;
+    }
+
     public List<Column> getLabels() {
         var columns = new ArrayList<Column>();
 
