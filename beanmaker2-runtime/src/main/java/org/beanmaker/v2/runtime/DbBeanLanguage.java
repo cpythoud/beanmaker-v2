@@ -7,6 +7,10 @@ public interface DbBeanLanguage extends DbBeanInterface {
 
     String getName();
 
+    default String getName(DbBeanLanguage language) {
+        return getName();
+    }
+
     String getIso();
 
     default Optional<String> getRegionCode() {
@@ -19,6 +23,18 @@ public interface DbBeanLanguage extends DbBeanInterface {
 
     default String getTag() {
         return getRegionCode().map(code -> getIso() + "-" + code).orElseGet(this::getIso);
+    }
+
+    default String getFieldLabelSuffix() {
+        return " " + getTag();
+    }
+
+    default String getFieldLabelSuffix(DbBeanLanguage language) {
+        return getFieldLabelSuffix();
+    }
+
+    default String getFieldLabelSuffix(DbBeanLocalization localization) {
+        return getFieldLabelSuffix(localization.getLanguage());
     }
 
     /**

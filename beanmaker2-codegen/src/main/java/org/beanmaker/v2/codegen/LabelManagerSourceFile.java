@@ -19,7 +19,8 @@ public class LabelManagerSourceFile extends BaseCode {
             createImportList("java.util", "List", "Map", "Optional");
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DbBeanLabel", "DbBeanLabelBasicFunctions",
-                    "DbBeanLabelEditor", "DbBeanLanguage", "MissingImplementationException", "dbutil.LabelHelper");
+                    "DbBeanLabelEditor", "DbBeanLanguage", "DbBeanLocalization", "MissingImplementationException",
+                    "dbutil.LabelHelper");
 
     private static final FunctionArgument ID_ARG = new FunctionArgument("long", "id");
     private static final FunctionArgument NAME_ARG = new FunctionArgument("String", "name");
@@ -29,6 +30,7 @@ public class LabelManagerSourceFile extends BaseCode {
     private static final FunctionArgument PARAMETERS_ARG_LIST = new FunctionArgument("List<Object>", "parameters");
     private static final FunctionArgument PARAMETERS_ARG_MAP = new FunctionArgument("Map<String, Object>", "parameters");
     private static final FunctionArgument LABEL_ARG = new FunctionArgument("DbBeanLabel", "dbBeanLabel");
+    private static final FunctionArgument CURRENTLANG_ARG = new FunctionArgument("DbBeanLanguage", "currentLanguage");
 
     public LabelManagerSourceFile(String packageName) {
         this(packageName, DEFAULT_PROJECT_PARAMETERS);
@@ -77,6 +79,8 @@ public class LabelManagerSourceFile extends BaseCode {
         addNonImplementedStaticFunction("DbBeanLanguage", "getDefaultLanguage");
         addNonImplementedStaticFunction("List<DbBeanLanguage>", "getAllActiveLanguages");
         addNonImplementedStaticFunction("DbBeanLanguage", "getLanguage", ID_ARG);
+        addNonImplementedStaticFunction("List<DbBeanLanguage>", "getAllActiveLanguages", CURRENTLANG_ARG);
+        addActiveLanguagesWithDbBeanLocalizationArgumentFunction();
 
         addReplaceDataFunction();
         addFunctionsWithOptionalResults();
@@ -89,6 +93,19 @@ public class LabelManagerSourceFile extends BaseCode {
         addBasicFunctionsClass();
 
         addJavascriptLabelsFunctions();
+    }
+
+    private void addActiveLanguagesWithDbBeanLocalizationArgumentFunction() {
+        javaClass
+                .addContent(new FunctionDeclaration("getAllActiveLanguages", "List<DbBeanLanguage>")
+                        .visibility(Visibility.PUBLIC)
+                        .markAsStatic()
+                        .addArgument(new FunctionArgument("DbBeanLocalization", "localization"))
+                        .addContent(
+                                new ReturnStatement(
+                                        new FunctionCall("getAllActiveLanguages")
+                                                .addArgument(new FunctionCall("getLanguage", "localization")))))
+                .addContent(EMPTY_LINE);
     }
 
     private void addReplaceDataFunction() {
@@ -140,6 +157,14 @@ public class LabelManagerSourceFile extends BaseCode {
                         .addContent(new ReturnStatement(new FunctionCall("get", "LabelManager")
                                 .addArgument("id"))))
                 .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("getLabel", "DbBeanLabel")
+                        .annotate("@Override")
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("long", "id"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(new FunctionCall("get", "LabelManager")
+                                .addArguments("id", "transaction"))))
+                .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("getPossibleLabel", "Optional<DbBeanLabel>")
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
@@ -157,7 +182,16 @@ public class LabelManagerSourceFile extends BaseCode {
                 .addContent(new FunctionDeclaration("getDefaultLanguage", "DbBeanLanguage")
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
-                        .addContent(new ReturnStatement(new FunctionCall("getDefaultLanguage", "LabelManager"))));
+                        .addContent(new ReturnStatement(new FunctionCall("getDefaultLanguage", "LabelManager"))))
+                .addContent(EMPTY_LINE)
+                .addContent(new FunctionDeclaration("duplicateLabel", "long")
+                        .annotate("@Override")
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("DbBeanLabel", "label"))
+                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addContent(new ReturnStatement(
+                                new FunctionCall("duplicateAndGetId", "LabelManager")
+                                        .addArguments("label", "transaction"))));
 
         var declaration = new VarDeclaration("DbBeanLabelBasicFunctions", "basicFunctions", anonymousClass)
                 .visibility(Visibility.PRIVATE)

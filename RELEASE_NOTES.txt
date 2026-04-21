@@ -129,7 +129,9 @@ NEW FEATURES:
  - introduced transacted version of the getSelection(), getSelectionCount(), getCount() functions in BeanBase
  - in BaseMasterTableView augmented granularity of helper functions to compose action links in master tables
    to facilitate precise overloading of behavior in client applications, minimizing code to be copied
-   from BaseMasterTableView into client code ; added some member variables with protected access for the same purpose.
+   from BaseMasterTableView into client code ; added some member variables with protected access for the same purpose
+ - augmented language support to allow more control on field labels for multi-language form fields (allowing for
+   more descriptive labels for non-technical users of applications created with Beanmaker).
 
 BUG FIXES:
 - bug fix for: drag and drop doesn't work for tables with an item_order linked to an other field

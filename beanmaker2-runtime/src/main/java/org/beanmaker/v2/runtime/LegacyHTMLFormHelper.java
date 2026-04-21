@@ -1404,6 +1404,16 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return getTextField(actualParameters);
     }
 
+    public DivTag getLabelFormField(
+            final String value,
+            final DbBeanLanguage dbBeanLanguage,
+            final boolean required,
+            final HFHParameters params,
+            DbBeanLocalization dbBeanLocalization)
+    {
+        return getLabelFormField(value, dbBeanLanguage, required, params);
+    }
+
     public DivTag getTextLabelField(final HFHParameters params) {
         final String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
 

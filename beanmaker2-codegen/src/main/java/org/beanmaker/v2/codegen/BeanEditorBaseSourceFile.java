@@ -1238,21 +1238,23 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                     .addContent(new ForEach(
                             "DbBeanLanguage",
                             "dbBeanLanguage",
-                            new FunctionCall("getAllActiveLanguages", "LabelManager"))
-                            .addContent(new VarDeclaration(
-                                    "String",
-                                    "iso",
-                                    new FunctionCall("getTag", "dbBeanLanguage")))
+                            new FunctionCall("getAllActiveLanguages", "LabelManager").addArgument("dbBeanLocalization"))
                             .addContent(new VarDeclaration(
                                     "FieldValidator",
                                     "contentValidator",
                                     new ChainedFunctionCalls("builder", "FieldValidator")
                                             .chain(new FunctionCall("dbBeanLocalization").addArgument("dbBeanLocalization"))
                                             .chain(new FunctionCall("id").addArgument("id"))
-                                            .chain(new FunctionCall("fieldName").addArgument("\"" + field + "\" + iso"))
+                                            .chain(new FunctionCall("fieldName")
+                                                    .addArgument(new OperatorExpression(
+                                                            quickQuote(field),
+                                                            new FunctionCall("getTag", "dbBeanLanguage"),
+                                                            OperatorExpression.Operator.ADD
+                                                    )))
                                             .chain(new FunctionCall("fieldLabel").addArgument(new OperatorExpression(
                                                     getCheckDataFunctionFunctionCall(field, "get", "Label"),
-                                                    "\" \" + iso",
+                                                    new FunctionCall("getFieldLabelSuffix", "dbBeanLanguage")
+                                                            .addArgument("dbBeanLocalization"),
                                                     OperatorExpression.Operator.ADD)))
                                             .chain(new FunctionCall("empty").addArgument(
                                                     new FunctionCall("isEmpty", "Strings")

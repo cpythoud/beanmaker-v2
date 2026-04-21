@@ -307,14 +307,15 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                     new ForEach(
                             "DbBeanLanguage",
                             "dbBeanLanguage",
-                            new FunctionCall("getAllActiveLanguages", "LabelManager"))
+                            new FunctionCall("getAllActiveLanguages", "LabelManager").addArgument("dbBeanLocalization"))
                             .addContent(new FunctionCall("child", "form")
                                     .byItself()
                                     .addArgument(new FunctionCall("getLabelFormField", "htmlFormHelper")
                                             .addArgument(new FunctionCall("get" + chopID(name), editorObject).addArgument("dbBeanLanguage"))
                                             .addArgument("dbBeanLanguage")
                                             .addArgument(new FunctionCall("is" + capName + "RequiredInHtmlForm").addArgument("dbBeanLanguage"))
-                                            .addArgument(new FunctionCall("get" + capName + "FormElementParameters")))));
+                                            .addArgument(new FunctionCall("get" + capName + "FormElementParameters"))
+                                            .addArgument("dbBeanLocalization"))));
         else if (column.isFileReference())
             composeFunction.addContent(getStandardFieldComposeFunction("File", capName));
         else if (column.isBeanReference())

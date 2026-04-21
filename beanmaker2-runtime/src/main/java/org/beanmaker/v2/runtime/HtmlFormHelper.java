@@ -63,7 +63,15 @@ public interface HtmlFormHelper {
     Tag getSelectField(HFHParameters params);
     Tag getTextAreaField(HFHParameters params);
     Tag getTextField(HFHParameters params);
+    @Deprecated
     Tag getLabelFormField(String value, DbBeanLanguage dbBeanLanguage, boolean required, HFHParameters params);
+    Tag getLabelFormField(
+            String value,
+            DbBeanLanguage dbBeanLanguage,
+            boolean required,
+            HFHParameters params,
+            DbBeanLocalization dbBeanLocalization
+    );
     Tag getFileField(HFHParameters params);
 
     Tag getSubmitButton(HFHParameters params);

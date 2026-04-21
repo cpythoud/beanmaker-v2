@@ -572,11 +572,34 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
             HFHParameters params)
     {
         HFHParameters actualParameters = new HFHParameters(params);
-        String tag = dbBeanLanguage.getTag();
 
-        actualParameters.setField(params.getField() + tag);
+        actualParameters.setField(params.getField() + dbBeanLanguage.getTag());
         actualParameters.setValue(value);
-        actualParameters.setFieldLabel(params.getFieldLabel() + " " + tag);
+        actualParameters.setFieldLabel(params.getFieldLabel()
+                + " " + dbBeanLanguage.getFieldLabelSuffix(dbBeanLanguage));
+        actualParameters.setRequired(required);
+
+        if (params.isAsTextArea())
+            return getTextAreaField(actualParameters);
+
+        actualParameters.setInputType(InputTag.InputType.TEXT);
+        return getTextField(actualParameters);
+    }
+
+    @Override
+    public DivTag getLabelFormField(
+            String value,
+            DbBeanLanguage dbBeanLanguage,
+            boolean required,
+            HFHParameters params,
+            DbBeanLocalization dbBeanLocalization)
+    {
+        HFHParameters actualParameters = new HFHParameters(params);
+
+        actualParameters.setField(params.getField() + dbBeanLanguage.getTag());
+        actualParameters.setValue(value);
+        actualParameters.setFieldLabel(params.getFieldLabel()
+                + " " + dbBeanLanguage.getFieldLabelSuffix(dbBeanLocalization));
         actualParameters.setRequired(required);
 
         if (params.isAsTextArea())

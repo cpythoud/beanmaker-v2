@@ -6,6 +6,7 @@ import org.beanmaker.v2.util.Strings;
 
 import org.dbbeans.sql.DBAccess;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -154,6 +155,17 @@ public class LanguageHelper {
         if (bareLanguage == null)
             return language;
         return bareLanguage;
+    }
+
+    public List<DbBeanLanguage> orderLanguages(DbBeanLanguage firstLanguage, List<DbBeanLanguage> otherLanguages) {
+        var languages = new ArrayList<DbBeanLanguage>();
+        languages.add(firstLanguage);
+
+        for (var language: otherLanguages)
+            if (language.getId() != firstLanguage.getId())
+                languages.add(language);
+
+        return languages;
     }
 
     public static class Builder {

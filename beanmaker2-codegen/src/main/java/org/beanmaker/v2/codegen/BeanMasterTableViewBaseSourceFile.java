@@ -147,7 +147,8 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                                 .addContent(new ForEach(
                                         "DbBeanLanguage",
                                         "dbBeanLanguage",
-                                        new FunctionCall("getAllActiveLanguages", "LabelManager"))
+                                        new FunctionCall("getAllActiveLanguages", "LabelManager")
+                                                .addArgument("dbBeanLocalization"))
                                         .addContent(new FunctionCall("child", "filterRow")
                                                 .byItself()
                                                 .addArgument(new FunctionCall("get" + name + "FilterCell").addArgument("dbBeanLanguage"))))
@@ -241,7 +242,8 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                                 .addContent(new ForEach(
                                         "DbBeanLanguage",
                                         "dbBeanLanguage",
-                                        new FunctionCall("getAllActiveLanguages", "LabelManager"))
+                                        new FunctionCall("getAllActiveLanguages", "LabelManager")
+                                                .addArgument("dbBeanLocalization"))
                                         .addContent(new FunctionCall("child", "titleRow")
                                                 .byItself()
                                                 .addArgument(new FunctionCall("get" + labelName + "TitleCell")
@@ -268,11 +270,9 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                                         quickQuote(labelName),
                                         OperatorExpression.Operator.ADD))
                                 .addArgument(new OperatorExpression(
-                                        new OperatorExpression(
-                                                new FunctionCall("getTitle").addArgument(quickQuote(name)),
-                                                quickQuote(" "),
-                                                OperatorExpression.Operator.ADD),
-                                        new FunctionCall("getTag", "dbBeanLanguage"),
+                                        new FunctionCall("getTitle").addArgument(quickQuote(name)),
+                                        new FunctionCall("getFieldLabelSuffix", "dbBeanLanguage")
+                                                .addArgument("dbBeanLocalization"),
                                         OperatorExpression.Operator.ADD)))))
                 .addContent(EMPTY_LINE);
     }
@@ -377,7 +377,8 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                                 .addContent(new ForEach(
                                         "DbBeanLanguage",
                                         "dbBeanLanguage",
-                                        new FunctionCall("getAllActiveLanguages", "LabelManager"))
+                                        new FunctionCall("getAllActiveLanguages", "LabelManager")
+                                                .addArgument("dbBeanLocalization"))
                                         .addContent(new FunctionCall("child", "dataRow")
                                                 .byItself()
                                                 .addArgument(new FunctionCall("get" + chopID(name) + "TableCell")
