@@ -214,8 +214,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addNoParamConstructor() {
+        var constructor = createConstructor();
+        if (columns.isVersioned())
+            constructor.addContent(new Assignment("beanVersion", "1"));
+
         javaClass
-                .addContent(createConstructor())
+                .addContent(constructor)
                 .addContent(EMPTY_LINE);
     }
 
