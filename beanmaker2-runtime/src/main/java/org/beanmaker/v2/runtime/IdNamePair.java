@@ -60,6 +60,10 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		return disabled;
 	}
 
+	public long getIdAsLong() {
+		return Long.parseLong(id);
+	}
+
 	// ! Assumes only one "please select ..." element with id "0", throws an IllegalStateException otherwise.
 	@Override
 	public int compareTo(IdNamePair idNamePair) {
