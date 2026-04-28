@@ -1,5 +1,7 @@
 package org.beanmaker.v2.util;
 
+import tools.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -662,6 +664,11 @@ public class Strings {
             result.append(knownChars.indexOf(c) >= 0 ? c : '_');
         }
         return result.toString();
+    }
+
+    public static String jsonPrettyPrint(String json) {
+        var mapper = new ObjectMapper();
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(json));
     }
 
 }
