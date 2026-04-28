@@ -64,8 +64,11 @@ public final class IsoWeek {
     }
 
     public static IsoWeek getCurrent() {
-        var now = LocalDate.now();
-        return new IsoWeek(now.getYear(), now.get(WeekFields.ISO.weekOfWeekBasedYear()));
+        return getWeek(LocalDate.now());
+    }
+
+    public static IsoWeek getWeek(LocalDate date) {
+        return new IsoWeek(date.getYear(), date.get(WeekFields.ISO.weekOfWeekBasedYear()));
     }
 
     public static List<IsoWeek> getWeeks(int year) {
