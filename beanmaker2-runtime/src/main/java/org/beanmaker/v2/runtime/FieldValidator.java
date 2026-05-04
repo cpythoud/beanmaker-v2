@@ -124,22 +124,31 @@ public class FieldValidator {
             List<FieldValidationFunction> validationFunctions,
             DBTransaction transaction)
     {
-        var emptinessEvaluation = new EmptinessEvaluation();
+        return validate(validationFunctions, transaction, false);
+    }
+
+    public boolean validate(
+            List<FieldValidationFunction> validationFunctions,
+            DBTransaction transaction,
+            boolean shortCircuit)
+    {
+        var emptinessEvaluation = new EmptinessEvaluation(shortCircuit);
         if (emptinessEvaluation.shouldReturn)
             return emptinessEvaluation.returnValue;
 
-        return executeValidityChecks(validationFunctions, transaction) && executeUnicityCheck();
+        return executeValidityChecks(validationFunctions, transaction, shortCircuit) && executeUnicityCheck(shortCircuit);
     }
 
     private class EmptinessEvaluation {
         boolean shouldReturn = false;
         boolean returnValue = true;
 
-        EmptinessEvaluation() {
+        EmptinessEvaluation(boolean shortCircuit) {
             if (empty) {
                 shouldReturn = true;
                 if (required) {
-                    dbBeanLocalization.addErrorMessage(id, fieldName, fieldLabel, dbBeanLocalization.getRequiredErrorMessage(fieldName));
+                    if (!shortCircuit)
+                        dbBeanLocalization.addErrorMessage(id, fieldName, fieldLabel, dbBeanLocalization.getRequiredErrorMessage(fieldName));
                     returnValue = false;
                 }
             }
@@ -148,13 +157,14 @@ public class FieldValidator {
 
     private boolean executeValidityChecks(
             List<FieldValidationFunction> validationFunctions,
-            DBTransaction transaction)
+            DBTransaction transaction,
+            boolean shortCircuit)
     {
         boolean ok = true;
         for (var test: validationFunctions) {
             var result = test.validate(transaction);
             if (result.ok()) {
-                if (result.isWarning()) {
+                if (result.isWarning() && !shortCircuit) {
                     dbBeanLocalization.addWarningMessage(
                             id,
                             fieldName,
@@ -163,12 +173,16 @@ public class FieldValidator {
                     );
                 }
             } else {
+                if (shortCircuit)
+                    return false;
+
                 dbBeanLocalization.addErrorMessage(
                         id,
                         fieldName,
                         fieldLabel,
                         dbBeanLocalization.formatMessage(result.getLabelName(), result.getLabelParameters())
                 );
+
                 if (result.continueOnError())
                     ok = false;
                 else
@@ -178,9 +192,16 @@ public class FieldValidator {
         return ok;
     }
 
-    private boolean executeUnicityCheck() {
+    private boolean executeUnicityCheck(boolean shortCircuit) {
         if (shouldBeUnique && !isUnique) {
-            dbBeanLocalization.addErrorMessage(id, fieldName, fieldLabel, dbBeanLocalization.getNotUniqueErrorMessage(fieldName));
+            if (!shortCircuit) {
+                dbBeanLocalization.addErrorMessage(
+                        id,
+                        fieldName,
+                        fieldLabel,
+                        dbBeanLocalization.getNotUniqueErrorMessage(fieldName)
+                );
+            }
             return false;
         }
         return true;
