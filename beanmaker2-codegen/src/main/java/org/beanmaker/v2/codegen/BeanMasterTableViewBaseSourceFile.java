@@ -331,12 +331,13 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
                 .annotate("@Override")
                 .visibility(Visibility.PROTECTED)
                 .addArgument(new FunctionArgument("TrTag", "line"))
-                .addArgument(new FunctionArgument("B", beanVarName))
+                .addArgument(new FunctionArgument("B", beanVarName + "Bean"))
+                .addContent(new VarDeclaration("var", beanVarName, "(" + beanName + ") " + beanVarName + "Bean"))
                 .addContent(new VarDeclaration(
-                        beanDataClass,
+                        "var",
                         beanDataVarName,
                         new ObjectCreation(beanDataClass)
-                                .addArguments("(" + beanName + ") " + beanVarName, "dbBeanLocalization")));
+                                .addArguments(beanVarName, "dbBeanLocalization")));
 
         for (Column column: columns.getList())
             if (!column.isSpecial())
