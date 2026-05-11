@@ -1,8 +1,18 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.util.DecimalValueFormat;
+
 import java.util.Locale;
 import java.util.Optional;
 
+/**
+ * Represents a language entity in the database that extends general properties
+ * from {@link DbBeanInterface}. This interface provides various methods for working
+ * with language-related properties such as ISO codes, region codes, tags, and
+ * more. It also includes utility methods for handling localization-related tasks.
+ * <p>
+ * Your application should contain a 'Language' class that implements this interface. See Beanmaker documentation.
+ */
 public interface DbBeanLanguage extends DbBeanInterface {
 
     String getName();
@@ -79,6 +89,54 @@ public interface DbBeanLanguage extends DbBeanInterface {
      */
     default Boolean isDefaultLanguage() {
         return false;
+    }
+
+
+    /**
+     * Determines whether a space is needed before high punctuation characters.
+     * High punctuation characters typically include symbols like colon, semicolon, etc.
+     * This can be useful when tailoring text formatting for specific languages or regions.
+     *
+     * @return {@code true} if a space is required before high punctuation characters,
+     *         {@code false} otherwise.
+     */
+    default boolean needSpaceBeforeHighPunctuation() {
+        return false;
+    }
+
+    /**
+     * Returns a colon character ":" which may optionally be preceded by a space,
+     * depending on the result of the {@code needSpaceBeforeHighPunctuation()} method.
+     * If the {@code needSpaceBeforeHighPunctuation()} method returns {@code true},
+     * the colon is preceded by a space (" :"); otherwise, it returns the colon without a space (":").
+     *
+     * @return a colon character, optionally preceded by a space, depending on language-specific formatting rules.
+     */
+    default String colon() {
+        return needSpaceBeforeHighPunctuation() ? " :" : ":";
+    }
+
+    /**
+     * Returns a semicolon (";") which may optionally be preceded by a space,
+     * depending on the result of the {@code needSpaceBeforeHighPunctuation()} method.
+     * If {@code needSpaceBeforeHighPunctuation()} returns {@code true}, the semicolon
+     * is preceded by a space (" ;"); otherwise, it is returned without a space (";").
+     *
+     * @return a semicolon character, optionally preceded by a space, depending on language-specific formatting rules.
+     */
+    default String semicolon() {
+        return needSpaceBeforeHighPunctuation() ? " ;" : ";";
+    }
+
+    /**
+     * Retrieves the default {@link DecimalValueFormat} for representing decimal values.
+     * The default implementation returns {@link DecimalValueFormat#DOT}, which uses a dot (".")
+     * as the decimal separator.
+     *
+     * @return the default {@link DecimalValueFormat} instance, typically {@link DecimalValueFormat#DOT}.
+     */
+    default DecimalValueFormat decimalValueFormat() {
+        return DecimalValueFormat.DOT;
     }
 
 }
