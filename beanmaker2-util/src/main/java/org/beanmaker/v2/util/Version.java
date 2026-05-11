@@ -18,7 +18,7 @@ public class Version {
 
     static {
         Properties version = new Properties();
-        try (InputStream inputStream = Version.class.getClassLoader().getResourceAsStream("version.properties")) {
+        try (InputStream inputStream = Version.class.getClassLoader().getResourceAsStream("version-beanmaker.properties")) {
             version.load(inputStream);
             PREFIX  = version.getProperty("version.prefix");
             MAJOR   = Integer.parseInt(version.getProperty("version.major"));
