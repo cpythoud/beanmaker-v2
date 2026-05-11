@@ -73,9 +73,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                 itemOrderManager.addArgument(quickQuote(itemOrder.getItemOrderAssociatedField()));
 
             javaInterface
-                    .addContent(new VarDeclaration("ItemOrderManager", "ITEM_ORDER_MANAGER", itemOrderManager)
-                            .markAsStatic()
-                            .markAsFinal())
+                    .addContent(new VarDeclaration("ItemOrderManager", "ITEM_ORDER_MANAGER", itemOrderManager))
                     .addContent(EMPTY_LINE);
         }
     }
