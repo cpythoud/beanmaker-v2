@@ -14,10 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * ...
- */
 // TODO: remplacer/supprimer cette monstrosité
+@Deprecated(forRemoval = true)
 public class DBQueries {
 
     public static int getIntCount(DB db, String table) {
