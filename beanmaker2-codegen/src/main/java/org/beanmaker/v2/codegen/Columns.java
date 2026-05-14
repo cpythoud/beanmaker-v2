@@ -625,4 +625,22 @@ public class Columns implements Iterable<Column> {
         throw new AssertionError("Missing bean_version field in versioned bean: impossible situation.");
     }
 
+    public boolean isItemOrderAssociatedField(Column column) {
+        if (!hasItemOrder())
+            return false;
+
+        var itemOrderColumn = getItemOrderField();
+        return column.getSqlName().equals(itemOrderColumn.getItemOrderAssociatedField());
+    }
+
+    public Optional<Column> getItemOrderAssociatedField() {
+        if (hasItemOrder()) {
+            for (Column column: columns)
+                if (isItemOrderAssociatedField(column))
+                    return Optional.of(column);
+        }
+
+        return Optional.empty();
+    }
+
 }

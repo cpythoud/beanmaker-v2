@@ -185,6 +185,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 addProperty("String", name + "Str", false, new StringOrCode<>(EMPTY_STRING));
             if (column.isLabelReference())
                 addProperty("DbBeanLabelEditor", uncapitalize(chopID(name)), false, null);
+            if (column.isBeanReference() && columns.isItemOrderAssociatedField(column))
+                addProperty("long", "old" + capitalize(column.getJavaName()), false, new StringOrCode<>("0"));
         }
 
         newLine();
@@ -551,17 +553,31 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addBeanSetterFunctions(Column column) {
         String beanClass = column.getAssociatedBeanClass();
-        String beanVar = uncapitalize(chopID(column.getJavaName()));
+        String fieldVar = column.getJavaName();
+        String beanVar = uncapitalize(chopID(fieldVar));
+
+        var idAssignmentFunction = getStandardSetterFunctionDeclaration("long", fieldVar);
+        if (columns.isItemOrderAssociatedField(column))
+            idAssignmentFunction.addContent(
+                    new IfBlock(new Condition("this." + fieldVar + " > 0"))
+                            .addContent(new Assignment("old" + capitalize(fieldVar), "this." + fieldVar)));
+        idAssignmentFunction.addContent(new Assignment("this." + fieldVar, fieldVar));
+
+        var beanAssignmentFunction = new FunctionDeclaration("set" + capitalize(beanVar))
+                .visibility(Visibility.PUBLIC)
+                .addArgument(new FunctionArgument(beanClass, beanVar))
+                .addContent(checkNonZeroID(beanVar, beanClass))
+                .addContent(EMPTY_LINE);
+        if (columns.isItemOrderAssociatedField(column))
+            beanAssignmentFunction.addContent(
+                    new IfBlock(new Condition(fieldVar + " > 0"))
+                            .addContent(new Assignment("old" + capitalize(fieldVar), fieldVar)));
+        beanAssignmentFunction.addContent(new Assignment(fieldVar, new FunctionCall("getId", beanVar)));
 
         javaClass
-                .addContent(getStandardSetterFunctionWithAssignment(column))
+                .addContent(idAssignmentFunction)
                 .addContent(EMPTY_LINE)
-                .addContent(new FunctionDeclaration("set" + capitalize(beanVar))
-                        .visibility(Visibility.PUBLIC)
-                        .addArgument(new FunctionArgument(beanClass, beanVar))
-                        .addContent(checkNonZeroID(beanVar, beanClass))
-                        .addContent(EMPTY_LINE)
-                        .addContent(new Assignment(column.getJavaName(), new FunctionCall("getId", beanVar))))
+                .addContent(beanAssignmentFunction)
                 .addContent(EMPTY_LINE);
     }
 
@@ -1671,8 +1687,11 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 fullResetFunction.addContent(new Assignment("idOriginalBean", "0"));
             }
 
-            if (columns.hasItemOrder())
+            if (columns.hasItemOrder()) {
+                columns.getItemOrderAssociatedField().ifPresent(column ->
+                        fullResetFunction.addContent(new Assignment("old" + capitalize(column.getJavaName()), "0")));
                 fullResetFunction.addContent(new Assignment("itemOrder", "0"));
+            }
 
             if (!labels.isEmpty()) {
                 fullResetFunction.addContent(EMPTY_LINE);
@@ -1711,8 +1730,11 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 String name = column.getJavaName();
                 switch (type) {
                     case "long":
-                        if (!column.isLabelReference())
+                        if (!column.isLabelReference()) {
+                            if (column.isBeanReference() && columns.isItemOrderAssociatedField(column))
+                                resetFunction.addContent(new Assignment("old" + capitalize(name), name));
                             resetFunction.addContent(new Assignment(name, "0"));
+                        }
                         break;
                     case "Boolean":
                         resetFunction.addContent(new Assignment(name, "null"));
@@ -1911,6 +1933,13 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         for (Column label: labels)
             codeBlock.addContent(getUpdateLabelFunctionCalls(label));
 
+        columns.getItemOrderColumn().ifPresent(column -> {
+            if (column.hasItemOrderAssociatedField())
+                codeBlock.addContent(getItemOrderAssociatedFieldUpdateOperations(
+                        columns.getItemOrderAssociatedField().orElseThrow()
+                ));
+        });
+
         codeBlock.addContent(new FunctionCall("addUpdate", "transaction")
                 .byItself()
                 .addArgument(getBeanUpdateQuery())
@@ -1972,6 +2001,25 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addArgument("transaction")
                 )
                 .elseClause(new ElseBlock().addContent(noDatafunctionCall.addArgument("0")));
+    }
+
+    private IfBlock getItemOrderAssociatedFieldUpdateOperations(Column column) {
+        String fieldName = column.getJavaName();
+        String oldFieldName = "old" + capitalize(fieldName);
+
+        return new IfBlock(
+                new Condition(oldFieldName + " > 0").andCondition(new Condition(fieldName + " != " + oldFieldName)))
+                .addContent(new FunctionCall("itemOrderRemove", "dbBeanItemOrderManager")
+                        .byItself()
+                        .addArguments(oldFieldName, "itemOrder", "transaction"))
+                .addContent(new Assignment("itemOrder", new OperatorExpression(
+                        new FunctionCall("getMaxItemOrder", "dbBeanItemOrderManager")
+                                .addArgument("transaction")
+                                .addArgument(new FunctionCall("getItemOrderMaxQuery", "dbBeanItemOrderManager"))
+                                .addArgument(fieldName),
+                        "1",
+                        OperatorExpression.Operator.ADD
+                )));
     }
 
     private OperatorExpression getItemOrderPlusOneExpression(FunctionCall functionCall) {

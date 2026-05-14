@@ -589,4 +589,18 @@ public class ItemOrderManager {
         transaction.commit();
     }
 
+    public void itemOrderRemove(
+            long idSecondaryField,
+            long itemOrder,
+            DBTransaction transaction)
+    {
+        transaction.addUpdate(
+                getUpdateItemOrdersAboveQuery(),
+                stat -> {
+                    stat.setLong(1, itemOrder);
+                    stat.setLong(2, idSecondaryField);
+                }
+        );
+    }
+
 }
