@@ -18,6 +18,7 @@ public class BeanCsvImportSourceFile extends BeanCode {
 
     @Override
     protected void addImports() {
+        importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.DataFile");
     }
 
@@ -32,7 +33,21 @@ public class BeanCsvImportSourceFile extends BeanCode {
                 .addContent(javaClass.createConstructor()
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DataFile", "dataFile"))
-                        .addContent(new FunctionCall("super").addArgument("dataFile").byItself()))
+                        .addContent(new FunctionCall("super")
+                                .addArgument("dataFile")
+                                .byItself()
+                        )
+                )
+                .addContent(EMPTY_LINE)
+                .addContent(javaClass.createConstructor()
+                        .visibility(Visibility.PUBLIC)
+                        .addArgument(new FunctionArgument("DataFile", "dataFile"))
+                        .addArgument(new FunctionArgument("DbBeanLocalization", "dbBeanLocalization"))
+                        .addContent(new FunctionCall("super")
+                                .addArguments("dataFile", "dbBeanLocalization")
+                                .byItself()
+                        )
+                )
                 .addContent(EMPTY_LINE);
     }
 

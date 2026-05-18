@@ -199,18 +199,22 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                             "get" + nameCap + "DecimalValueFormat",
                             "DecimalValueFormat")
                             .markAsDefault()
+                            .addArgument(new FunctionArgument("DbBeanLocalization", "dbBeanLocalization"))
                             .addContent(new ReturnStatement(new FunctionCall(
                                     "getDefaultDecimalValueFormat",
-                                    "LocalDbBeanFormatter.INSTANCE"))))
+                                    "LocalDbBeanFormatter.INSTANCE")
+                                    .addArgument("dbBeanLocalization"))))
                     .addContent(EMPTY_LINE)
                     .addContent(new FunctionDeclaration(
                             "get" + nameCap + "DecimalValueParser",
                             "DecimalValueParser")
                             .markAsDefault()
+                            .addArgument(new FunctionArgument("DbBeanLocalization", "dbBeanLocalization"))
                             .addContent(new ReturnStatement(new FunctionCall(
                                     "getDefaultDecimalValueParser",
                                     "LocalDbBeanFormatter.INSTANCE")
-                                    .addArgument(Integer.toString(decimalValue.getDecimals())))))
+                                    .addArgument(Integer.toString(decimalValue.getDecimals()))
+                                    .addArgument("dbBeanLocalization"))))
                     .addContent(EMPTY_LINE);
         }
     }

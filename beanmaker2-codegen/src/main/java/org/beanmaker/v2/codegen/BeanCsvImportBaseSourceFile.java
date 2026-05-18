@@ -2,6 +2,8 @@ package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
 
+import org.jcodegen.java.Assignment;
+import org.jcodegen.java.ConstructorDeclaration;
 import org.jcodegen.java.FunctionArgument;
 import org.jcodegen.java.FunctionCall;
 import org.jcodegen.java.FunctionDeclaration;
@@ -29,6 +31,7 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addImports() {
+        importsManager.addImport("org.beanmaker.v2.runtime.DbBeanLocalization");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.DataEntry");
         importsManager.addImport("org.beanmaker.v2.runtime.csv.DataFile");
 
@@ -51,7 +54,20 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     @Override
+    protected void addProperties() {
+        javaClass
+                .addContent(new VarDeclaration("DbBeanLocalization", "dbBeanLocalization").markAsFinal())
+                .addContent(EMPTY_LINE);
+    }
+
+    @Override
     protected void addConstructors() {
+        javaClass
+                .addContent(startConstructor().addContent(
+                        new FunctionCall("this").byItself().addArguments("dataFile", "null")
+                ))
+                .addContent(EMPTY_LINE);
+
         var superCall = new FunctionCall("super")
                 .addArgument("dataFile")
                 .addArgument(beanName + "Editor.class")
@@ -61,11 +77,18 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
             superCall.addArgument(Strings.quickQuote(column.getJavaName()));
 
         javaClass
-                .addContent(javaClass.createConstructor()
-                        .visibility(Visibility.PACKAGE_PRIVATE)
-                        .addArgument(new FunctionArgument("DataFile", "dataFile"))
-                        .addContent(superCall))
+                .addContent(startConstructor()
+                        .addArgument(new FunctionArgument("DbBeanLocalization", "dbBeanLocalization"))
+                        .addContent(superCall)
+                        .addContent(new Assignment("this.dbBeanLocalization", "dbBeanLocalization"))
+                )
                 .addContent(EMPTY_LINE);
+    }
+
+    private ConstructorDeclaration startConstructor() {
+        return javaClass.createConstructor()
+                .visibility(Visibility.PACKAGE_PRIVATE)
+                .addArgument(new FunctionArgument("DataFile", "dataFile"));
     }
 
     @Override
@@ -127,6 +150,7 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
                             new FunctionCall(
                                     "get" + column.getCapitalizedJavaName() + "DecimalValueParser",
                                     beanName + "Parameters.INSTANCE")
+                                    .addArgument("dbBeanLocalization")
                     );
                 }
                 javaClass.addContent(

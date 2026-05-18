@@ -705,7 +705,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 "format",
                                 new FunctionCall(
                                         "get" + fieldCap + "DecimalValueFormat",
-                                        beanName + "Parameters.INSTANCE"))
+                                        beanName + "Parameters.INSTANCE")
+                                        .addArgument("dbBeanLocalization"))
                                 .addArgument(field))))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("parse" + fieldCap + "DecimalValue", "DecimalValue")
@@ -718,7 +719,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 "parse",
                                 new FunctionCall(
                                         "get" + fieldCap + "DecimalValueParser",
-                                        beanName + "Parameters.INSTANCE"))
+                                        beanName + "Parameters.INSTANCE")
+                                        .addArgument("dbBeanLocalization"))
                                 .addArguments(fieldStr, Integer.toString(column.getDecimals())))))
                 .addContent(EMPTY_LINE);
     }
@@ -1575,7 +1577,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                 .addArgument(nameStr)
                                 .addArgument(new FunctionCall(
                                         "get" + nameCap + "DecimalValueParser",
-                                        beanName + "Parameters.INSTANCE"))
+                                        beanName + "Parameters.INSTANCE")
+                                        .addArgument("dbBeanLocalization"))
                                 .addArgument(Boolean.toString(!column.canBeNegative()))))
                         .addContent(new ReturnStatement("FieldValidationResult.OK")))
                 .addContent(EMPTY_LINE)

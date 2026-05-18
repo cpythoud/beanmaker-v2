@@ -146,7 +146,8 @@ public class FormattedBeanDataBaseSourceFile extends BeanCodeWithDBInfo {
         if (column.isDecimalValue())
             functionCall.addArgument(new FunctionCall(
                     "get" + capitalize(column.getJavaName() + "DecimalValueFormat"),
-                    beanName + "Parameters.INSTANCE"));
+                    beanName + "Parameters.INSTANCE")
+                    .addArgument("localization"));
 
         return functionCall.addArgument("localization");
     }

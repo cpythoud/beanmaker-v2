@@ -211,19 +211,19 @@ public interface DbBeanFormatter {
         return MoneyFormat.DEFAULT_FORMAT;
     }
 
-    default DecimalValueFormat getDefaultDecimalValueFormat() {
+    default DecimalValueFormat getDefaultDecimalValueFormat(DbBeanLocalization dbBeanLocalization) {
         return DecimalValueFormat.DOT;
     }
 
-    default DecimalValueParser getDefaultDecimalValueParser() {
+    default DecimalValueParser getDefaultDecimalValueParser(DbBeanLocalization dbBeanLocalization) {
         return DEFAULT_DECIMAL_VALUE_PARSER;
     }
 
-    default DecimalValueParser getDefaultDecimalValueParser(int decimals) {
+    default DecimalValueParser getDefaultDecimalValueParser(int decimals, DbBeanLocalization dbBeanLocalization) {
         if (decimals <= 0)
             throw new IllegalArgumentException("Decimals must be positive");
 
-        return DecimalValueParser.from(getDefaultDecimalValueParser(), decimals);
+        return DecimalValueParser.from(getDefaultDecimalValueParser(dbBeanLocalization), decimals);
     }
 
 }
