@@ -160,6 +160,16 @@ public class Columns implements Iterable<Column> {
             throw new IllegalArgumentException("Column #" + index + " is not an item order field.");
     }
 
+    public void setItemOrderAssociatedField(String itemOrderAssociatedField) {
+        for (var column: columns)
+            if (column.isItemOrder()) {
+                column.setItemOrderAssociatedField(itemOrderAssociatedField);
+                return;
+            }
+
+        throw new IllegalArgumentException("Columns do not contain an item order field.");
+    }
+
     @Deprecated
     public boolean hasBadField() {
         return !checkForIncompatibleTypes().isEmpty();

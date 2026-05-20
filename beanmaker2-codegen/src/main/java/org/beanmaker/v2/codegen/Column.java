@@ -96,7 +96,7 @@ public class Column {
             modifiedBy = sqlName.equals(MODIFIER_FIELD);
             if (sqlName.equals(ORDERING_FIELD)) {
                 itemOrder = true;
-                unique = true;  // ???
+                unique = true;  // * on first detection, will be changed to false when secondary field is specified
             } else {
                 itemOrder = false;
             }
