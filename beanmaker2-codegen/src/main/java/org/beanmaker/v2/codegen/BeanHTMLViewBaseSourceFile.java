@@ -143,13 +143,19 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
             javaClass
                     .addContent(getRequiredFieldFunctionDeclaration(name)
                             .addArgument(getLanguageArgument())
-                            .addContent(new ReturnStatement(getRequiredFunctionCall(name)
-                                    .addArgument("dbBeanLanguage"))))
+                            .addContent(new ReturnStatement(
+                                    new Condition(new FunctionCall(getRequiredFieldFunctionName(name)))
+                                            .andCondition(new Condition(
+                                                    getRequiredFunctionCall(name).addArgument("dbBeanLanguage"))))))
                     .addContent(EMPTY_LINE);
     }
 
     private FunctionDeclaration getRequiredFieldFunctionDeclaration(String fieldName) {
-        return new FunctionDeclaration("is" + fieldName + "RequiredInHtmlForm", "boolean");
+        return new FunctionDeclaration(getRequiredFieldFunctionName(fieldName), "boolean");
+    }
+
+    private String getRequiredFieldFunctionName(String fieldName) {
+        return "is" + fieldName + "RequiredInHtmlForm";
     }
 
     private FunctionCall getRequiredFunctionCall(String fieldName) {

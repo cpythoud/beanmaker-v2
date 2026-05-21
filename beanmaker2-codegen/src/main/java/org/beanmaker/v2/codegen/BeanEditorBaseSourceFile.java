@@ -927,19 +927,35 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addPerLangLabelRequiredTestFunction(Column column) {
-        String requiredFunctionName = "is" + capitalize(column.getJavaName() + "Required");
         javaClass.addContent(
-                new FunctionDeclaration(requiredFunctionName, "boolean")
-                        .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
-                        .addContent(new ReturnStatement(
-                                new Condition(new FunctionCall(requiredFunctionName))
-                                        .andCondition(new Condition(new FunctionCall(
-                                                "isRequired",
-                                                new FunctionCall(
-                                                        "getRequiredLanguagesFor" + chopID(column.getJavaName()),
-                                                        beanName + "Parameters.INSTANCE"))
-                                                .addArgument("dbBeanLanguage"))))))
+                        new FunctionDeclaration("is" + capitalize(column.getJavaName() + "Required"), "boolean")
+                                .addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
+                                .addContent(new ReturnStatement(getFullLabelRequiredCondition(column))))
                 .addContent(EMPTY_LINE);
+    }
+
+    private Condition getFullLabelRequiredCondition(Column column) {
+        return new Condition(
+                new FunctionCall(
+                        "isRequired",
+                        new FunctionCall(
+                                "getRequiredLanguagesFor" + chopID(column.getJavaName()),
+                                beanName + "Parameters.INSTANCE")
+                ).addArgument("dbBeanLanguage")
+        ).setAndPrecedingCondition(getLabelRequiredCondition(column));
+    }
+
+    private Condition getLabelRequiredCondition(Column column) {
+        return new Condition(new FunctionCall("is" + capitalize(column.getJavaName() + "Required")))
+                .orCondition(getLabelNotNullWithDataCondition(column))
+                .needsParentheses();
+    }
+
+    private Condition getLabelNotNullWithDataCondition(Column column) {
+        String labelVar = uncapitalize(chopID(column.getJavaName()));
+        return new Condition(new Comparison(labelVar, "null", Comparison.Comparator.NEQ))
+                .andCondition(new Condition(new FunctionCall("cachedValuesExist", labelVar)))
+                .needsParentheses();
     }
 
     private void addUniqueTestFunctions() {
