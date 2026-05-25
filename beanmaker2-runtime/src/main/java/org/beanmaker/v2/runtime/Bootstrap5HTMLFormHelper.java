@@ -15,9 +15,6 @@ import org.jcodegen.html.Tag;
 import org.jcodegen.html.TextareaTag;
 import org.jcodegen.html.util.CssClasses;
 
-// !! This implementation for Bootstrap 5 should be considered alpha software !!
-// !! It will be augmented and stabilized as work on XnLab continues !!
-
 public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     private String verticalFormElementSpacing = "mb-3";
