@@ -4,6 +4,7 @@ import org.beanmaker.v2.util.Strings;
 
 import org.jcodegen.html.xmlbase.XMLElement;
 
+@Deprecated
 public class WebXMLConfig implements BeanMakerSourceFile {
 
     private static final String XML_CONFIG_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

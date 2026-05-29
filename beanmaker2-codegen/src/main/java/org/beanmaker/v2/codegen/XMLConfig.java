@@ -9,6 +9,7 @@ import java.util.Set;
 // ! This is a direct port from version 1. It might need a lot more work.
 // ! --------------------------------------------------------------------
 
+@Deprecated
 public class XMLConfig implements BeanMakerSourceFile {
 
     private static final String XML_CONFIG_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
