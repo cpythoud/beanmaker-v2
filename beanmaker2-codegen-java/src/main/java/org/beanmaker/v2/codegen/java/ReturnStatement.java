@@ -5,7 +5,7 @@ package org.beanmaker.v2.codegen.java;
  */
 public class ReturnStatement extends JavaCodeBlock<ReturnStatement> {
 
-    private final StringOrCode<JavaCodeBlock> returnedVal;
+    private final StringOrCode<JavaCodeBlock<?>> returnedVal;
     private final Condition condition;
 
 
@@ -19,7 +19,7 @@ public class ReturnStatement extends JavaCodeBlock<ReturnStatement> {
         this(returnedVal, 0);
     }
 
-    public ReturnStatement(final JavaCodeBlock returnedVal) {
+    public ReturnStatement(final JavaCodeBlock<?> returnedVal) {
         this(returnedVal, 0);
     }
 
@@ -29,7 +29,7 @@ public class ReturnStatement extends JavaCodeBlock<ReturnStatement> {
         condition = null;
     }
 
-    public ReturnStatement(final JavaCodeBlock returnedVal, final int indentationLevel) {
+    public ReturnStatement(final JavaCodeBlock<?> returnedVal, final int indentationLevel) {
         super("return", indentationLevel);
         this.returnedVal = new StringOrCode<>(returnedVal);
         condition = null;

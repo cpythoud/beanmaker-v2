@@ -6,7 +6,7 @@ package org.beanmaker.v2.codegen.java;
 public class Assignment extends JavaCodeBlock<Assignment> {
 
     private final StringOrCode<FunctionCall> lvalue;
-    private final StringOrCode<Expression> rvalue;
+    private final StringOrCode<Expression<?>> rvalue;
     private final OperatorExpression altRvalue;
 
     private boolean embedded = false;
@@ -18,8 +18,8 @@ public class Assignment extends JavaCodeBlock<Assignment> {
 
     public Assignment(String lvalue, String rvalue, int indentationLevel) {
         super("=", indentationLevel);
-        this.lvalue = new StringOrCode<FunctionCall>(lvalue);
-        this.rvalue = new StringOrCode<Expression>(rvalue);
+        this.lvalue = new StringOrCode<>(lvalue);
+        this.rvalue = new StringOrCode<>(rvalue);
         altRvalue = null;
     }
 
@@ -30,29 +30,29 @@ public class Assignment extends JavaCodeBlock<Assignment> {
     public Assignment(FunctionCall lvalue, String rvalue, int indentationLevel) {
         super("=", indentationLevel);
         this.lvalue = new StringOrCode<>(lvalue);
-        this.rvalue = new StringOrCode<Expression>(rvalue);
+        this.rvalue = new StringOrCode<>(rvalue);
         altRvalue = null;
     }
 
-    public Assignment(String lvalue, Expression rvalue) {
+    public Assignment(String lvalue, Expression<?> rvalue) {
         this(lvalue, rvalue, 0);
     }
 
-    public Assignment(String lvalue, Expression rvalue, int indentationLevel) {
+    public Assignment(String lvalue, Expression<?> rvalue, int indentationLevel) {
         super("=", indentationLevel);
         this.lvalue = new StringOrCode<>(lvalue);
-        this.rvalue = new StringOrCode<Expression>(rvalue);
+        this.rvalue = new StringOrCode<>(rvalue);
         altRvalue = null;
     }
 
-    public Assignment(FunctionCall lvalue, Expression rvalue) {
+    public Assignment(FunctionCall lvalue, Expression<?> rvalue) {
         this(lvalue, rvalue, 0);
     }
 
-    public Assignment(FunctionCall lvalue, Expression rvalue, int indentationLevel) {
+    public Assignment(FunctionCall lvalue, Expression<?> rvalue, int indentationLevel) {
         super("=", indentationLevel);
         this.lvalue = new StringOrCode<>(lvalue);
-        this.rvalue = new StringOrCode<Expression>(rvalue);
+        this.rvalue = new StringOrCode<>(rvalue);
         altRvalue = null;
     }
 

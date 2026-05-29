@@ -8,7 +8,7 @@ import java.util.List;
  */
 public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
 
-    private final List<JavaCodeBlock> content = new ArrayList<>();
+    private final List<JavaCodeBlock<?>> content = new ArrayList<>();
 
     private final String keyword;
     private int indentationLevel;
@@ -32,7 +32,7 @@ public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
 
     public void setIndentationLevel(int indentationLevel) {
         this.indentationLevel = indentationLevel;
-        for (JavaCodeBlock block: content)
+        for (var block: content)
             block.setIndentationLevel(indentationLevel + 1);
     }
 
@@ -50,7 +50,7 @@ public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
     }
 
 
-    public T addContent(JavaCodeBlock codeBlock) {
+    public T addContent(JavaCodeBlock<?> codeBlock) {
         codeBlock.setIndentationLevel(getIndentationLevel() + 1);
         content.add(codeBlock);
         return getThis();
@@ -85,7 +85,7 @@ public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
     }
 
     protected void appendCodeBlocks(StringBuilder buf) {
-        for (JavaCodeBlock javaCodeBlock: content)
+        for (var javaCodeBlock: content)
             buf.append(javaCodeBlock);
     }
 
@@ -112,7 +112,7 @@ public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
 
 
     protected boolean contentContainsBlock(String keyword) {
-        for (JavaCodeBlock codeBlock: content)
+        for (var codeBlock: content)
             if (codeBlock.keyword.equals(keyword))
                 return true;
 

@@ -7,7 +7,7 @@ public class AnonymousClassCreation extends Expression<AnonymousClassCreation> {
 
     private final String className;
 
-    private JavaCodeBlock context = null;
+    private JavaCodeBlock<?> context = null;
     private int extraContextIndentation = 0;
 
     public AnonymousClassCreation(String className) {
@@ -25,11 +25,11 @@ public class AnonymousClassCreation extends Expression<AnonymousClassCreation> {
         return this;
     }
 
-    public AnonymousClassCreation setContext(JavaCodeBlock context) {
+    public AnonymousClassCreation setContext(JavaCodeBlock<?> context) {
         return setContext(context, 0);
     }
 
-    public AnonymousClassCreation setContext(JavaCodeBlock context, int extraContextIndentation) {
+    public AnonymousClassCreation setContext(JavaCodeBlock<?> context, int extraContextIndentation) {
         this.context = context;
         this.extraContextIndentation = extraContextIndentation;
         return getThis();

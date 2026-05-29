@@ -5,8 +5,8 @@ package org.beanmaker.v2.codegen.java;
  */
 public class OperatorExpression extends JavaCodeBlock<OperatorExpression> {
 
-    private final StringOrCode<JavaCodeBlock> left;
-    private final StringOrCode<JavaCodeBlock> right;
+    private final StringOrCode<JavaCodeBlock<?>> left;
+    private final StringOrCode<JavaCodeBlock<?>> right;
     private final Operator operator;
 
     private boolean embedded = true;
@@ -71,64 +71,64 @@ public class OperatorExpression extends JavaCodeBlock<OperatorExpression> {
 
     public OperatorExpression(final String left, final String right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final String left, final FunctionCall right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final String left, final OperatorExpression right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final FunctionCall left, final String right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final FunctionCall left, final FunctionCall right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final FunctionCall left, final OperatorExpression right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final OperatorExpression left, final String right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final OperatorExpression left, final FunctionCall right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
     public OperatorExpression(final OperatorExpression left, final OperatorExpression right, final Operator operator, final int indentation) {
         super(operator.getVal(), indentation);
-        this.left = new StringOrCode<JavaCodeBlock>(left);
-        this.right = new StringOrCode<JavaCodeBlock>(right);
+        this.left = new StringOrCode<>(left);
+        this.right = new StringOrCode<>(right);
         this.operator = operator;
     }
 
@@ -172,4 +172,5 @@ public class OperatorExpression extends JavaCodeBlock<OperatorExpression> {
 
         return buf.toString();
     }
+
 }

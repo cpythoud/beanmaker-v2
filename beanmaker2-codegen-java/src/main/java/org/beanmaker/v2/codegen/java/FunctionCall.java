@@ -6,7 +6,7 @@ package org.beanmaker.v2.codegen.java;
 public class FunctionCall extends Expression<FunctionCall> {
 
     private final String function;
-    private final StringOrCode<Expression> object;
+    private final StringOrCode<Expression<?>> object;
 
 
     public FunctionCall(final String function) {
@@ -29,11 +29,11 @@ public class FunctionCall extends Expression<FunctionCall> {
         this.object = new StringOrCode<>(object);
     }
 
-    public FunctionCall(final String function, final Expression object) {
+    public FunctionCall(final String function, final Expression<?> object) {
         this(function, object, 0);
     }
 
-    public FunctionCall(final String function, final Expression object, final int indentationLevel) {
+    public FunctionCall(final String function, final Expression<?> object, final int indentationLevel) {
         super("FunctionCall", indentationLevel);
         this.function = function;
         this.object = new StringOrCode<>(object);

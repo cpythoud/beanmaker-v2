@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Condition {
 
-    private final StringOrCode<JavaCodeBlock> conditionCode;
+    private final StringOrCode<JavaCodeBlock<?>> conditionCode;
     private final boolean reverse;
 
     private boolean parentheses = false;
@@ -27,11 +27,11 @@ public class Condition {
         this.reverse = reverse;
     }
 
-    public Condition(JavaCodeBlock conditionCode) {
+    public Condition(JavaCodeBlock<?> conditionCode) {
         this(conditionCode, false);
     }
 
-    public Condition(JavaCodeBlock conditionCode, boolean reverse) {
+    public Condition(JavaCodeBlock<?> conditionCode, boolean reverse) {
         this.conditionCode = new StringOrCode<>(conditionCode);
         this.reverse = reverse;
     }

@@ -6,7 +6,7 @@ import java.util.List;
 public class ChainedFunctionCalls extends Expression<ChainedFunctionCalls> {
 
     private final String function;
-    private final StringOrCode<Expression> object;
+    private final StringOrCode<Expression<?>> object;
 
     private final List<FunctionCall> chainedCalls = new ArrayList<>();
 
@@ -30,11 +30,11 @@ public class ChainedFunctionCalls extends Expression<ChainedFunctionCalls> {
         this.object = new StringOrCode<>(object);
     }
 
-    public ChainedFunctionCalls(String function, Expression object) {
+    public ChainedFunctionCalls(String function, Expression<?> object) {
         this(function, object, 0);
     }
 
-    public ChainedFunctionCalls(String function, Expression object, int indentationLevel) {
+    public ChainedFunctionCalls(String function, Expression<?> object, int indentationLevel) {
         super("FunctionCall", indentationLevel);
         this.function = function;
         this.object = new StringOrCode<>(object);

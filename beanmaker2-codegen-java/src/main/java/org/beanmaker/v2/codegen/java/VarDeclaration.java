@@ -9,7 +9,7 @@ import java.util.List;
 public class VarDeclaration extends Declaration<VarDeclaration> {
 
     private final String type;
-    private final StringOrCode<Expression> value;
+    private final StringOrCode<Expression<?>> value;
 
 
     public VarDeclaration(String type, String name) {
@@ -34,15 +34,15 @@ public class VarDeclaration extends Declaration<VarDeclaration> {
         this.value = new StringOrCode<>(value);
     }
 
-    public VarDeclaration(String type, String name, Expression value) {
+    public VarDeclaration(String type, String name, Expression<?> value) {
         this(type, name, value, Visibility.NONE);
     }
 
-    public VarDeclaration(String type, String name, Expression value, Visibility visibility) {
+    public VarDeclaration(String type, String name, Expression<?> value, Visibility visibility) {
         this(type, name, value, visibility, 0);
     }
 
-    public VarDeclaration(String type, String name, Expression value, Visibility visibility, int indentationLevel) {
+    public VarDeclaration(String type, String name, Expression<?> value, Visibility visibility, int indentationLevel) {
         super("Variable", indentationLevel, name);
         visibility(visibility);
         this.type = type;
