@@ -31,7 +31,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DBUtil", "DbBeanLanguage", "ToStringMaker", "DbBeanInitializer");
     private static final List<String> SQL_IMPORTS =
-            createImportList("org.dbbeans.sql", "DBQuerySetup", "DBTransaction", "SQLRuntimeException");
+            createImportList("org.beanmaker.v2.database.sql", "DBQuerySetup", "DBTransaction", "SQLRuntimeException");
 
     private final Set<String> types;
 

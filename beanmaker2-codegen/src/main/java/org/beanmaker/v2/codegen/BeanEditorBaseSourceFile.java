@@ -44,7 +44,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             createImportList("org.beanmaker.v2.runtime", "DBUtil", "FieldValidationFunction",
                     "FieldValidationResult", "FieldValidator", "GlobalValidator", "ToStringMaker");
     private static final List<String> SQL_IMPORTS =
-            createImportList("org.dbbeans.sql", "DBQuerySetup", "DBTransaction");
+            createImportList("org.beanmaker.v2.database.sql", "DBQuerySetup", "DBTransaction");
 
     private final Set<String> types;
 

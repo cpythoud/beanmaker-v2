@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.dbbeans.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DBAccess;
 
 import java.util.HashMap;
 import java.util.Map;

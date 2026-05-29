@@ -1,10 +1,10 @@
 package org.beanmaker.v2.runtime.dbutil;
 
+import org.beanmaker.v2.database.sql.DBAccess;
+
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
 import org.beanmaker.v2.util.Strings;
-
-import org.dbbeans.sql.DBAccess;
 
 import java.util.ArrayList;
 import java.util.Collections;

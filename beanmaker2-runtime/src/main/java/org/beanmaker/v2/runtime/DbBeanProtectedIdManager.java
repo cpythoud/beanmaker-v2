@@ -1,8 +1,8 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.util.Dates;
+import org.beanmaker.v2.database.sql.DBAccess;
 
-import org.dbbeans.sql.DBAccess;
+import org.beanmaker.v2.util.Dates;
 
 import rodeo.password.pgencheck.CharacterGroups;
 import rodeo.password.pgencheck.PasswordMaker;
@@ -10,6 +10,7 @@ import rodeo.password.pgencheck.PasswordMaker;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+
 import java.sql.ResultSet;
 
 public class DbBeanProtectedIdManager<B extends DbBeanWithProtectedIdInterface> {

@@ -32,7 +32,7 @@ public class LocalFileManagerSourceFile extends BaseCode {
     @Override
     protected void addImports() {
         addImports(BM_RUNTIME_IMPORTS);
-        importsManager.addImport("org.dbbeans.sql.DBTransaction");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
     }
 
     @Override

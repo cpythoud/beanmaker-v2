@@ -1,7 +1,7 @@
 package org.beanmaker.v2.runtime;
 
-import org.dbbeans.sql.DBAccess;
-import org.dbbeans.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DBTransaction;
 
 import java.sql.ResultSet;
 

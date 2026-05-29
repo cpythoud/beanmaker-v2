@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.dbbeans.sql.DB;
+import org.beanmaker.v2.database.sql.DB;
 
 public interface DatabaseProvider {
 

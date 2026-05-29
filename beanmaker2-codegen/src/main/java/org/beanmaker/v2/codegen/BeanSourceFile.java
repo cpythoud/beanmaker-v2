@@ -18,7 +18,7 @@ public class BeanSourceFile extends BeanCode {
 
     @Override
     protected void addImports() {
-        importsManager.addImport("org.dbbeans.sql.DBTransaction");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
         importsManager.addImport("java.sql.ResultSet");
     }
 

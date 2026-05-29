@@ -1,6 +1,6 @@
 package org.beanmaker.v2.codegen;
 
-import org.dbbeans.sql.DBUtils;
+import org.beanmaker.v2.database.sql.DBUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

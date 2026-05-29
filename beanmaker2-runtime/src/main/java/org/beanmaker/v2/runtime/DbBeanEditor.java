@@ -1,11 +1,11 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.database.sql.DBTransaction;
+
 import org.beanmaker.v2.runtime.dbutil.Transactions;
 
 import org.beanmaker.v2.util.SecurityTokenGenerator;
 import org.beanmaker.v2.util.Types;
-
-import org.dbbeans.sql.DBTransaction;
 
 import java.util.Collections;
 import java.util.List;

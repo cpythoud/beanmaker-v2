@@ -52,7 +52,7 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
 
         if (columns.isVersioned()) {
             importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
-            importsManager.addImport("org.dbbeans.sql.DBTransaction");
+            importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
         }
 
         importsManager.addStaticImport("org.beanmaker.v2.runtime.FieldEquality.areEqual");

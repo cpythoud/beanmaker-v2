@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.dbbeans.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DBTransaction;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -4,7 +4,7 @@ module org.beanmaker.v2.runtime {
     requires javaee.web.api;
 
     requires org.beanmaker.v2.util;
-    requires org.dbbeans.sql;
+    requires org.beanmaker.v2.database.sql;
     requires org.jcodegen.html;
     requires rodeo.password.pgencheck;
 

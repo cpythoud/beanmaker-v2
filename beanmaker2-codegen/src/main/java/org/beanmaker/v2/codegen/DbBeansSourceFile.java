@@ -34,14 +34,14 @@ public class DbBeansSourceFile extends BaseCode {
 
     @Override
     protected void addImports() {
-        importsManager.addImport("org.dbbeans.sql.DB");
-        importsManager.addImport("org.dbbeans.sql.DBAccess");
-        importsManager.addImport("org.dbbeans.sql.DBTransaction");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DB");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DBAccess");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
         if (projectParameters.createDatabaseProviderReference()) {
             importsManager.addImport("org.beanmaker.v2.runtime.DatabaseProvider");
             importsManager.addImport("org.beanmaker.v2.util.Types");
         } else {
-            importsManager.addImport("org.dbbeans.sql.DBFromDataSource");
+            importsManager.addImport("org.beanmaker.v2.database.sql.DBFromDataSource");
         }
     }
 

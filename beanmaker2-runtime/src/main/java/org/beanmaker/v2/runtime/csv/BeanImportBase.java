@@ -1,12 +1,12 @@
 package org.beanmaker.v2.runtime.csv;
 
+import org.beanmaker.v2.database.sql.DBTransaction;
+
 import org.beanmaker.v2.runtime.DbBeanEditor;
 import org.beanmaker.v2.runtime.dbutil.Transactions;
 
 import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.DecimalValueParser;
-
-import org.dbbeans.sql.DBTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

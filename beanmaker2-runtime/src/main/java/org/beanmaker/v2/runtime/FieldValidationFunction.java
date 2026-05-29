@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.dbbeans.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DBTransaction;
 
 @FunctionalInterface
 public interface FieldValidationFunction {

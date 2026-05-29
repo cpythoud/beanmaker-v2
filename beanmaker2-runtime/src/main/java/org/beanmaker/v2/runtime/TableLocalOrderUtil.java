@@ -1,11 +1,11 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.util.Sets;
+import org.beanmaker.v2.database.sql.DBQueryRetrieveData;
+import org.beanmaker.v2.database.sql.DBQuerySetup;
+import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DBUpdates;
 
-import org.dbbeans.sql.DBQueryRetrieveData;
-import org.dbbeans.sql.DBQuerySetup;
-import org.dbbeans.sql.DBTransaction;
-import org.dbbeans.sql.DBUpdates;
+import org.beanmaker.v2.util.Sets;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

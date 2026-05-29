@@ -1,16 +1,16 @@
 package org.beanmaker.v2.runtime.dbutil;
 
+import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DBQueryRetrieveData;
+import org.beanmaker.v2.database.sql.DBQuerySetup;
+import org.beanmaker.v2.database.sql.DBTransaction;
+
 import org.beanmaker.v2.runtime.DbBeanLabel;
 import org.beanmaker.v2.runtime.DbBeanLabelEditor;
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
 import org.beanmaker.v2.util.Dates;
 import org.beanmaker.v2.util.Strings;
-
-import org.dbbeans.sql.DBAccess;
-import org.dbbeans.sql.DBQueryRetrieveData;
-import org.dbbeans.sql.DBQuerySetup;
-import org.dbbeans.sql.DBTransaction;
 
 import rodeo.password.pgencheck.PasswordMaker;
 

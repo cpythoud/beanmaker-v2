@@ -1,9 +1,9 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.database.sql.DBTransaction;
+
 import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
-
-import org.dbbeans.sql.DBTransaction;
 
 import java.sql.Date;
 import java.sql.Time;

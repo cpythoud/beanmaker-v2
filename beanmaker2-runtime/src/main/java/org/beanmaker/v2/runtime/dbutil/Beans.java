@@ -1,9 +1,9 @@
 package org.beanmaker.v2.runtime.dbutil;
 
+import org.beanmaker.v2.database.sql.DBTransaction;
+
 import org.beanmaker.v2.runtime.DbBeanEditor;
 import org.beanmaker.v2.runtime.DbBeanInterface;
-
-import org.dbbeans.sql.DBTransaction;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

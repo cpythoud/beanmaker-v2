@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.csv;
 
-import org.dbbeans.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DBTransaction;
 
 public interface DbBeanCsvImport {
 

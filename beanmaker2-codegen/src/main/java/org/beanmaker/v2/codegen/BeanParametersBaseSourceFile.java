@@ -47,7 +47,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
             importsManager.addImport("org.beanmaker.v2.util.DecimalValueParser");
         }
         if (columns.isVersioned())
-            importsManager.addImport("org.dbbeans.sql.DBTransaction");
+            importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
     }
 
     @Override

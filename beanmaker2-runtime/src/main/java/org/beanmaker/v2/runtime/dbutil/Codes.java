@@ -1,13 +1,13 @@
 package org.beanmaker.v2.runtime.dbutil;
 
+import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DBTransaction;
+
 import org.beanmaker.v2.runtime.DbBeanEditorInterface;
 import org.beanmaker.v2.runtime.DbBeanParameters;
 import org.beanmaker.v2.runtime.DbBeanInterface;
 
 import org.beanmaker.v2.util.Strings;
-
-import org.dbbeans.sql.DBAccess;
-import org.dbbeans.sql.DBTransaction;
 
 import java.util.List;
 import java.util.Optional;

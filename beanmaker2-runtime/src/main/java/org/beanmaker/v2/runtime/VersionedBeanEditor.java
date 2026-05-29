@@ -1,8 +1,8 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.runtime.dbutil.Transactions;
+import org.beanmaker.v2.database.sql.DBTransaction;
 
-import org.dbbeans.sql.DBTransaction;
+import org.beanmaker.v2.runtime.dbutil.Transactions;
 
 public interface VersionedBeanEditor extends VersionedBean {
 
