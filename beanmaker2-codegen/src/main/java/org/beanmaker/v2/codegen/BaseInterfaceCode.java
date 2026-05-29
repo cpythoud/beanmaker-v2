@@ -1,11 +1,11 @@
 package org.beanmaker.v2.codegen;
 
-import org.beanmaker.v2.util.Version;
+import org.beanmaker.v2.codegen.java.EmptyLine;
+import org.beanmaker.v2.codegen.java.ImportsManager;
+import org.beanmaker.v2.codegen.java.InterfaceSourceFile;
+import org.beanmaker.v2.codegen.java.JavaInterface;
 
-import org.jcodegen.java.EmptyLine;
-import org.jcodegen.java.ImportsManager;
-import org.jcodegen.java.InterfaceSourceFile;
-import org.jcodegen.java.JavaInterface;
+import org.beanmaker.v2.util.Version;
 
 import java.time.Instant;
 

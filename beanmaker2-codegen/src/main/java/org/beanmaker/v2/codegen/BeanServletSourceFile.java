@@ -1,6 +1,6 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.Visibility;
+import org.beanmaker.v2.codegen.java.Visibility;
 
 public class BeanServletSourceFile extends BeanCode {
 

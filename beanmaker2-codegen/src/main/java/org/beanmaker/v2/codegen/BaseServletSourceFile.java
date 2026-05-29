@@ -1,9 +1,9 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.ExceptionThrow;
-import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionDeclaration;
-import org.jcodegen.java.Visibility;
+import org.beanmaker.v2.codegen.java.ExceptionThrow;
+import org.beanmaker.v2.codegen.java.FunctionArgument;
+import org.beanmaker.v2.codegen.java.FunctionDeclaration;
+import org.beanmaker.v2.codegen.java.Visibility;
 
 import java.util.List;
 

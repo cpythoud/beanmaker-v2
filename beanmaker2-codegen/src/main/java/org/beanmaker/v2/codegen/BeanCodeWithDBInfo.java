@@ -1,15 +1,15 @@
 package org.beanmaker.v2.codegen;
 
-import org.beanmaker.v2.util.Strings;
+import org.beanmaker.v2.codegen.java.FunctionArgument;
+import org.beanmaker.v2.codegen.java.FunctionCall;
+import org.beanmaker.v2.codegen.java.FunctionDeclaration;
+import org.beanmaker.v2.codegen.java.ObjectCreation;
+import org.beanmaker.v2.codegen.java.ReturnStatement;
+import org.beanmaker.v2.codegen.java.StringOrCode;
+import org.beanmaker.v2.codegen.java.VarDeclaration;
+import org.beanmaker.v2.codegen.java.Visibility;
 
-import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionCall;
-import org.jcodegen.java.FunctionDeclaration;
-import org.jcodegen.java.ObjectCreation;
-import org.jcodegen.java.ReturnStatement;
-import org.jcodegen.java.StringOrCode;
-import org.jcodegen.java.VarDeclaration;
-import org.jcodegen.java.Visibility;
+import org.beanmaker.v2.util.Strings;
 
 import java.util.List;
 

@@ -1,8 +1,7 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionCall;
-import org.jcodegen.java.Visibility;
+import org.beanmaker.v2.codegen.java.FunctionArgument;
+import org.beanmaker.v2.codegen.java.FunctionCall;
 
 import java.util.List;
 

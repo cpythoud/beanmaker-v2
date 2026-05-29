@@ -1,10 +1,10 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.Condition;
-import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionCall;
-import org.jcodegen.java.FunctionDeclaration;
-import org.jcodegen.java.ReturnStatement;
+import org.beanmaker.v2.codegen.java.Condition;
+import org.beanmaker.v2.codegen.java.FunctionArgument;
+import org.beanmaker.v2.codegen.java.FunctionCall;
+import org.beanmaker.v2.codegen.java.FunctionDeclaration;
+import org.beanmaker.v2.codegen.java.ReturnStatement;
 
 import java.util.ArrayList;
 import java.util.List;

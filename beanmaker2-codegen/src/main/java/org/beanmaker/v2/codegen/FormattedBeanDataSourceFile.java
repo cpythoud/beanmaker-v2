@@ -1,9 +1,9 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.ConstructorDeclaration;
-import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionCall;
-import org.jcodegen.java.Visibility;
+import org.beanmaker.v2.codegen.java.ConstructorDeclaration;
+import org.beanmaker.v2.codegen.java.FunctionArgument;
+import org.beanmaker.v2.codegen.java.FunctionCall;
+import org.beanmaker.v2.codegen.java.Visibility;
 
 public class FormattedBeanDataSourceFile extends BeanCode {
 

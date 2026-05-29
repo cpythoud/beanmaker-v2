@@ -1,11 +1,11 @@
 package org.beanmaker.v2.codegen;
 
-import org.beanmaker.v2.util.Version;
+import org.beanmaker.v2.codegen.java.EmptyLine;
+import org.beanmaker.v2.codegen.java.EnumSourceFile;
+import org.beanmaker.v2.codegen.java.ImportsManager;
+import org.beanmaker.v2.codegen.java.JavaEnum;
 
-import org.jcodegen.java.EmptyLine;
-import org.jcodegen.java.EnumSourceFile;
-import org.jcodegen.java.ImportsManager;
-import org.jcodegen.java.JavaEnum;
+import org.beanmaker.v2.util.Version;
 
 import java.time.Instant;
 

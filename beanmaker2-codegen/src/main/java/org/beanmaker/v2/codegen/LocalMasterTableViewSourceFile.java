@@ -1,7 +1,7 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionCall;
+import org.beanmaker.v2.codegen.java.FunctionArgument;
+import org.beanmaker.v2.codegen.java.FunctionCall;
 
 public class LocalMasterTableViewSourceFile extends BaseCode {
 

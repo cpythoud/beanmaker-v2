@@ -1,16 +1,16 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.codegen.java.ClassSourceFile;
+import org.beanmaker.v2.codegen.java.EmptyLine;
+import org.beanmaker.v2.codegen.java.ExceptionThrow;
+import org.beanmaker.v2.codegen.java.FunctionArgument;
+import org.beanmaker.v2.codegen.java.FunctionDeclaration;
+import org.beanmaker.v2.codegen.java.ImportsManager;
+import org.beanmaker.v2.codegen.java.JavaClass;
+import org.beanmaker.v2.codegen.java.Visibility;
+
 import org.beanmaker.v2.util.Strings;
 import org.beanmaker.v2.util.Version;
-
-import org.jcodegen.java.ClassSourceFile;
-import org.jcodegen.java.EmptyLine;
-import org.jcodegen.java.ExceptionThrow;
-import org.jcodegen.java.FunctionArgument;
-import org.jcodegen.java.FunctionDeclaration;
-import org.jcodegen.java.ImportsManager;
-import org.jcodegen.java.JavaClass;
-import org.jcodegen.java.Visibility;
 
 import java.time.Instant;
 

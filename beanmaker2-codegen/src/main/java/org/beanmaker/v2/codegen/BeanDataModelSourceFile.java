@@ -1,7 +1,8 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.codegen.java.Visibility;
+
 import org.beanmaker.v2.util.Version;
-import org.jcodegen.java.Visibility;
 
 import java.time.Instant;
 
