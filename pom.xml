@@ -67,6 +67,7 @@
         <module>beanmaker2-email</module>
         <module>beanmaker2-email-smtp</module>
         <module>beanmaker2-database-sql</module>
+        <module>beanmaker2-codegen-java</module>
     </modules>
 
     <dependencyManagement>
