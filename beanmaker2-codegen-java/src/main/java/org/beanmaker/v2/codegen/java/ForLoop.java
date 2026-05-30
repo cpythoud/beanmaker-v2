@@ -7,11 +7,11 @@ public class ForLoop extends JavaCodeBlock<ForLoop> {
 
     private final String loopCondition;
 
-    public ForLoop(final String loopCondition) {
+    public ForLoop(String loopCondition) {
         this(loopCondition,  0);
     }
 
-    public ForLoop(final String loopCondition, final int indentationLevel) {
+    public ForLoop(String loopCondition, int indentationLevel) {
         super("for", indentationLevel);
         this.loopCondition = loopCondition;
     }
@@ -24,7 +24,7 @@ public class ForLoop extends JavaCodeBlock<ForLoop> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(getTabs());
         buf.append("for (");
@@ -42,13 +42,4 @@ public class ForLoop extends JavaCodeBlock<ForLoop> {
         return buf.toString();
     }
 
-    @Deprecated
-    public static ForLoop forAll(final String type, final String var, final String items) {
-        return forAll(type, var, items, 0);
-    }
-
-    @Deprecated
-    public static ForLoop forAll(final String type, final String var, final String items, final int indentationLevel) {
-        return new ForLoop(type + " " + var + ": " + items, indentationLevel);
-    }
 }

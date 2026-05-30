@@ -7,19 +7,16 @@ public class GenericType {
 
     private final String stringRepresentation;
 
-    public GenericType(final String type, final String... args) {
-        final StringBuilder buf = new StringBuilder();
-
-        buf.append(type);
-        buf.append("<");
-        buf.append(Strings.concatWithSeparator(", ", args));
-        buf.append(">");
-
-        stringRepresentation = buf.toString();
+    public GenericType(String type, String... args) {
+        stringRepresentation = type +
+                "<" +
+                Strings.concatWithSeparator(", ", args) +
+                ">";
     }
 
     @Override
     public String toString() {
         return stringRepresentation;
     }
+
 }

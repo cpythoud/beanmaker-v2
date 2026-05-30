@@ -7,28 +7,28 @@ public class TernaryOperator extends Expression<TernaryOperator> {
     private final StringOrCode<Expression<?>> falseResult;
 
 
-    public TernaryOperator(final Condition condition, final Expression<?> trueResult, final Expression<?> falseResult) {
+    public TernaryOperator(Condition condition, Expression<?> trueResult, Expression<?> falseResult) {
         super("Ternary", 0);
         this.condition = condition;
         this.trueResult = new StringOrCode<>(trueResult);
         this.falseResult = new StringOrCode<>(falseResult);
     }
 
-    public TernaryOperator(final Condition condition, final String trueResult, final Expression<?> falseResult) {
+    public TernaryOperator(Condition condition, String trueResult, Expression<?> falseResult) {
         super("Ternary", 0);
         this.condition = condition;
         this.trueResult = new StringOrCode<>(trueResult);
         this.falseResult = new StringOrCode<>(falseResult);
     }
 
-    public TernaryOperator(final Condition condition, final Expression<?> trueResult, final String falseResult) {
+    public TernaryOperator(Condition condition, Expression<?> trueResult, String falseResult) {
         super("Ternary", 0);
         this.condition = condition;
         this.trueResult = new StringOrCode<>(trueResult);
         this.falseResult = new StringOrCode<>(falseResult);
     }
 
-    public TernaryOperator(final Condition condition, final String trueResult, final String falseResult) {
+    public TernaryOperator(Condition condition, String trueResult, String falseResult) {
         super("Ternary", 0);
         this.condition = condition;
         this.trueResult = new StringOrCode<>(trueResult);
@@ -46,4 +46,5 @@ public class TernaryOperator extends Expression<TernaryOperator> {
     public String toString() {
         return condition.toString() + " ? " + trueResult.toString() + " : " + falseResult.toString();
     }
+
 }

@@ -2,20 +2,20 @@ package org.beanmaker.v2.codegen.java;
 
 public class CatchBlock extends DeclarationWithArguments<CatchBlock> {
 
-    public CatchBlock(final FunctionArgument functionArgument) {
+    public CatchBlock(FunctionArgument functionArgument) {
         this(functionArgument, 0);
     }
 
-    public CatchBlock(final String functionArgument) {
+    public CatchBlock(String functionArgument) {
         this(functionArgument, 0);
     }
 
-    public CatchBlock(final FunctionArgument functionArgument, final int indentLevel) {
+    public CatchBlock(FunctionArgument functionArgument, int indentLevel) {
         super("catch", indentLevel, "catch");
         super.addArgument(functionArgument);
     }
 
-    public CatchBlock(final String functionArgument, final int indentLevel) {
+    public CatchBlock(String functionArgument, int indentLevel) {
         super("catch", indentLevel, "catch");
         super.addArgument(functionArgument);
     }
@@ -87,7 +87,7 @@ public class CatchBlock extends DeclarationWithArguments<CatchBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(" catch ");
 
@@ -100,4 +100,5 @@ public class CatchBlock extends DeclarationWithArguments<CatchBlock> {
 
         return buf.toString();
     }
+
 }

@@ -5,7 +5,6 @@ public class EnumSourceFile extends SourceFile {
     private final String enumName;
 
     private final JavaEnum javaEnum;
-    private final ImportsManager importsManager = new ImportsManager();
 
 
     public EnumSourceFile(String packageName, String enumName) {

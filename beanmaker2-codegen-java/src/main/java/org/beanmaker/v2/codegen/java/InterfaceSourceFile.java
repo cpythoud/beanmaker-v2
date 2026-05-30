@@ -22,8 +22,8 @@ public class InterfaceSourceFile extends SourceFile {
 
     @Override
     protected void addMainCode(StringBuilder buf) {
-        javaInterface.setIndentationLevel(0);  // sanitize indentation ?
-        buf.append(javaInterface.toString());
+        javaInterface.setIndentationLevel(0);  // ? sanitize indentation?
+        buf.append(javaInterface);
     }
 
 }

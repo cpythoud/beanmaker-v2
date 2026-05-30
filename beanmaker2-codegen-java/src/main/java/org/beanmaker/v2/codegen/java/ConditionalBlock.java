@@ -34,9 +34,10 @@ public abstract class ConditionalBlock<T extends ConditionalBlock<T>> extends Ja
         buf.append(" (");
         buf.append(condition);
 
-        if (combinations.size() > 0)
+        if (!combinations.isEmpty())
             Condition.appendCombinations(buf, combinations);
 
         buf.append(")");
     }
+
 }

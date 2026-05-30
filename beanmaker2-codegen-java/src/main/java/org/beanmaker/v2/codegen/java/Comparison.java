@@ -20,7 +20,7 @@ public class Comparison extends JavaCodeBlock<Comparison> {
 
         private final String val;
 
-        private Comparator(final String val) {
+        Comparator(String val) {
             this.val = val;
         }
 
@@ -30,60 +30,60 @@ public class Comparison extends JavaCodeBlock<Comparison> {
     }
 
 
-    public Comparison(final String lvalue, final String rvalue) {
+    public Comparison(String lvalue, String rvalue) {
         this(lvalue, rvalue, Comparator.EQUAL, 0);
     }
 
-    public Comparison(final String lvalue, final String rvalue, final Comparator comparator) {
+    public Comparison(String lvalue, String rvalue, Comparator comparator) {
         this(lvalue, rvalue, comparator, 0);
     }
 
-    public Comparison(final String lvalue, final String rvalue, final Comparator comparator, final int indentationLevel) {
+    public Comparison(String lvalue, String rvalue, Comparator comparator, int indentationLevel) {
         super(comparator.getVal(), indentationLevel);
         this.lvalue = new StringOrCode<>(lvalue);
         this.rvalue = new StringOrCode<>(rvalue);
         this.comparator = comparator;
     }
 
-    public Comparison(final String lvalue, final Expression<?> rvalue) {
+    public Comparison(String lvalue, Expression<?> rvalue) {
         this(lvalue, rvalue, Comparator.EQUAL, 0);
     }
 
-    public Comparison(final String lvalue, final Expression<?> rvalue, final Comparator comparator) {
+    public Comparison(String lvalue, Expression<?> rvalue, Comparator comparator) {
         this(lvalue, rvalue, comparator, 0);
     }
 
-    public Comparison(final String lvalue, final Expression<?> rvalue, final Comparator comparator, final int indentationLevel) {
+    public Comparison(String lvalue, Expression<?> rvalue, Comparator comparator, int indentationLevel) {
         super(comparator.getVal(), indentationLevel);
         this.lvalue = new StringOrCode<>(lvalue);
         this.rvalue = new StringOrCode<>(rvalue);
         this.comparator = comparator;
     }
 
-    public Comparison(final Expression<?> lvalue, final String rvalue) {
+    public Comparison(Expression<?> lvalue, String rvalue) {
         this(lvalue, rvalue, Comparator.EQUAL, 0);
     }
 
-    public Comparison(final Expression<?> lvalue, final String rvalue, final Comparator comparator) {
+    public Comparison(Expression<?> lvalue, String rvalue, Comparator comparator) {
         this(lvalue, rvalue, comparator, 0);
     }
 
-    public Comparison(final Expression<?> lvalue, final String rvalue, final Comparator comparator, final int indentationLevel) {
+    public Comparison(Expression<?> lvalue, String rvalue, Comparator comparator, int indentationLevel) {
         super(comparator.getVal(), indentationLevel);
         this.lvalue = new StringOrCode<>(lvalue);
         this.rvalue = new StringOrCode<>(rvalue);
         this.comparator = comparator;
     }
 
-    public Comparison(final Expression<?> lvalue, final Expression<?> rvalue) {
+    public Comparison(Expression<?> lvalue, Expression<?> rvalue) {
         this(lvalue, rvalue, Comparator.EQUAL, 0);
     }
 
-    public Comparison(final Expression<?> lvalue, final Expression<?> rvalue, final Comparator comparator) {
+    public Comparison(Expression<?> lvalue, Expression<?> rvalue, Comparator comparator) {
         this(lvalue, rvalue, comparator, 0);
     }
 
-    public Comparison(final Expression<?> lvalue, final Expression<?> rvalue, final Comparator comparator, final int indentationLevel) {
+    public Comparison(Expression<?> lvalue, Expression<?> rvalue, Comparator comparator, int indentationLevel) {
         super(comparator.getVal(), indentationLevel);
         this.lvalue = new StringOrCode<>(lvalue);
         this.rvalue = new StringOrCode<>(rvalue);
@@ -103,43 +103,44 @@ public class Comparison extends JavaCodeBlock<Comparison> {
     }
 
 
-    public static Comparison isNull(final String expression) {
+    public static Comparison isNull(String expression) {
         return isNull(expression, 0);
     }
 
-    public static Comparison isNull(final Expression<?> expression) {
+    public static Comparison isNull(Expression<?> expression) {
         return isNull(expression, 0);
     }
 
-    public static Comparison isNull(final String expression, final int indentationLevel) {
+    public static Comparison isNull(String expression, int indentationLevel) {
         return nullCheck(expression, Comparator.EQUAL, indentationLevel);
     }
 
-    public static Comparison isNull(final Expression<?> expression, final int indentationLevel) {
+    public static Comparison isNull(Expression<?> expression, int indentationLevel) {
         return nullCheck(expression, Comparator.EQUAL, indentationLevel);
     }
 
-    public static Comparison isNotNull(final String expression) {
+    public static Comparison isNotNull(String expression) {
         return isNotNull(expression, 0);
     }
 
-    public static Comparison isNotNull(final Expression<?> expression) {
+    public static Comparison isNotNull(Expression<?> expression) {
         return isNotNull(expression, 0);
     }
 
-    public static Comparison isNotNull(final String expression, final int indentationLevel) {
+    public static Comparison isNotNull(String expression, int indentationLevel) {
         return nullCheck(expression, Comparator.NEQ, indentationLevel);
     }
 
-    public static Comparison isNotNull(final Expression<?> expression, final int indentationLevel) {
+    public static Comparison isNotNull(Expression<?> expression, int indentationLevel) {
         return nullCheck(expression, Comparator.NEQ, indentationLevel);
     }
 
-    private static Comparison nullCheck(final String lvalue, final Comparator comparator, final int indentationLevel) {
+    private static Comparison nullCheck(String lvalue, Comparator comparator, int indentationLevel) {
         return new Comparison(lvalue, "null", comparator, indentationLevel);
     }
 
-    private static Comparison nullCheck(final Expression<?> lvalue, final Comparator comparator, final int indentationLevel) {
+    private static Comparison nullCheck(Expression<?> lvalue, Comparator comparator, int indentationLevel) {
         return new Comparison(lvalue, "null", comparator, indentationLevel);
     }
+
 }

@@ -15,31 +15,31 @@ public class ReturnStatement extends JavaCodeBlock<ReturnStatement> {
         condition = null;
     }
 
-    public ReturnStatement(final String returnedVal) {
+    public ReturnStatement(String returnedVal) {
         this(returnedVal, 0);
     }
 
-    public ReturnStatement(final JavaCodeBlock<?> returnedVal) {
+    public ReturnStatement(JavaCodeBlock<?> returnedVal) {
         this(returnedVal, 0);
     }
 
-    public ReturnStatement(final String returnedVal, final int indentationLevel) {
+    public ReturnStatement(String returnedVal, int indentationLevel) {
         super("return", indentationLevel);
         this.returnedVal = new StringOrCode<>(returnedVal);
         condition = null;
     }
 
-    public ReturnStatement(final JavaCodeBlock<?> returnedVal, final int indentationLevel) {
+    public ReturnStatement(JavaCodeBlock<?> returnedVal, int indentationLevel) {
         super("return", indentationLevel);
         this.returnedVal = new StringOrCode<>(returnedVal);
         condition = null;
     }
 
-    public ReturnStatement(final Condition condition) {
+    public ReturnStatement(Condition condition) {
         this(condition, 0);
     }
 
-    public ReturnStatement(final Condition condition, final int indentationLevel) {
+    public ReturnStatement(Condition condition, int indentationLevel) {
         super("return", indentationLevel);
         returnedVal = null;
         this.condition = condition;

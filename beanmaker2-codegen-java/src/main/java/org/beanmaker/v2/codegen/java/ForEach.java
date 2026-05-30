@@ -6,26 +6,26 @@ public class ForEach extends JavaCodeBlock<ForEach> {
     private final String item;
     private final StringOrCode<FunctionCall> items;
 
-    public ForEach(final String itemClass, final String item, final String items) {
+    public ForEach(String itemClass, String item, String items) {
         this(itemClass, item, items, 0);
     }
 
-    public ForEach(final String itemClass, final String item, final String items, final int indentationLevel) {
+    public ForEach(String itemClass, String item, String items, int indentationLevel) {
         super("for", indentationLevel);
         this.itemClass = itemClass;
         this.item = item;
-        this.items = new StringOrCode<FunctionCall>(items);
+        this.items = new StringOrCode<>(items);
     }
 
-    public ForEach(final String itemClass, final String item, final FunctionCall items) {
+    public ForEach(String itemClass, String item, FunctionCall items) {
         this(itemClass, item, items, 0);
     }
 
-    public ForEach(final String itemClass, final String item, final FunctionCall items, final int indentationLevel) {
+    public ForEach(String itemClass, String item, FunctionCall items, int indentationLevel) {
         super("for", indentationLevel);
         this.itemClass = itemClass;
         this.item = item;
-        this.items = new StringOrCode<FunctionCall>(items);
+        this.items = new StringOrCode<>(items);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ForEach extends JavaCodeBlock<ForEach> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(getTabs());
         buf.append("for (");

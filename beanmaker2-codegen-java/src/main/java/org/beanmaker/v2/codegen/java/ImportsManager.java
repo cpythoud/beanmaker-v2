@@ -70,12 +70,12 @@ public class ImportsManager {
         }
 
         StringBuilder buf = new StringBuilder();
-        if (javaImports.size() > 0) {
+        if (!javaImports.isEmpty()) {
             Collections.sort(javaImports);
             addImports(buf, javaImports);
             buf.append("\n");
         }
-        if (otherImports.size() > 0) {
+        if (!otherImports.isEmpty()) {
             Collections.sort(otherImports);
             addImports(buf, otherImports);
             buf.append("\n");
@@ -95,7 +95,7 @@ public class ImportsManager {
         for (String importStr: imports) {
             String subPackageName = getPackageName(importStr);
 
-            if (!subPackageName.equals(lastSubPackageName) && !lastSubPackageName.equals(""))
+            if (!subPackageName.equals(lastSubPackageName) && !lastSubPackageName.isEmpty())
                 buf.append("\n");
 
             buf.append("import ");
@@ -115,7 +115,7 @@ public class ImportsManager {
         for (String importStr: imports) {
             String className = getPackageName(importStr);
 
-            if (!className.equals(lastClassName) && !lastClassName.equals(""))
+            if (!className.equals(lastClassName) && !lastClassName.isEmpty())
                 buf.append("\n");
 
             buf.append("import static ");

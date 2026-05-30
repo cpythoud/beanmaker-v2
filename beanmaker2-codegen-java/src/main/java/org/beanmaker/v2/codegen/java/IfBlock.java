@@ -8,16 +8,16 @@ import java.util.List;
  */
 public class IfBlock extends LogicBranchBlock<IfBlock> {
 
-    private List<ElseIfBlock> elseIfBlocks = new ArrayList<ElseIfBlock>();
+    private final List<ElseIfBlock> elseIfBlocks = new ArrayList<>();
 
     private ElseBlock elseBlock;
 
 
-    public IfBlock(final Condition condition) {
+    public IfBlock(Condition condition) {
         this(condition, 0);
     }
 
-    public IfBlock(final Condition condition, final int indentationLevel) {
+    public IfBlock(Condition condition, int indentationLevel) {
         super("if", indentationLevel, condition);
     }
 
@@ -27,7 +27,7 @@ public class IfBlock extends LogicBranchBlock<IfBlock> {
     }
 
     @Override
-    public void setIndentationLevel(final int indentationLevel) {
+    public void setIndentationLevel(int indentationLevel) {
         super.setIndentationLevel(indentationLevel);
         for (ElseIfBlock elseIfBlock: elseIfBlocks)
             elseIfBlock.setIndentationLevel(indentationLevel);
@@ -36,15 +36,15 @@ public class IfBlock extends LogicBranchBlock<IfBlock> {
     }
 
 
-    public IfBlock addElseIfClause(final ElseIfBlock elseIfBlock) {
+    public IfBlock addElseIfClause(ElseIfBlock elseIfBlock) {
         if (!elseIfBlocks.isEmpty())
-            elseIfBlocks.get(elseIfBlocks.size() - 1).moreElsesToCome();
+            elseIfBlocks.getLast().moreElsesToCome();
         elseIfBlocks.add(elseIfBlock);
         elseIfBlock.setIndentationLevel(getIndentationLevel());
         return this;
     }
 
-    public IfBlock elseClause(final ElseBlock elseBlock) {
+    public IfBlock elseClause(ElseBlock elseBlock) {
         this.elseBlock = elseBlock;
         elseBlock.setIndentationLevel(getIndentationLevel());
         return this;
@@ -53,13 +53,13 @@ public class IfBlock extends LogicBranchBlock<IfBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(getTabs());
         buf.append("if");
         appendCondition(buf);
 
-        final boolean oneLiner = contentIsSuitableForOneLiner(!elseIfBlocks.isEmpty() || elseBlock != null);
+        boolean oneLiner = contentIsSuitableForOneLiner(!elseIfBlocks.isEmpty() || elseBlock != null);
         if (oneLiner) {
             appendOneLinerContent(buf);
         } else {
@@ -89,7 +89,7 @@ public class IfBlock extends LogicBranchBlock<IfBlock> {
                 if (oneLiner)
                     elseBlock.atStartOfLine();
             } else {
-                if (elseIfBlocks.get(elseIfBlocks.size() - 1).contentIsSuitableForOneLiner(true))
+                if (elseIfBlocks.getLast().contentIsSuitableForOneLiner(true))
                     elseBlock.atStartOfLine();
             }
             buf.append(elseBlock.toString());

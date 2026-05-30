@@ -89,7 +89,7 @@ public class Condition {
 
     static void appendCombinations(StringBuilder buf, List<ConditionCombination> combinations) {
         for (ConditionCombination combination: combinations)
-            buf.append(combination.getType().toJavaOperator()).append(combination.getCondition());
+            buf.append(combination.type().toJavaOperator()).append(combination.condition());
     }
 
 }

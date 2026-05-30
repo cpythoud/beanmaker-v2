@@ -35,8 +35,7 @@ public class WhileBlock extends ConditionalBlock<WhileBlock> {
             appendContent(buf);
         }
 
-        //buf.append("\n");
-
         return buf.toString();
     }
+
 }

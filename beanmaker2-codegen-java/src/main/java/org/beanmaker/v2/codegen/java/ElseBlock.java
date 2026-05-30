@@ -12,7 +12,7 @@ public class ElseBlock extends JavaCodeBlock<ElseBlock> {
         this(0);
     }
 
-    public ElseBlock(final int indentationLevel) {
+    public ElseBlock(int indentationLevel) {
         super("else", indentationLevel);
     }
 
@@ -30,7 +30,7 @@ public class ElseBlock extends JavaCodeBlock<ElseBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         if (startLine)
             buf.append(getTabs());

@@ -12,11 +12,12 @@ public enum Visibility {
 
     private final String val;
 
-    private Visibility(final String val) {
+    Visibility(String val) {
         this.val = val;
     }
 
     public String getVal() {
         return val;
     }
+
 }

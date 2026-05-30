@@ -16,7 +16,7 @@ abstract class IncrementDecrement<T extends IncrementDecrement<T>> extends Expre
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         startExpression(buf);
 
@@ -30,4 +30,5 @@ abstract class IncrementDecrement<T extends IncrementDecrement<T>> extends Expre
 
         return buf.toString();
     }
+
 }

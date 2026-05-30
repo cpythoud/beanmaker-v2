@@ -1,6 +1,7 @@
 package org.beanmaker.v2.codegen.java;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,58 +9,57 @@ import java.util.List;
  */
 public abstract class DeclarationWithArguments<T extends DeclarationWithArguments<T>> extends Declaration<T>  {
 
-    private final List<StringOrCode<FunctionArgument>> arguments = new ArrayList<StringOrCode<FunctionArgument>>();
-    private final List<String> exceptions = new ArrayList<String>();
+    private final List<StringOrCode<FunctionArgument>> arguments = new ArrayList<>();
+    private final List<String> exceptions = new ArrayList<>();
 
 
-    public DeclarationWithArguments(final String keyword, final int indentLevel, final String name) {
+    public DeclarationWithArguments(String keyword, int indentLevel, String name) {
         super(keyword, indentLevel, name);
     }
 
 
-    public T addArgument(final String arg) {
-        arguments.add(new StringOrCode<FunctionArgument>(arg));
+    public T addArgument(String arg) {
+        arguments.add(new StringOrCode<>(arg));
         return getThis();
     }
 
-    public T addArguments(final String... args) {
+    public T addArguments(String... args) {
         for (String arg: args)
-            arguments.add(new StringOrCode<FunctionArgument>(arg));
+            arguments.add(new StringOrCode<>(arg));
         return getThis();
     }
 
-    public T addArgument(final FunctionArgument arg) {
-        arguments.add(new StringOrCode<FunctionArgument>(arg));
+    public T addArgument(FunctionArgument arg) {
+        arguments.add(new StringOrCode<>(arg));
         return getThis();
     }
 
-    public T addArguments(final FunctionArgument... args) {
+    public T addArguments(FunctionArgument... args) {
         for (FunctionArgument arg: args)
-            arguments.add(new StringOrCode<FunctionArgument>(arg));
+            arguments.add(new StringOrCode<>(arg));
         return getThis();
     }
 
-    public T addException(final String ex) {
+    public T addException(String ex) {
         exceptions.add(ex);
         return getThis();
     }
 
-    public T addExceptions(final String... exex) {
-        for (String ex: exex)
-            exceptions.add(ex);
+    public T addExceptions(String... exex) {
+        Collections.addAll(exceptions, exex);
         return getThis();
     }
 
 
-    protected void appendArgumentList(final StringBuilder buf) {
+    protected void appendArgumentList(StringBuilder buf) {
         buf.append("(");
-        if (arguments.size() > 0)
+        if (!arguments.isEmpty())
             appendCommaSeparatedListItems(buf, StringOrCode.getStrings(arguments));
         buf.append(")");
     }
 
-    protected void appendExceptionsThrown(final StringBuilder buf) {
-        if (exceptions.size() > 0) {
+    protected void appendExceptionsThrown(StringBuilder buf) {
+        if (!exceptions.isEmpty()) {
             buf.append(" throws ");
             appendCommaSeparatedListItems(buf, exceptions);
         }

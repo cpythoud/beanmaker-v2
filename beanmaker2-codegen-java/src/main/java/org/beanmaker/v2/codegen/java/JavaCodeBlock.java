@@ -43,8 +43,7 @@ public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
     public static String getTabs(int indentationLevel) {
         StringBuilder buf = new StringBuilder();
 
-        for (int i = 0; i < indentationLevel; i++)
-            buf.append("\t");
+        buf.repeat("\t", Math.max(0, indentationLevel));
 
         return buf.toString();
     }
@@ -99,7 +98,7 @@ public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
 
         if (withNewline)
             buf.append("\n");
-        buf.append(content.get(0));
+        buf.append(content.getFirst());
     }
 
     protected void appendCommaSeparatedListItems(StringBuilder buf, List<String> items) {
@@ -118,4 +117,5 @@ public abstract class JavaCodeBlock <T extends JavaCodeBlock<T>> {
 
         return false;
     }
+
 }

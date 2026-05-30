@@ -5,11 +5,11 @@ package org.beanmaker.v2.codegen.java;
  */
 public class DoWhileBlock extends ConditionalBlock<DoWhileBlock> {
 
-    public DoWhileBlock(final Condition condition) {
+    public DoWhileBlock(Condition condition) {
         this(condition, 0);
     }
 
-    public DoWhileBlock(final Condition condition, final int indentationLevel) {
+    public DoWhileBlock(Condition condition, int indentationLevel) {
         super("do", indentationLevel, condition);
     }
 
@@ -22,7 +22,7 @@ public class DoWhileBlock extends ConditionalBlock<DoWhileBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(getTabs());
         buf.append("do");

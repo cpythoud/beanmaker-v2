@@ -8,11 +8,11 @@ public class LineOfCode extends JavaCodeBlock<LineOfCode> {
     private final String code;
 
 
-    public LineOfCode(final String code) {
+    public LineOfCode(String code) {
         this(code, 0);
     }
 
-    public LineOfCode(final String code, final int indentationLevel) {
+    public LineOfCode(String code, int indentationLevel) {
         super("", indentationLevel);
         this.code = code;
     }
@@ -25,21 +25,16 @@ public class LineOfCode extends JavaCodeBlock<LineOfCode> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
-
-        buf.append(getTabs());
-        buf.append(code);
-        buf.append("\n");
-
-        return buf.toString();
+        return getTabs() + code + "\n";
     }
 
 
-    public static LineOfCode throwException(final String exception) {
+    public static LineOfCode throwException(String exception) {
         return throwException(exception, "");
     }
 
-    public static LineOfCode throwException(final String exception, final String argument) {
+    public static LineOfCode throwException(String exception, String argument) {
         return new LineOfCode("throw new " + exception + "(" + argument + ");");
     }
+
 }

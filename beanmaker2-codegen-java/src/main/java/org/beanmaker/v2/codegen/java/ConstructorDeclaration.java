@@ -5,11 +5,11 @@ package org.beanmaker.v2.codegen.java;
  */
 public class ConstructorDeclaration extends DeclarationWithArguments<ConstructorDeclaration> {
 
-    public ConstructorDeclaration(final String className) {
+    public ConstructorDeclaration(String className) {
         this(className, 0);
     }
 
-    public ConstructorDeclaration(final String className, final int indentationLevel) {
+    public ConstructorDeclaration(String className, int indentationLevel) {
         super("Constructor", indentationLevel, className);
     }
 
@@ -42,7 +42,7 @@ public class ConstructorDeclaration extends DeclarationWithArguments<Constructor
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         appendAnnotations(buf);
 
@@ -60,4 +60,5 @@ public class ConstructorDeclaration extends DeclarationWithArguments<Constructor
 
         return buf.toString();
     }
+
 }

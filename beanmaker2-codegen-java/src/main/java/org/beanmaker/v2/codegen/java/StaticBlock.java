@@ -6,7 +6,7 @@ public class StaticBlock extends JavaCodeBlock<StaticBlock> {
         this(0);
     }
 
-    public StaticBlock(final int indentationLevel) {
+    public StaticBlock(int indentationLevel) {
         super("static", indentationLevel);
     }
 
@@ -18,7 +18,7 @@ public class StaticBlock extends JavaCodeBlock<StaticBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(getTabs());
         buf.append("static ");
@@ -27,4 +27,5 @@ public class StaticBlock extends JavaCodeBlock<StaticBlock> {
 
         return buf.toString();
     }
+
 }

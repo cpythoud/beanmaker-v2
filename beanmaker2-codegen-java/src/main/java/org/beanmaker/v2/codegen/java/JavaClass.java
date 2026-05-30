@@ -72,13 +72,13 @@ public class JavaClass extends Declaration<JavaClass> {
             buf.append(" ");
         }
 
-        if (implementedInterfaces.size() > 0) {
+        if (!implementedInterfaces.isEmpty()) {
             buf.append("implements ");
             appendCommaSeparatedListItems(buf, implementedInterfaces);
             buf.append(" ");
         }
 
-        if (permittedExtensions.size() > 0) {
+        if (!permittedExtensions.isEmpty()) {
             buf.append("permits ");
             appendCommaSeparatedListItems(buf, permittedExtensions);
             buf.append(" ");
@@ -94,4 +94,5 @@ public class JavaClass extends Declaration<JavaClass> {
     public ConstructorDeclaration createConstructor() {
         return new ConstructorDeclaration(getName(), getIndentationLevel() + 1);
     }
+
 }

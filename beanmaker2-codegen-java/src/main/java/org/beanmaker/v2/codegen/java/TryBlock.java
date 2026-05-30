@@ -30,7 +30,7 @@ public class TryBlock extends JavaCodeBlock<TryBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(getTabs()).append("try ");
         appendContent(buf);

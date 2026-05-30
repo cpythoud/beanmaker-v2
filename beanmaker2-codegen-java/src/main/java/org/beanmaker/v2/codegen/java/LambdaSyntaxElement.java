@@ -27,7 +27,7 @@ public abstract class LambdaSyntaxElement<T extends LambdaSyntaxElement<T>> exte
             return;
         }
 
-        boolean needParentheses = parameters.size() > 1 || !parameters.get(0).isSimpleParameter();
+        boolean needParentheses = parameters.size() > 1 || !parameters.getFirst().isSimpleParameter();
         if (needParentheses)
             buf.append("(");
 

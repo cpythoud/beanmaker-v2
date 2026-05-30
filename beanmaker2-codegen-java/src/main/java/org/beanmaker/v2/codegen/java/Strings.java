@@ -10,7 +10,7 @@ final class Strings {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
-    static String concatWithSeparator(String separator, final String... strings) {
+    static String concatWithSeparator(String separator, String... strings) {
         return concatWithSeparator(separator, Arrays.asList(strings));
     }
 
@@ -18,11 +18,11 @@ final class Strings {
         return concatStringCollectionWithSeparator(separator, strings);
     }
 
-    private static String concatStringCollectionWithSeparator(final String separator, final Collection<String> strings) {
+    private static String concatStringCollectionWithSeparator(String separator, Collection<String> strings) {
         if (strings.isEmpty())
             return "";
 
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         for (String s: strings) {
             buf.append(s);
@@ -33,7 +33,7 @@ final class Strings {
         return buf.toString();
     }
 
-    static String quickQuote(final String string) {
+    static String quickQuote(String string) {
         return "\"" + string + "\"";
     }
 

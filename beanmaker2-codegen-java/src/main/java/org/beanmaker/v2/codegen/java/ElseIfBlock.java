@@ -8,11 +8,11 @@ public class ElseIfBlock extends LogicBranchBlock<ElseIfBlock> {
     private boolean startLine = false;
     private boolean moreElsesToCome = false;
 
-    public ElseIfBlock(final Condition condition) {
+    public ElseIfBlock(Condition condition) {
         this(condition, 0);
     }
 
-    public ElseIfBlock(final Condition condition, final int indentationLevel) {
+    public ElseIfBlock(Condition condition, int indentationLevel) {
         super("else if", indentationLevel, condition);
     }
 
@@ -35,7 +35,7 @@ public class ElseIfBlock extends LogicBranchBlock<ElseIfBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         if (startLine)
             buf.append(getTabs());
@@ -53,4 +53,5 @@ public class ElseIfBlock extends LogicBranchBlock<ElseIfBlock> {
 
         return buf.toString();
     }
+
 }

@@ -17,11 +17,12 @@ public class FinallyBlock extends JavaCodeBlock<FinallyBlock> {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(" finally ");
         appendContent(buf);
 
         return buf.toString();
     }
+
 }
