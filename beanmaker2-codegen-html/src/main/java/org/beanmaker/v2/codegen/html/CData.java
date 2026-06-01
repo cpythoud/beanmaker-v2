@@ -7,7 +7,7 @@ import org.beanmaker.v2.codegen.html.xmlbase.XMLElement;
  */
 public class CData extends Tag<CData> {
 
-    public CData(final String text) {
+    public CData(String text) {
         element = new XMLElement(XMLElement.CDATA, text);
     }
 
@@ -15,4 +15,5 @@ public class CData extends Tag<CData> {
     protected CData getThis() {
         throw new IllegalArgumentException("Text data cannot be combined with attributes or child elements");
     }
+
 }

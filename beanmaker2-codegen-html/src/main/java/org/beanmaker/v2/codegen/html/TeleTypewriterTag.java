@@ -11,7 +11,7 @@ public class TeleTypewriterTag extends Tag<TeleTypewriterTag> {
         element = new XMLElement("sup", false);
     }
 
-    public TeleTypewriterTag(final String body) {
+    public TeleTypewriterTag(String body) {
         element = new XMLElement("sup", body, false);
     }
 
@@ -19,4 +19,5 @@ public class TeleTypewriterTag extends Tag<TeleTypewriterTag> {
     protected TeleTypewriterTag getThis() {
         return this;
     }
+
 }

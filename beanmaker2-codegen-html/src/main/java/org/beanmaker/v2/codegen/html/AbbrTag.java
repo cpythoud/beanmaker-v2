@@ -11,7 +11,7 @@ public class AbbrTag extends Tag<AbbrTag> {
         element = new XMLElement("abbr", false);
     }
 
-    public AbbrTag(final String body) {
+    public AbbrTag(String body) {
         element = new XMLElement("abbr", body, false);
     }
 
@@ -19,4 +19,5 @@ public class AbbrTag extends Tag<AbbrTag> {
     protected AbbrTag getThis() {
         return this;
     }
+
 }

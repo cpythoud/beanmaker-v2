@@ -7,7 +7,7 @@ import org.beanmaker.v2.codegen.html.xmlbase.XMLElement;
  */
 public class CaptionTag extends Tag<CaptionTag> {
 
-    public CaptionTag(final String caption) {
+    public CaptionTag(String caption) {
         element = new XMLElement("caption", caption, false);
     }
 
@@ -15,4 +15,5 @@ public class CaptionTag extends Tag<CaptionTag> {
     protected CaptionTag getThis() {
         return this;
     }
+
 }

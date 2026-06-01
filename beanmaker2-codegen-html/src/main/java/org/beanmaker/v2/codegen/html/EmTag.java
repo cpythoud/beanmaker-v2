@@ -11,7 +11,7 @@ public class EmTag extends Tag<EmTag> {
         element = new XMLElement("em", false);
     }
 
-    public EmTag(final String body) {
+    public EmTag(String body) {
         element = new XMLElement("em", body, false);
     }
 
@@ -19,4 +19,5 @@ public class EmTag extends Tag<EmTag> {
     protected EmTag getThis() {
         return this;
     }
+
 }

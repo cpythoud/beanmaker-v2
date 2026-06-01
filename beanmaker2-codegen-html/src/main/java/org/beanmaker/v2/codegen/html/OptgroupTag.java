@@ -11,7 +11,7 @@ public class OptgroupTag extends Tag<OptgroupTag> {
         element = new XMLElement("optgroup", false);
     }
 
-    public OptgroupTag(final String label) {
+    public OptgroupTag(String label) {
         this();
         label(label);
     }
@@ -21,11 +21,12 @@ public class OptgroupTag extends Tag<OptgroupTag> {
         return this;
     }
 
-    public OptgroupTag label(final String value) {
+    public OptgroupTag label(String value) {
         return attribute("label", value);
     }
 
-    public OptgroupTag child(final OptionTag tag) {
+    public OptgroupTag child(OptionTag tag) {
         return super.child(tag);
     }
+
 }

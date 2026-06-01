@@ -16,7 +16,8 @@ public class TfootTag extends TableElement<TfootTag> {
         return this;
     }
 
-    public TfootTag child(final TrTag tr) {
+    public TfootTag child(TrTag tr) {
         return super.child(tr);
     }
+
 }

@@ -11,11 +11,11 @@ public class LabelTag extends Tag<LabelTag> {
         element = new XMLElement("label", false);
     }
 
-    public LabelTag(final String body) {
+    public LabelTag(String body) {
         element = new XMLElement("label", body, false);
     }
 
-    public LabelTag(final String body, final String formElementId) {
+    public LabelTag(String body, String formElementId) {
         element = new XMLElement("label", body, false);
         forAttr(formElementId);
     }
@@ -25,17 +25,8 @@ public class LabelTag extends Tag<LabelTag> {
         return this;
     }
 
-    /*@Override
-    public LabelTag child(final Tag tag) {
-        return super.child(tag);
-    }
-
-    @Override
-    public LabelTag addCodeFragment(final HtmlCodeFragment codeFragment) {
-        return super.addCodeFragment(codeFragment);
-    }*/
-
-    public LabelTag forAttr(final String val) {
+    public LabelTag forAttr(String val) {
         return attribute("for", val);
     }
+
 }

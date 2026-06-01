@@ -19,7 +19,7 @@ public class TableTag extends Tag<TableTag> {
 
         private final String val;
 
-        private TableFrame(final String val) {
+        TableFrame(String val) {
             this.val = val;
         }
 
@@ -37,7 +37,7 @@ public class TableTag extends Tag<TableTag> {
 
         private final String val;
 
-        private TableRules(final String val) {
+        TableRules(String val) {
             this.val = val;
         }
 
@@ -55,36 +55,37 @@ public class TableTag extends Tag<TableTag> {
         return this;
     }
 
-    public TableTag summary(final String value) {
+    public TableTag summary(String value) {
         return attribute("summary", value);
     }
 
-    public TableTag width(final String value) {
+    public TableTag width(String value) {
         return attribute("width", value);
     }
 
-    public TableTag border(final int value) {
+    public TableTag border(int value) {
         return attribute("width", Integer.toString(value));
     }
 
-    public TableTag frame(final TableFrame value) {
+    public TableTag frame(TableFrame value) {
         return attribute("width", value.getVal());
     }
 
-    public TableTag rules(final TableRules value) {
+    public TableTag rules(TableRules value) {
         return attribute("width", value.getVal());
     }
 
 
-    public TableTag child(final CaptionTag tag) {
+    public TableTag child(CaptionTag tag) {
         return super.child(tag);
     }
 
-    public TableTag child(final ColElement tag) {
+    public TableTag child(ColElement tag) {
         return super.child(tag);
     }
 
-    public TableTag child(final TableElement tag) {
+    public TableTag child(TableElement tag) {
         return super.child(tag);
     }
+
 }

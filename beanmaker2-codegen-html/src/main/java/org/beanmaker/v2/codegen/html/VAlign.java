@@ -11,11 +11,12 @@ public enum  VAlign {
 
     private final String val;
 
-    private VAlign(final String val) {
+    VAlign(String val) {
         this.val = val;
     }
 
     public String getVal() {
         return val;
     }
+
 }

@@ -16,7 +16,8 @@ public class TbodyTag extends TableElement<TbodyTag> {
         return this;
     }
 
-    public TbodyTag child(final TrTag tr) {
+    public TbodyTag child(TrTag tr) {
         return super.child(tr);
     }
+
 }

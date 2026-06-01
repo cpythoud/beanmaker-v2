@@ -11,7 +11,7 @@ public class SubTag extends Tag<SubTag> {
         element = new XMLElement("sub", false);
     }
 
-    public SubTag(final String body) {
+    public SubTag(String body) {
         element = new XMLElement("sub", body, false);
     }
 
@@ -19,4 +19,5 @@ public class SubTag extends Tag<SubTag> {
     protected SubTag getThis() {
         return this;
     }
+
 }

@@ -18,7 +18,7 @@ public class UlTag extends Tag<UlTag> {
         return this;
     }
 
-    public static UlTag createList(final List<Object> items) {
+    public static UlTag createList(List<Object> items) {
         if (items == null)
             throw new NullPointerException("Item List is null");
         if (items.isEmpty())
@@ -26,4 +26,5 @@ public class UlTag extends Tag<UlTag> {
 
         return createList(new UlTag(), items);
     }
+
 }

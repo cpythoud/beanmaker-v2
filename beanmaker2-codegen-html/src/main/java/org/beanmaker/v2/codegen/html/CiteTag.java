@@ -11,7 +11,7 @@ public class CiteTag extends Tag<CiteTag> {
         element = new XMLElement("cite", false);
     }
 
-    public CiteTag(final String body) {
+    public CiteTag(String body) {
         element = new XMLElement("cite", body, false);
     }
 
@@ -19,4 +19,5 @@ public class CiteTag extends Tag<CiteTag> {
     protected CiteTag getThis() {
         return this;
     }
+
 }

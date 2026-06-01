@@ -19,12 +19,9 @@ public abstract class TagTreeFragmentCache {
     }
 
     public void refreshData() {
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (cachedData == null)
-                    cachedData = getContainerTag().toString();
-            }
+        executorService.execute(() -> {
+            if (cachedData == null)
+                cachedData = getContainerTag().toString();
         });
     }
 

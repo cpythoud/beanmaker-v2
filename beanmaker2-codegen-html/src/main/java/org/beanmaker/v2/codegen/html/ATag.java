@@ -11,11 +11,11 @@ public class ATag extends Tag<ATag> {
         element = new XMLElement("a", false);
     }
 
-    public ATag(final String body) {
+    public ATag(String body) {
         element = new XMLElement("a", body, false);
     }
 
-    public ATag(final String body, final String link) {
+    public ATag(String body, String link) {
         this(body);
         href(link);
     }
@@ -25,41 +25,31 @@ public class ATag extends Tag<ATag> {
         return this;
     }
 
-    /*@Override
-    public ATag child(final Tag tag) {
-        return super.child(tag);
-    }
-
-    @Override
-    public ATag addCodeFragment(final HtmlCodeFragment codeFragment) {
-        return super.addCodeFragment(codeFragment);
-    }*/
-
-    public ATag name(final String value) {
+    public ATag name(String value) {
         return attribute("name", value);
     }
 
-    public ATag href(final String value) {
+    public ATag href(String value) {
         return attribute("href", value);
     }
 
-    public ATag hreflang(final String value) {
+    public ATag hreflang(String value) {
         return attribute("hreflang", value);
     }
 
-    public ATag type(final String value) {
+    public ATag type(String value) {
         return attribute("type", value);
     }
 
-    public ATag rel(final String value) {
+    public ATag rel(String value) {
         return attribute("rel", value);
     }
 
-    public ATag rev(final String value) {
+    public ATag rev(String value) {
         return attribute("rev", value);
     }
 
-    public ATag charset(final String value) {
+    public ATag charset(String value) {
         return attribute("charset", value);
     }
 }

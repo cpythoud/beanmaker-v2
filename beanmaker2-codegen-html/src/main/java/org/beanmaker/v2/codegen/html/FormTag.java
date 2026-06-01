@@ -14,7 +14,7 @@ public class FormTag extends Tag<FormTag> {
 
         private final String val;
 
-        private EncodingType(final String val) {
+        EncodingType(String val) {
             this.val = val;
         }
 
@@ -29,7 +29,7 @@ public class FormTag extends Tag<FormTag> {
 
         private final String val;
 
-        private Method(final String val) {
+        Method(String val) {
             this.val = val;
         }
 
@@ -47,40 +47,30 @@ public class FormTag extends Tag<FormTag> {
         return this;
     }
 
-    /*@Override
-    public FormTag child(final Tag tag) {
-        return super.child(tag);
-    }
-
-    @Override
-    public FormTag addCodeFragment(final HtmlCodeFragment codeFragment) {
-        return super.addCodeFragment(codeFragment);
-    }*/
-
-    public FormTag acceptCharset(final String value) {
+    public FormTag acceptCharset(String value) {
         return attribute("accept-charset", value);
     }
 
-    public FormTag name(final String value) {
+    public FormTag name(String value) {
         return attribute("name", value);
     }
 
-    public FormTag autocomplete(final boolean on) {
+    public FormTag autocomplete(boolean on) {
         if (on)
             return attribute("autocomplete", "on");
 
         return attribute("autocomplete", "off");
     }
 
-    public FormTag action(final String value) {
+    public FormTag action(String value) {
         return attribute("action", value);
     }
 
-    public FormTag enctype(final EncodingType enc) {
+    public FormTag enctype(EncodingType enc) {
         return attribute("enctype", enc.getVal());
     }
 
-    public FormTag method(final Method method) {
+    public FormTag method(Method method) {
         return attribute("method", method.getVal());
     }
 
@@ -88,7 +78,8 @@ public class FormTag extends Tag<FormTag> {
         return attribute("novalidate");
     }
 
-    public FormTag target(final String value) {
+    public FormTag target(String value) {
         return attribute("target", value);
     }
+
 }

@@ -34,7 +34,7 @@ public class InputTag extends FormElement<InputTag> {
 
         private final String val;
 
-        private InputType(final String val) {
+        InputType(String val) {
             this.val = val;
         }
 
@@ -42,60 +42,38 @@ public class InputTag extends FormElement<InputTag> {
             return val;
         }
 
-        public static InputType getType(final String s) {
-            final String val = s.toLowerCase();
-            if (val.equals("hidden"))
-                return HIDDEN;
-            if (val.equals("text"))
-                return TEXT;
-            if (val.equals("search"))
-                return SEARCH;
-            if (val.equals("tel"))
-                return TEL;
-            if (val.equals("url"))
-                return URL;
-            if (val.equals("email"))
-                return EMAIL;
-            if (val.equals("password"))
-                return PASSWORD;
-            if (val.equals("datetime"))
-                return DATETIME;
-            if (val.equals("date"))
-                return DATE;
-            if (val.equals("month"))
-                return MONTH;
-            if (val.equals("week"))
-                return WEEK;
-            if (val.equals("time"))
-                return TIME;
-            if (val.equals("datetime-local"))
-                return DATETIME_LOCAL;
-            if (val.equals("number"))
-                return NUMBER;
-            if (val.equals("range"))
-                return RANGE;
-            if (val.equals("color"))
-                return COLOR;
-            if (val.equals("checkbox"))
-                return CHECKBOX;
-            if (val.equals("radio"))
-                return RADIO;
-            if (val.equals("file"))
-                return FILE;
-            if (val.equals("submit"))
-                return SUBMIT;
-            if (val.equals("image"))
-                return IMAGE;
-            if (val.equals("reset"))
-                return RESET;
-            if (val.equals("button"))
-                return BUTTON;
-
-            throw new IllegalArgumentException(val + " does not correspond to an input type");
+        public static InputType getType(String s) {
+            String val = s.toLowerCase();
+            return switch (val) {
+                case "hidden" -> HIDDEN;
+                case "text" -> TEXT;
+                case "search" -> SEARCH;
+                case "tel" -> TEL;
+                case "url" -> URL;
+                case "email" -> EMAIL;
+                case "password" -> PASSWORD;
+                case "datetime" -> DATETIME;
+                case "date" -> DATE;
+                case "month" -> MONTH;
+                case "week" -> WEEK;
+                case "time" -> TIME;
+                case "datetime-local" -> DATETIME_LOCAL;
+                case "number" -> NUMBER;
+                case "range" -> RANGE;
+                case "color" -> COLOR;
+                case "checkbox" -> CHECKBOX;
+                case "radio" -> RADIO;
+                case "file" -> FILE;
+                case "submit" -> SUBMIT;
+                case "image" -> IMAGE;
+                case "reset" -> RESET;
+                case "button" -> BUTTON;
+                default -> throw new IllegalArgumentException(val + " does not correspond to an input type");
+            };
         }
     }
 
-    public InputTag(final InputType type) {
+    public InputTag(InputType type) {
         element = new XMLElement("input");
         type(type);
     }
@@ -105,7 +83,7 @@ public class InputTag extends FormElement<InputTag> {
         return this;
     }
 
-    public InputTag type(final InputType value) {
+    public InputTag type(InputType value) {
         return attribute("type", value.getVal());
     }
 
@@ -117,23 +95,23 @@ public class InputTag extends FormElement<InputTag> {
         return attribute("readonly");
     }
 
-    public InputTag size(final int value) {
+    public InputTag size(int value) {
         return attribute("size", Integer.toString(value));
     }
 
-    public InputTag maxlength(final int value) {
+    public InputTag maxlength(int value) {
         return attribute("maxlength", Integer.toString(value));
     }
 
-    public InputTag src(final String value) {
+    public InputTag src(String value) {
         return attribute("src", value);
     }
 
-    public InputTag alt(final String value) {
+    public InputTag alt(String value) {
         return attribute("alt", value);
     }
 
-    public InputTag usemap(final String value) {
+    public InputTag usemap(String value) {
         return attribute("usemap", value);
     }
 
@@ -141,19 +119,19 @@ public class InputTag extends FormElement<InputTag> {
         return attribute("ismap");
     }
 
-    public InputTag accept(final String value) {
+    public InputTag accept(String value) {
         return attribute("accept", value);
     }
 
-    public InputTag name(final String value) {
+    public InputTag name(String value) {
         return attribute("name", value);
     }
 
-    public InputTag value(final String value) {
+    public InputTag value(String value) {
         return attribute("value", value);
     }
 
-    public InputTag placeholder(final String value) {
+    public InputTag placeholder(String value) {
         return attribute("placeholder", value);
     }
 }

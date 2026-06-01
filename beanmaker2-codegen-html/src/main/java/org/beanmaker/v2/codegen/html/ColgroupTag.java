@@ -11,7 +11,7 @@ public class ColgroupTag extends ColElement<ColgroupTag> {
         element = new XMLElement("colgroup", false);
     }
 
-    public ColgroupTag(final int span) {
+    public ColgroupTag(int span) {
         this();
         span(span);
     }
@@ -21,15 +21,16 @@ public class ColgroupTag extends ColElement<ColgroupTag> {
         return this;
     }
 
-    public ColgroupTag span(final int value) {
+    public ColgroupTag span(int value) {
         return attribute("span", Integer.toString(value));
     }
 
-    public ColgroupTag width(final String value) {
+    public ColgroupTag width(String value) {
         return attribute("width", value);
     }
 
-    public ColgroupTag child(final ColTag col) {
+    public ColgroupTag child(ColTag col) {
         return super.child(col);
     }
+
 }

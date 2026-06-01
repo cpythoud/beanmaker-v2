@@ -5,11 +5,12 @@ package org.beanmaker.v2.codegen.html;
  */
 public abstract class ColElement<T extends ColElement<T>> extends TableElement<T> {
 
-    public T span(final int value) {
+    public T span(int value) {
         return attribute("span", Integer.toString(value));
     }
 
-    public T width(final String value) {
+    public T width(String value) {
         return attribute("width", value);
     }
+
 }

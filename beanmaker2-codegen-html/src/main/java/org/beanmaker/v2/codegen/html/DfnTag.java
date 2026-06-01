@@ -11,7 +11,7 @@ public class DfnTag extends Tag<DfnTag> {
         element = new XMLElement("dfn", false);
     }
 
-    public DfnTag(final String body) {
+    public DfnTag(String body) {
         element = new XMLElement("dfn", body, false);
     }
 
@@ -19,4 +19,5 @@ public class DfnTag extends Tag<DfnTag> {
     protected DfnTag getThis() {
         return this;
     }
+
 }

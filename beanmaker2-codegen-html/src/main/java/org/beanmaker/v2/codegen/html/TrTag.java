@@ -16,7 +16,8 @@ public class TrTag extends TableElement<TrTag> {
         return this;
     }
 
-    public TrTag child(final TableCell tableCell) {
+    public TrTag child(TableCell tableCell) {
         return super.child(tableCell);
     }
+
 }

@@ -11,7 +11,7 @@ public class BigTag extends Tag<BigTag> {
         element = new XMLElement("big", false);
     }
 
-    public BigTag(final String body) {
+    public BigTag(String body) {
         element = new XMLElement("big", body, false);
     }
 
@@ -19,4 +19,5 @@ public class BigTag extends Tag<BigTag> {
     protected BigTag getThis() {
         return this;
     }
+
 }

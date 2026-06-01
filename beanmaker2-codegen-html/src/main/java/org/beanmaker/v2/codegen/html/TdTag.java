@@ -11,7 +11,7 @@ public class TdTag extends TableCell<TdTag> {
         element = new XMLElement("td", false);
     }
 
-    public TdTag(final String body) {
+    public TdTag(String body) {
         element = new XMLElement("td", body, false);
     }
 
@@ -19,4 +19,5 @@ public class TdTag extends TableCell<TdTag> {
     protected TdTag getThis() {
         return this;
     }
+
 }

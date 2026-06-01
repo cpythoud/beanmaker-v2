@@ -11,7 +11,7 @@ public class SpanTag extends Tag<SpanTag> {
         element = new XMLElement("span", false);
     }
 
-    public SpanTag(final String body) {
+    public SpanTag(String body) {
         element = new XMLElement("span", body, false);
     }
 
@@ -19,4 +19,5 @@ public class SpanTag extends Tag<SpanTag> {
     protected SpanTag getThis() {
         return this;
     }
+
 }

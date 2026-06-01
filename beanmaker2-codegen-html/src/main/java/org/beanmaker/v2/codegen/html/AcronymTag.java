@@ -11,7 +11,7 @@ public class AcronymTag extends Tag<AcronymTag> {
         element = new XMLElement("acronym", false);
     }
 
-    public AcronymTag(final String body) {
+    public AcronymTag(String body) {
         element = new XMLElement("acronym", body, false);
     }
 
@@ -19,4 +19,5 @@ public class AcronymTag extends Tag<AcronymTag> {
     protected AcronymTag getThis() {
         return this;
     }
+
 }

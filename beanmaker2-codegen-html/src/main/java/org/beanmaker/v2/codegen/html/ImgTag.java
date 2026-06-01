@@ -11,17 +11,17 @@ public class ImgTag extends Tag<ImgTag> {
         element = new XMLElement("img");
     }
 
-    public ImgTag(final String src) {
+    public ImgTag(String src) {
         this();
         src(src);
     }
 
-    public ImgTag(final String src, final String alt) {
+    public ImgTag(String src, String alt) {
         this(src);
         alt(alt);
     }
 
-    public ImgTag(final String src, final String alt, final int height, final int width) {
+    public ImgTag(String src, String alt, int height, int width) {
         this(src, alt);
         height(height);
         width(width);
@@ -32,35 +32,36 @@ public class ImgTag extends Tag<ImgTag> {
         return this;
     }
 
-    public ImgTag src(final String value) {
+    public ImgTag src(String value) {
         return attribute("src", value);
     }
 
-    public ImgTag alt(final String value) {
+    public ImgTag alt(String value) {
         return attribute("alt", value);
     }
 
-    public ImgTag longdesc(final String value) {
+    public ImgTag longdesc(String value) {
         return attribute("longdesc", value);
     }
 
-    public ImgTag name(final String value) {
+    public ImgTag name(String value) {
         return attribute("name", value);
     }
 
-    public ImgTag height(final int value) {
+    public ImgTag height(int value) {
         return attribute("height", Integer.toString(value));
     }
 
-    public ImgTag width(final int value) {
+    public ImgTag width(int value) {
         return attribute("width", Integer.toString(value));
     }
 
-    public ImgTag usemap(final String value) {
+    public ImgTag usemap(String value) {
         return attribute("usemap", value);
     }
 
     public ImgTag ismap() {
         return attribute("ismap");
     }
+
 }

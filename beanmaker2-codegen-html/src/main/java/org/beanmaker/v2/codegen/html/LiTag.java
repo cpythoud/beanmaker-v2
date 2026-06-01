@@ -11,7 +11,7 @@ public class LiTag extends Tag<LiTag> {
         element = new XMLElement("li", false);
     }
 
-    public LiTag(final String body) {
+    public LiTag(String body) {
         element = new XMLElement("li", body, false);
     }
 
@@ -20,17 +20,7 @@ public class LiTag extends Tag<LiTag> {
         return this;
     }
 
-    /*@Override
-    public LiTag child(final Tag tag) {
-        return super.child(tag);
-    }
-
-    @Override
-    public LiTag addCodeFragment(final HtmlCodeFragment codeFragment) {
-        return super.addCodeFragment(codeFragment);
-    }*/
-
-    public LiTag value(final int value) {  // only if li is child of ol
+    public LiTag value(int value) {  // * only if li is child of ol
         return attribute("value", Integer.toString(value));
     }
 }

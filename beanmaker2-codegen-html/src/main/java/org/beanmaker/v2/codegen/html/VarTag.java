@@ -11,7 +11,7 @@ public class VarTag extends Tag<VarTag> {
         element = new XMLElement("var", false);
     }
 
-    public VarTag(final String body) {
+    public VarTag(String body) {
         element = new XMLElement("var", body, false);
     }
 
@@ -19,4 +19,5 @@ public class VarTag extends Tag<VarTag> {
     protected VarTag getThis() {
         return this;
     }
+
 }

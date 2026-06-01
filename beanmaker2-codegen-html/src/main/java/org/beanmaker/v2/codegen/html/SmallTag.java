@@ -11,7 +11,7 @@ public class SmallTag extends Tag<SmallTag> {
         element = new XMLElement("small", false);
     }
 
-    public SmallTag(final String body) {
+    public SmallTag(String body) {
         element = new XMLElement("small", body, false);
     }
 
@@ -19,4 +19,5 @@ public class SmallTag extends Tag<SmallTag> {
     protected SmallTag getThis() {
         return this;
     }
+
 }

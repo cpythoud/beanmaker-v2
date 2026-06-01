@@ -11,7 +11,7 @@ public class ItalicTag extends Tag<ItalicTag> {
         element = new XMLElement("i", false);
     }
 
-    public ItalicTag(final String body) {
+    public ItalicTag(String body) {
         element = new XMLElement("i", body, false);
     }
 
@@ -19,4 +19,5 @@ public class ItalicTag extends Tag<ItalicTag> {
     protected ItalicTag getThis() {
         return this;
     }
+
 }

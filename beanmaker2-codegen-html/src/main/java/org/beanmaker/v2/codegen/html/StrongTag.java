@@ -11,7 +11,7 @@ public class StrongTag extends Tag<StrongTag> {
         element = new XMLElement("strong", false);
     }
 
-    public StrongTag(final String body) {
+    public StrongTag(String body) {
         element = new XMLElement("strong", body, false);
     }
 
@@ -20,13 +20,4 @@ public class StrongTag extends Tag<StrongTag> {
         return this;
     }
 
-    /*@Override
-    public StrongTag child(final Tag tag) {
-        return super.child(tag);
-    }
-
-    @Override
-    public StrongTag addCodeFragment(final HtmlCodeFragment codeFragment) {
-        return super.addCodeFragment(codeFragment);
-    }*/
 }

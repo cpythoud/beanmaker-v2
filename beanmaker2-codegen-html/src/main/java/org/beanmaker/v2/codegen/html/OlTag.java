@@ -18,7 +18,7 @@ public class OlTag extends Tag<OlTag> {
         return this;
     }
 
-    public static OlTag createList(final List<Object> items) {
+    public static OlTag createList(List<Object> items) {
         if (items == null)
             throw new NullPointerException("Item List is null");
         if (items.isEmpty())
@@ -26,4 +26,5 @@ public class OlTag extends Tag<OlTag> {
 
         return createList(new OlTag(), items);
     }
+
 }

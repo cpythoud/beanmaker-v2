@@ -16,7 +16,8 @@ public class TheadTag extends TableElement<TheadTag> {
         return this;
     }
 
-    public TheadTag child(final TrTag tr) {
+    public TheadTag child(TrTag tr) {
         return super.child(tr);
     }
+
 }

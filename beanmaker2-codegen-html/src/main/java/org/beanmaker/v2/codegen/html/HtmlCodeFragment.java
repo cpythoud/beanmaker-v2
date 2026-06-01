@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class HtmlCodeFragment {
 
-    private List<Tag> tags = new ArrayList<Tag>();
+    private final List<Tag> tags = new ArrayList<>();
 
-    public void addTag(final Tag tag) {
+    public void addTag(Tag tag) {
         tags.add(tag);
     }
 
@@ -28,7 +28,7 @@ public class HtmlCodeFragment {
 
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         for (Tag tag: tags)
             buf.append(tag);

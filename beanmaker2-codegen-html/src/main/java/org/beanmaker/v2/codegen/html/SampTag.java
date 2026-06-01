@@ -11,7 +11,7 @@ public class SampTag extends Tag<SampTag> {
         element = new XMLElement("samp", false);
     }
 
-    public SampTag(final String body) {
+    public SampTag(String body) {
         element = new XMLElement("samp", body, false);
     }
 
@@ -19,4 +19,5 @@ public class SampTag extends Tag<SampTag> {
     protected SampTag getThis() {
         return this;
     }
+
 }

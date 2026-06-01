@@ -11,7 +11,7 @@ public class SelectTag extends FormElement<SelectTag> {
         element = new XMLElement("select", false);
     }
 
-    public SelectTag(final String name) {
+    public SelectTag(String name) {
         this();
         name(name);
     }
@@ -21,7 +21,7 @@ public class SelectTag extends FormElement<SelectTag> {
         return this;
     }
 
-    public SelectTag name(final String value) {
+    public SelectTag name(String value) {
         return attribute("name", value);
     }
 
@@ -29,15 +29,16 @@ public class SelectTag extends FormElement<SelectTag> {
         return attribute("multiple");
     }
 
-    public SelectTag size(final int value) {
+    public SelectTag size(int value) {
         return attribute("size", Integer.toString(value));
     }
 
-    public SelectTag child(final OptgroupTag tag) {
+    public SelectTag child(OptgroupTag tag) {
         return super.child(tag);
     }
 
-    public SelectTag child(final OptionTag tag) {
+    public SelectTag child(OptionTag tag) {
         return super.child(tag);
     }
+
 }

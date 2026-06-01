@@ -3,16 +3,15 @@ package org.beanmaker.v2.codegen.html.css;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class StyleSheet {
 
     private final String name;
 
-    private final Map<String, Style> styles = new HashMap<String, Style>();
+    private final Map<String, Style> styles = new HashMap<>();
 
-    public StyleSheet(final String name) {
+    public StyleSheet(String name) {
         this.name = name;
     }
 
@@ -20,7 +19,7 @@ public class StyleSheet {
         return name;
     }
 
-    public StyleSheet addStyle(final Style style) {
+    public StyleSheet addStyle(Style style) {
         styles.put(style.getSpecification(), style);
 
         return this;
@@ -31,14 +30,13 @@ public class StyleSheet {
         return toString(0);
     }
 
-    public String toString(final int tabs) {
+    public String toString(int tabs) {
         if (tabs < 0)
             throw new IllegalArgumentException("tabs < 0");
 
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
-        final List<String> specifications = new ArrayList<String>();
-        specifications.addAll(styles.keySet());
+        var specifications = new ArrayList<>(styles.keySet());
         Collections.sort(specifications);
 
         for (String specification: specifications)

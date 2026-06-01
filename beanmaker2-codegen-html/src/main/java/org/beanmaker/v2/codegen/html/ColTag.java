@@ -11,7 +11,7 @@ public class ColTag extends ColElement<ColTag> {
         element = new XMLElement("coltag", false);
     }
 
-    public ColTag(final int span) {
+    public ColTag(int span) {
         this();
         span(span);
     }
@@ -20,4 +20,5 @@ public class ColTag extends ColElement<ColTag> {
     protected ColTag getThis() {
         return this;
     }
+
 }

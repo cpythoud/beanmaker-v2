@@ -11,7 +11,7 @@ public class SupTag extends Tag<SupTag> {
         element = new XMLElement("sup", false);
     }
 
-    public SupTag(final String body) {
+    public SupTag(String body) {
         element = new XMLElement("sup", body, false);
     }
 
@@ -19,4 +19,5 @@ public class SupTag extends Tag<SupTag> {
     protected SupTag getThis() {
         return this;
     }
+
 }

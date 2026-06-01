@@ -1,7 +1,5 @@
 package org.beanmaker.v2.codegen.html;
 
-import org.beanmaker.v2.codegen.html.xmlbase.XMLElement;
-
 /**
  * ...
  */
@@ -15,7 +13,7 @@ public abstract class TableCell<T extends TableCell<T>> extends TableElement<T> 
 
         private final String val;
 
-        private Scope(final String val) {
+        Scope(String val) {
             this.val = val;
         }
 
@@ -24,37 +22,28 @@ public abstract class TableCell<T extends TableCell<T>> extends TableElement<T> 
         }
     }
 
-    /*@Override
-    public T child(final Tag tag) {
-        return super.child(tag);
-    }
-
-    @Override
-    public T addCodeFragment(final HtmlCodeFragment codeFragment) {
-        return super.addCodeFragment(codeFragment);
-    }*/
-
-    public T abbr(final String value) {
+    public T abbr(String value) {
         return attribute("abbr", value);
     }
 
-    public T axis(final String value) {
+    public T axis(String value) {
         return attribute("axis", value);
     }
 
-    public T headers(final String value) {
+    public T headers(String value) {
         return attribute("headers", value);
     }
 
-    public T scope(final Scope value) {
+    public T scope(Scope value) {
         return attribute("scope", value.toString());
     }
 
-    public T rowspan(final int value) {
+    public T rowspan(int value) {
         return attribute("rowspan", Integer.toString(value));
     }
 
-    public T colspan(final int value) {
+    public T colspan(int value) {
         return attribute("colspan", Integer.toString(value));
     }
+
 }

@@ -11,7 +11,7 @@ public class AddressTag extends Tag<AddressTag> {
         element = new XMLElement("address", false);
     }
 
-    public AddressTag(final String body) {
+    public AddressTag(String body) {
         element = new XMLElement("address", body, false);
     }
 
@@ -19,4 +19,5 @@ public class AddressTag extends Tag<AddressTag> {
     protected AddressTag getThis() {
         return this;
     }
+
 }

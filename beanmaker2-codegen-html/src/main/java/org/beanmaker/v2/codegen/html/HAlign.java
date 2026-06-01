@@ -12,7 +12,7 @@ public enum HAlign {
 
     private final String val;
 
-    private HAlign(final String val) {
+    HAlign(String val) {
         this.val = val;
     }
 

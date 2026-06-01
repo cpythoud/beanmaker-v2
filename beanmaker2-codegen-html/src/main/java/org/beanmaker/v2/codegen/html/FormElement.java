@@ -9,7 +9,8 @@ public abstract class FormElement<T extends FormElement<T>> extends Tag<T> {
         return attribute("required");
     }
 
-    public T form(final String val) {
+    public T form(String val) {
         return attribute("form", val);
     }
+
 }

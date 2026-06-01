@@ -11,7 +11,7 @@ public class CodeTag extends Tag<CodeTag> {
         element = new XMLElement("code", false);
     }
 
-    public CodeTag(final String body) {
+    public CodeTag(String body) {
         element = new XMLElement("code", body, false);
     }
 
@@ -19,4 +19,5 @@ public class CodeTag extends Tag<CodeTag> {
     protected CodeTag getThis() {
         return this;
     }
+
 }

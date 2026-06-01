@@ -15,7 +15,7 @@ public class ButtonTag extends FormElement<ButtonTag> {
 
         private final String val;
 
-        private ButtonType(final String val) {
+        ButtonType(String val) {
             this.val = val;
         }
 
@@ -23,27 +23,24 @@ public class ButtonTag extends FormElement<ButtonTag> {
             return val;
         }
 
-        public static ButtonType getType(final String s) {
-            final String val = s.toLowerCase();
-            if (val.equals("submit"))
-                return SUBMIT;
-            if (val.equals("reset"))
-                return RESET;
-            if (val.equals("button"))
-                return BUTTON;
-            if (val.equals("menu"))
-                return MENU;
-
-            throw new IllegalArgumentException(val + " does not correspond to a button type");
+        public static ButtonType getType(String s) {
+            String val = s.toLowerCase();
+            return switch (val) {
+                case "submit" -> SUBMIT;
+                case "reset" -> RESET;
+                case "button" -> BUTTON;
+                case "menu" -> MENU;
+                default -> throw new IllegalArgumentException(val + " does not correspond to a button type");
+            };
         }
     }
 
-    public ButtonTag(final ButtonType type) {
+    public ButtonTag(ButtonType type) {
         element = new XMLElement("button", false);
         type(type);
     }
 
-    public ButtonTag(final ButtonType type, final String label) {
+    public ButtonTag(ButtonType type, String label) {
         element = new XMLElement("button", label, false);
         type(type);
     }
@@ -53,29 +50,20 @@ public class ButtonTag extends FormElement<ButtonTag> {
         return this;
     }
 
-    /*@Override
-    public ButtonTag child(final Tag tag) {
-        return super.child(tag);
-    }
-
-    @Override
-    public ButtonTag addCodeFragment(final HtmlCodeFragment codeFragment) {
-        return super.addCodeFragment(codeFragment);
-    }*/
-
-    public ButtonTag type(final ButtonType value) {
+    public ButtonTag type(ButtonType value) {
         return attribute("type", value.getVal());
     }
 
-    public ButtonTag menu(final String value) {
+    public ButtonTag menu(String value) {
         return attribute("menu", value);
     }
 
-    public ButtonTag name(final String value) {
+    public ButtonTag name(String value) {
         return attribute("name", value);
     }
 
-    public ButtonTag value(final String value) {
+    public ButtonTag value(String value) {
         return attribute("value", value);
     }
+
 }

@@ -11,7 +11,7 @@ public class BoldTag extends Tag<BoldTag> {
         element = new XMLElement("b", false);
     }
 
-    public BoldTag(final String body) {
+    public BoldTag(String body) {
         element = new XMLElement("b", body, false);
     }
 
@@ -19,4 +19,5 @@ public class BoldTag extends Tag<BoldTag> {
     protected BoldTag getThis() {
         return this;
     }
+
 }

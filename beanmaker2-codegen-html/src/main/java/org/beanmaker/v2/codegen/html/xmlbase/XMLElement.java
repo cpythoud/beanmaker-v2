@@ -153,7 +153,7 @@ public class XMLElement extends CodeBlock {
             for (XMLAttribute attribute: attributes)
                 buf.append(attribute);
 
-            if (children.size() == 0 && body == null) {
+            if (children.isEmpty() && body == null) {
                 if (selfClosing) {
                     buf.append(" />");
                     if (!onOneLineLocally)
@@ -220,7 +220,7 @@ public class XMLElement extends CodeBlock {
     }
 
     public static XMLElement getOneLiner(String name, boolean value) {
-        return getOneLiner(name, value ? "true" : "false");
+        return getOneLiner(name, Boolean.toString(value));
     }
 
 }

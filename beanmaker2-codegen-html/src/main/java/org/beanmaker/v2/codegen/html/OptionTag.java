@@ -7,11 +7,11 @@ import org.beanmaker.v2.codegen.html.xmlbase.XMLElement;
  */
 public class OptionTag extends Tag<OptionTag> {
 
-    public OptionTag(final String body) {
+    public OptionTag(String body) {
         element = new XMLElement("option", body, false);
     }
 
-    public OptionTag(final String body, final String value) {
+    public OptionTag(String body, String value) {
         this(body);
         value(value);
     }
@@ -21,7 +21,7 @@ public class OptionTag extends Tag<OptionTag> {
         return this;
     }
 
-    public OptionTag value(final String value) {
+    public OptionTag value(String value) {
         return attribute("value", value);
     }
 
@@ -29,7 +29,8 @@ public class OptionTag extends Tag<OptionTag> {
         return attribute("selected");
     }
 
-    public OptionTag label(final String value) {
+    public OptionTag label(String value) {
         return attribute("label", value);
     }
+
 }

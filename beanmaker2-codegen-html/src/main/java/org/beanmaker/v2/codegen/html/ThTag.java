@@ -11,7 +11,7 @@ public class ThTag extends TableCell<ThTag> {
         element = new XMLElement("th", false);
     }
 
-    public ThTag(final String body) {
+    public ThTag(String body) {
         element = new XMLElement("th", body, false);
     }
 
@@ -19,4 +19,5 @@ public class ThTag extends TableCell<ThTag> {
     protected ThTag getThis() {
         return this;
     }
+
 }

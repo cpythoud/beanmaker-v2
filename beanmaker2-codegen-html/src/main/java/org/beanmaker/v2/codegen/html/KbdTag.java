@@ -11,7 +11,7 @@ public class KbdTag extends Tag<KbdTag> {
         element = new XMLElement("kbd", false);
     }
 
-    public KbdTag(final String body) {
+    public KbdTag(String body) {
         element = new XMLElement("kbd", body, false);
     }
 
@@ -19,4 +19,5 @@ public class KbdTag extends Tag<KbdTag> {
     protected KbdTag getThis() {
         return this;
     }
+
 }
