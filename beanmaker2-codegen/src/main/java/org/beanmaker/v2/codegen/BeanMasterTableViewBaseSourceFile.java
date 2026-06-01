@@ -23,7 +23,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DbBeanInterface", "MasterTableCellDefinition");
     private static final List<String> HTML_IMPORTS =
-            createImportList("org.jcodegen.html", "TdTag", "ThTag", "TrTag");
+            createImportList("org.beanmaker.v2.codegen.html", "TdTag", "ThTag", "TrTag");
 
     public BeanMasterTableViewBaseSourceFile(String beanName, String packageName, Columns columns) {
         this(beanName, packageName, columns, DEFAULT_PROJECT_PARAMETERS);

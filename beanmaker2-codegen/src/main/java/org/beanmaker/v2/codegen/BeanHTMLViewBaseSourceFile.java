@@ -26,7 +26,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DbBeanLanguage", "HFHParameters", "HttpRequestParameters");
     private static final List<String> HTML_IMPORTS =
-            createImportList("org.jcodegen.html", "FormTag", "Tag");
+            createImportList("org.beanmaker.v2.codegen.html", "FormTag", "Tag");
 
     private static final int TEXTAREA_THRESHOLD = 1000;
 
@@ -353,7 +353,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private FunctionCall getFieldInputType(String type) {
-        importsManager.addImport("org.jcodegen.html.InputTag");
+        importsManager.addImport("org.beanmaker.v2.codegen.html.InputTag");
         return getParamSetterExpression("InputType", "InputTag.InputType." + type);
     }
 
