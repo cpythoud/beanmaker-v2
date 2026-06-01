@@ -1,10 +1,10 @@
 package org.beanmaker.v2.runtime;
 
-import org.jcodegen.html.ButtonTag;
-import org.jcodegen.html.DivTag;
-import org.jcodegen.html.FormTag;
-import org.jcodegen.html.InputTag;
-import org.jcodegen.html.Tag;
+import org.beanmaker.v2.codegen.html.ButtonTag;
+import org.beanmaker.v2.codegen.html.DivTag;
+import org.beanmaker.v2.codegen.html.FormTag;
+import org.beanmaker.v2.codegen.html.InputTag;
+import org.beanmaker.v2.codegen.html.Tag;
 
 public interface HtmlFormHelper {
 

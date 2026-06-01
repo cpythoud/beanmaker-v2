@@ -1,21 +1,21 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.util.Strings;
+import org.beanmaker.v2.codegen.html.ButtonTag;
+import org.beanmaker.v2.codegen.html.CData;
+import org.beanmaker.v2.codegen.html.DivTag;
+import org.beanmaker.v2.codegen.html.FormElement;
+import org.beanmaker.v2.codegen.html.FormTag;
+import org.beanmaker.v2.codegen.html.HtmlCodeFragment;
+import org.beanmaker.v2.codegen.html.InputTag;
+import org.beanmaker.v2.codegen.html.LabelTag;
+import org.beanmaker.v2.codegen.html.OptgroupTag;
+import org.beanmaker.v2.codegen.html.SelectTag;
+import org.beanmaker.v2.codegen.html.SpanTag;
+import org.beanmaker.v2.codegen.html.Tag;
+import org.beanmaker.v2.codegen.html.TextareaTag;
+import org.beanmaker.v2.codegen.html.util.CssClasses;
 
-import org.jcodegen.html.ButtonTag;
-import org.jcodegen.html.CData;
-import org.jcodegen.html.DivTag;
-import org.jcodegen.html.FormElement;
-import org.jcodegen.html.FormTag;
-import org.jcodegen.html.HtmlCodeFragment;
-import org.jcodegen.html.InputTag;
-import org.jcodegen.html.LabelTag;
-import org.jcodegen.html.OptgroupTag;
-import org.jcodegen.html.SelectTag;
-import org.jcodegen.html.SpanTag;
-import org.jcodegen.html.Tag;
-import org.jcodegen.html.TextareaTag;
-import org.jcodegen.html.util.CssClasses;
+import org.beanmaker.v2.util.Strings;
 
 import java.util.List;
 import java.util.Map;

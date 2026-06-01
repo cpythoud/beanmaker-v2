@@ -1,7 +1,7 @@
 package org.beanmaker.v2.runtime;
 
-import org.jcodegen.html.LiTag;
-import org.jcodegen.html.UlTag;
+import org.beanmaker.v2.codegen.html.LiTag;
+import org.beanmaker.v2.codegen.html.UlTag;
 
 import java.util.List;
 

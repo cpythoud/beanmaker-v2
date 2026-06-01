@@ -2,12 +2,12 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.util.Strings;
 
-import org.jcodegen.html.ButtonTag;
-import org.jcodegen.html.InputTag;
-import org.jcodegen.html.SpanTag;
-import org.jcodegen.html.Tag;
+import org.beanmaker.v2.codegen.html.ButtonTag;
+import org.beanmaker.v2.codegen.html.InputTag;
+import org.beanmaker.v2.codegen.html.SpanTag;
+import org.beanmaker.v2.codegen.html.Tag;
 
-import org.jcodegen.html.util.CssClasses;
+import org.beanmaker.v2.codegen.html.util.CssClasses;
 
 import java.util.ArrayList;
 import java.util.HashMap;

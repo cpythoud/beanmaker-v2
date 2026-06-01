@@ -1,10 +1,10 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.util.Types;
+import org.beanmaker.v2.codegen.html.OptionTag;
+import org.beanmaker.v2.codegen.html.SelectTag;
+import org.beanmaker.v2.codegen.html.Tag;
 
-import org.jcodegen.html.OptionTag;
-import org.jcodegen.html.SelectTag;
-import org.jcodegen.html.Tag;
+import org.beanmaker.v2.util.Types;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ module org.beanmaker.v2.codegen {
     requires org.beanmaker.v2.util;
     requires org.beanmaker.v2.database.sql;
     requires org.beanmaker.v2.codegen.java;
-    requires org.jcodegen.html;
+    requires org.beanmaker.v2.codegen.html;
 
     exports org.beanmaker.v2.codegen;
 }

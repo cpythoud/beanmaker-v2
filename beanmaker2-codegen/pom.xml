@@ -34,8 +34,8 @@
             <artifactId>beanmaker2-codegen-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jcodegen</groupId>
-            <artifactId>html-codegen</artifactId>
+            <groupId>org.beanmaker</groupId>
+            <artifactId>beanmaker2-codegen-html</artifactId>
         </dependency>
     </dependencies>
 

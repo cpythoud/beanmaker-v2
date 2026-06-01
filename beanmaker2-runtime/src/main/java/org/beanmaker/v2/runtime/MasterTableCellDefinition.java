@@ -1,11 +1,11 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.codegen.html.HtmlCodeFragment;
+import org.beanmaker.v2.codegen.html.Tag;
+
 import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
 import org.beanmaker.v2.util.Strings;
-
-import org.jcodegen.html.HtmlCodeFragment;
-import org.jcodegen.html.Tag;
 
 import java.sql.Date;
 import java.sql.Time;

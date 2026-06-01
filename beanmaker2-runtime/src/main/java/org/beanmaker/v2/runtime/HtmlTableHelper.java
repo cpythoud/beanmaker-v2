@@ -1,12 +1,12 @@
 package org.beanmaker.v2.runtime;
 
-import org.jcodegen.html.StrongTag;
-import org.jcodegen.html.TableTag;
-import org.jcodegen.html.Tag;
-import org.jcodegen.html.TbodyTag;
-import org.jcodegen.html.TdTag;
-import org.jcodegen.html.ThTag;
-import org.jcodegen.html.TrTag;
+import org.beanmaker.v2.codegen.html.StrongTag;
+import org.beanmaker.v2.codegen.html.TableTag;
+import org.beanmaker.v2.codegen.html.Tag;
+import org.beanmaker.v2.codegen.html.TbodyTag;
+import org.beanmaker.v2.codegen.html.TdTag;
+import org.beanmaker.v2.codegen.html.ThTag;
+import org.beanmaker.v2.codegen.html.TrTag;
 
 import java.util.List;
 

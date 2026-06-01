@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.jcodegen.html.DivTag;
+import org.beanmaker.v2.codegen.html.DivTag;
 
 import java.util.ResourceBundle;
 

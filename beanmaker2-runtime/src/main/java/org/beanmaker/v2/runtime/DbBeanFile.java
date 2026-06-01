@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.jcodegen.html.ATag;
+import org.beanmaker.v2.codegen.html.ATag;
 
 import java.io.File;
 

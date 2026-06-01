@@ -1,9 +1,9 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.util.HTMLText;
+import org.beanmaker.v2.codegen.html.FormTag;
+import org.beanmaker.v2.codegen.html.Tag;
 
-import org.jcodegen.html.FormTag;
-import org.jcodegen.html.Tag;
+import org.beanmaker.v2.util.HTMLText;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;

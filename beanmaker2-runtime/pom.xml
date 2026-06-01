@@ -30,8 +30,8 @@
             <artifactId>beanmaker2-database-sql</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jcodegen</groupId>
-            <artifactId>html-codegen</artifactId>
+            <groupId>org.beanmaker</groupId>
+            <artifactId>beanmaker2-codegen-html</artifactId>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

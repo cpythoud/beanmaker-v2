@@ -2,7 +2,7 @@ package org.beanmaker.v2.codegen;
 
 import org.beanmaker.v2.util.Strings;
 
-import org.jcodegen.html.xmlbase.XMLElement;
+import org.beanmaker.v2.codegen.html.xmlbase.XMLElement;
 
 @Deprecated
 public class WebXMLConfig implements BeanMakerSourceFile {

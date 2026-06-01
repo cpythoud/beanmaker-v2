@@ -1,6 +1,6 @@
 package org.beanmaker.v2.codegen;
 
-import org.jcodegen.html.xmlbase.XMLElement;
+import org.beanmaker.v2.codegen.html.xmlbase.XMLElement;
 
 import java.util.List;
 import java.util.Set;
