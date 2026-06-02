@@ -9,7 +9,7 @@ import java.util.Set;
  */
 public class CssClasses {
 
-    private final Set<String> classNames = new HashSet<String>();
+    private final Set<String> classNames = new HashSet<>();
 
     public static CssClasses start(String firstClasses) {
         CssClasses cssClasses = new CssClasses();
@@ -34,11 +34,6 @@ public class CssClasses {
             return add(className);
 
         return this;
-    }
-
-    @Deprecated
-    public void addClass(String className) {
-        classNames.add(className);
     }
 
     public String get() {

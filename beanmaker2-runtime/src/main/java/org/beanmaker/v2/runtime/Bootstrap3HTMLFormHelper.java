@@ -262,17 +262,17 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public DivTag getFormGroup(LabelTag label, Tag field) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field) {
         return getFormGroup(label, field, null);
     }
 
     @Override
-    public DivTag getFormGroup(LabelTag label, Tag field, String helpText) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText) {
         return getFormGroup(label, field, helpText, null);
     }
 
     @Override
-    public DivTag getFormGroup(LabelTag label, Tag field, String helpText, String extraCssClasses) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText, String extraCssClasses) {
         DivTag formGroup =
                 new DivTag().cssClass(CssClasses.start("form-group").add(extraCssClasses).get())
                         .child(label);
@@ -363,7 +363,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public Tag getSubmitButton(HFHParameters params) {
+    public Tag<?> getSubmitButton(HFHParameters params) {
         ButtonTag submit = getSubmitButtonTag(params);
 
         if (params.isDisabled())
@@ -387,7 +387,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
-        FormElement formElement;
+        FormElement<?> formElement;
         if (params.isReadonly())
             formElement = getSelectReadOnlyFormElement(params, fieldId);
         else
@@ -402,7 +402,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    protected FormElement getSelectReadWriteFormElement(HFHParameters params, String fieldId) {
+    protected FormElement<?> getSelectReadWriteFormElement(HFHParameters params, String fieldId) {
         SelectTag select = getSelectTag(params.getField(), fieldId, params.getTagExtraCssClasses());
 
         if (params.hasOptionGroupSelectData()) {
@@ -496,7 +496,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         String fieldId = getFieldId(params.getField(), params.getIdBean(), true);
         LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
-        Tag input;
+        Tag<?> input;
         if (displayROFilesAsLinks && params.hasCurrentFileLink())
             input = params.getCurrentFileLink();
         else {
@@ -601,7 +601,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
                 getTextLabelTag(fieldId, params.getValue()));
     }
 
-    public DivTag getTextLabelField(HFHParameters params, Tag adHocRepresentation) {
+    public DivTag getTextLabelField(HFHParameters params, Tag<?> adHocRepresentation) {
         String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
 
         return getFormGroup(
@@ -609,7 +609,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
                 adHocRepresentation.id(fieldId));
     }
 
-    protected Tag getTextLabelTag(String id, String value) {
+    protected Tag<?> getTextLabelTag(String id, String value) {
         return new SpanTag(value).cssClass("form-control").id(id);
     }
 

@@ -83,7 +83,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public Tag getCheckboxField(HFHParameters params) {
+    public Tag<?> getCheckboxField(HFHParameters params) {
         var elementSpacing = getVerticalFormElementSpacing();
         var field = new DivTag();
         if (!Strings.isEmpty(elementSpacing))
@@ -134,11 +134,11 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public Tag getSelectField(HFHParameters params) {
+    public Tag<?> getSelectField(HFHParameters params) {
         String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
-        FormElement formElement;
+        FormElement<?> formElement;
         if (params.isReadonly())
             formElement = getSelectReadOnlyFormElement(params, fieldId);
         else
@@ -163,12 +163,12 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public Tag getFileField(HFHParameters params) {
+    public Tag<?> getFileField(HFHParameters params) {
         throw new UnsupportedOperationException("getFileField(HFHParameters)"); // TODO: IMPLEMENT
     }
 
     @Override
-    public DivTag getFormGroup(LabelTag label, Tag field, String helpText, String extraCssClasses) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText, String extraCssClasses) {
         String cssClasses = CssClasses.start(getVerticalFormElementSpacing()).add(extraCssClasses).get();
         var formGroup = new DivTag().cssClass(cssClasses);
         if (isFloatingLabels()) {
@@ -186,7 +186,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    protected Tag getHelperBlock(String helpText) {
+    protected Tag<?> getHelperBlock(String helpText) {
         return new DivTag().cssClass("form-text").child(new CData(helpText));
     }
 
@@ -295,7 +295,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public Tag getFormElementsContainer(Tag form) {
+    public Tag<?> getFormElementsContainer(Tag<?> form) {
         if (isFormInModale() && !areButtonsSeparated())
             return new DivTag().cssClass("modal-body");
 
@@ -303,7 +303,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public Tag getFormButtonsContainer(Tag form) {
+    public Tag<?> getFormButtonsContainer(Tag<?> form) {
         if (isFormInModale())
             return new DivTag().cssClass("modal-footer");
 
@@ -311,7 +311,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public void addErrorMessagesContainer(Tag form, String formName, long idBean) {
+    public void addErrorMessagesContainer(Tag<?> form, String formName, long idBean) {
         form.child(HtmlFormHelper.getDefaultErrorMessageContainer(formName, idBean));
     }
 

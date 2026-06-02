@@ -54,7 +54,7 @@ public class ToStringMaker {
         StringBuilder buf = new StringBuilder();
         buf.append("[").append(javaClass).append(" #").append(databaseID);
 
-        for (Map.Entry mapEntry: fields.entrySet())
+        for (var mapEntry: fields.entrySet())
             buf.append(", ").append(mapEntry.getKey()).append("=").append(mapEntry.getValue());
 
         buf.append("]");

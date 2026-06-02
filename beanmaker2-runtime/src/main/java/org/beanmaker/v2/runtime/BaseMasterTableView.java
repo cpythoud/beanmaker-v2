@@ -54,7 +54,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     protected String formElementFilterCssClass = "tb-filter";
     protected int inputTagSize = 0;
     protected String removeFilteringLinkCssClass = "tb-nofilter";
-    protected Tag removeFilteringHtmlTags() {
+    protected Tag<?> removeFilteringHtmlTags() {
         return new SpanTag()
                 .cssClass(iconLibrary + removeFilteringIcon)
                 .title(dbBeanLocalization.getLabel("cct_remove_filtering"));
@@ -183,7 +183,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     protected String excelExportIdSuffix = "excel";
     protected String excelExportCssClass = "excel_export";
     protected String excelExportIcon = "xlsx";
-    protected Tag excelExportHtmlTags() {
+    protected Tag<?> excelExportHtmlTags() {
         return new SpanTag()
                 .cssClass(filetypeIconLibrary + excelExportIcon)
                 .title(dbBeanLocalization.getLabel("cct_excel_export"));
@@ -483,7 +483,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return getStyledTitleCell(name, adhocTitle, null);
     }
 
-    protected ThTag getTitleCell(String name, Tag adhocTitle) {
+    protected ThTag getTitleCell(String name, Tag<?> adhocTitle) {
         return getStyledTitleCell(name, adhocTitle, null);
     }
 
@@ -494,7 +494,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
                 .attribute("data-sort-class", "tb-" + name);
     }
 
-    protected ThTag getStyledTitleCell(String name, Tag adhocTitle, String extraCssClasses) {
+    protected ThTag getStyledTitleCell(String name, Tag<?> adhocTitle, String extraCssClasses) {
         ++columnCount;
         return new ThTag()
                 .cssClass(getTitleCellCssClasses(name, extraCssClasses))
@@ -605,12 +605,12 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     }
 
     @Deprecated
-    protected TdTag getTableCell(String name, Tag content) {
+    protected TdTag getTableCell(String name, Tag<?> content) {
         return getTableCell(name, content, null);
     }
 
     @Deprecated
-    protected TdTag getTableCell(String name, Tag content, String extraCssClasses) {
+    protected TdTag getTableCell(String name, Tag<?> content, String extraCssClasses) {
         return new TdTag().child(content).cssClass(getTableCellCssClasses(name, extraCssClasses));
     }
 
@@ -699,14 +699,14 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     }
 
     @Deprecated
-    protected TdTag getTableBooleanCell(String name, Tag value, String sortnfilter) {
+    protected TdTag getTableBooleanCell(String name, Tag<?> value, String sortnfilter) {
         return getTableBooleanCell(name, value, sortnfilter, null);
     }
 
     @Deprecated
     protected TdTag getTableBooleanCell(
             String name,
-            Tag value,
+            Tag<?> value,
             String sortnfilter,
             String extraCssClasses)
     {
@@ -948,7 +948,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return getSummaryInfoCode().toString();
     }
 
-    public Tag getSummaryInfoCode() {
+    public Tag<?> getSummaryInfoCode() {
         long count = getLineCount();
 
         return new PTag().cssClass("cctable-summary")
@@ -1144,7 +1144,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return cell.changeCssClasses(addShowMoreOrLessCssClasses(cell));
     }
 
-    private String addShowMoreOrLessCssClasses(Tag cell) {
+    private String addShowMoreOrLessCssClasses(Tag<?> cell) {
         StringBuilder cssClasses = new StringBuilder();
 
         cssClasses.append(cell.getCssClasses());

@@ -35,7 +35,7 @@ public class W3CssHtmlFormHelper extends AbstractHtmlFormHelper {
         return getForm(beanName, id);
     }
 
-    public DivTag getFormGroup(LabelTag label, Tag field, String helpText, String extraCssClasses) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText, String extraCssClasses) {
         var formGroup = new DivTag()
                 .cssClass(CssClasses.start("w3-margin-top").add(extraCssClasses).get())
                 .child(label)
@@ -75,7 +75,7 @@ public class W3CssHtmlFormHelper extends AbstractHtmlFormHelper {
         String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
-        FormElement formElement;
+        FormElement<?> formElement;
         if (params.isReadonly())
             formElement = getSelectReadOnlyFormElement(params, fieldId);
         else
@@ -117,7 +117,7 @@ public class W3CssHtmlFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
-    public Tag getFileField(HFHParameters params) {
+    public Tag<?> getFileField(HFHParameters params) {
         throw new UnsupportedOperationException("getFileField(HFHParameters)"); // TODO: IMPLEMENT
     }
 

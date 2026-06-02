@@ -9,13 +9,13 @@ import java.util.List;
  */
 public class HtmlCodeFragment {
 
-    private final List<Tag> tags = new ArrayList<>();
+    private final List<Tag<?>> tags = new ArrayList<>();
 
-    public void addTag(Tag tag) {
+    public void addTag(Tag<?> tag) {
         tags.add(tag);
     }
 
-    public List<Tag> getTags() {
+    public List<Tag<?>> getTags() {
         return Collections.unmodifiableList(tags);
     }
 
@@ -23,16 +23,17 @@ public class HtmlCodeFragment {
         if (tags.isEmpty())
             throw new IllegalArgumentException("Code Fragment is Empty: cannot remove tag from it.");
 
-        tags.remove(tags.size() - 1);
+        tags.removeLast();
     }
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
 
-        for (Tag tag: tags)
+        for (var tag: tags)
             buf.append(tag);
 
         return buf.toString();
     }
+
 }

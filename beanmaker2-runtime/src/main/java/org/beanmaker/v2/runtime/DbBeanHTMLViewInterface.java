@@ -23,7 +23,7 @@ public interface DbBeanHTMLViewInterface extends DbBeanViewInterface {
 
     String getStandaloneFormButtons();
 
-    Tag getStandaloneFormButtonsTag();
+    Tag<?> getStandaloneFormButtonsTag();
 
     void setAllFields(ServletRequest request);
 

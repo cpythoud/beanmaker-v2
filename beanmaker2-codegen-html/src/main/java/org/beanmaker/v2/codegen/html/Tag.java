@@ -116,13 +116,13 @@ public abstract class Tag <T extends Tag<T>> {
     }
 
 
-    public T child(Tag tag) {
+    public T child(Tag<?> tag) {
         element.addChild(tag.element);
         return getThis();
     }
 
     public T addCodeFragment(HtmlCodeFragment codeFragment) {
-        for (Tag tag: codeFragment.getTags())
+        for (var tag: codeFragment.getTags())
             child(tag);
         return getThis();
     }
@@ -156,10 +156,11 @@ public abstract class Tag <T extends Tag<T>> {
     }
 
 
-    static <T extends Tag> T createList(T listTag, List<Object> items) {
+    static <T extends Tag<?>> T createList(T listTag, List<Object> items) {
         for(Object item: items)
             listTag.child(new LiTag(item.toString()));
 
         return listTag;
     }
+
 }

@@ -97,7 +97,7 @@ public class DbBeanHtmlSelector {
         }
     }
 
-    public Tag getTag() {
+    public Tag<?> getTag() {
         var tag = getSelectTag();
         addOptions(tag);
         return tag;

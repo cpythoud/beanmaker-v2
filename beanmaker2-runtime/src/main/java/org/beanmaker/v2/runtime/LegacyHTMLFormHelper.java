@@ -77,7 +77,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return notRequiredExtension;
     }
 
-    public void setNotRequiredExtension(final String notRequiredExtension) {
+    public void setNotRequiredExtension(String notRequiredExtension) {
         this.notRequiredExtension = notRequiredExtension;
     }
 
@@ -85,7 +85,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return requiredExtension;
     }
 
-    public void setRequiredExtension(final String requiredExtension) {
+    public void setRequiredExtension(String requiredExtension) {
         this.requiredExtension = requiredExtension;
     }
 
@@ -93,7 +93,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return useRequiredInHtml;
     }
 
-    public void useRequiredInHtml(final boolean useRequiresInHtml) {
+    public void useRequiredInHtml(boolean useRequiresInHtml) {
         this.useRequiredInHtml = useRequiresInHtml;
     }
 
@@ -101,7 +101,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return htmlFormAction;
     }
 
-    public void setHtmlFormAction(final String htmlFormAction) {
+    public void setHtmlFormAction(String htmlFormAction) {
         this.htmlFormAction = htmlFormAction;
     }
 
@@ -109,7 +109,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return htmlFormMultipart;
     }
 
-    public void htmlFormMultipart(final boolean htmlFormMultipart) {
+    public void htmlFormMultipart(boolean htmlFormMultipart) {
         this.htmlFormMultipart = htmlFormMultipart;
     }
 
@@ -117,12 +117,12 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return defaultEncoding;
     }
 
-    public void setDefaultEncoding(final String defaultEncoding) {
+    public void setDefaultEncoding(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
     }
 
 
-    public void setInline(final boolean inline) {
+    public void setInline(boolean inline) {
         this.inline = inline;
         if (inline)
             horizontal = false;
@@ -134,7 +134,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return inline;
     }
 
-    public void setInlineWithoutLabels(final boolean inlineWithoutLabels) {
+    public void setInlineWithoutLabels(boolean inlineWithoutLabels) {
         this.inlineWithoutLabels = inlineWithoutLabels;
         if (inlineWithoutLabels) {
             horizontal = false;
@@ -146,7 +146,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return inlineWithoutLabels;
     }
 
-    public void setHorizontal(final boolean horizontal) {
+    public void setHorizontal(boolean horizontal) {
         this.horizontal = horizontal;
         if (horizontal) {
             inline = false;
@@ -177,9 +177,9 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     private static final List<String> BOOTSTRAP_SIZES = Arrays.asList("xs", "sm", "md", "lg");
 
     public void setHorizontalFormParameters(
-            final String horizontalSizeShift,
-            final int horizontalLabelWidth,
-            final int horizontalFieldWidth)
+            String horizontalSizeShift,
+            int horizontalLabelWidth,
+            int horizontalFieldWidth)
     {
         if (!BOOTSTRAP_SIZES.contains(horizontalSizeShift))
             throw new IllegalArgumentException("Unknown Boostrap size: " + horizontalSizeShift);
@@ -212,7 +212,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return horizontalFieldWidth;
     }
 
-    public void setInputTypeForDateFields(final InputTag.InputType inputTypeForDateFields) {
+    public void setInputTypeForDateFields(InputTag.InputType inputTypeForDateFields) {
         this.inputTypeForDateFields = inputTypeForDateFields;
     }
 
@@ -220,7 +220,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return inputTypeForDateFields;
     }
 
-    public void setCssClassForDateFields(final String cssClassForDateFields) {
+    public void setCssClassForDateFields(String cssClassForDateFields) {
         this.cssClassForDateFields = cssClassForDateFields;
     }
 
@@ -228,7 +228,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return cssClassForDateFields;
     }
 
-    public void setInputTypeForTimeFields(final InputTag.InputType inputTypeForTimeFields) {
+    public void setInputTypeForTimeFields(InputTag.InputType inputTypeForTimeFields) {
         this.inputTypeForTimeFields = inputTypeForTimeFields;
     }
 
@@ -236,7 +236,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return inputTypeForTimeFields;
     }
 
-    public void setCssClassForTimeFields(final String cssClassForTimeFields) {
+    public void setCssClassForTimeFields(String cssClassForTimeFields) {
         this.cssClassForTimeFields = cssClassForTimeFields;
     }
 
@@ -244,7 +244,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return cssClassForTimeFields;
     }
 
-    public void setInputTypeForNumberFields(final InputTag.InputType inputTypeForNumberFields) {
+    public void setInputTypeForNumberFields(InputTag.InputType inputTypeForNumberFields) {
         this.inputTypeForNumberFields = inputTypeForNumberFields;
     }
 
@@ -252,7 +252,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return inputTypeForNumberFields;
     }
 
-    public void setCssClassForNumberFields(final String cssClassForNumberFields) {
+    public void setCssClassForNumberFields(String cssClassForNumberFields) {
         this.cssClassForNumberFields = cssClassForNumberFields;
     }
 
@@ -260,39 +260,39 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return cssClassForNumberFields;
     }
 
-    public void setCssClassForFileFields(final String cssClassForFileFields) {
+    public void setCssClassForFileFields(String cssClassForFileFields) {
         this.cssClassForFileFields = cssClassForFileFields;
     }
 
-    public void setUploadButtonLabel(final String uploadButtonLabel) {
+    public void setUploadButtonLabel(String uploadButtonLabel) {
         this.uploadButtonLabel = uploadButtonLabel;
     }
 
-    public void setUploadButtonCssClasses(final String uploadButtonCssClasses) {
+    public void setUploadButtonCssClasses(String uploadButtonCssClasses) {
         this.uploadButtonCssClasses = uploadButtonCssClasses;
     }
 
-    public void setUseRequiredInHtml(final boolean useRequiredInHtml) {
+    public void setUseRequiredInHtml(boolean useRequiredInHtml) {
         this.useRequiredInHtml = useRequiredInHtml;
     }
 
-    public void setUploadNoFileLabel(final String uploadNoFileLabel) {
+    public void setUploadNoFileLabel(String uploadNoFileLabel) {
         this.uploadNoFileLabel = uploadNoFileLabel;
     }
 
-    public void setUploadFilenameDisplayCssClasses(final String uploadFilenameDisplayCssClasses) {
+    public void setUploadFilenameDisplayCssClasses(String uploadFilenameDisplayCssClasses) {
         this.uploadFilenameDisplayCssClasses = uploadFilenameDisplayCssClasses;
     }
 
-    public void setUploadRemoveFileLabel(final String uploadRemoveFileLabel) {
+    public void setUploadRemoveFileLabel(String uploadRemoveFileLabel) {
         this.uploadRemoveFileLabel = uploadRemoveFileLabel;
     }
 
-    public void setUploadRemoveFileCssClasses(final String uploadRemoveFileCssClasses) {
+    public void setUploadRemoveFileCssClasses(String uploadRemoveFileCssClasses) {
         this.uploadRemoveFileCssClasses = uploadRemoveFileCssClasses;
     }
 
-    public void setUploadRemoveFileTitle(final String uploadRemoveFileTitle) {
+    public void setUploadRemoveFileTitle(String uploadRemoveFileTitle) {
         this.uploadRemoveFileTitle = uploadRemoveFileTitle;
     }
 
@@ -328,7 +328,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return uploadRemoveFileTitle;
     }
 
-    public void setExtraFormCssClasses(final String extraFormCssClasses) {
+    public void setExtraFormCssClasses(String extraFormCssClasses) {
         this.extraFormCssClasses = extraFormCssClasses;
     }
 
@@ -336,7 +336,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return extraFormCssClasses;
     }
 
-    public void setReadonlyPostfix(final String readonlyPostfix) {
+    public void setReadonlyPostfix(String readonlyPostfix) {
         this.readonlyPostfix = readonlyPostfix;
     }
 
@@ -344,7 +344,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return readonlyPostfix;
     }
 
-    public void setDisplayROFilesAsLinks(final boolean displayROFilesAsLinks) {
+    public void setDisplayROFilesAsLinks(boolean displayROFilesAsLinks) {
         this.displayROFilesAsLinks = displayROFilesAsLinks;
     }
 
@@ -360,8 +360,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return readonlyFormCssClass;
     }
 
-    protected String getFormCssClasses(final String beanName) {
-        final StringBuilder formCssClasses = new StringBuilder();
+    protected String getFormCssClasses(String beanName) {
+        StringBuilder formCssClasses = new StringBuilder();
 
         formCssClasses.append(beanName).append("-form");
         if (readonly) {
@@ -381,8 +381,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return formCssClasses.toString();
     }
 
-    protected FormTag getFormTag(final String beanName, final long id) {
-        final FormTag form =
+    protected FormTag getFormTag(String beanName, long id) {
+        FormTag form =
                 new FormTag()
                         .role("form")
                         .id(getHtmlId(beanName, id))
@@ -401,16 +401,16 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         horizontal = false;
     }
 
-    public FormTag getForm(final String beanName, final long id) {
-        final FormTag form = getFormTag(beanName, id);
+    public FormTag getForm(String beanName, long id) {
+        FormTag form = getFormTag(beanName, id);
 
         resetFormTypeFlags();
 
         return form.cssClass(getFormCssClasses(beanName));
     }
 
-    public FormTag getInlineForm(final String beanName, final long id) {
-        final FormTag form = getFormTag(beanName, id);
+    public FormTag getInlineForm(String beanName, long id) {
+        FormTag form = getFormTag(beanName, id);
 
         resetFormTypeFlags();
         inline = true;
@@ -418,8 +418,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return form.cssClass(getFormCssClasses(beanName));
     }
 
-    public FormTag getInlineFormWithoutLabels(final String beanName, final long id) {
-        final FormTag form = getFormTag(beanName, id);
+    public FormTag getInlineFormWithoutLabels(String beanName, long id) {
+        FormTag form = getFormTag(beanName, id);
 
         resetFormTypeFlags();
         inline = true;
@@ -428,8 +428,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return form.cssClass(getFormCssClasses(beanName));
     }
 
-    public FormTag getHorizontalForm(final String beanName, final long id) {
-        final FormTag form = getFormTag(beanName, id);
+    public FormTag getHorizontalForm(String beanName, long id) {
+        FormTag form = getFormTag(beanName, id);
 
         resetFormTypeFlags();
         horizontal = true;
@@ -437,67 +437,67 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return form.cssClass(getFormCssClasses(beanName));
     }
 
-    public InputTag getHiddenSubmitInput(final String beanName, final long id) {
+    public InputTag getHiddenSubmitInput(String beanName, long id) {
         return new InputTag(InputTag.InputType.HIDDEN).name("submitted" + beanName).value(Long.toString(id));
     }
 
     public DivTag getTextField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final InputTag.InputType type,
-            final boolean required)
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            InputTag.InputType type,
+            boolean required)
     {
         return getTextField(field, idBean, value, fieldLabel, type, required, null);
     }
 
     public DivTag getTextField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final InputTag.InputType type,
-            final boolean required,
-            final boolean disabled) {
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            InputTag.InputType type,
+            boolean required,
+            boolean disabled) {
         return getTextField(field, idBean, value, fieldLabel, type, required, null, disabled);
     }
 
     public DivTag getTextField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final InputTag.InputType type,
-            final boolean required,
-            final String placeholder)
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            InputTag.InputType type,
+            boolean required,
+            String placeholder)
     {
         return getTextField(field, idBean, value, fieldLabel, type, required, placeholder, false);
     }
 
     public DivTag getTextField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final InputTag.InputType type,
-            final boolean required,
-            final String placeholder,
-            final boolean disabled)
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            InputTag.InputType type,
+            boolean required,
+            String placeholder,
+            boolean disabled)
     {
         return getTextField(field, idBean, value, fieldLabel, type, required, placeholder, disabled, null);
     }
 
     public DivTag getTextField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final InputTag.InputType type,
-            final boolean required,
-            final String placeholder,
-            final boolean disabled,
-            final String helpText)
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            InputTag.InputType type,
+            boolean required,
+            String placeholder,
+            boolean disabled,
+            String helpText)
     {
         return getTextField(
                 new HFHParameters()
@@ -512,12 +512,12 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setHelpText(helpText));
     }
 
-    public DivTag getTextField(final HFHParameters params) {
-        final String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
-        final LabelTag label =
+    public DivTag getTextField(HFHParameters params) {
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        LabelTag label =
                 getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
-        final InputTag input =
+        InputTag input =
                 getInputTag(
                         params.getInputType(),
                         fieldId,
@@ -540,12 +540,12 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return getFormGroup(label, input, params.getHelpText(), params.getGroupExtraCssClasses());
     }
 
-    protected String getFieldId(final String field, final long idBean, final boolean readonly) {
+    protected String getFieldId(String field, long idBean, boolean readonly) {
         return getFieldId(field, idBean, null, readonly);
     }
 
-    protected String getFieldId(final String field, final long idBean, final String idNamePostfix, final boolean readonly) {
-        final String readonlyIndication = readonly ? readonlyPostfix : "";
+    protected String getFieldId(String field, long idBean, String idNamePostfix, boolean readonly) {
+        String readonlyIndication = readonly ? readonlyPostfix : "";
 
         if (Strings.isEmpty(idNamePostfix))
             return field + "_" + idBean + readonlyIndication;
@@ -554,22 +554,22 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     protected InputTag getInputTag(
-            final InputTag.InputType type,
-            final String id,
-            final String name,
-            final String value,
-            final boolean readonly)
+            InputTag.InputType type,
+            String id,
+            String name,
+            String value,
+            boolean readonly)
     {
         return getInputTag(type, id, name, value, readonly, null);
     }
 
     protected InputTag getInputTag(
-            final InputTag.InputType type,
-            final String id,
-            final String name,
-            final String value,
-            final boolean readonly,
-            final String extraCssClasses)
+            InputTag.InputType type,
+            String id,
+            String name,
+            String value,
+            boolean readonly,
+            String extraCssClasses)
     {
         if (type == InputTag.InputType.DATE)
             return new InputTag(inputTypeForDateFields == null ? type : inputTypeForDateFields)
@@ -587,7 +587,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                     .id(id).name(name).value(value);
 
         if (type == InputTag.InputType.FILE) {
-            final InputTag fileInput = new InputTag(InputTag.InputType.FILE);
+            InputTag fileInput = new InputTag(InputTag.InputType.FILE);
             if (!Strings.isEmpty(cssClassForFileFields))
                 fileInput.cssClass(CssClasses.start(cssClassForFileFields).add(extraCssClasses).get());
             if (!Strings.isEmpty(value))
@@ -606,25 +606,25 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return new DivTag().cssClass("form-group");
     }
 
-    public DivTag getFormGroup(final String extraCssClasses) {
+    public DivTag getFormGroup(String extraCssClasses) {
         return new DivTag().cssClass(CssClasses.start("form-group").add(extraCssClasses).get());
     }
 
-    public DivTag getFormGroup(final LabelTag label, final Tag field) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field) {
         return getFormGroup(label, field, null);
     }
 
-    public DivTag getFormGroup(final LabelTag label, final Tag field, final String helpText) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText) {
         return getFormGroup(label, field, helpText, null);
     }
 
-    public DivTag getFormGroup(final LabelTag label, final Tag field, final String helpText, final String extraCssClasses) {
-        final DivTag formGroup =
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText, String extraCssClasses) {
+        DivTag formGroup =
                 new DivTag().cssClass(CssClasses.start("form-group").add(extraCssClasses).get())
                         .child(label);
 
         if (horizontal) {
-            final DivTag formElements =
+            DivTag formElements =
                     new DivTag().cssClass(getHorizontalFieldClass())
                             .child(field);
             if (helpText != null)
@@ -639,31 +639,31 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return formGroup;
     }
 
-    protected Tag getHelperBlock(final String helpText) {
+    protected Tag<?> getHelperBlock(String helpText) {
         return new PTag(helpText).cssClass("helpBlock");
     }
 
-    protected LabelTag getLabel(final String fieldLabel, final boolean required) {
+    protected LabelTag getLabel(String fieldLabel, boolean required) {
         return getLabel(fieldLabel, null, required);
     }
 
-    protected LabelTag getLabel(final String fieldLabel, final String fieldId, final boolean required) {
+    protected LabelTag getLabel(String fieldLabel, String fieldId, boolean required) {
         return getLabel(fieldLabel, fieldId, required, null);
     }
 
     protected LabelTag getLabel(
-            final String fieldLabel,
-            final String fieldId,
-            final boolean required,
-            final String extraCssClasses)
+            String fieldLabel,
+            String fieldId,
+            boolean required,
+            String extraCssClasses)
     {
-        final LabelTag label;
+        LabelTag label;
         if (fieldId == null)
             label = new LabelTag(getLabelText(fieldLabel, required));
         else
             label = new LabelTag(getLabelText(fieldLabel, required), fieldId);
 
-        final StringBuilder cssClasses = new StringBuilder();
+        StringBuilder cssClasses = new StringBuilder();
         if (inlineWithoutLabels)
             cssClasses.append("sr-only");
         if (horizontal)
@@ -679,7 +679,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return label;
     }
 
-    protected String getLabelText(final String fieldLabel, final boolean required) {
+    protected String getLabelText(String fieldLabel, boolean required) {
         if (required && !readonly)
             return fieldLabel + requiredExtension;
 
@@ -698,7 +698,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return "col-" + horizontalSizeShift + "-" + horizontalFieldWidth;
     }
 
-    public ButtonTag getSubmitButtonTag(final String beanName, final long idBean, final String buttonLabel) {
+    public ButtonTag getSubmitButtonTag(String beanName, long idBean, String buttonLabel) {
         return getSubmitButtonTag(
                 new HFHParameters()
                         .setBeanName(beanName)
@@ -706,15 +706,15 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setButtonLabel(buttonLabel));
     }
 
-    public ButtonTag getSubmitButtonTag(final HFHParameters params) {
+    public ButtonTag getSubmitButtonTag(HFHParameters params) {
         return getSubmitButtonTag(params, null);
     }
 
     public ButtonTag getSubmitButtonTag(
-            final String beanName,
-            final long idBean,
-            final String buttonLabel,
-            final String extraCssClasses)
+            String beanName,
+            long idBean,
+            String buttonLabel,
+            String extraCssClasses)
     {
         return getSubmitButtonTag(
                 new HFHParameters()
@@ -723,7 +723,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setButtonLabel(buttonLabel), extraCssClasses);
     }
 
-    public ButtonTag getSubmitButtonTag(final HFHParameters params, final String extraCssClasses) {
+    public ButtonTag getSubmitButtonTag(HFHParameters params, String extraCssClasses) {
         return getButtonTag(
                 new HFHParameters(params)
                         .setButtonType(ButtonTag.ButtonType.SUBMIT)
@@ -732,12 +732,12 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     public ButtonTag getButtonTag(
-            final ButtonTag.ButtonType type,
-            final String beanName,
-            final long idBean,
-            final String functionName,
-            final String buttonLabel,
-            final String cssClasses)
+            ButtonTag.ButtonType type,
+            String beanName,
+            long idBean,
+            String functionName,
+            String buttonLabel,
+            String cssClasses)
     {
         return getButtonTag(
                 new HFHParameters()
@@ -760,15 +760,15 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return button;
     }
 
-    public Tag getSubmitButton(final String beanName, final long id, final String buttonLabel) {
+    public Tag<?> getSubmitButton(String beanName, long id, String buttonLabel) {
         return getSubmitButton(beanName, id, buttonLabel, false);
     }
 
-    public Tag getSubmitButton(
-            final String beanName,
-            final long idBean,
-            final String buttonLabel,
-            final boolean disabled)
+    public Tag<?> getSubmitButton(
+            String beanName,
+            long idBean,
+            String buttonLabel,
+            boolean disabled)
     {
         return getSubmitButton(
                 new HFHParameters()
@@ -778,8 +778,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setDisabled(disabled));
     }
 
-    public Tag getSubmitButton(final HFHParameters params) {
-        final ButtonTag submit = getSubmitButtonTag(params);
+    public Tag<?> getSubmitButton(HFHParameters params) {
+        ButtonTag submit = getSubmitButtonTag(params);
 
         if (params.isDisabled())
             submit.disabled();
@@ -798,73 +798,73 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     public DivTag getSelectField(
-            final String field,
-            final long idBean,
-            final long selected,
-            final String fieldLabel,
-            final List<IdNamePair> pairs,
-            final boolean required)
+            String field,
+            long idBean,
+            long selected,
+            String fieldLabel,
+            List<IdNamePair> pairs,
+            boolean required)
     {
         return getSelectField(field, idBean, Long.toString(selected), fieldLabel, pairs, required);
     }
 
     public DivTag getSelectField(
-            final String field,
-            final long idBean,
-            final long selected,
-            final String fieldLabel,
-            final List<IdNamePair> pairs,
-            final boolean required,
-            final boolean disabled)
+            String field,
+            long idBean,
+            long selected,
+            String fieldLabel,
+            List<IdNamePair> pairs,
+            boolean required,
+            boolean disabled)
     {
         return getSelectField(field, idBean, Long.toString(selected), fieldLabel, pairs, required, disabled);
     }
 
     public DivTag getSelectField(
-            final String field,
-            final long idBean,
-            final long selected,
-            final String fieldLabel,
-            final List<IdNamePair> pairs,
-            final boolean required,
-            final boolean disabled,
-            final String helpText)
+            String field,
+            long idBean,
+            long selected,
+            String fieldLabel,
+            List<IdNamePair> pairs,
+            boolean required,
+            boolean disabled,
+            String helpText)
     {
         return getSelectField(field, idBean, Long.toString(selected), fieldLabel, pairs, required, disabled, helpText);
     }
 
     public DivTag getSelectField(
-            final String field,
-            final long idBean,
-            final String selected,
-            final String fieldLabel,
-            final List<IdNamePair> pairs,
-            final boolean required)
+            String field,
+            long idBean,
+            String selected,
+            String fieldLabel,
+            List<IdNamePair> pairs,
+            boolean required)
     {
         return getSelectField(field, idBean, selected, fieldLabel, pairs, required, false);
     }
 
     public DivTag getSelectField(
-            final String field,
-            final long idBean,
-            final String selected,
-            final String fieldLabel,
-            final List<IdNamePair> pairs,
-            final boolean required,
-            final boolean disabled)
+            String field,
+            long idBean,
+            String selected,
+            String fieldLabel,
+            List<IdNamePair> pairs,
+            boolean required,
+            boolean disabled)
     {
         return getSelectField(field, idBean, selected, fieldLabel, pairs, required, disabled, null);
     }
 
     public DivTag getSelectField(
-            final String field,
-            final long idBean,
-            final String selected,
-            final String fieldLabel,
-            final List<IdNamePair> pairs,
-            final boolean required,
-            final boolean disabled,
-            final String helpText)
+            String field,
+            long idBean,
+            String selected,
+            String fieldLabel,
+            List<IdNamePair> pairs,
+            boolean required,
+            boolean disabled,
+            String helpText)
     {
         return getSelectField(
                 new HFHParameters()
@@ -878,11 +878,11 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setHelpText(helpText));
     }
 
-    public DivTag getSelectField(final HFHParameters params) {
-        final String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
-        final LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
+    public DivTag getSelectField(HFHParameters params) {
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
-        final FormElement formElement;
+        FormElement<?> formElement;
         if (params.isReadonly())
             formElement = getReadOnlyFormElement(params, fieldId);
         else
@@ -896,7 +896,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return getFormGroup(label, formElement, params.getHelpText(), params.getGroupExtraCssClasses());
     }
 
-    private FormElement getReadOnlyFormElement(final HFHParameters params, final String fieldId) {
+    private FormElement<?> getReadOnlyFormElement(HFHParameters params, String fieldId) {
         String value = "";
         if (!params.getSelected().equals("0"))
             for (IdNamePair pair: params.getSelectPairs())
@@ -907,16 +907,16 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                 .readonly();
     }
 
-    private FormElement getReadWriteFormElement(final HFHParameters params, final String fieldId) {
-        final SelectTag select = getSelectTag(params.getField(), fieldId, params.getTagExtraCssClasses());
+    private FormElement<?> getReadWriteFormElement(HFHParameters params, String fieldId) {
+        SelectTag select = getSelectTag(params.getField(), fieldId, params.getTagExtraCssClasses());
 
         if (params.hasOptionGroupSelectData()) {
-            final Map<String, List<IdNamePair>> pairMap = params.getOptionGroupSelectPairs();
+            Map<String, List<IdNamePair>> pairMap = params.getOptionGroupSelectPairs();
             for (String groupName: pairMap.keySet()) {
                 if (groupName.equals(SELECT_OFF_GROUP_MAP_KEY))
                     addPairs(select, pairMap.get(groupName), params.getSelected());
                 else {
-                    final OptgroupTag group = new OptgroupTag(groupName);
+                    OptgroupTag group = new OptgroupTag(groupName);
                     addPairs(group, pairMap.get(groupName), params.getSelected());
                     select.child(group);
                 }
@@ -927,9 +927,9 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return select;
     }
 
-    private void addPairs(final Tag selectOrGroup, List<IdNamePair> pairs, String selected) {
+    private void addPairs(Tag<?> selectOrGroup, List<IdNamePair> pairs, String selected) {
         for (IdNamePair pair: pairs) {
-            final OptionTag optionTag = new OptionTag(pair.getName(), pair.getId());
+            OptionTag optionTag = new OptionTag(pair.getName(), pair.getId());
             if (pair.isDisabled())
                 optionTag.disabled();
             if (pair.getId().equals(selected))
@@ -938,45 +938,45 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         }
     }
 
-    protected SelectTag getSelectTag(final String name, final String id) {
+    protected SelectTag getSelectTag(String name, String id) {
         return getSelectTag(name, id, null);
     }
 
-    protected SelectTag getSelectTag(final String name, final String id, final String extraCssClasses) {
+    protected SelectTag getSelectTag(String name, String id, String extraCssClasses) {
         return new SelectTag(name)
                 .cssClass(CssClasses.start("form-control").add(extraCssClasses).get())
                 .id(id);
     }
 
     public DivTag getTextAreaField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final boolean required)
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            boolean required)
     {
         return getTextAreaField(field, idBean, value, fieldLabel, required, false);
     }
 
     public DivTag getTextAreaField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final boolean required,
-            final boolean disabled)
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            boolean required,
+            boolean disabled)
     {
         return getTextAreaField(field, idBean, value, fieldLabel, required, disabled, null);
     }
 
     public DivTag getTextAreaField(
-            final String field,
-            final long idBean,
-            final String value,
-            final String fieldLabel,
-            final boolean required,
-            final boolean disabled,
-            final String helpText)
+            String field,
+            long idBean,
+            String value,
+            String fieldLabel,
+            boolean required,
+            boolean disabled,
+            String helpText)
     {
         return getTextAreaField(
                 new HFHParameters()
@@ -989,11 +989,11 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setHelpText(helpText));
     }
 
-    public DivTag getTextAreaField(final HFHParameters params) {
-        final String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
-        final LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
+    public DivTag getTextAreaField(HFHParameters params) {
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
-        final TextareaTag textarea = getTextAreaTag(fieldId, params.getField(), params.getValue(), params.getTagExtraCssClasses());
+        TextareaTag textarea = getTextAreaTag(fieldId, params.getField(), params.getValue(), params.getTagExtraCssClasses());
         if (params.isRequired() && useRequiredInHtml)
             textarea.required();
         if (params.getPlaceholder() != null)
@@ -1006,11 +1006,11 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return getFormGroup(label, textarea, params.getHelpText(), params.getGroupExtraCssClasses());
     }
 
-    protected TextareaTag getTextAreaTag(final String id, final String name, final String value) {
+    protected TextareaTag getTextAreaTag(String id, String name, String value) {
         return getTextAreaTag(id, name, value, null);
     }
 
-    protected TextareaTag getTextAreaTag(final String id, final String name, final String value, final String extraCssClasses) {
+    protected TextareaTag getTextAreaTag(String id, String name, String value, String extraCssClasses) {
         return new TextareaTag(value)
                 .cssClass(CssClasses.start("form-control").add(extraCssClasses).get())
                 .id(id)
@@ -1018,43 +1018,43 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     public DivTag getCheckboxField(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel)
     {
         return getCheckboxField(field, idBean, checked, fieldLabel, false);
     }
 
     public DivTag getCheckboxField(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel,
-            final boolean disabled)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel,
+            boolean disabled)
     {
         return getCheckboxField(field, idBean, checked, fieldLabel, disabled, null);
     }
 
     public DivTag getCheckboxField(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel,
-            final boolean disabled,
-            final String value)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel,
+            boolean disabled,
+            String value)
     {
         return getCheckboxField(field, idBean, checked, fieldLabel, disabled, value, null);
     }
 
     public DivTag getCheckboxField(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel,
-            final boolean disabled,
-            final String value,
-            final String idNameSuffix)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel,
+            boolean disabled,
+            String value,
+            String idNameSuffix)
     {
         return getCheckboxField(
                 new HFHParameters()
@@ -1067,8 +1067,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setIdNameSuffix(idNameSuffix));
     }
 
-    public DivTag getCheckboxField(final HFHParameters params) {
-        final DivTag innerPart = getCheckbox(params);
+    public DivTag getCheckboxField(HFHParameters params) {
+        DivTag innerPart = getCheckbox(params);
 
         if (horizontal)
             return getFormGroup(params.getGroupExtraCssClasses())
@@ -1081,43 +1081,43 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     protected DivTag getCheckbox(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel)
     {
         return getCheckbox(field, idBean, checked, fieldLabel, false);
     }
 
     protected DivTag getCheckbox(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel,
-            final boolean disabled)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel,
+            boolean disabled)
     {
         return getCheckbox(field, idBean, checked, fieldLabel, disabled, null);
     }
 
     protected DivTag getCheckbox(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel,
-            final boolean disabled,
-            final String value)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel,
+            boolean disabled,
+            String value)
     {
         return getCheckbox(field, idBean, checked, fieldLabel, disabled, value, null);
     }
 
     protected DivTag getCheckbox(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final String fieldLabel,
-            final boolean disabled,
-            final String value,
-            final String idNameSuffix)
+            String field,
+            long idBean,
+            boolean checked,
+            String fieldLabel,
+            boolean disabled,
+            String value,
+            String idNameSuffix)
     {
         return getCheckbox(
                 new HFHParameters()
@@ -1130,7 +1130,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setIdNameSuffix(idNameSuffix));
     }
 
-    protected DivTag getCheckbox(final HFHParameters params) {
+    protected DivTag getCheckbox(HFHParameters params) {
         LabelTag labelTag = new LabelTag()
                 .child(getCheckboxTag(params))
                 .child(new CData(" " + params.getFieldLabel()));
@@ -1143,31 +1143,31 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     protected InputTag getCheckboxTag(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final boolean disabled)
+            String field,
+            long idBean,
+            boolean checked,
+            boolean disabled)
     {
         return getCheckboxTag(field, idBean, checked, disabled, null);
     }
 
     protected InputTag getCheckboxTag(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final boolean disabled,
-            final String value)
+            String field,
+            long idBean,
+            boolean checked,
+            boolean disabled,
+            String value)
     {
         return getCheckboxTag(field, idBean, checked, disabled, value, null);
     }
 
     protected InputTag getCheckboxTag(
-            final String field,
-            final long idBean,
-            final boolean checked,
-            final boolean disabled,
-            final String value,
-            final String idNameSuffix)
+            String field,
+            long idBean,
+            boolean checked,
+            boolean disabled,
+            String value,
+            String idNameSuffix)
     {
         return getCheckboxTag(
                 new HFHParameters()
@@ -1179,8 +1179,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setIdNameSuffix(idNameSuffix));
     }
 
-    protected InputTag getCheckboxTag(final HFHParameters params) {
-        final InputTag checkbox =
+    protected InputTag getCheckboxTag(HFHParameters params) {
+        InputTag checkbox =
                 new InputTag(InputTag.InputType.CHECKBOX)
                         .name(params.getField())
                         .id(getFieldId(params.getField(), params.getIdBean(), params.getIdNameSuffix(), params.isReadonly()));
@@ -1203,27 +1203,27 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return checkbox;
     }
 
-    protected String getHtmlId(final String beanName, final long id) {
+    protected String getHtmlId(String beanName, long id) {
         return beanName + (readonly ? readonlyExtension : "") + "_" + id;
     }
 
     public DivTag getFileField(
-            final String field,
-            final long idBean,
-            final String currentFile,
-            final String fieldLabel,
-            final boolean required)
+            String field,
+            long idBean,
+            String currentFile,
+            String fieldLabel,
+            boolean required)
     {
         return getFileField(field, idBean, currentFile, fieldLabel, required, false);
     }
 
     public DivTag getFileField(
-            final String field,
-            final long idBean,
-            final String currentFile,
-            final String fieldLabel,
-            final boolean required,
-            final boolean disabled)
+            String field,
+            long idBean,
+            String currentFile,
+            String fieldLabel,
+            boolean required,
+            boolean disabled)
     {
         return getFileField(
                 new HFHParameters()
@@ -1235,16 +1235,16 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         .setDisabled(disabled));
     }
 
-    public DivTag getFileField(final HFHParameters params) {
+    public DivTag getFileField(HFHParameters params) {
         if (params.isReadonly())
             return getReadOnlyFileField(params);
 
-        final String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
-        final LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
-        final LabelTag uploadButton = new LabelTag(uploadButtonLabel, fieldId).cssClass(uploadButtonCssClasses);
+        LabelTag uploadButton = new LabelTag(uploadButtonLabel, fieldId).cssClass(uploadButtonCssClasses);
 
-        final InputTag input =
+        InputTag input =
                 getInputTag(
                         InputTag.InputType.FILE,
                         fieldId,
@@ -1253,12 +1253,12 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                         params.isReadonly(),
                         params.getTagExtraCssClasses());
 
-        final SpanTag filenameDisplay =
+        SpanTag filenameDisplay =
                 new SpanTag(params.hasCurrentFile() ? params.getCurrentFile() : uploadNoFileLabel)
                         .cssClass(uploadFilenameDisplayCssClasses)
                         .id("display_" + fieldId);
 
-        final SpanTag removeFileButton =
+        SpanTag removeFileButton =
                 new SpanTag(uploadRemoveFileLabel)
                         .cssClass(uploadRemoveFileCssClasses + (params.hasCurrentFile() ? "" : " hidden"))
                         .id("remove_" + fieldId)
@@ -1276,10 +1276,10 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     protected DivTag getReadOnlyFileField(HFHParameters params) {
-        final String fieldId = getFieldId(params.getField(), params.getIdBean(), true);
-        final LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), true);
+        LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
-        final Tag input;
+        Tag<?> input;
         if (displayROFilesAsLinks && params.hasCurrentFileLink())
             input = params.getCurrentFileLink();
         else {
@@ -1299,20 +1299,20 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     private DivTag getFileFormGroup(
-            final LabelTag label,
-            final LabelTag uploadButton,
-            final InputTag input,
-            final SpanTag filenameDisplay,
-            final SpanTag removeFileButton,
-            final String extraCssClasses)
+            LabelTag label,
+            LabelTag uploadButton,
+            InputTag input,
+            SpanTag filenameDisplay,
+            SpanTag removeFileButton,
+            String extraCssClasses)
     {
-        final DivTag formGroup =
+        DivTag formGroup =
                 new DivTag()
                         .cssClass(CssClasses.start("form-group").add(extraCssClasses).get())
                         .child(label);
 
         if (horizontal) {
-            final DivTag formElements =
+            DivTag formElements =
                     new DivTag().cssClass(getHorizontalFieldClass())
                             .child(uploadButton)
                             .child(input)
@@ -1330,26 +1330,26 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     @Override
-    public Tag getHiddenInfo(final String field, final long idBean, final String value) {
+    public Tag<?> getHiddenInfo(String field, long idBean, String value) {
         return new InputTag(InputTag.InputType.HIDDEN)
                 .name(field)
                 .id(getFieldId(field, idBean, false))
                 .value(value);
     }
 
-    public DivTag getBooleanRadiosField(final HFHParameters params) {
-        final LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
+    public DivTag getBooleanRadiosField(HFHParameters params) {
+        LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
-        final DivTag wrapper = new DivTag();
+        DivTag wrapper = new DivTag();
         wrapper.child(getBooleanRadioButton(params, true));
         wrapper.child(getBooleanRadioButton(params, false));
 
         return getFormGroup(label, wrapper, null, params.getGroupExtraCssClasses());
     }
 
-    private LabelTag getBooleanRadioButton(final HFHParameters params, final boolean positiveValue) {
-        final String fieldLabel;
-        final String fieldValue;
+    private LabelTag getBooleanRadioButton(HFHParameters params, boolean positiveValue) {
+        String fieldLabel;
+        String fieldValue;
         if (positiveValue) {
             fieldLabel = params.getYesLabel();
             fieldValue = params.getYesValue();
@@ -1358,8 +1358,8 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
             fieldValue = params.getNoValue();
         }
 
-        final HtmlCodeFragment buttonInside = new HtmlCodeFragment();
-        final InputTag radioButton =
+        HtmlCodeFragment buttonInside = new HtmlCodeFragment();
+        InputTag radioButton =
                 new InputTag(InputTag.InputType.RADIO)
                         .name(params.getField())
                         .value(fieldValue);
@@ -1384,13 +1384,13 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     public DivTag getLabelFormField(
-            final String value,
-            final DbBeanLanguage dbBeanLanguage,
-            final boolean required,
-            final HFHParameters params)
+            String value,
+            DbBeanLanguage dbBeanLanguage,
+            boolean required,
+            HFHParameters params)
     {
-        final HFHParameters actualParameters = new HFHParameters(params);
-        final String iso = dbBeanLanguage.getCapIso();
+        HFHParameters actualParameters = new HFHParameters(params);
+        String iso = dbBeanLanguage.getCapIso();
 
         actualParameters.setField(params.getField() + iso);
         actualParameters.setValue(value);
@@ -1405,42 +1405,42 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
     }
 
     public DivTag getLabelFormField(
-            final String value,
-            final DbBeanLanguage dbBeanLanguage,
-            final boolean required,
-            final HFHParameters params,
+            String value,
+            DbBeanLanguage dbBeanLanguage,
+            boolean required,
+            HFHParameters params,
             DbBeanLocalization dbBeanLocalization)
     {
         return getLabelFormField(value, dbBeanLanguage, required, params);
     }
 
-    public DivTag getTextLabelField(final HFHParameters params) {
-        final String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+    public DivTag getTextLabelField(HFHParameters params) {
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
 
         return getFormGroup(
                 getLabel(params.getFieldLabel(), fieldId, params.isRequired()),
                 getTextLabelTag(fieldId, params.getValue()));
     }
 
-    public DivTag getTextLabelField(final HFHParameters params, final Tag adHocRepresentation) {
-        final String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+    public DivTag getTextLabelField(HFHParameters params, Tag<?> adHocRepresentation) {
+        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
 
         return getFormGroup(
                 getLabel(params.getFieldLabel(), fieldId, params.isRequired()),
                 adHocRepresentation.id(fieldId));
     }
 
-    protected Tag getTextLabelTag(final String id, final String value) {
+    protected Tag<?> getTextLabelTag(String id, String value) {
         return new SpanTag(value).cssClass("form-control").id(id);
     }
 
-    public DivTag getFractionField(final HFHParameters params) {
-        final LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
+    public DivTag getFractionField(HFHParameters params) {
+        LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
-        final String altCSSClasses = params.getTagExtraCssClasses() == null ? "" : params.getTagExtraCssClasses();
-        final HFHParameters numeratorParams = params.getNumeratorParameters();
-        final HFHParameters denominatorParams = params.getDenominatorParameters();
-        final DivTag wrapper = new DivTag();
+        String altCSSClasses = params.getTagExtraCssClasses() == null ? "" : params.getTagExtraCssClasses();
+        HFHParameters numeratorParams = params.getNumeratorParameters();
+        HFHParameters denominatorParams = params.getDenominatorParameters();
+        DivTag wrapper = new DivTag();
         wrapper.child(getInputTag(
                 InputTag.InputType.NUMBER,
                 getFieldId(numeratorParams.getField(), numeratorParams.getIdBean(), numeratorParams.isReadonly()),

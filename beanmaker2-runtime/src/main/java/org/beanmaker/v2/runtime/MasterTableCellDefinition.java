@@ -25,7 +25,7 @@ public class MasterTableCellDefinition {
         this.content = content;
     }
 
-    public MasterTableCellDefinition(String fieldName, Tag htmlContent) {
+    public MasterTableCellDefinition(String fieldName, Tag<?> htmlContent) {
         this(fieldName, htmlContent.toString());
     }
 
@@ -106,7 +106,7 @@ public class MasterTableCellDefinition {
         return new MasterTableCellDefinition(fieldName, "");
     }
 
-    public static MasterTableCellDefinition createTagCellDefinition(String fieldName, Tag tag) {
+    public static MasterTableCellDefinition createTagCellDefinition(String fieldName, Tag<?> tag) {
         return new MasterTableCellDefinition(fieldName, tag);
     }
 

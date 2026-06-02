@@ -44,7 +44,7 @@ public class HFHParameters {
 
     // file inputs
     private String currentFile;
-    private Tag currentFileLink;  // for read-only forms
+    private Tag<?> currentFileLink;  // for read-only forms
     
     // buttons
     private ButtonTag.ButtonType buttonType;
@@ -409,11 +409,11 @@ public class HFHParameters {
         return !Strings.isEmpty(currentFile);
     }
 
-    public Tag getCurrentFileLink() {
+    public Tag<?> getCurrentFileLink() {
         return currentFileLink;
     }
 
-    public HFHParameters setCurrentFileLink(Tag currentFileLink) {
+    public HFHParameters setCurrentFileLink(Tag<?> currentFileLink) {
         this.currentFileLink = currentFileLink;
 
         return this;

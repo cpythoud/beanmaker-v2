@@ -80,11 +80,11 @@ public class TableTag extends Tag<TableTag> {
         return super.child(tag);
     }
 
-    public TableTag child(ColElement tag) {
+    public TableTag child(ColElement<?> tag) {
         return super.child(tag);
     }
 
-    public TableTag child(TableElement tag) {
+    public TableTag child(TableElement<?> tag) {
         return super.child(tag);
     }
 

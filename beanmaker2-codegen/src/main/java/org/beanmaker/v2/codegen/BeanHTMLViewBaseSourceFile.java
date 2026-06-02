@@ -306,7 +306,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass.addContent(parametersFunction).addContent(EMPTY_LINE);
 
         var composeFunction = new FunctionDeclaration("compose" + capName + "FormElement")
-                .addArgument(new FunctionArgument("Tag", "form"));
+                .addArgument(new FunctionArgument("Tag<?>", "form"));
 
         if (column.isLabelReference())
             composeFunction.addContent(

@@ -57,49 +57,49 @@ public interface HtmlFormHelper {
     void setCssClassForFileFields(String cssClassForFileFields);
     String getCssClassForFileFields();
 
-    Tag getHiddenSubmitInput(String beanName, long id);
+    Tag<?> getHiddenSubmitInput(String beanName, long id);
 
-    Tag getCheckboxField(HFHParameters params);
-    Tag getSelectField(HFHParameters params);
-    Tag getTextAreaField(HFHParameters params);
-    Tag getTextField(HFHParameters params);
+    Tag<?> getCheckboxField(HFHParameters params);
+    Tag<?> getSelectField(HFHParameters params);
+    Tag<?> getTextAreaField(HFHParameters params);
+    Tag<?> getTextField(HFHParameters params);
     @Deprecated
-    Tag getLabelFormField(String value, DbBeanLanguage dbBeanLanguage, boolean required, HFHParameters params);
-    Tag getLabelFormField(
+    Tag<?> getLabelFormField(String value, DbBeanLanguage dbBeanLanguage, boolean required, HFHParameters params);
+    Tag<?> getLabelFormField(
             String value,
             DbBeanLanguage dbBeanLanguage,
             boolean required,
             HFHParameters params,
             DbBeanLocalization dbBeanLocalization
     );
-    Tag getFileField(HFHParameters params);
+    Tag<?> getFileField(HFHParameters params);
 
-    Tag getSubmitButton(HFHParameters params);
+    Tag<?> getSubmitButton(HFHParameters params);
 
     ButtonTag getSubmitButtonTag(HFHParameters params);
     ButtonTag getSubmitButtonTag(HFHParameters params, String extraCssClasses);
     ButtonTag getButtonTag(HFHParameters params);
 
-    Tag getHiddenInfo(String field, long idBean, String value);
-    default Tag getHiddenInfo(String field, long idBean, long idOtherBean) {
+    Tag<?> getHiddenInfo(String field, long idBean, String value);
+    default Tag<?> getHiddenInfo(String field, long idBean, long idOtherBean) {
         return getHiddenInfo(field, idBean, Long.toString(idOtherBean));
     }
 
-    default Tag getFormElementsContainer(Tag form) {
+    default Tag<?> getFormElementsContainer(Tag<?> form) {
         return form;
     }
 
-    default Tag getFormButtonsContainer(Tag form) {
+    default Tag<?> getFormButtonsContainer(Tag<?> form) {
         return form;
     }
 
-    default void addErrorMessagesContainer(Tag form, String formName, long idBean) { }
+    default void addErrorMessagesContainer(Tag<?> form, String formName, long idBean) { }
 
-    static Tag getDefaultErrorMessageContainer(String formName, long idBean) {
+    static Tag<?> getDefaultErrorMessageContainer(String formName, long idBean) {
         return new DivTag().id("error_messages_" + formName + "_" + idBean).cssClass("form_error_messages");
     }
 
-    default Tag getStandaloneFormButtonsContainer() {
+    default Tag<?> getStandaloneFormButtonsContainer() {
         return new DivTag();
     }
 

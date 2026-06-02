@@ -174,7 +174,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
     }
 
     @Override
-    public Tag getHiddenSubmitInput(String beanName, long id) {
+    public Tag<?> getHiddenSubmitInput(String beanName, long id) {
         return new InputTag(InputTag.InputType.HIDDEN).name("submitted" + beanName).value(Long.toString(id));
     }
 
@@ -362,7 +362,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         return fieldLabel + notRequiredExtension;
     }
 
-    protected FormElement getSelectReadOnlyFormElement(HFHParameters params, String fieldId) {
+    protected FormElement<?> getSelectReadOnlyFormElement(HFHParameters params, String fieldId) {
         String value = "";
         if (!params.getSelected().equals("0"))
             for (IdNamePair pair: params.getSelectPairs())
@@ -373,7 +373,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
                 .readonly();
     }
 
-    protected FormElement getSelectReadWriteFormElement(HFHParameters params, String fieldId) {
+    protected FormElement<?> getSelectReadWriteFormElement(HFHParameters params, String fieldId) {
         var select = getSelectTag(params.getField(), fieldId, params.getTagExtraCssClasses());
 
         if (params.hasOptionGroupSelectData()) {
@@ -393,7 +393,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         return select;
     }
 
-    protected void addPairs(Tag selectOrGroup, List<IdNamePair> pairs, String selected) {
+    protected void addPairs(Tag<?> selectOrGroup, List<IdNamePair> pairs, String selected) {
         for (IdNamePair pair: pairs) {
             OptionTag optionTag = new OptionTag(pair.getName(), pair.getId());
             if (pair.isDisabled())
@@ -479,15 +479,15 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         return new DivTag().cssClass(extraCssClasses);
     }
 
-    public DivTag getFormGroup(LabelTag label, Tag field) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field) {
         return getFormGroup(label, field, null);
     }
 
-    public DivTag getFormGroup(LabelTag label, Tag field, String helpText) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText) {
         return getFormGroup(label, field, helpText, null);
     }
 
-    public DivTag getFormGroup(LabelTag label, Tag field, String helpText, String extraCssClasses) {
+    public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText, String extraCssClasses) {
         var formGroup = extraCssClasses == null ? new DivTag() : new DivTag().cssClass(extraCssClasses);
         formGroup.child(label);
 
@@ -498,7 +498,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         return formGroup;
     }
 
-    protected Tag getHelperBlock(String helpText) {
+    protected Tag<?> getHelperBlock(String helpText) {
         return new PTag(helpText).cssClass("helpBlock");
     }
 
@@ -610,7 +610,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
     }
 
     @Override
-    public Tag getSubmitButton(HFHParameters params) {
+    public Tag<?> getSubmitButton(HFHParameters params) {
         ButtonTag submit = getSubmitButtonTag(params);
 
         if (params.isDisabled())
@@ -649,7 +649,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
     }
 
     @Override
-    public Tag getHiddenInfo(String field, long idBean, String value) {
+    public Tag<?> getHiddenInfo(String field, long idBean, String value) {
         return new InputTag(InputTag.InputType.HIDDEN)
                 .name(field)
                 .id(getFieldId(field, idBean, false))

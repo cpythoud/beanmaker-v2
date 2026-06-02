@@ -84,25 +84,25 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
         return htmlFormHelper.getForm(formName, editor.getId());
     }
 
-    protected Tag getFormElementsContainer(Tag form) {
+    protected Tag<?> getFormElementsContainer(Tag<?> form) {
         return htmlFormHelper.getFormElementsContainer(form);
     }
 
-    protected void composeErrorContainer(Tag form) {
+    protected void composeErrorContainer(Tag<?> form) {
         htmlFormHelper.addErrorMessagesContainer(form, formName, editor.getId());
     }
 
-    protected void composeHiddenSubmitField(Tag form) {
+    protected void composeHiddenSubmitField(Tag<?> form) {
         form.child(htmlFormHelper.getHiddenSubmitInput(formName, editor.getId()));
     }
 
-    protected void composeAdditionalHtmlFormFields(Tag form) { }
+    protected void composeAdditionalHtmlFormFields(Tag<?> form) { }
 
-    protected Tag getFormButtonsContainer(Tag form) {
+    protected Tag<?> getFormButtonsContainer(Tag<?> form) {
         return htmlFormHelper.getFormButtonsContainer(form);
     }
 
-    protected void composeButtons(Tag form) {
+    protected void composeButtons(Tag<?> form) {
         composeSubmitButton(form);
         composeResetButton(form);
     }
@@ -115,20 +115,20 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
         return params;
     }
 
-    protected void composeSubmitButton(Tag form) {
+    protected void composeSubmitButton(Tag<?> form) {
         form.child(htmlFormHelper.getSubmitButton(getSubmitButtonParameters()));
     }
 
-    protected void composeResetButton(Tag form) { }
+    protected void composeResetButton(Tag<?> form) { }
 
-    protected FormTag finalizeForm(FormTag form, Tag formElementsContainer) {
+    protected FormTag finalizeForm(FormTag form, Tag<?> formElementsContainer) {
         if (form != formElementsContainer)
             form.child(formElementsContainer);
 
         return form;
     }
 
-    protected FormTag finalizeForm(FormTag form, Tag formElementsContainer, Tag formButtonsContainer) {
+    protected FormTag finalizeForm(FormTag form, Tag<?> formElementsContainer, Tag<?> formButtonsContainer) {
         if (form != formElementsContainer)
             form.child(formElementsContainer);
         if (form != formButtonsContainer)
@@ -143,13 +143,13 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     }
 
     @Override
-    public Tag getStandaloneFormButtonsTag() {
+    public Tag<?> getStandaloneFormButtonsTag() {
         var buttons = getStandaloneFormButtonsContainer();
         composeButtons(buttons);
         return buttons;
     }
 
-    protected Tag getStandaloneFormButtonsContainer() {
+    protected Tag<?> getStandaloneFormButtonsContainer() {
         return htmlFormHelper.getStandaloneFormButtonsContainer();
     }
 

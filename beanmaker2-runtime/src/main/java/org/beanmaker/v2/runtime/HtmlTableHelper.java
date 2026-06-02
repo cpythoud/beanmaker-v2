@@ -85,7 +85,7 @@ public class HtmlTableHelper {
 					.child(new TdTag(value));
 		}
 
-		private Tag getRowTitle() {
+		private Tag<?> getRowTitle() {
 			if (useStrongInsteadOfTh)
 				return new TdTag().child(new StrongTag(label));
 
