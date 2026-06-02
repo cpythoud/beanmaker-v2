@@ -1074,7 +1074,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             javaClass.addContent(conversionFunction).addContent(EMPTY_LINE);
     }
 
-    private JavaCodeBlock getConversionOperation(Column column) {
+    private JavaCodeBlock<?> getConversionOperation(Column column) {
         String type = column.getJavaType();
         String name = column.getJavaName();
         String nameStr = name + "Str";
@@ -1185,7 +1185,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass.addContent(function).addContent(EMPTY_LINE);
     }
 
-    private JavaCodeBlock getDataCheckCall(Column column, int index) {
+    private JavaCodeBlock<?> getDataCheckCall(Column column, int index) {
         String functionName = "checkDataFor" + capitalize(column.getJavaName());
 
         if (index == 1)
@@ -1195,7 +1195,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new Assignment("ok", functionName + "(transaction) && ok");
     }
 
-    private JavaCodeBlock getGlobalDataCheckCall() {
+    private JavaCodeBlock<?> getGlobalDataCheckCall() {
         return new IfBlock(new Condition("ok"))
                 .addContent(new Assignment(
                         "ok",
@@ -1370,7 +1370,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
-    private JavaCodeBlock getEmptyFieldTest(Column column) {
+    private JavaCodeBlock<?> getEmptyFieldTest(Column column) {
         String type = column.getJavaType();
         String field = column.getJavaName();
 
@@ -1537,7 +1537,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         String name = column.getJavaName();
         String maxLength = Integer.toString(column.getDisplaySize());
         var lengthCall = new FunctionCall("length", name);
-        var validationErrorArguments = new ArrayList<StringOrCode<Expression>>();
+        var validationErrorArguments = new ArrayList<StringOrCode<Expression<?>>>();
         validationErrorArguments.add(new StringOrCode<>(maxLength));
         validationErrorArguments.add(new StringOrCode<>(lengthCall));
 
@@ -1614,7 +1614,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private ReturnStatement getFieldValidationErrorMessage(
             String name,
             String errorLabelExtension,
-            List<StringOrCode<Expression>> errorMessageArguments)
+            List<StringOrCode<Expression<?>>> errorMessageArguments)
     {
         var functionCall = new FunctionCall("fatal", "FieldValidationResult")
                 .addArgument(new OperatorExpression(
@@ -1673,7 +1673,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private String getUnicityCheckValue(Column column) {
-        StringOrCode<Expression> value;
+        StringOrCode<Expression<?>> value;
         String type = column.getJavaType();
         String name = column.getJavaName();
         String nameStr = name + "Str";
