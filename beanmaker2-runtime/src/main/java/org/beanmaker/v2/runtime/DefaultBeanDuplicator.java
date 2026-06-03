@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
@@ -11,12 +11,12 @@ import java.sql.Timestamp;
 
 public class DefaultBeanDuplicator implements BeanDuplicator {
 
-    private final DBTransaction transaction;
+    private final DbTransaction transaction;
     private final DbBeanLabelBasicFunctions labelBasicFunctions;
     private final DbBeanParameters parameters;
 
     public DefaultBeanDuplicator(
-            DBTransaction transaction,
+            DbTransaction transaction,
             DbBeanLabelBasicFunctions labelBasicFunctions,
             DbBeanParameters parameters)
     {
@@ -75,7 +75,7 @@ public class DefaultBeanDuplicator implements BeanDuplicator {
         return labelBasicFunctions.duplicateLabel(label, transaction);
     }
 
-    public long duplicateLabel(long idLabel, DBTransaction transaction) {
+    public long duplicateLabel(long idLabel, DbTransaction transaction) {
         if (idLabel == 0)
             return 0;
 

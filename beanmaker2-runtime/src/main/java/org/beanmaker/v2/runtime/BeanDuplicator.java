@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
@@ -31,7 +31,7 @@ public interface BeanDuplicator {
 
     long duplicateLabel(DbBeanLabel label);
 
-    long duplicateLabel(long idLabel, DBTransaction transaction);
+    long duplicateLabel(long idLabel, DbTransaction transaction);
 
     long duplicateBean(DbBeanEditorInterface editor);
 

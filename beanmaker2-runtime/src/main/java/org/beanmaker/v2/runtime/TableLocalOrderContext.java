@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 public interface TableLocalOrderContext {
 
@@ -8,6 +8,6 @@ public interface TableLocalOrderContext {
 
     String getCode();
 
-    DBTransaction getDBTransaction();
+    DbTransaction getDBTransaction();
 
 }

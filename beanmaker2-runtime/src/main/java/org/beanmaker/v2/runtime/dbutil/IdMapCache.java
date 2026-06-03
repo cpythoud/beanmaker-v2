@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DbAccess;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ public class IdMapCache {
 
     private final Map<Long, Long> idMap = new HashMap<>();
 
-    public IdMapCache(String query, DBAccess dbAccess) {
+    public IdMapCache(String query, DbAccess dbAccess) {
         dbAccess.processQuery(
                 query,
                 rs -> {

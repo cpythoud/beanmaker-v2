@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DbAccess;
 
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
@@ -19,7 +19,7 @@ public class LanguageHelper {
     private final String regionField;
     private final String defaultLanguageField;
     private final Class<? extends DbBeanLanguage> languageClass;
-    private final DBAccess dbAccess;
+    private final DbAccess dbAccess;
 
     private LanguageHelper(
             String table,
@@ -27,7 +27,7 @@ public class LanguageHelper {
             String regionField,
             String defaultLanguageField,
             Class<? extends DbBeanLanguage> languageClass,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         this.table = table;
         this.isoField = isoField;
@@ -61,7 +61,7 @@ public class LanguageHelper {
         return languageClass;
     }
 
-    public DBAccess getDbAccess() {
+    public DbAccess getDbAccess() {
         return dbAccess;
     }
 
@@ -174,7 +174,7 @@ public class LanguageHelper {
         private String regionField = "region";
         private String defaultLanguageField = "default_language";
         private Class<? extends DbBeanLanguage> languageClass;
-        private DBAccess dbAccess;
+        private DbAccess dbAccess;
 
         public Builder table(String table) {
             this.table = table;
@@ -201,7 +201,7 @@ public class LanguageHelper {
             return this;
         }
 
-        public Builder dbAccess(DBAccess dbAccess) {
+        public Builder dbAccess(DbAccess dbAccess) {
             this.dbAccess = dbAccess;
             return this;
         }

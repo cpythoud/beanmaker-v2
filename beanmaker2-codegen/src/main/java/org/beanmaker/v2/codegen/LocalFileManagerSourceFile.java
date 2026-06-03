@@ -12,7 +12,7 @@ public class LocalFileManagerSourceFile extends BaseCode {
                     "DbBeanFileInternalFilenameCalculator", "MissingImplementationException");
 
     private static final FunctionArgument ID_ARG = new FunctionArgument("long", "id");
-    private static final FunctionArgument TRANSACTION_ARG = new FunctionArgument("DBTransaction", "transaction");
+    private static final FunctionArgument TRANSACTION_ARG = new FunctionArgument("DbTransaction", "transaction");
 
     public LocalFileManagerSourceFile(String packageName) {
         this(packageName, DEFAULT_PROJECT_PARAMETERS);
@@ -32,7 +32,7 @@ public class LocalFileManagerSourceFile extends BaseCode {
     @Override
     protected void addImports() {
         addImports(BM_RUNTIME_IMPORTS);
-        importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DbTransaction");
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBAccess;
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.runtime.DbBeanEditorInterface;
 import org.beanmaker.v2.runtime.DbBeanParameters;
@@ -34,7 +34,7 @@ public final class Codes {
             Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getBean(beanClass, parameters, "code", code, dbAccess);
     }
@@ -43,7 +43,7 @@ public final class Codes {
             Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getVersionedBean(beanClass, parameters, "code", code, dbAccess);
     }
@@ -53,7 +53,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return SingleElements.getBean(
                 getQuery(parameters, codeField, false),
@@ -68,7 +68,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return SingleElements.getBean(
                 getQuery(parameters, codeField, true),
@@ -82,7 +82,7 @@ public final class Codes {
             Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getBean(beanClass, parameters, "code", code, transaction);
     }
@@ -91,7 +91,7 @@ public final class Codes {
             Class<? extends DbBeanInterface> beanClass,
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getVersionedBean(beanClass, parameters, "code", code, transaction);
     }
@@ -101,7 +101,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return SingleElements.getBean(
                 getQuery(parameters, codeField, false),
@@ -116,7 +116,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return SingleElements.getBean(
                 getQuery(parameters, codeField, true),
@@ -138,7 +138,7 @@ public final class Codes {
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getEditor(returnedEditor, parameters, "code", code, dbAccess);
     }
@@ -147,7 +147,7 @@ public final class Codes {
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getVersionedEditor(returnedEditor, parameters, "code", code, dbAccess);
     }
@@ -157,7 +157,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return SingleElements.getEditor(
                 getQuery(parameters, codeField, false),
@@ -172,7 +172,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return SingleElements.getEditor(
                 getQuery(parameters, codeField, true),
@@ -186,7 +186,7 @@ public final class Codes {
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getEditor(returnedEditor, parameters, "code", code, transaction);
     }
@@ -195,7 +195,7 @@ public final class Codes {
             E returnedEditor,
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getVersionedEditor(returnedEditor, parameters, "code", code, transaction);
     }
@@ -205,7 +205,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return SingleElements.getEditor(
                 getQuery(parameters, codeField, false),
@@ -220,7 +220,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return SingleElements.getEditor(
                 getQuery(parameters, codeField, true),
@@ -233,7 +233,7 @@ public final class Codes {
     public static long getId(
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getId(parameters, "code", code, dbAccess);
     }
@@ -241,7 +241,7 @@ public final class Codes {
     public static long getVersionedId(
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getVersionedId(parameters, "code", code, dbAccess);
     }
@@ -250,7 +250,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return SingleElements.getID(
                 getQuery(parameters, codeField, false),
@@ -263,7 +263,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return SingleElements.getID(
                 getQuery(parameters, codeField, true),
@@ -275,7 +275,7 @@ public final class Codes {
     public static long getId(
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getId(parameters, "code", code, transaction);
     }
@@ -283,7 +283,7 @@ public final class Codes {
     public static long getVersionedId(
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getVersionedId(parameters, "code", code, transaction);
     }
@@ -292,7 +292,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return SingleElements.getID(
                 getQuery(parameters, codeField, false),
@@ -305,7 +305,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return SingleElements.getID(
                 getQuery(parameters, codeField, false),
@@ -317,7 +317,7 @@ public final class Codes {
     public static boolean isPresent(
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return isPresent(parameters, "code", code, dbAccess);
     }
@@ -325,7 +325,7 @@ public final class Codes {
     public static boolean isVersionedBeanPresent(
             DbBeanParameters parameters,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return isVersionedBeanPresent(parameters, "code", code, dbAccess);
     }
@@ -334,7 +334,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getId(parameters, codeField, code, dbAccess) > 0;
     }
@@ -343,7 +343,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getVersionedId(parameters, codeField, code, dbAccess) > 0;
     }
@@ -351,7 +351,7 @@ public final class Codes {
     public static boolean isPresent(
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return isPresent(parameters, "code", code, transaction);
     }
@@ -359,7 +359,7 @@ public final class Codes {
     public static boolean isVersionedBeanPresent(
             DbBeanParameters parameters,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return isVersionedBeanPresent(parameters, "code", code, transaction);
     }
@@ -368,7 +368,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getId(parameters, codeField, code, transaction) > 0;
     }
@@ -377,7 +377,7 @@ public final class Codes {
             DbBeanParameters parameters,
             String codeField,
             String code,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getVersionedId(parameters, codeField, code, transaction) > 0;
     }
@@ -398,7 +398,7 @@ public final class Codes {
         return Strings.replaceUnknownChars(Strings.removeAccents(source).toLowerCase(), STANDARD_CODE_CHARACTERS);
     }
 
-    public static void standardizeCodes(List<DbBeanEditorInterface> beans, DBTransaction dbTransaction) {
+    public static void standardizeCodes(List<DbBeanEditorInterface> beans, DbTransaction dbTransaction) {
         Transactions.wrap(
                 transaction -> {
                     for (var bean : beans) {

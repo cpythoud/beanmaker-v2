@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DbAccess;
 
 import org.beanmaker.v2.util.Dates;
 
@@ -23,11 +23,11 @@ public class DbBeanProtectedIdManager<B extends DbBeanWithProtectedIdInterface> 
                     .addCharGroup(CharacterGroups.DIGITS)
                     .create();
 
-    private final DBAccess dbAccess;
+    private final DbAccess dbAccess;
     private final String table;
     private final MethodHandle beanConstructorHandle;
 
-    public DbBeanProtectedIdManager(DBAccess dbAccess, String table, Class<B> beanClass) {
+    public DbBeanProtectedIdManager(DbAccess dbAccess, String table, Class<B> beanClass) {
         this.dbAccess = dbAccess;
         this.table = table;
 

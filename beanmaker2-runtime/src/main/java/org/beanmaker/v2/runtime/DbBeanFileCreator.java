@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,7 +69,7 @@ public class DbBeanFileCreator {
         return getActualDbBeanFile(dbBeanFileEditor, newRecord, null);
     }
 
-    private boolean configureEditor(DbBeanFileEditor dbBeanFileEditor, String filename, String internalFilename, DBTransaction transaction) {
+    private boolean configureEditor(DbBeanFileEditor dbBeanFileEditor, String filename, String internalFilename, DbTransaction transaction) {
         boolean newRecord = false;
 
         dbBeanFileEditor.setFilename(filename);
@@ -101,7 +101,7 @@ public class DbBeanFileCreator {
         return uploadDirectory;
     }
 
-    private DbBeanFile getActualDbBeanFile(DbBeanFileEditor dbBeanFileEditor, boolean newRecord, DBTransaction transaction) {
+    private DbBeanFile getActualDbBeanFile(DbBeanFileEditor dbBeanFileEditor, boolean newRecord, DbTransaction transaction) {
         if (!newRecord) {
             if (transaction == null)
                 dbBeanFileEditor.getAssociatedEditor().updateDB();
@@ -118,7 +118,7 @@ public class DbBeanFileCreator {
     }
 
     // * Create from file system
-    public DbBeanFile create(DbBeanFileEditor dbBeanFileEditor, Path path, String filename, DBTransaction transaction) {
+    public DbBeanFile create(DbBeanFileEditor dbBeanFileEditor, Path path, String filename, DbTransaction transaction) {
         String internalFilename = storedFilenameCalculator.calc(filename);
 
         boolean newRecord = configureEditor(dbBeanFileEditor, filename, internalFilename, transaction);
@@ -139,7 +139,7 @@ public class DbBeanFileCreator {
     }
 
     // * Create from database
-    public DbBeanFile create(DbBeanFileEditor dbBeanFileEditor, Blob blob, String filename, DBTransaction transaction) {
+    public DbBeanFile create(DbBeanFileEditor dbBeanFileEditor, Blob blob, String filename, DbTransaction transaction) {
         String internalFilename = storedFilenameCalculator.calc(filename);
 
         boolean newRecord = configureEditor(dbBeanFileEditor, filename, internalFilename, transaction);

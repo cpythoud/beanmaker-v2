@@ -52,7 +52,7 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
 
         if (columns.isVersioned()) {
             importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
-            importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
+            importsManager.addImport("org.beanmaker.v2.database.sql.DbTransaction");
         }
 
         importsManager.addStaticImport("org.beanmaker.v2.runtime.FieldEquality.areEqual");
@@ -212,7 +212,7 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
                 .markAsDefault();
 
         if (transaction)
-            function.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+            function.addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         return function;
     }
@@ -245,7 +245,7 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
                 .markAsDefault();
 
         if (transaction)
-            function.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+            function.addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         return function;
     }
@@ -265,7 +265,7 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
                 .annotate("@Override")
                 .markAsDefault();
         if (transaction)
-            functionDeclaration.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+            functionDeclaration.addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         var parametersFunctionCall =
                 new FunctionCall("isNewBeanVersionRequired", parameterObject).addArgument(castedThisArgument);

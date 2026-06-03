@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.util.List;
 
@@ -122,14 +122,14 @@ public class FieldValidator {
 
     public boolean validate(
             List<FieldValidationFunction> validationFunctions,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return validate(validationFunctions, transaction, false);
     }
 
     public boolean validate(
             List<FieldValidationFunction> validationFunctions,
-            DBTransaction transaction,
+            DbTransaction transaction,
             boolean shortCircuit)
     {
         var emptinessEvaluation = new EmptinessEvaluation(shortCircuit);
@@ -157,7 +157,7 @@ public class FieldValidator {
 
     private boolean executeValidityChecks(
             List<FieldValidationFunction> validationFunctions,
-            DBTransaction transaction,
+            DbTransaction transaction,
             boolean shortCircuit)
     {
         boolean ok = true;

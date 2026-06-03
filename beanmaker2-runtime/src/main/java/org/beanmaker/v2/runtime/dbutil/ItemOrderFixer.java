@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,17 +9,17 @@ import java.util.Set;
 
 public class ItemOrderFixer {
 
-    private final DBTransaction transaction;
+    private final DbTransaction transaction;
     private final String tableName;
     private final String secondaryField;
 
     private final List<List<Long>> idLists = new ArrayList<>();
 
-    public ItemOrderFixer(DBTransaction transaction, String tableName) {
+    public ItemOrderFixer(DbTransaction transaction, String tableName) {
         this(transaction, tableName, null);
     }
 
-    public ItemOrderFixer(DBTransaction transaction, String tableName, String secondaryField) {
+    public ItemOrderFixer(DbTransaction transaction, String tableName, String secondaryField) {
         this.transaction = transaction;
         this.tableName = tableName;
         this.secondaryField = secondaryField;

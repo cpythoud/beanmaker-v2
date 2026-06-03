@@ -1,7 +1,7 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBAccess;
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
@@ -15,7 +15,7 @@ public class CascadingLabelHelper extends LabelHelper {
     }
 
     public String getCascading(
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             long id,
             DbBeanLanguage language,
             CascadingLabelHelperParameters parameters)
@@ -42,7 +42,7 @@ public class CascadingLabelHelper extends LabelHelper {
     }
 
     private String getLabelText(
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             long id,
             DbBeanLanguage language,
             CascadingLabelHelperParameters parameters)
@@ -76,12 +76,12 @@ public class CascadingLabelHelper extends LabelHelper {
         return labelText;
     }
 
-    public boolean hasCascadingDataFor(DBAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage) {
+    public boolean hasCascadingDataFor(DbAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage) {
         return hasCascadingDataFor(dbAccess, id, dbBeanLanguage, null);
     }
 
     public boolean hasCascadingDataFor(
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             long id,
             DbBeanLanguage language,
             DbBeanLanguage defaultLanguage)
@@ -103,7 +103,7 @@ public class CascadingLabelHelper extends LabelHelper {
     }
 
     public String getCascading(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long id,
             DbBeanLanguage language,
             CascadingLabelHelperParameters parameters)
@@ -130,7 +130,7 @@ public class CascadingLabelHelper extends LabelHelper {
     }
 
     private String getLabelText(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long id,
             DbBeanLanguage language,
             CascadingLabelHelperParameters parameters)
@@ -164,7 +164,7 @@ public class CascadingLabelHelper extends LabelHelper {
         return labelText;
     }
 
-    public boolean hasCascadingDataFor(DBTransaction transaction, long id, DbBeanLanguage dbBeanLanguage) {
+    public boolean hasCascadingDataFor(DbTransaction transaction, long id, DbBeanLanguage dbBeanLanguage) {
         return transaction.addQuery(
                 labelDataQuery,
                 setProcessingParameters(id, dbBeanLanguage),
@@ -179,7 +179,7 @@ public class CascadingLabelHelper extends LabelHelper {
     }
 
     public String getCascading(
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             String name,
             DbBeanLanguage dbBeanLanguage,
             CascadingLabelHelperParameters parameters)
@@ -188,7 +188,7 @@ public class CascadingLabelHelper extends LabelHelper {
     }
 
     public String getCascading(
-            DBTransaction transaction,
+            DbTransaction transaction,
             String name,
             DbBeanLanguage dbBeanLanguage,
             CascadingLabelHelperParameters parameters)

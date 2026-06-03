@@ -1,22 +1,22 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DB;
-import org.beanmaker.v2.database.sql.DBAccess;
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.Db;
+import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
 
 public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements BasicItemOrderOperations {
 
-    private final DBAccess dbAccess;
-    private final DB db;
+    private final DbAccess dbAccess;
+    private final Db db;
     private final String tableName;
 
     protected final ItemOrderManager dbBeanItemOrderManager;
 
     protected long itemOrder;
 
-    protected DbBeanEditorWithItemOrder(DbBeanParameters parameters, DBAccess dbAccess, DB db) {
+    protected DbBeanEditorWithItemOrder(DbBeanParameters parameters, DbAccess dbAccess, Db db) {
         super(parameters);
         this.dbAccess = dbAccess;
         this.db = db;
@@ -72,7 +72,7 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
         // TODO: implement operations ?!?
     }
 
-    public void updateRecordForItemOrder(DBTransaction transaction) {
+    public void updateRecordForItemOrder(DbTransaction transaction) {
         if (!StackWalker.getInstance(RETAIN_CLASS_REFERENCE).getCallerClass().getName().equals("org.beanmaker.v2.runtime.ItemOrderManager"))
             throw new IllegalCallerException("Only org.beanmaker.v2.runtime.ItemOrderManager should call updateRecordForItemOrder()");
 
@@ -80,7 +80,7 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
     }
 
     @Override
-    public void delete(DBTransaction transaction) {
+    public void delete(DbTransaction transaction) {
         checkReferenced(transaction);
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);

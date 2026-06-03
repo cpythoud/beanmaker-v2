@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 public interface LocalFileManager {
 
@@ -10,7 +10,7 @@ public interface LocalFileManager {
 
     boolean isIdOK(long id);
 
-    boolean isIdOK(long id, DBTransaction transaction);
+    boolean isIdOK(long id, DbTransaction transaction);
 
     String getFilename(long id);
 

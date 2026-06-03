@@ -1,24 +1,24 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.util.List;
 
 public interface DbBeanEditorInterface extends CodeBasedReference {
 
     void setId(long id);
-    void setId(long id,  DBTransaction transaction);
+    void setId(long id,  DbTransaction transaction);
     void resetId();
 
     void updateDB();
-    long updateDB(DBTransaction transaction);
+    long updateDB(DbTransaction transaction);
 
     void preUpdateConversions();
     boolean isDataOK();
     List<ErrorMessage> getErrorMessages();
 
     void reset();
-    void reset(DBTransaction transaction);
+    void reset(DbTransaction transaction);
     void fullReset();
 
     void delete();
@@ -29,6 +29,6 @@ public interface DbBeanEditorInterface extends CodeBasedReference {
         throw new UnsupportedOperationException("bean doesn't contain a code field");
     }
 
-    DbBeanEditorInterface duplicate(DBTransaction transaction);
+    DbBeanEditorInterface duplicate(DbTransaction transaction);
 
 }

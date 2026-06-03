@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.csv;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.runtime.DbBeanEditor;
 import org.beanmaker.v2.runtime.dbutil.Transactions;
@@ -28,7 +28,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     private boolean booleanLenientParsing = false;
 
-    private DBTransaction dbTransaction;
+    private DbTransaction dbTransaction;
 
     public BeanImportBase(DataFile dataFile, Class<?> editorClass, String... fields) {
         this.dataFile = dataFile;
@@ -74,7 +74,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
         return editor;
     }
 
-    protected DBTransaction getDbTransaction() {
+    protected DbTransaction getDbTransaction() {
         return dbTransaction;
     }
 
@@ -91,12 +91,12 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
     }
 
     @Override
-    public void importData(DBTransaction dbTransaction) {
+    public void importData(DbTransaction dbTransaction) {
         importData(dbTransaction, DataValidator.ALWAYS_TRUST);
     }
 
     @Override
-    public void importData(DBTransaction dbTransaction, DataValidator validator) {
+    public void importData(DbTransaction dbTransaction, DataValidator validator) {
         this.dbTransaction = dbTransaction;
         Transactions.wrap(
                 transaction -> {
@@ -133,7 +133,7 @@ public abstract class BeanImportBase implements DbBeanCsvImport {
 
     protected abstract void setFields(DataEntry dataEntry);
 
-    protected void executeExtraUpdateActions(long id, DataEntry dataEntry, DBTransaction transaction) { }
+    protected void executeExtraUpdateActions(long id, DataEntry dataEntry, DbTransaction transaction) { }
 
     protected String getStringValue(DataEntry dataEntry, String field) {
         return dataEntry.getStringValue(fieldToHeaderMap.get(field));

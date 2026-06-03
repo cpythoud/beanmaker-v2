@@ -34,22 +34,22 @@ public class DbBeansSourceFile extends BaseCode {
 
     @Override
     protected void addImports() {
-        importsManager.addImport("org.beanmaker.v2.database.sql.DB");
-        importsManager.addImport("org.beanmaker.v2.database.sql.DBAccess");
-        importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
+        importsManager.addImport("org.beanmaker.v2.database.sql.Db");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DbAccess");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DbTransaction");
         if (projectParameters.createDatabaseProviderReference()) {
             importsManager.addImport("org.beanmaker.v2.runtime.DatabaseProvider");
             importsManager.addImport("org.beanmaker.v2.util.Types");
         } else {
-            importsManager.addImport("org.beanmaker.v2.database.sql.DBFromDataSource");
+            importsManager.addImport("org.beanmaker.v2.database.sql.DbFromDataSource");
         }
     }
 
     @Override
     protected void addStaticProperties() {
         javaClass
-                .addContent(new VarDeclaration("DB", "db").markAsStatic().markAsFinal())
-                .addContent(new VarDeclaration("DBAccess", "dbAccess").markAsStatic().markAsFinal())
+                .addContent(new VarDeclaration("Db", "db").markAsStatic().markAsFinal())
+                .addContent(new VarDeclaration("DbAccess", "dbAccess").markAsStatic().markAsFinal())
                 .addContent(EMPTY_LINE);
 
         if (projectParameters.createDatabaseProviderReference())
@@ -85,10 +85,10 @@ public class DbBeansSourceFile extends BaseCode {
                 .addContent(new StaticBlock()
                         .addContent(new Assignment(
                                 "db",
-                                new ObjectCreation("DBFromDataSource").addArgument("DATA_SOURCE")))
+                                new ObjectCreation("DbFromDataSource").addArgument("DATA_SOURCE")))
                         .addContent(new Assignment(
                                 "dbAccess",
-                                new ObjectCreation("DBAccess").addArgument("db"))))
+                                new ObjectCreation("DbAccess").addArgument("db"))))
                 .addContent(EMPTY_LINE);
     }
 
@@ -105,16 +105,16 @@ public class DbBeansSourceFile extends BaseCode {
                                 new FunctionCall("getDatabaseReference", "dbProvider")))
                         .addContent(new Assignment(
                                 "dbAccess",
-                                new ObjectCreation("DBAccess").addArgument("db"))))
+                                new ObjectCreation("DbAccess").addArgument("db"))))
                 .addContent(EMPTY_LINE);
     }
 
     @Override
     protected void addCoreFunctionality() {
         javaClass
-                .addContent(new FunctionDeclaration("createDBTransaction", "DBTransaction")
+                .addContent(new FunctionDeclaration("createDBTransaction", "DbTransaction")
                         .markAsStatic()
-                        .addContent(new ReturnStatement(new ObjectCreation("DBTransaction").addArgument("db"))))
+                        .addContent(new ReturnStatement(new ObjectCreation("DbTransaction").addArgument("db"))))
                 .addContent(EMPTY_LINE);
     }
 

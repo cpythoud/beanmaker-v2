@@ -47,7 +47,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
             importsManager.addImport("org.beanmaker.v2.util.DecimalValueParser");
         }
         if (columns.isVersioned())
-            importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
+            importsManager.addImport("org.beanmaker.v2.database.sql.DbTransaction");
     }
 
     @Override
@@ -237,7 +237,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                 .markAsDefault()
                 .addArgument(new FunctionArgument(beanName + "DataModel", beanVarName));
         if (transaction)
-            declaration.addArgument(new FunctionArgument("DBTransaction", "transaction"));
+            declaration.addArgument(new FunctionArgument("DbTransaction", "transaction"));
         return declaration;
     }
 

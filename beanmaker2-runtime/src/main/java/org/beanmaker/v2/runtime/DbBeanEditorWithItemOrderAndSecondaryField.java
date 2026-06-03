@@ -1,15 +1,15 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DB;
-import org.beanmaker.v2.database.sql.DBAccess;
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.Db;
+import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanEditorWithItemOrder {
 
-    private final DB db;
+    private final Db db;
     private final String tableName;
 
-    protected DbBeanEditorWithItemOrderAndSecondaryField(DbBeanParameters parameters, DBAccess dbAccess, DB db) {
+    protected DbBeanEditorWithItemOrderAndSecondaryField(DbBeanParameters parameters, DbAccess dbAccess, Db db) {
         super(parameters, dbAccess, db);
         this.db = db;
         tableName = parameters.getDatabaseTableName();
@@ -25,7 +25,7 @@ public abstract class DbBeanEditorWithItemOrderAndSecondaryField extends DbBeanE
     }
 
     @Override
-    public void delete(DBTransaction transaction) {
+    public void delete(DbTransaction transaction) {
         checkReferenced(transaction);
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);

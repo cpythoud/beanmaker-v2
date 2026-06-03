@@ -5,27 +5,27 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Use a direct instantiation of a JDBC driver to implements the {@link DB} interface.
+ * Use a direct instantiation of a JDBC driver to implements the {@link Db} interface.
  * <br>
  * This class is not optimized in any way and does not implement any caching mechanism. It should therefore only
  * be used for testing or extremely simple applications requiring few database connexions.
  * <br>
- * Your application should use a container providing DataSources and you should use the DBFromDataSource class instead of this one.
+ * Your application should use a container providing DataSources and you should use the DbFromDataSource class instead of this one.
  */
-public class DBFromJDBCDriver implements DB {
+public class DbFromJDBCDriver implements Db {
 
     private final String url;
     private final String username;
     private final String password;
 
     /**
-     * Creates a DB object
+     * Creates a Db object
      * @param driver the full class name of the driver (ex.: com.mysql.jdbc.Driver), must be in the CLASSPATH or otherwise accessible
      * @param url the JDBC url (ex.: jdbc:mysql://localhost/)
      * @param username to access the database
      * @param password to access the database
      */
-    public DBFromJDBCDriver(String driver, String url, String username, String password) {
+    public DbFromJDBCDriver(String driver, String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;

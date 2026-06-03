@@ -5,6 +5,8 @@ LAST UPDATE: 2026-06-03
 - moved libraries (sql, java, html) under the beanmaker umbrella
 - modernize code in libraries (remove unnecessary final modifiers, replace raw types with the appropriate type
 definition with <?>, etc.)
+- rename all classes in SQL library (needs regeneration of code and adjusting of classes: <Bean>, <Bean>Editor,
+DbBeans and LocalFileManager)
 
 
 

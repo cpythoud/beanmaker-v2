@@ -1,15 +1,15 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DB;
-import org.beanmaker.v2.database.sql.DBFromDataSource;
+import org.beanmaker.v2.database.sql.Db;
+import org.beanmaker.v2.database.sql.DbFromDataSource;
 
 public abstract class JndiDatabaseProvider implements DatabaseProvider {
 
     protected abstract String getJndiName();
 
     @Override
-    public DB getDatabaseReference() {
-        return new DBFromDataSource(getJndiName());
+    public Db getDatabaseReference() {
+        return new DbFromDataSource(getJndiName());
     }
 
 }

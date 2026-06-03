@@ -9,19 +9,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * This class implements the {@link DB} interface from a DataSource name.
+ * This class implements the {@link Db} interface from a DataSource name.
  */
-public class DBFromDataSource implements DB {
+public class DbFromDataSource implements Db {
 
     private final DataSource dataSource;
 
     /**
-     * Creates a new DB object from a datasource.
+     * Creates a new Db object from a datasource.
      * @param dataSourceName the name of the DataSource to be used
      * @throws RuntimeException if the name cannot be resolved to a DataSource, the NamingException can be retrieved
      * from RuntimeException.getCause()
      */
-    public DBFromDataSource(String dataSourceName) {
+    public DbFromDataSource(String dataSourceName) {
         try {
             InitialContext ctx = new InitialContext();
             dataSource = (DataSource) ctx.lookup(dataSourceName);
@@ -31,10 +31,10 @@ public class DBFromDataSource implements DB {
     }
 
     /**
-     * Creates a new DB object from a datasource.
+     * Creates a new Db object from a datasource.
      * @param dataSource the DataSource to be used
      */
-    public DBFromDataSource(DataSource dataSource) {
+    public DbFromDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

@@ -1,6 +1,6 @@
 package org.beanmaker.v2.codegen;
 
-import org.beanmaker.v2.database.sql.DBUtils;
+import org.beanmaker.v2.database.sql.DbUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,13 +43,13 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
                 }
                 stat.close();
             } finally {
-                DBUtils.preparedStatementSilentClose(stat);
+                DbUtils.preparedStatementSilentClose(stat);
             }
             conn.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex.getMessage());
         } finally {
-            DBUtils.connectionSilentClose(conn);
+            DbUtils.connectionSilentClose(conn);
         }
 
         return dbList;
@@ -73,13 +73,13 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
                 }
                 stat.close();
             } finally {
-                DBUtils.preparedStatementSilentClose(stat);
+                DbUtils.preparedStatementSilentClose(stat);
             }
             conn.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex.getMessage());
         } finally {
-            DBUtils.connectionSilentClose(conn);
+            DbUtils.connectionSilentClose(conn);
         }
 
         return tableList;
@@ -107,13 +107,13 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
                             md.isAutoIncrement(i), md.isNullable(i) == ResultSetMetaData.columnNoNulls));
                 stat.close();
             } finally {
-                DBUtils.preparedStatementSilentClose(stat);
+                DbUtils.preparedStatementSilentClose(stat);
             }
             conn.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex.getMessage());
         } finally {
-            DBUtils.connectionSilentClose(conn);
+            DbUtils.connectionSilentClose(conn);
         }
 
         return cols;
@@ -166,14 +166,14 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
                     }
                     stat.close();
                 } finally {
-                    DBUtils.preparedStatementSilentClose(stat);
+                    DbUtils.preparedStatementSilentClose(stat);
                 }
             }
             conn.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex.getMessage());
         } finally {
-            DBUtils.connectionSilentClose(conn);
+            DbUtils.connectionSilentClose(conn);
         }
 
         return relationships;

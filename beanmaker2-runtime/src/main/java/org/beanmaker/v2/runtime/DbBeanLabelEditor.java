@@ -1,21 +1,21 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 public interface DbBeanLabelEditor extends DbBeanLabel {
 
     void setId(long id);
-    void setId(long id, DBTransaction transaction);
+    void setId(long id, DbTransaction transaction);
 
     void cacheLabelsFromDB();
-    void cacheLabelsFromDB(DBTransaction transaction);
+    void cacheLabelsFromDB(DbTransaction transaction);
     void clearCache();
     boolean cachedValuesExist();
 
     void updateLater(DbBeanLanguage dbBeanLanguage, String text);
 
-    long updateDB(DBTransaction transaction);
-    void commitTextsToDatabase(DBTransaction transaction);
+    long updateDB(DbTransaction transaction);
+    void commitTextsToDatabase(DbTransaction transaction);
 
     void reset();
     void fullReset();

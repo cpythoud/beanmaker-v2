@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.runtime.dbutil.Transactions;
 
@@ -26,7 +26,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         setId(id, null);
     }
 
-    public abstract void setId(long id,  DBTransaction transaction);
+    public abstract void setId(long id,  DbTransaction transaction);
 
     public void resetId() {
         id = 0;
@@ -50,7 +50,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         );
     }
 
-    public long updateDB(DBTransaction transaction) {
+    public long updateDB(DbTransaction transaction) {
         preUpdateConversions(transaction);
 
         if (id == 0) {
@@ -69,15 +69,15 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
 
     protected void initBeanVersioning() { }
 
-    protected abstract long createRecord(DBTransaction transaction);
+    protected abstract long createRecord(DbTransaction transaction);
 
-    protected abstract void updateRecord(DBTransaction transaction);
+    protected abstract void updateRecord(DbTransaction transaction);
 
     public final void preUpdateConversions() {
         preUpdateConversions(null);
     }
 
-    protected void preUpdateConversions(DBTransaction transaction) {
+    protected void preUpdateConversions(DbTransaction transaction) {
         if (!isDataOK(transaction))
             throw new IllegalArgumentException(ErrorMessage.toStrings(getErrorMessages()));
     }
@@ -86,7 +86,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         return isDataOK(null);
     }
 
-    protected abstract boolean isDataOK(DBTransaction transaction);
+    protected abstract boolean isDataOK(DbTransaction transaction);
 
     protected List<FieldValidationFunction> getDbBeanGlobalValidationFunctions() {
         return Collections.emptyList();
@@ -104,7 +104,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         reset(null);
     }
 
-    public abstract void reset(DBTransaction transaction);
+    public abstract void reset(DbTransaction transaction);
 
     public void fullReset() {
         reset();
@@ -112,13 +112,13 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
     }
 
     public final void delete() {
-        DBTransaction transaction = createDBTransaction();
+        DbTransaction transaction = createDBTransaction();
         delete(transaction);
         transaction.commit();
         fullReset();
     }
 
-    public void delete(DBTransaction transaction) {
+    public void delete(DbTransaction transaction) {
         checkReferenced(transaction);
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);
@@ -130,7 +130,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         deleteExtraDbActions(transaction);
     }
 
-    protected void checkReferenced(DBTransaction transaction) {
+    protected void checkReferenced(DbTransaction transaction) {
         if (dbBeanParameters.isReferenced(this, transaction))
             throw new IllegalStateException("Bean cannot be deleted because it is referenced in other data sets");
     }
@@ -140,28 +140,28 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
             throw new IllegalStateException("Only latest version of versioned bean can be deleted");
     }
 
-    protected void preDeleteExtraDbActions(DBTransaction transaction) { }
+    protected void preDeleteExtraDbActions(DbTransaction transaction) { }
 
-    protected void deleteLabels(DBTransaction transaction) { }
+    protected void deleteLabels(DbTransaction transaction) { }
 
-    protected void deleteExtraDbActions(DBTransaction transaction) { }
+    protected void deleteExtraDbActions(DbTransaction transaction) { }
 
-    protected void preCreateExtraDbActions(DBTransaction transaction) { }
+    protected void preCreateExtraDbActions(DbTransaction transaction) { }
 
-    protected void createExtraDbActions(DBTransaction transaction, long id) { }
+    protected void createExtraDbActions(DbTransaction transaction, long id) { }
 
-    protected void preUpdateExtraDbActions(DBTransaction transaction) { }
+    protected void preUpdateExtraDbActions(DbTransaction transaction) { }
 
-    protected void updateExtraDbActions(DBTransaction transaction) { }
+    protected void updateExtraDbActions(DbTransaction transaction) { }
 
     public void setCurrentDbBeanLanguage(DbBeanLanguage language) {
         dbBeanLocalization.setLanguage(language);
     }
 
-    protected abstract DBTransaction createDBTransaction();
+    protected abstract DbTransaction createDBTransaction();
 
     protected void extraDuplicatingActions(
-            DBTransaction transaction,
+            DbTransaction transaction,
             BeanDuplicator duplicator,
             DbBeanEditorInterface editor
     ) { }

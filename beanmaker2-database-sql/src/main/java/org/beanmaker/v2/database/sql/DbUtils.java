@@ -10,9 +10,9 @@ import java.sql.Statement;
  * This class contains static utility methods to help manage various aspects of JDBC programming.
  * <br>
  * You usually don't need to call these method directly. Instead you would use an instance of the
- * {@link DBAccess} or the {@link DBTransaction} class (which call these function internally).
+ * {@link DbAccess} or the {@link DbTransaction} class (which call these function internally).
  */
-public final class DBUtils {
+public final class DbUtils {
 
     /**
      * Close a PreparedStatement discarding any thrown SQLException.
@@ -40,12 +40,12 @@ public final class DBUtils {
      * Process a database update.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to set up the parameters
+     * @param querySetup an object implementing the {@link DbQuerySetup} interface, used to set up the parameters
      *                   for the update.
      * @return how many table rows were affected by the update.
      * @throws SQLException if a database error occurs
      */
-    public static int processUpdate(Connection conn, String query, DBQuerySetup querySetup) throws SQLException {
+    public static int processUpdate(Connection conn, String query, DbQuerySetup querySetup) throws SQLException {
         int count;
 
         PreparedStatement stat = conn.prepareStatement(query);
@@ -64,13 +64,13 @@ public final class DBUtils {
      * Creates a new record in the database.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to set up the parameters
+     * @param querySetup an object implementing the {@link DbQuerySetup} interface, used to set up the parameters
      *                   for the record creation.
      * @return the id of the created record.
      * @throws SQLException if a database error occurs
      * @throws java.lang.IllegalArgumentException if not exactly one row is created.
      */
-    public static long createRecord(Connection conn, String query, DBQuerySetup querySetup) throws SQLException {
+    public static long createRecord(Connection conn, String query, DbQuerySetup querySetup) throws SQLException {
         long id;
 
         PreparedStatement stat = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -95,14 +95,14 @@ public final class DBUtils {
      * Process a query on the database.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to set up parameters
+     * @param querySetup an object implementing the {@link DbQuerySetup} interface, used to set up parameters
      *                   for the query.
-     * @param queryProcess an object implementing the {@link DBQueryProcess} interface, used to process results
+     * @param queryProcess an object implementing the {@link DbQueryProcess} interface, used to process results
      *                     from the query.
      * @throws SQLException if a database error occurs
-     * @see DBUtils#processQuery(java.sql.Connection, String, DBQueryProcess)
+     * @see DbUtils#processQuery(java.sql.Connection, String, DbQueryProcess)
      */
-    public static void processQuery(Connection conn, String query, DBQuerySetup querySetup, DBQueryProcess queryProcess) throws SQLException {
+    public static void processQuery(Connection conn, String query, DbQuerySetup querySetup, DbQueryProcess queryProcess) throws SQLException {
         PreparedStatement stat = conn.prepareStatement(query);
         try {
             querySetup.setupPreparedStatement(stat);
@@ -118,12 +118,12 @@ public final class DBUtils {
      * Process a query on the database.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param queryProcess an object implementing the {@link DBQueryProcess} interface, used to process results
+     * @param queryProcess an object implementing the {@link DbQueryProcess} interface, used to process results
      *                     from the query.
      * @throws SQLException if a database error occurs
-     * @see DBUtils#processQuery(java.sql.Connection, String, DBQuerySetup, DBQueryProcess)
+     * @see DbUtils#processQuery(java.sql.Connection, String, DbQuerySetup, DbQueryProcess)
      */
-    public static void processQuery(Connection conn, String query, DBQueryProcess queryProcess) throws SQLException {
+    public static void processQuery(Connection conn, String query, DbQueryProcess queryProcess) throws SQLException {
         PreparedStatement stat = conn.prepareStatement(query);
         try {
             ResultSet rs = stat.executeQuery();
@@ -138,18 +138,18 @@ public final class DBUtils {
      * Process a query on the database.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to set up parameters for the query.
-     * @param queryRetrieveData an object implementing the {@link DBQueryRetrieveData} interface, used to get
+     * @param querySetup an object implementing the {@link DbQuerySetup} interface, used to set up parameters for the query.
+     * @param queryRetrieveData an object implementing the {@link DbQueryRetrieveData} interface, used to get
      *                          the query result.
      * @param <T> type of query result.
      * @return result of the query.
      * @throws SQLException if a database error occurs
-     * @see DBUtils#processQuery(java.sql.Connection, String, DBQueryRetrieveData)
+     * @see DbUtils#processQuery(java.sql.Connection, String, DbQueryRetrieveData)
      */
     public static <T> T processQuery(
             Connection conn, String query,
-            DBQuerySetup querySetup,
-            DBQueryRetrieveData<T> queryRetrieveData
+            DbQuerySetup querySetup,
+            DbQueryRetrieveData<T> queryRetrieveData
     ) throws SQLException
     {
         T data;
@@ -171,14 +171,14 @@ public final class DBUtils {
      * Process a query on the database.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param queryRetrieveData an object implementing the {@link DBQueryRetrieveData} interface, used to get
+     * @param queryRetrieveData an object implementing the {@link DbQueryRetrieveData} interface, used to get
      *                          the query result.
      * @param <T> type of query result.
      * @return result of the query.
      * @throws SQLException if a database error occurs
-     * @see DBUtils#processQuery(java.sql.Connection, String, DBQuerySetup, DBQueryRetrieveData)
+     * @see DbUtils#processQuery(java.sql.Connection, String, DbQuerySetup, DbQueryRetrieveData)
      */
-    public static <T> T processQuery(Connection conn, String query, DBQueryRetrieveData<T> queryRetrieveData)
+    public static <T> T processQuery(Connection conn, String query, DbQueryRetrieveData<T> queryRetrieveData)
             throws SQLException
     {
         T data;
@@ -199,10 +199,10 @@ public final class DBUtils {
      * Apply some updates to the database.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param updates an object implementing the {@link DBUpdates} interface, containing the code for the updates.
+     * @param updates an object implementing the {@link DbUpdates} interface, containing the code for the updates.
      * @throws SQLException if a database error occurs
      */
-    public static void processUpdates(Connection conn, String query, DBUpdates updates) throws SQLException {
+    public static void processUpdates(Connection conn, String query, DbUpdates updates) throws SQLException {
         PreparedStatement stat = conn.prepareStatement(query);
         try {
             updates.execute(stat);
@@ -216,13 +216,13 @@ public final class DBUtils {
      * Process some queries on the database and retrieve the result.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param queries an object implementing the {@link DBQueries} interface, used to get the queries result.
+     * @param queries an object implementing the {@link DbQueries} interface, used to get the queries result.
      * @param <T> type of queries result.
      * @return result of the queries.
      * @throws SQLException if a database error occurs
-     * @see DBUtils#processQueries(java.sql.Connection, String, DBQueriesNoReturn)
+     * @see DbUtils#processQueries(java.sql.Connection, String, DbQueriesNoReturn)
      */
-    public static <T> T processQueries(Connection conn, String query, DBQueries<T> queries) throws SQLException {
+    public static <T> T processQueries(Connection conn, String query, DbQueries<T> queries) throws SQLException {
         T data;
 
         PreparedStatement stat = conn.prepareStatement(query);
@@ -240,11 +240,11 @@ public final class DBUtils {
      * Process some queries on the database and retrieve the result.
      * @param conn database connection to use.
      * @param query SQL query.
-     * @param queries an object implementing the {@link DBQueriesNoReturn} interface, used to get the queries result.
+     * @param queries an object implementing the {@link DbQueriesNoReturn} interface, used to get the queries result.
      * @throws SQLException if a database error occurs
-     * @see DBUtils#processQueries(java.sql.Connection, String, DBQueries)
+     * @see DbUtils#processQueries(java.sql.Connection, String, DbQueries)
      */
-    public static void processQueries(Connection conn, String query, DBQueriesNoReturn queries) throws SQLException {
+    public static void processQueries(Connection conn, String query, DbQueriesNoReturn queries) throws SQLException {
         PreparedStatement stat = conn.prepareStatement(query);
         try {
             queries.process(stat);

@@ -1,8 +1,8 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBAccess;
-import org.beanmaker.v2.database.sql.DBQuerySetup;
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbQuerySetup;
+import org.beanmaker.v2.database.sql.DbTransaction;
 import org.beanmaker.v2.database.sql.SqlRuntimeException;
 
 import org.beanmaker.v2.util.DecimalValue;
@@ -23,6 +23,7 @@ import java.util.List;
 
 import java.util.function.Function;
 
+// TODO: rename class
 public final class DBUtil {
 
     public static Boolean getBoolean(ResultSet rs, int index) {
@@ -233,9 +234,9 @@ public final class DBUtil {
             DbBeanParameters parameters,
             String whereClause,
             String orderBy,
-            DBQuerySetup setup,
+            DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getSelection(
                 parameters.getDatabaseTableName(),
@@ -253,9 +254,9 @@ public final class DBUtil {
             String databaseFieldList,
             String whereClause,
             String orderBy,
-            DBQuerySetup setup,
+            DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         if (whereClause == null && setup != null)
             throw new IllegalArgumentException("Cannot accept setup code without a WHERE clause.");
@@ -276,8 +277,8 @@ public final class DBUtil {
     public static long getSelectionCount(
             DbBeanParameters parameters,
             String whereClause,
-            DBQuerySetup setup,
-            DBAccess dbAccess)
+            DbQuerySetup setup,
+            DbAccess dbAccess)
     {
         return getSelectionCount(parameters.getDatabaseTableName(), whereClause, setup, dbAccess);
     }
@@ -285,8 +286,8 @@ public final class DBUtil {
     public static long getSelectionCount(
             String databaseTableName,
             String whereClause,
-            DBQuerySetup setup,
-            DBAccess dbAccess)
+            DbQuerySetup setup,
+            DbAccess dbAccess)
     {
         String query = "SELECT COUNT(id) FROM " + databaseTableName + " WHERE " + whereClause;
 
@@ -296,7 +297,7 @@ public final class DBUtil {
         return dbAccess.processQuery(query, setup, DBUtil::getCount);
     }
 
-    public static long getFullCount(DbBeanParameters parameters, DBAccess dbAccess) {
+    public static long getFullCount(DbBeanParameters parameters, DbAccess dbAccess) {
         return dbAccess.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
     }
 
@@ -304,9 +305,9 @@ public final class DBUtil {
             DbBeanParameters parameters,
             String whereClause,
             String orderBy,
-            DBQuerySetup setup,
+            DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getSelection(
                 parameters.getVersionedDatabaseViewName(),
@@ -322,13 +323,13 @@ public final class DBUtil {
     public static long getVersionedSelectionCount(
             DbBeanParameters parameters,
             String whereClause,
-            DBQuerySetup setup,
-            DBAccess dbAccess)
+            DbQuerySetup setup,
+            DbAccess dbAccess)
     {
         return getSelectionCount(parameters.getVersionedDatabaseViewName(), whereClause, setup, dbAccess);
     }
 
-    public static long getVersionedFullCount(DbBeanParameters parameters, DBAccess dbAccess) {
+    public static long getVersionedFullCount(DbBeanParameters parameters, DbAccess dbAccess) {
         return dbAccess.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
     }
 
@@ -338,9 +339,9 @@ public final class DBUtil {
             DbBeanParameters parameters,
             String whereClause,
             String orderBy,
-            DBQuerySetup setup,
+            DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getSelection(
                 parameters.getDatabaseTableName(),
@@ -358,9 +359,9 @@ public final class DBUtil {
             String databaseFieldList,
             String whereClause,
             String orderBy,
-            DBQuerySetup setup,
+            DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         if (whereClause == null && setup != null)
             throw new IllegalArgumentException("Cannot accept setup code without a WHERE clause.");
@@ -381,8 +382,8 @@ public final class DBUtil {
     public static long getSelectionCount(
             DbBeanParameters parameters,
             String whereClause,
-            DBQuerySetup setup,
-            DBTransaction transaction)
+            DbQuerySetup setup,
+            DbTransaction transaction)
     {
         return getSelectionCount(parameters.getDatabaseTableName(), whereClause, setup, transaction);
     }
@@ -390,8 +391,8 @@ public final class DBUtil {
     public static long getSelectionCount(
             String databaseTableName,
             String whereClause,
-            DBQuerySetup setup,
-            DBTransaction transaction)
+            DbQuerySetup setup,
+            DbTransaction transaction)
     {
         String query = "SELECT COUNT(id) FROM " + databaseTableName + " WHERE " + whereClause;
 
@@ -401,7 +402,7 @@ public final class DBUtil {
         return transaction.addQuery(query, setup, DBUtil::getCount);
     }
 
-    public static long getFullCount(DbBeanParameters parameters, DBTransaction transaction) {
+    public static long getFullCount(DbBeanParameters parameters, DbTransaction transaction) {
         return transaction.addQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
     }
 
@@ -409,9 +410,9 @@ public final class DBUtil {
             DbBeanParameters parameters,
             String whereClause,
             String orderBy,
-            DBQuerySetup setup,
+            DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return getSelection(
                 parameters.getVersionedDatabaseViewName(),
@@ -427,13 +428,13 @@ public final class DBUtil {
     public static long getVersionedSelectionCount(
             DbBeanParameters parameters,
             String whereClause,
-            DBQuerySetup setup,
-            DBTransaction transaction)
+            DbQuerySetup setup,
+            DbTransaction transaction)
     {
         return getSelectionCount(parameters.getVersionedDatabaseViewName(), whereClause, setup, transaction);
     }
 
-    public static long getVersionedFullCount(DbBeanParameters parameters, DBTransaction transaction) {
+    public static long getVersionedFullCount(DbBeanParameters parameters, DbTransaction transaction) {
         return transaction.addQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
     }
 
@@ -444,7 +445,7 @@ public final class DBUtil {
             String fieldName,
             long id,
             Function<ResultSet, List<B>> collector,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return dbAccess.processQuery(
                 "SELECT " + parameters.getDatabaseFieldList() + " FROM " + parameters.getDatabaseTableName()
@@ -454,7 +455,7 @@ public final class DBUtil {
         );
     }
 
-    public static long getInventorySize(DbBeanParameters parameters, String fieldName, long id, DBAccess dbAccess) {
+    public static long getInventorySize(DbBeanParameters parameters, String fieldName, long id, DbAccess dbAccess) {
         return dbAccess.processQuery(
                 "SELECT COUNT(id) FROM " + parameters.getDatabaseTableName() + " WHERE " + fieldName + "=?",
                 stat -> stat.setLong(1, id),
@@ -464,7 +465,7 @@ public final class DBUtil {
 
     // ------------
 
-    public static boolean checkUnicity(DbBeanParameters parameters, String fieldName, Object value, long id, DBAccess dbAccess) {
+    public static boolean checkUnicity(DbBeanParameters parameters, String fieldName, Object value, long id, DbAccess dbAccess) {
         return !dbAccess.processQuery(
                 getUnicityQuery(parameters, fieldName),
                 stat -> {
@@ -475,7 +476,7 @@ public final class DBUtil {
         );
     }
 
-    public static boolean checkUnicity(DbBeanParameters parameters, String fieldName, Object value, long id, DBTransaction transaction) {
+    public static boolean checkUnicity(DbBeanParameters parameters, String fieldName, Object value, long id, DbTransaction transaction) {
         return !transaction.addQuery(
                 getUnicityQuery(parameters, fieldName),
                 stat -> {
@@ -532,7 +533,7 @@ public final class DBUtil {
             long id,
             String associatedBeanFieldName,
             long idAssociatedBean,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return !dbAccess.processQuery(
                 getQualifiedUnicityQuery(parameters, fieldName, associatedBeanFieldName),
@@ -552,7 +553,7 @@ public final class DBUtil {
             long id,
             String associatedBeanFieldName,
             long idAssociatedBean,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return !transaction.addQuery(
                 getQualifiedUnicityQuery(parameters, fieldName, associatedBeanFieldName),
@@ -576,11 +577,11 @@ public final class DBUtil {
 
     // ------------
 
-    public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, DBAccess dbAccess) {
+    public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, DbAccess dbAccess) {
         return getIdNamePairs(parameters, null, dbAccess);
     }
 
-    public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, String whereClause, DBAccess dbAccess) {
+    public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, String whereClause, DbAccess dbAccess) {
         return getIdNamePairs(parameters, whereClause, parameters.getNamingFields(), parameters.getOrderingFields(), dbAccess);
     }
 
@@ -588,7 +589,7 @@ public final class DBUtil {
             DbBeanParameters parameters,
             List<String> dataFields,
             List<String> orderingFields,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return getIdNamePairs(parameters, null,dataFields, orderingFields, dbAccess);
     }
@@ -598,7 +599,7 @@ public final class DBUtil {
             String whereClause,
             List<String> dataFields,
             List<String> orderingFields,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         var pairs = new ArrayList<IdNamePair>();
 
@@ -641,7 +642,7 @@ public final class DBUtil {
 
     // ------------
 
-    public static boolean isIdOK(DbBeanParameters parameters, long id, DBAccess dbAccess) {
+    public static boolean isIdOK(DbBeanParameters parameters, long id, DbAccess dbAccess) {
         return dbAccess.processQuery(
                 "SELECT id FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id),
@@ -649,7 +650,7 @@ public final class DBUtil {
         );
     }
 
-    public static boolean isIdOK(DbBeanParameters parameters, long id, DBTransaction transaction) {
+    public static boolean isIdOK(DbBeanParameters parameters, long id, DbTransaction transaction) {
         return transaction.addQuery(
                 "SELECT id FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id),
@@ -662,7 +663,7 @@ public final class DBUtil {
     public static String getHumanReadableTitle(
             DbBeanParameters parameters,
             long id,
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             DbBeanLabelBasicFunctions labelFunctions,
             DbBeanLanguage language)
     {
@@ -689,7 +690,7 @@ public final class DBUtil {
             String field,
             DbBeanParameters parameters,
             long id,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return dbAccess.processQuery(
                 "SELECT " + field + " FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
@@ -706,7 +707,7 @@ public final class DBUtil {
             String field,
             DbBeanParameters parameters,
             long id,
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             DbBeanLabelBasicFunctions labelFunctions,
             DbBeanLanguage language)
     {
@@ -746,7 +747,7 @@ public final class DBUtil {
 
     // ------------
 
-    /*public static long getMaxItemOrder(DBAccess dbAccess, String query) {
+    /*public static long getMaxItemOrder(DbAccess dbAccess, String query) {
         return dbAccess.processQuery(
                 query,
                 rs -> {
@@ -755,7 +756,7 @@ public final class DBUtil {
                 });
     }
 
-    public static long getMaxItemOrder(DBAccess dbAccess, String query, long... parameters) {
+    public static long getMaxItemOrder(DbAccess dbAccess, String query, long... parameters) {
         return dbAccess.processQuery(
                 query,
                  stat -> setupParameters(stat, 1, toList(parameters)),
@@ -778,7 +779,7 @@ public final class DBUtil {
         return list;
     }
 
-    public static long getMaxItemOrder(DBTransaction transaction, String query) {
+    public static long getMaxItemOrder(DbTransaction transaction, String query) {
         return transaction.addQuery(
                 query,
                 rs -> {
@@ -787,7 +788,7 @@ public final class DBUtil {
                 });
     }
 
-    public static long getMaxItemOrder(DBTransaction transaction, String query, long... parameters) {
+    public static long getMaxItemOrder(DbTransaction transaction, String query, long... parameters) {
         return transaction.addQuery(
                 query,
                 stat -> setupParameters(stat, 1, toList(parameters)),
@@ -804,12 +805,12 @@ public final class DBUtil {
         return itemOrder + 1;
     }
 
-    public static void itemOrderMoveUp(DB db, String idFromItemOrderQuery, String table, long id, long itemOrder) {
+    public static void itemOrderMoveUp(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder) {
         itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, null, true);
     }
 
     private static void itemOrderMove(
-            DB db,
+            Db db,
             String idFromItemOrderQuery,
             String table,
             long id,
@@ -817,7 +818,7 @@ public final class DBUtil {
             List<Long> parameters,
             boolean moveUp)
     {
-        DBTransaction transaction = new DBTransaction(db);
+        DbTransaction transaction = new DbTransaction(db);
 
         final long swapPositionWithBeanId = transaction.addQuery(
                 idFromItemOrderQuery,
@@ -858,15 +859,15 @@ public final class DBUtil {
         return buf.toString();
     }
 
-    private static void incItemOrder(DBTransaction transaction, long id, String table) {
+    private static void incItemOrder(DbTransaction transaction, long id, String table) {
         setItemOrder(transaction, id, table, getItemOrder(transaction, id, table) + 1);
     }
 
-    private static void decItemOrder(DBTransaction transaction, long id, String table) {
+    private static void decItemOrder(DbTransaction transaction, long id, String table) {
         setItemOrder(transaction, id, table, getItemOrder(transaction, id, table) - 1);
     }
 
-    private static long getItemOrder(DBTransaction transaction, long id, String table) {
+    private static long getItemOrder(DbTransaction transaction, long id, String table) {
         return transaction.addQuery(
                 "SELECT item_order FROM " + table + " WHERE id=?",
                 stat ->  stat.setLong(1, id),
@@ -878,7 +879,7 @@ public final class DBUtil {
                 });
     }
 
-    private static void setItemOrder(DBTransaction transaction, long id, String table, long itemOrder) {
+    private static void setItemOrder(DbTransaction transaction, long id, String table, long itemOrder) {
         transaction.addUpdate(
                 "UPDATE " + table + " SET item_order=? WHERE id=?",
                 stat -> {
@@ -887,23 +888,23 @@ public final class DBUtil {
                 });
     }
 
-    public static void itemOrderMoveUp(DB db, String idFromItemOrderQuery, String table, long id, long itemOrder, long... parameters) {
+    public static void itemOrderMoveUp(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder, long... parameters) {
         itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, toList(parameters), true);
     }
 
-    public static void itemOrderMoveDown(DB db, String idFromItemOrderQuery, String table, long id, long itemOrder) {
+    public static void itemOrderMoveDown(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder) {
         itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, null, false);
     }
 
-    public static void itemOrderMoveDown(DB db, String idFromItemOrderQuery, String table, long id, long itemOrder, long... parameters) {
+    public static void itemOrderMoveDown(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder, long... parameters) {
         itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, toList(parameters), false);
     }
 
-    public static void updateItemOrdersAbove(String query, DBTransaction transaction, long threshold) {
+    public static void updateItemOrdersAbove(String query, DbTransaction transaction, long threshold) {
         updateItemOrdersAbove(query, transaction, threshold, null);
     }
 
-    public static void updateItemOrdersAbove(String query, DBTransaction transaction, long threshold, long... parameters) {
+    public static void updateItemOrdersAbove(String query, DbTransaction transaction, long threshold, long... parameters) {
         transaction.addUpdate(
                 query,
                 stat -> {
@@ -916,11 +917,11 @@ public final class DBUtil {
                 });
     }
 
-    public static void updateItemOrdersInBetween(String query, DBTransaction transaction, long lowerBound, long upperBound) {
+    public static void updateItemOrdersInBetween(String query, DbTransaction transaction, long lowerBound, long upperBound) {
         updateItemOrdersInBetween(query, transaction, lowerBound, upperBound, null);
     }
 
-    public static void updateItemOrdersInBetween(String query, DBTransaction transaction, long lowerBound, long upperBound, long... parameters) {
+    public static void updateItemOrdersInBetween(String query, DbTransaction transaction, long lowerBound, long upperBound, long... parameters) {
         transaction.addUpdate(
                 query,
                 stat -> {

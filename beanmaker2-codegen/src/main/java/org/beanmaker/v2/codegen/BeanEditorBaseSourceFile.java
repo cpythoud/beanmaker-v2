@@ -44,7 +44,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             createImportList("org.beanmaker.v2.runtime", "DBUtil", "FieldValidationFunction",
                     "FieldValidationResult", "FieldValidator", "GlobalValidator", "ToStringMaker");
     private static final List<String> SQL_IMPORTS =
-            createImportList("org.beanmaker.v2.database.sql", "DBQuerySetup", "DBTransaction");
+            createImportList("org.beanmaker.v2.database.sql", "DbQuerySetup", "DbTransaction");
 
     private final Set<String> types;
 
@@ -237,7 +237,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(createConstructor()
                         .addArgument(new FunctionArgument("long", "id"))
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new FunctionCall("setId").byItself().addArguments("id", "transaction")))
                 .addContent(EMPTY_LINE);
     }
@@ -379,7 +379,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("long", "id"))
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new FunctionCall("init")
                                 .byItself()
                                 .addArgument(new ObjectCreation(beanName).addArguments("id", "transaction"))
@@ -420,7 +420,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         ).addContent(EMPTY_LINE).addContent(
                 new FunctionDeclaration(functionName, beanName)
                         .visibility(Visibility.PUBLIC)
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(
                                 new IfBlock(new Condition("id == 0"))
                                         .addContent(ExceptionThrow.getThrowExpression(
@@ -526,7 +526,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new FunctionDeclaration("set" + labelName)
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLabel", "label"))
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(checkNonZeroID("label", "DbBeanLabel"))
                         .addContent(EMPTY_LINE)
                         .addContent(new FunctionCall("set" + capitalize(fieldName))
@@ -757,7 +757,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return new FunctionDeclaration("set" + capitalize(name))
                 .visibility(Visibility.PUBLIC)
                 .addArgument(new FunctionArgument(type, name))
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                 .addContent(new Assignment("this." + name, name));
     }
 
@@ -821,7 +821,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
 
         if (transaction) {
-            labelFunction.addArgument(new FunctionArgument("DBTransaction", "transaction"))
+            labelFunction.addArgument(new FunctionArgument("DbTransaction", "transaction"))
                     .addContent(new VarDeclaration("DbBeanLabelEditor", "dbBeanLabelEditor"))
                     .addContent(new IfBlock(new Condition("transaction == null"))
                             .addContent(new Assignment(
@@ -844,7 +844,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             labelFunction
                     .annotate("@Override")
                     .markAsFinal()
-                    .addContent(new ReturnStatement(new FunctionCall(labelFunctionName).addArgument("(DBTransaction) null")));
+                    .addContent(new ReturnStatement(new FunctionCall(labelFunctionName).addArgument("(DbTransaction) null")));
         }
 
         return labelFunction;
@@ -863,7 +863,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
 
         if (transaction) {
-            perLanguageLabelFunction.addArgument(new FunctionArgument("DBTransaction", "transaction"))
+            perLanguageLabelFunction.addArgument(new FunctionArgument("DbTransaction", "transaction"))
                     .addContent(new FunctionCall("init" + labelNameCap).addArgument("transaction").byItself())
                     .addContent(new ReturnStatement(
                             new FunctionCall("get", labelName).addArgument("dbBeanLanguage")));
@@ -1006,7 +1006,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         FunctionCall setIdCall = new FunctionCall("setId", labelBean).byItself().addArgument(fieldName);
         FunctionCall cacheFromDBCall = new FunctionCall("cacheLabelsFromDB", labelBean).byItself();
         if (transaction) {
-            function.addArgument(new FunctionArgument("DBTransaction", "transaction"))
+            function.addArgument(new FunctionArgument("DbTransaction", "transaction"))
                     .addContent(new IfBlock(new Condition("transaction == null"))
                             .addContent(new FunctionCall(functionName).byItself())
                             .addContent(new ReturnStatement()))
@@ -1035,7 +1035,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
 
         if (transaction) {
-            function.addArgument(new FunctionArgument("DBTransaction", "transaction"))
+            function.addArgument(new FunctionArgument("DbTransaction", "transaction"))
                     .addContent(new FunctionCall("init" + labelName).byItself().addArgument("transaction"))
                     .addContent(new FunctionCall("updateLater", labelBean)
                             .byItself()
@@ -1054,7 +1054,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         var conversionFunction = new FunctionDeclaration("preUpdateConversions")
                 .annotate("@Override")
                 .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                 .addContent(new FunctionCall("preUpdateConversions", "super")
                         .byItself()
                         .addArgument("transaction"))
@@ -1159,7 +1159,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         var function = new FunctionDeclaration("isDataOK", "boolean")
                 .annotate("@Override")
                 .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                 .addContent(new FunctionCall("clearErrorMessages", "dbBeanLocalization").byItself())
                 .addContent(EMPTY_LINE);
 
@@ -1219,7 +1219,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private void addGlobalCheckDataFunctions() {
         javaClass
                 .addContent(new FunctionDeclaration("checkGlobalData", "boolean")
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new VarDeclaration(
                                 "GlobalValidator",
                                 "validator",
@@ -1230,7 +1230,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                                         .addArgument("transaction"))))
                 .addContent(EMPTY_LINE)
                 .addContent(new FunctionDeclaration("getGlobalDataValidator", "GlobalValidator")
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new ReturnStatement(
                                 new ObjectCreation("GlobalValidator").addArguments("dbBeanLocalization", "id")
                         )))
@@ -1243,7 +1243,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         String validatorGetter = "get" + capitalize(field) + "Validator";
 
         var function = new FunctionDeclaration(functionName, "boolean")
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         if (!column.isLabelReference())
             function.addContent(new VarDeclaration(
@@ -1295,7 +1295,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         String functionName = "get" + capitalize(field) + "Validator";
 
         var function = new FunctionDeclaration(functionName, "FieldValidator")
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         if (column.isLabelReference()) {
             function.addArgument(new FunctionArgument("DbBeanLanguage", "dbBeanLanguage"))
@@ -1651,7 +1651,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         .addContent(new ReturnStatement(new FunctionCall(functionName).addArgument("null"))))
                 .addContent(EMPTY_LINE)
                 .addContent(getUnicityCheckFunctionDeclaration(functionName, column)
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new IfBlock(new Condition("transaction == null"))
                                 .addContent(getUnicityCheckResult(column, false)))
                         .addContent(EMPTY_LINE)
@@ -1731,7 +1731,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 new FunctionDeclaration("reset")
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         if (!labels.isEmpty()) {
             for (Column label: labels) {
@@ -1836,7 +1836,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         javaClass
                 .addContent(new JavaClass("RecordCreationSetup")
                         .visibility(Visibility.PRIVATE)
-                        .implementsInterface("DBQuerySetup")
+                        .implementsInterface("DbQuerySetup")
                         .addContent(function))
                 .addContent(EMPTY_LINE)
                 .addContent(new JavaClass("RecordUpdateSetup")
@@ -1977,7 +1977,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         var function = new FunctionDeclaration("updateLabels")
                 .visibility(Visibility.PRIVATE)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         for (Column label: labels) {
             String varName = label.getJavaName();
@@ -2004,7 +2004,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         return function
                 .annotate("@Override")
                 .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"));
     }
 
     private IfBlock getUpdateLabelFunctionCalls(Column column) {
@@ -2113,7 +2113,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addTransactionGetter() {
         javaClass
-                .addContent(new FunctionDeclaration("createDBTransaction", "DBTransaction")
+                .addContent(new FunctionDeclaration("createDBTransaction", "DbTransaction")
                         .annotate("@Override")
                         .visibility(Visibility.PROTECTED)
                         .addContent(new ReturnStatement(
@@ -2125,7 +2125,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         var deleteLabelsFunction = new FunctionDeclaration("deleteLabels", "void")
                 .annotate("@Override")
                 .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"));
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"));
 
         for (var label: columns.getLabels()) {
             String idVarName = label.getJavaName();
@@ -2173,7 +2173,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         var duplicateFunction = new FunctionDeclaration("duplicate", beanName + "Editor")
                 .annotate("@Override")
                 .visibility(Visibility.PUBLIC)
-                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                 .addContent(
                         new VarDeclaration(
                                 "var",
@@ -2243,7 +2243,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 new FunctionDeclaration("getDuplicated" + capitalize(column.getJavaName()), "long")
                         .visibility(Visibility.PROTECTED)
                         .addArgument(new FunctionArgument("BeanDuplicator", "duplicator"))
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(
                                 new ReturnStatement(
                                         getDuplicatorFunctionCall("IdBean").addArgument(column.getJavaName())
@@ -2288,7 +2288,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                         new FunctionDeclaration("newVersionedEditor", beanName + "Editor")
                                 .annotate("@Override")
                                 .visibility(Visibility.PUBLIC)
-                                .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                                .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                                 .addContent(new ReturnStatement(new FunctionCall(
                                         "initializeNewVersion",
                                         "(" + beanName + "Editor) VersionedBeanEditor")

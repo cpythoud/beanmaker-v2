@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class GlobalValidator {
 
     public boolean validate(
             List<FieldValidationFunction> validationFunctions,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         boolean ok = true;
         for (var test: validationFunctions) {

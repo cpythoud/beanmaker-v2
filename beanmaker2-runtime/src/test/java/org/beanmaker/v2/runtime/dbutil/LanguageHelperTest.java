@@ -1,7 +1,7 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DB;
-import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.Db;
+import org.beanmaker.v2.database.sql.DbAccess;
 
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LanguageHelperTest {
 
-    private static final DB DB = new DB() {
+    private static final Db DB = new Db() {
         @Override
         public Connection getConnection() throws SQLException {
             throw new UnsupportedOperationException("Not supported. Test instance.");
@@ -47,12 +47,12 @@ public class LanguageHelperTest {
         }
     };
 
-    private DBAccess dbAccess;
+    private DbAccess dbAccess;
     private LanguageHelper languageHelper;
 
     @BeforeAll
     void setUp() {
-        dbAccess = new DBAccess(DB);
+        dbAccess = new DbAccess(DB);
         languageHelper = LanguageHelper.builder().languageClass(DBBEAN_LANGUAGE.getClass()).dbAccess(dbAccess).build();
     }
 

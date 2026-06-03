@@ -18,7 +18,7 @@ public class BeanSourceFile extends BeanCode {
 
     @Override
     protected void addImports() {
-        importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DbTransaction");
         importsManager.addImport("java.sql.ResultSet");
     }
 
@@ -38,7 +38,7 @@ public class BeanSourceFile extends BeanCode {
                 .addContent(javaClass.createConstructor()
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("long", "id"))
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new FunctionCall("super").byItself().addArguments("id", "transaction")))
                 .addContent(EMPTY_LINE)
                 .addContent(javaClass.createConstructor()

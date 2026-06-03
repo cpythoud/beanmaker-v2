@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.runtime.DbBeanEditor;
 import org.beanmaker.v2.runtime.DbBeanInterface;
@@ -15,7 +15,7 @@ public class Beans {
     private static final MethodType CONSTRUCTOR = MethodType.methodType(void.class);
     private static final MethodType ID_CONSTRUCTOR = MethodType.methodType(void.class, long.class);
     private static final MethodType TRANSACTION_CONSTRUCTOR =
-            MethodType.methodType(void.class, long.class, DBTransaction.class);
+            MethodType.methodType(void.class, long.class, DbTransaction.class);
 
     private Beans() { }
 
@@ -38,7 +38,7 @@ public class Beans {
     public static <B extends DbBeanInterface> B createBean(
             Class<? extends DbBeanInterface> beanClass,
             long id,
-            DBTransaction transaction
+            DbTransaction transaction
     )
     {
         if (id < 0)
@@ -83,7 +83,7 @@ public class Beans {
     public static <E extends DbBeanEditor> E createEditor(
             Class<? extends DbBeanEditor> beanClass,
             long id,
-            DBTransaction transaction
+            DbTransaction transaction
     )
     {
         if (id < 0)

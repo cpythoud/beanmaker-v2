@@ -1,7 +1,7 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBAccess;
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.sql.ResultSet;
 
@@ -11,19 +11,19 @@ public final class DbBeanInitializer {
 
     private final long id;
     private final DbBeanParameters parameters;
-    private final DBAccess dbAccess;
-    private final DBTransaction transaction;
+    private final DbAccess dbAccess;
+    private final DbTransaction transaction;
     private final Consumer<ResultSet> initializer;
 
-    public static void initialize(long id, DbBeanParameters parameters, DBAccess dbAccess, Consumer<ResultSet> initializer) {
+    public static void initialize(long id, DbBeanParameters parameters, DbAccess dbAccess, Consumer<ResultSet> initializer) {
        new DbBeanInitializer(id, parameters, dbAccess, initializer).initialize();
     }
 
-    public static void initialize(long id, DbBeanParameters parameters, DBTransaction transaction, Consumer<ResultSet> initializer) {
+    public static void initialize(long id, DbBeanParameters parameters, DbTransaction transaction, Consumer<ResultSet> initializer) {
         new DbBeanInitializer(id, parameters, transaction, initializer).initialize();
     }
 
-    private DbBeanInitializer(long id, DbBeanParameters parameters, DBAccess dbAccess, Consumer<ResultSet> initializer) {
+    private DbBeanInitializer(long id, DbBeanParameters parameters, DbAccess dbAccess, Consumer<ResultSet> initializer) {
         if (id < 1)
             throw new IllegalArgumentException("ID must be > 0");
 
@@ -34,7 +34,7 @@ public final class DbBeanInitializer {
         this.initializer = initializer;
     }
 
-    private DbBeanInitializer(long id, DbBeanParameters parameters, DBTransaction transaction, Consumer<ResultSet> initializer) {
+    private DbBeanInitializer(long id, DbBeanParameters parameters, DbTransaction transaction, Consumer<ResultSet> initializer) {
         if (id < 1)
             throw new IllegalArgumentException("ID must be > 0");
 

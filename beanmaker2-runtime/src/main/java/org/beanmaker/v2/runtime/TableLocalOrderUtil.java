@@ -1,9 +1,9 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBQueryRetrieveData;
-import org.beanmaker.v2.database.sql.DBQuerySetup;
-import org.beanmaker.v2.database.sql.DBTransaction;
-import org.beanmaker.v2.database.sql.DBUpdates;
+import org.beanmaker.v2.database.sql.DbQueryRetrieveData;
+import org.beanmaker.v2.database.sql.DbQuerySetup;
+import org.beanmaker.v2.database.sql.DbTransaction;
+import org.beanmaker.v2.database.sql.DbUpdates;
 
 import org.beanmaker.v2.util.Sets;
 
@@ -27,7 +27,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        DBTransaction transaction = context.getDBTransaction();
+        DbTransaction transaction = context.getDBTransaction();
 
         Set<Long> currentlyOrderedIds = getOrderedIds(transaction, orderingTable, context.getId());
         Set<Long> idToBeOrdered = Ids.getIdSet(beans, new LinkedHashSet<Long>());
@@ -50,19 +50,19 @@ public class TableLocalOrderUtil {
     }
 
     private static LinkedHashSet<Long> getOrderedIds(
-            DBTransaction transaction,
+            DbTransaction transaction,
             String orderingTable,
             long idContext)
     {
         return transaction.addQuery(
                 "SELECT id_bean FROM " + orderingTable + " WHERE id_context=? ORDER BY item_order",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, idContext);
                     }
                 },
-                new DBQueryRetrieveData<LinkedHashSet<Long>>() {
+                new DbQueryRetrieveData<LinkedHashSet<Long>>() {
                     @Override
                     public LinkedHashSet<Long> processResultSet(ResultSet rs) throws SQLException {
                         LinkedHashSet<Long> ids = new LinkedHashSet<Long>();
@@ -77,14 +77,14 @@ public class TableLocalOrderUtil {
     }
 
     private static void clearItemOrders(
-            DBTransaction transaction,
+            DbTransaction transaction,
             String orderingTable,
             long idContext,
             Set<Long> ids)
     {
         transaction.addUpdates(
                 "DELETE FROM " + orderingTable + " WHERE id_context=? AND id_bean=?",
-                new DBUpdates() {
+                new DbUpdates() {
                     @Override
                     public void execute(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, idContext);
@@ -98,7 +98,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void addItemOrders(
-            DBTransaction transaction,
+            DbTransaction transaction,
             String orderingTable,
             long idContext,
             Set<Long> ids)
@@ -108,7 +108,7 @@ public class TableLocalOrderUtil {
         transaction.addUpdates(
                 "INSERT INTO " + orderingTable + " (id_context, id_bean, item_order) " +
                         "VALUES (?, ?, ?)",
-                new DBUpdates() {
+                new DbUpdates() {
                     @Override
                     public void execute(PreparedStatement stat) throws SQLException {
                         long itemOrder = lastItemOrder;
@@ -124,19 +124,19 @@ public class TableLocalOrderUtil {
     }
 
     private static long getLastItemOrder(
-            DBTransaction transaction,
+            DbTransaction transaction,
             String orderingTable,
             long idContext)
     {
         return transaction.addQuery(
                 "SELECT MAX(item_order) FROM " + orderingTable + " WHERE id_context=?",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, idContext);
                     }
                 },
-                new DBQueryRetrieveData<Long>() {
+                new DbQueryRetrieveData<Long>() {
                     @Override
                     public Long processResultSet(ResultSet rs) throws SQLException {
                         if (rs.next())
@@ -149,7 +149,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void removeHolesInItemOrderList(
-            DBTransaction transaction,
+            DbTransaction transaction,
              String orderingTable,
             long idContext)
     {
@@ -158,7 +158,7 @@ public class TableLocalOrderUtil {
         transaction.addUpdates(
                 "UPDATE " + orderingTable + " SET item_order=? " +
                         "WHERE id_context=? AND item_order=?",
-                new DBUpdates() {
+                new DbUpdates() {
                     @Override
                     public void execute(PreparedStatement stat) throws SQLException {
                         stat.setLong(2, idContext);
@@ -176,20 +176,20 @@ public class TableLocalOrderUtil {
     }
 
     private static TreeMap<Long, Long> getOldNewItemOrderMap(
-            DBTransaction transaction,
+            DbTransaction transaction,
             String orderingTable,
             long idContext)
     {
         return transaction.addQuery(
                 "SELECT item_order FROM " + orderingTable +
                         " WHERE id_context=? ORDER BY item_order",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, idContext);
                     }
                 },
-                new DBQueryRetrieveData<TreeMap<Long, Long>>() {
+                new DbQueryRetrieveData<TreeMap<Long, Long>>() {
                     @Override
                     public TreeMap<Long, Long> processResultSet(ResultSet rs) throws SQLException {
                         TreeMap<Long, Long> itemOrderMap = new TreeMap<Long, Long>();
@@ -221,7 +221,7 @@ public class TableLocalOrderUtil {
     }
 
     private static boolean isFirstItemOrder(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long idBean,
             TableLocalOrderContext context,
             String orderingTable)
@@ -229,14 +229,14 @@ public class TableLocalOrderUtil {
         return transaction.addQuery(
                 "SELECT id_bean FROM " + orderingTable +
                         " WHERE id_context=? AND id_bean=? AND item_order=1",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, context.getId());
                         stat.setLong(2, idBean);
                     }
                 },
-                new DBQueryRetrieveData<Boolean>() {
+                new DbQueryRetrieveData<Boolean>() {
                     @Override
                     public Boolean processResultSet(ResultSet rs) throws SQLException {
                         return rs.next();
@@ -251,7 +251,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        DBTransaction transaction = context.getDBTransaction();
+        DbTransaction transaction = context.getDBTransaction();
         if (itemOrder < 1)
             throw new IllegalArgumentException("item order < 1");
 
@@ -269,7 +269,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        DBTransaction transaction = context.getDBTransaction();
+        DbTransaction transaction = context.getDBTransaction();
         if (itemOrder < 2)
             throw new IllegalArgumentException("item order < 2");
 
@@ -288,14 +288,14 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        DBTransaction transaction = context.getDBTransaction();
+        DbTransaction transaction = context.getDBTransaction();
         checkItemOrderValues(transaction, itemOrder, companionItemOrder, context, orderingTable);
         doItemOrderMoveAfter(transaction, itemOrder, companionItemOrder, context, orderingTable);
         transaction.commit();
     }
 
     private static void checkItemOrderValues(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long itemOrder,
             long companionItemOrder,
             TableLocalOrderContext context,
@@ -318,7 +318,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void doItemOrderMoveAfter(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long itemOrder,
             long companionItemOrder,
             TableLocalOrderContext context,
@@ -331,7 +331,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void itemOrderMoveAfterUp(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long itemOrder,
             long companionItemOrder,
             TableLocalOrderContext context,
@@ -343,7 +343,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void itemOrderMoveAfterDown(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long itemOrder,
             long companionItemOrder,
             TableLocalOrderContext context,
@@ -355,7 +355,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void changeItemOrderValue(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long itemOrder,
             TableLocalOrderContext context,
             String orderingTable,
@@ -363,7 +363,7 @@ public class TableLocalOrderUtil {
     {
         transaction.addUpdate(
                 "UPDATE " + orderingTable + " SET item_order=? WHERE id_context=? AND item_order=?",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, value);
@@ -375,7 +375,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void incrementItemOrderValues(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long lowBound,
             long highBound,
             TableLocalOrderContext context,
@@ -384,7 +384,7 @@ public class TableLocalOrderUtil {
         transaction.addUpdate(
                 "UPDATE " + orderingTable + " SET item_order=item_order + 1 " +
                         "WHERE id_context=? AND item_order > ? AND item_order < ?",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, context.getId());
@@ -396,7 +396,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void decrementItemOrderValues(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long lowBound,
             long highBound,
             TableLocalOrderContext context,
@@ -405,7 +405,7 @@ public class TableLocalOrderUtil {
         transaction.addUpdate(
                 "UPDATE " + orderingTable + " SET item_order=item_order - 1 " +
                         "WHERE id_context=? AND item_order > ? AND item_order <= ?",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, context.getId());
@@ -422,7 +422,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        DBTransaction transaction = context.getDBTransaction();
+        DbTransaction transaction = context.getDBTransaction();
         checkItemOrderValues(transaction, itemOrder, companionItemOrder, context, orderingTable);
 
         if (companionItemOrder == 1)
@@ -434,7 +434,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void itemOrderMoveToFirstPlace(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long itemOrder,
             TableLocalOrderContext context,
             String orderingTable)
@@ -444,7 +444,7 @@ public class TableLocalOrderUtil {
     }
 
     private static void incrementItemOrderValues(
-            DBTransaction transaction,
+            DbTransaction transaction,
             long highBound,
             TableLocalOrderContext context,
             String orderingTable)
@@ -452,7 +452,7 @@ public class TableLocalOrderUtil {
         transaction.addUpdate(
                 "UPDATE " + orderingTable + " SET item_order=item_order + 1 " +
                         "WHERE id_context=? AND item_order < ?",
-                new DBQuerySetup() {
+                new DbQuerySetup() {
                     @Override
                     public void setupPreparedStatement(PreparedStatement stat) throws SQLException {
                         stat.setLong(1, context.getId());

@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.util.Strings;
 
@@ -41,7 +41,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     public abstract DbBeanLabel getLabel(long id);
 
-    public abstract DbBeanLabel getLabel(long id, DBTransaction transaction);
+    public abstract DbBeanLabel getLabel(long id, DbTransaction transaction);
 
     public abstract Optional<DbBeanLabel> getPossibleLabel(String labelName);
 
@@ -49,7 +49,7 @@ public abstract class DbBeanLabelBasicFunctions {
 
     public abstract DbBeanLanguage getDefaultLanguage();
 
-    public abstract long duplicateLabel(DbBeanLabel label, DBTransaction transaction);
+    public abstract long duplicateLabel(DbBeanLabel label, DbTransaction transaction);
 
     protected boolean lenient() {
         return true;

@@ -1,8 +1,8 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBAccess;
-import org.beanmaker.v2.database.sql.DBQuerySetup;
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbQuerySetup;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.runtime.DbBeanEditorInterface;
 import org.beanmaker.v2.runtime.DbBeanInterface;
@@ -18,9 +18,9 @@ public final class SingleElements {
 
     public static <B extends DbBeanInterface> Optional<B> getBean(
             String query,
-            DBQuerySetup querySetup,
+            DbQuerySetup querySetup,
             Class<? extends DbBeanInterface> beanClass,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return Optional.ofNullable(
                 dbAccess.processQuery(
@@ -36,7 +36,7 @@ public final class SingleElements {
     public static <B extends DbBeanInterface> Optional<B> getBean(
             String query,
             Class<? extends DbBeanInterface> beanClass,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return Optional.ofNullable(
                 dbAccess.processQuery(
@@ -62,9 +62,9 @@ public final class SingleElements {
 
     public static <B extends DbBeanInterface> Optional<B> getBean(
             String query,
-            DBQuerySetup querySetup,
+            DbQuerySetup querySetup,
             Class<? extends DbBeanInterface> beanClass,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return Optional.ofNullable(
                 transaction.addQuery(
@@ -80,7 +80,7 @@ public final class SingleElements {
     public static <B extends DbBeanInterface> Optional<B> getBean(
             String query,
             Class<? extends DbBeanInterface> beanClass,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return Optional.ofNullable(
                 transaction.addQuery(
@@ -95,7 +95,7 @@ public final class SingleElements {
     private static <B extends DbBeanInterface> B getSingleBean(
             Class<? extends DbBeanInterface> beanClass,
             ResultSet rs,
-            DBTransaction transaction)
+            DbTransaction transaction)
             throws SQLException
     {
         long id = getSingleID(rs);
@@ -107,9 +107,9 @@ public final class SingleElements {
 
     public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             String query,
-            DBQuerySetup querySetup,
+            DbQuerySetup querySetup,
             E returnedEditor,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return Optional.ofNullable(
                 dbAccess.processQuery(
@@ -145,7 +145,7 @@ public final class SingleElements {
         return id;
     }
 
-    public static long getID(String query, DBQuerySetup querySetup, DBAccess dbAccess) {
+    public static long getID(String query, DbQuerySetup querySetup, DbAccess dbAccess) {
         return dbAccess.processQuery(
                 query,
                 querySetup,
@@ -155,9 +155,9 @@ public final class SingleElements {
 
     public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             String query,
-            DBQuerySetup querySetup,
+            DbQuerySetup querySetup,
             E returnedEditor,
-            DBTransaction transaction)
+            DbTransaction transaction)
     {
         return Optional.ofNullable(
                 transaction.addQuery(
@@ -173,7 +173,7 @@ public final class SingleElements {
     private static <E extends DbBeanEditorInterface> E getSingleEditor(
             E returnedEditor,
             ResultSet rs,
-            DBTransaction transaction)
+            DbTransaction transaction)
             throws SQLException
     {
         long id = getSingleID(rs);
@@ -184,7 +184,7 @@ public final class SingleElements {
         return returnedEditor;
     }
 
-    public static long getID(String query, DBQuerySetup querySetup, DBTransaction transaction) {
+    public static long getID(String query, DbQuerySetup querySetup, DbTransaction transaction) {
         return transaction.addQuery(
                 query,
                 querySetup,

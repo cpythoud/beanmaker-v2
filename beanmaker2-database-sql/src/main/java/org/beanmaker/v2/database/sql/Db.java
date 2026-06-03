@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * Implementations should be immutable, therefore an application should never need to create more than
  * one such instance to represent the same database, unless there are differences in access rights.
  */
-public interface DB {
+public interface Db {
 
     /**
      * @return a Connection from the database. The user is responsible for closing the connection.

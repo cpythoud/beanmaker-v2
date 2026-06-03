@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBAccess;
+import org.beanmaker.v2.database.sql.DbAccess;
 
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
@@ -15,7 +15,7 @@ public class LocalLabelCache {
 
     private final Map<String, String> cache;
 
-    public static LocalLabelCache createSimpleCache(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
+    public static LocalLabelCache createSimpleCache(String tableName, DbBeanLanguage language, DbAccess dbAccess) {
         return builder(tableName, language, dbAccess).build();
     }
 
@@ -23,12 +23,12 @@ public class LocalLabelCache {
             String tableName,
             DbBeanLanguage language,
             DbBeanLanguage defaultLanguage,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return builder(tableName, language, dbAccess).smartCache(defaultLanguage).build();
     }
 
-    public static LocalLabelCache createSortedSimpleCache(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
+    public static LocalLabelCache createSortedSimpleCache(String tableName, DbBeanLanguage language, DbAccess dbAccess) {
         return builder(tableName, language, dbAccess).sorted().build();
     }
 
@@ -36,12 +36,12 @@ public class LocalLabelCache {
             String tableName,
             DbBeanLanguage language,
             DbBeanLanguage defaultLanguage,
-            DBAccess dbAccess)
+            DbAccess dbAccess)
     {
         return builder(tableName, language, dbAccess).smartCache(defaultLanguage).sorted().build();
     }
 
-    public static CacheBuilder builder(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
+    public static CacheBuilder builder(String tableName, DbBeanLanguage language, DbAccess dbAccess) {
         return new CacheBuilder(tableName, language, dbAccess);
     }
 
@@ -54,12 +54,12 @@ public class LocalLabelCache {
         private String labelField = "id_label";
         private final String tableName;
         private final DbBeanLanguage language;
-        private final DBAccess dbAccess;
+        private final DbAccess dbAccess;
         private DbBeanLanguage defaultLanguage = null;
         private boolean sorted = false;
         private String sqlFilter;
 
-        private CacheBuilder(String tableName, DbBeanLanguage language, DBAccess dbAccess) {
+        private CacheBuilder(String tableName, DbBeanLanguage language, DbAccess dbAccess) {
             this.tableName = tableName;
             this.language = language;
             this.dbAccess = dbAccess;
@@ -146,7 +146,7 @@ public class LocalLabelCache {
     private LocalLabelCache(
             String query,
             DbBeanLanguage language,
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             DbBeanLanguage defaultLanguage,
             boolean sorted)
     {
@@ -161,7 +161,7 @@ public class LocalLabelCache {
     private void populateCache(
             String query,
             DbBeanLanguage language,
-            DBAccess dbAccess,
+            DbAccess dbAccess,
             DbBeanLanguage defaultLanguage,
             boolean sorted)
     {

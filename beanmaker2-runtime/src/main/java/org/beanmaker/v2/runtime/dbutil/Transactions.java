@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DBTransaction;
+import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -9,13 +9,13 @@ public final class Transactions {
 
     private Transactions() { }
 
-    public static void wrap(Consumer<DBTransaction> transactedFunction, DBTransaction transaction) {
+    public static void wrap(Consumer<DbTransaction> transactedFunction, DbTransaction transaction) {
         wrap(transactedFunction, transaction, null);
     }
 
     public static void wrap(
-            Consumer<DBTransaction> transactedFunction,
-            DBTransaction transaction,
+            Consumer<DbTransaction> transactedFunction,
+            DbTransaction transaction,
             Consumer<Throwable> errorProcessor)
     {
         try {
@@ -31,15 +31,15 @@ public final class Transactions {
     }
 
     public static <T> T extract(
-            Function<DBTransaction, T> transactedFunction,
-            DBTransaction transaction)
+            Function<DbTransaction, T> transactedFunction,
+            DbTransaction transaction)
     {
         return extract(transactedFunction, transaction, null);
     }
 
     public static <T> T extract(
-            Function<DBTransaction, T> transactedFunction,
-            DBTransaction transaction,
+            Function<DbTransaction, T> transactedFunction,
+            DbTransaction transaction,
             Consumer<Throwable> errorProcessor)
     {
         T result = null;

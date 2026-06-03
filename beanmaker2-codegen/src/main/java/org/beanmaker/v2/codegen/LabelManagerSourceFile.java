@@ -24,7 +24,7 @@ public class LabelManagerSourceFile extends BaseCode {
 
     private static final FunctionArgument ID_ARG = new FunctionArgument("long", "id");
     private static final FunctionArgument NAME_ARG = new FunctionArgument("String", "name");
-    private static final FunctionArgument TRANSACTION_ARG = new FunctionArgument("DBTransaction", "transaction");
+    private static final FunctionArgument TRANSACTION_ARG = new FunctionArgument("DbTransaction", "transaction");
     private static final FunctionArgument LANG_ARG = new FunctionArgument("DbBeanLanguage", "dbBeanLanguage");
     private static final FunctionArgument PARAMETERS_ARG = new FunctionArgument("Object...", "parameters");
     private static final FunctionArgument PARAMETERS_ARG_LIST = new FunctionArgument("List<Object>", "parameters");
@@ -45,7 +45,7 @@ public class LabelManagerSourceFile extends BaseCode {
     @Override
     protected void addImports() {
         addImports(JAVA_UTIL_IMPORTS, BM_RUNTIME_IMPORTS);
-        importsManager.addImport("org.beanmaker.v2.database.sql.DBTransaction");
+        importsManager.addImport("org.beanmaker.v2.database.sql.DbTransaction");
     }
 
     @Override
@@ -161,7 +161,7 @@ public class LabelManagerSourceFile extends BaseCode {
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("long", "id"))
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new ReturnStatement(new FunctionCall("get", "LabelManager")
                                 .addArguments("id", "transaction"))))
                 .addContent(EMPTY_LINE)
@@ -188,7 +188,7 @@ public class LabelManagerSourceFile extends BaseCode {
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addArgument(new FunctionArgument("DbBeanLabel", "label"))
-                        .addArgument(new FunctionArgument("DBTransaction", "transaction"))
+                        .addArgument(new FunctionArgument("DbTransaction", "transaction"))
                         .addContent(new ReturnStatement(
                                 new FunctionCall("duplicateAndGetId", "LabelManager")
                                         .addArguments("label", "transaction"))));
