@@ -17,6 +17,7 @@ public class DbFromJDBCDriver implements Db {
     private final String url;
     private final String username;
     private final String password;
+    private final DbType dbType;
 
     /**
      * Creates a Db object
@@ -26,9 +27,14 @@ public class DbFromJDBCDriver implements Db {
      * @param password to access the database
      */
     public DbFromJDBCDriver(String driver, String url, String username, String password) {
+        this(driver, url, username, password, DbType.GENERIC_SQL);
+    }
+
+    public DbFromJDBCDriver(String driver, String url, String username, String password, DbType dbType) {
         this.url = url;
         this.username = username;
         this.password = password;
+        this.dbType = dbType;
 
         try {
             Class.forName(driver);
@@ -45,6 +51,11 @@ public class DbFromJDBCDriver implements Db {
     @Override
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
+    }
+
+    @Override
+    public DbType getType() {
+        return dbType;
     }
 
 }

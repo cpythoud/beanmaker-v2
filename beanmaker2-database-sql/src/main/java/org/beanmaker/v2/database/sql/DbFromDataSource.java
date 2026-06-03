@@ -14,6 +14,7 @@ import java.sql.SQLException;
 public class DbFromDataSource implements Db {
 
     private final DataSource dataSource;
+    private final DbType dbType;
 
     /**
      * Creates a new Db object from a datasource.
@@ -22,12 +23,17 @@ public class DbFromDataSource implements Db {
      * from RuntimeException.getCause()
      */
     public DbFromDataSource(String dataSourceName) {
+        this(dataSourceName, DbType.GENERIC_SQL);
+    }
+
+    public DbFromDataSource(String dataSourceName, DbType dbType) {
         try {
             InitialContext ctx = new InitialContext();
             dataSource = (DataSource) ctx.lookup(dataSourceName);
         } catch (NamingException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
         }
+        this.dbType = dbType;
     }
 
     /**
@@ -35,7 +41,12 @@ public class DbFromDataSource implements Db {
      * @param dataSource the DataSource to be used
      */
     public DbFromDataSource(DataSource dataSource) {
+        this(dataSource, DbType.GENERIC_SQL);
+    }
+
+    public DbFromDataSource(DataSource dataSource, DbType dbType) {
         this.dataSource = dataSource;
+        this.dbType = dbType;
     }
 
     /**
@@ -46,6 +57,11 @@ public class DbFromDataSource implements Db {
     @Override
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    @Override
+    public DbType getType() {
+        return dbType;
     }
 
 }

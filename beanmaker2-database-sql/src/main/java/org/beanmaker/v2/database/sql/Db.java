@@ -16,4 +16,6 @@ public interface Db {
      */
     Connection getConnection() throws SQLException;
 
+    DbType getType();
+
 }

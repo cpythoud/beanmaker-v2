@@ -14,3 +14,4 @@ TODO:
 
 - deprecate Money, associated classes and functions in libraries
 - cleanup util library (deprecate, rename, make utility classes final, etc.)
+- complete documentation for SQL lib
