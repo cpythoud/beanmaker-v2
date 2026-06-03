@@ -3,7 +3,7 @@ package org.beanmaker.v2.runtime;
 import org.beanmaker.v2.database.sql.DBAccess;
 import org.beanmaker.v2.database.sql.DBQuerySetup;
 import org.beanmaker.v2.database.sql.DBTransaction;
-import org.beanmaker.v2.database.sql.SQLRuntimeException;
+import org.beanmaker.v2.database.sql.SqlRuntimeException;
 
 import org.beanmaker.v2.util.DecimalValue;
 import org.beanmaker.v2.util.Money;
@@ -32,7 +32,7 @@ public final class DBUtil {
                 return null;
             return b;
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -43,7 +43,7 @@ public final class DBUtil {
                 return null;
             return i;
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -54,7 +54,7 @@ public final class DBUtil {
                 return null;
             return l;
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -62,7 +62,7 @@ public final class DBUtil {
         try {
             return rs.getLong(index);
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -70,7 +70,7 @@ public final class DBUtil {
         try {
             return rs.getInt(index);
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -78,7 +78,7 @@ public final class DBUtil {
         try {
             return rs.getLong(index);
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -86,7 +86,7 @@ public final class DBUtil {
         try {
             return rs.getString(index);
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -94,7 +94,7 @@ public final class DBUtil {
         try {
             return rs.getDate(index);
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -102,7 +102,7 @@ public final class DBUtil {
         try {
             return rs.getTime(index);
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 
@@ -110,7 +110,7 @@ public final class DBUtil {
         try {
             return rs.getTimestamp(index);
         } catch (SQLException sqlEx) {
-            throw new SQLRuntimeException(sqlEx);
+            throw new SqlRuntimeException(sqlEx);
         }
     }
 

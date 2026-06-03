@@ -23,7 +23,7 @@ public class DBAccess {
      * @param query SQL query.
      * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to setup the parameters for the update.
      * @return the number of database rows affected by the update.
-     * @throws SQLRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SQLRuntimeException.
+     * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SqlRuntimeException.
      * @see DBAccess#createRecord(String, DBQuerySetup)
      */
     public int processUpdate(String query, DBQuerySetup querySetup) {
@@ -35,7 +35,7 @@ public class DBAccess {
             count = DBUtils.processUpdate(conn, query, querySetup);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -49,7 +49,7 @@ public class DBAccess {
      * @param query SQL query used to insert the row.
      * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to setup the data used in the query.
      * @return the id of the newly created row as a long; if you need an int, you will have to cast it.
-     * @throws SQLRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SQLRuntimeException.
+     * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SqlRuntimeException.
      * @throws IllegalArgumentException if the number of rows affected in the database is not strictly one.
      * @see DBAccess#processUpdate(String, DBQuerySetup)
      */
@@ -62,7 +62,7 @@ public class DBAccess {
             id = DBUtils.createRecord(conn, query, querySetup);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -75,7 +75,7 @@ public class DBAccess {
      * @param query SQL query.
      * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to setup the query parameters.
      * @param queryProcess an object implementing the {@link DBQueryProcess} interface, used to process the query results.
-     * @throws SQLRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SQLRuntimeException.
+     * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SqlRuntimeException.
      * @see DBAccess#processQuery(String, DBQueryProcess)
      */
     public void processQuery(String query, DBQuerySetup querySetup, DBQueryProcess queryProcess) {
@@ -85,7 +85,7 @@ public class DBAccess {
             DBUtils.processQuery(conn, query, querySetup, queryProcess);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -104,7 +104,7 @@ public class DBAccess {
             DBUtils.processQuery(conn, query, queryProcess);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -128,7 +128,7 @@ public class DBAccess {
             data = DBUtils.processQuery(conn, query, querySetup, queryRetrieveData);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -153,7 +153,7 @@ public class DBAccess {
             data = DBUtils.processQuery(conn, query, retrieveData);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -173,7 +173,7 @@ public class DBAccess {
             DBUtils.processUpdates(conn, query, updates);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -196,7 +196,7 @@ public class DBAccess {
             data = DBUtils.processQueries(conn, query, queries);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -217,7 +217,7 @@ public class DBAccess {
             DBUtils.processQueries(conn, query, queries);
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }

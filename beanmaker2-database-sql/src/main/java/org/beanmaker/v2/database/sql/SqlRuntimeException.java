@@ -9,20 +9,20 @@ import java.sql.SQLException;
  * condition and not a logic error. To not lose the information while at the same time not forcing the clients of our
  * code to handle SQLExceptions, we usually rethrow the exception as a RuntimeException.
  *
- * We suggest you use SQLRuntimeException instead.
+ * We suggest you use SqlRuntimeException instead.
  */
-public class SQLRuntimeException extends RuntimeException {
+public class SqlRuntimeException extends RuntimeException {
 
     /**
-     * Creates a SQLRuntimeException from a SQLException
-     * @param ex the SQLException to be rethrown as a SQLRuntimeException
+     * Creates a SqlRuntimeException from a SQLException
+     * @param ex the SQLException to be rethrown as a SqlRuntimeException
      */
-    public SQLRuntimeException(SQLException ex) {
+    public SqlRuntimeException(SQLException ex) {
         super(ex.getMessage(), ex);
     }
 
     /**
-     * Returns the SQLException that was passed as an argument to the SQLRuntimeException constructor.
+     * Returns the SQLException that was passed as an argument to the SqlRuntimeException constructor.
      * @return SQLException passed as an argument to the constructor.
      */
     public SQLException getSQLException() {

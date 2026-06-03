@@ -31,7 +31,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
     private static final List<String> BM_RUNTIME_IMPORTS =
             createImportList("org.beanmaker.v2.runtime", "DBUtil", "DbBeanLanguage", "ToStringMaker", "DbBeanInitializer");
     private static final List<String> SQL_IMPORTS =
-            createImportList("org.beanmaker.v2.database.sql", "DBQuerySetup", "DBTransaction", "SQLRuntimeException");
+            createImportList("org.beanmaker.v2.database.sql", "DBQuerySetup", "DBTransaction", "SqlRuntimeException");
 
     private final Set<String> types;
 
@@ -822,7 +822,7 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
                                         .byItself()
                                         .addArgument(new ObjectCreation(beanName).addArgument("rs"))))
                         .addCatchBlock(new CatchBlock(new FunctionArgument("SQLException", "sqlex"))
-                                .addContent(new ExceptionThrow("SQLRuntimeException").addArgument("sqlex"))))
+                                .addContent(new ExceptionThrow("SqlRuntimeException").addArgument("sqlex"))))
                 .addContent(EMPTY_LINE)
                 .addContent(new ReturnStatement("list"));
 

@@ -20,7 +20,7 @@ public class DBTransaction {
             conn = db.getConnection();
             conn.setAutoCommit(false);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
     }
 
@@ -31,8 +31,8 @@ public class DBTransaction {
      * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to setup the parameters
      *                   for the update.
      * @return the number of database rows affected by the update.
-     * @throws SQLRuntimeException if an SQLException is thrown during database access, it will be rethrown
-     * as a SQLRuntimeException.
+     * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown
+     * as a SqlRuntimeException.
      * @see DBTransaction#addRecordCreation(String, DBQuerySetup)
      */
     public int addUpdate(String query, DBQuerySetup querySetup) {
@@ -41,7 +41,7 @@ public class DBTransaction {
         try {
             count = DBUtils.processUpdate(conn, query, querySetup);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
 
         return count;
@@ -54,8 +54,8 @@ public class DBTransaction {
      * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to setup the data used
      *                   in the query.
      * @return the id of the newly created row as a long; if you need an int, you will have to cast it.
-     * @throws SQLRuntimeException if an SQLException is thrown during database access, it will be rethrown
-     * as a SQLRuntimeException.
+     * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown
+     * as a SqlRuntimeException.
      * @throws IllegalArgumentException if the number of rows affected in the database is not strictly one.
      * @see DBTransaction#addUpdate(String, DBQuerySetup)
      */
@@ -65,7 +65,7 @@ public class DBTransaction {
         try {
             id = DBUtils.createRecord(conn, query, querySetup);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
 
         return id;
@@ -77,15 +77,15 @@ public class DBTransaction {
      * @param querySetup an object implementing the {@link DBQuerySetup} interface, used to setup the query parameters.
      * @param queryProcess an object implementing the {@link DBQueryProcess} interface, used to process
      *                     the query results.
-     * @throws SQLRuntimeException if an SQLException is thrown during database access, it will be rethrown
-     * as a SQLRuntimeException.
+     * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown
+     * as a SqlRuntimeException.
      * @see DBTransaction#addQuery(String, DBQueryProcess)
      */
     public void addQuery(String query, DBQuerySetup querySetup, DBQueryProcess queryProcess) {
         try {
             DBUtils.processQuery(conn, query, querySetup, queryProcess);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
     }
 
@@ -100,7 +100,7 @@ public class DBTransaction {
         try {
             DBUtils.processQuery(conn, query, queryProcess);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
     }
 
@@ -120,7 +120,7 @@ public class DBTransaction {
         try {
             data = DBUtils.processQuery(conn, query, querySetup, queryRetrieveData);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
 
         return data;
@@ -141,7 +141,7 @@ public class DBTransaction {
         try {
             data = DBUtils.processQuery(conn, query, queryRetrieveData);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
 
         return data;
@@ -156,7 +156,7 @@ public class DBTransaction {
         try {
             DBUtils.processUpdates(conn, query, updates);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
     }
 
@@ -174,7 +174,7 @@ public class DBTransaction {
         try {
             data = DBUtils.processQueries(conn, query, queries);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
 
         return data;
@@ -191,7 +191,7 @@ public class DBTransaction {
         try {
             DBUtils.processQueries(conn, query, queries);
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         }
     }
 
@@ -204,7 +204,7 @@ public class DBTransaction {
             conn.commit();
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
@@ -218,7 +218,7 @@ public class DBTransaction {
             conn.rollback();
             conn.close();
         } catch (SQLException ex) {
-            throw new SQLRuntimeException(ex);
+            throw new SqlRuntimeException(ex);
         } finally {
             DBUtils.connectionSilentClose(conn);
         }
