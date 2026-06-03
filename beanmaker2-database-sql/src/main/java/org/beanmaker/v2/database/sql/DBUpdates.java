@@ -15,6 +15,6 @@ public interface DBUpdates {
      * @param stat the preparedStatement to be set up by your code.
      * @throws SQLException if a database error occurs
      */
-    public void execute(final PreparedStatement stat) throws SQLException;
+    void execute(PreparedStatement stat) throws SQLException;
 
 }

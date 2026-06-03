@@ -8,11 +8,11 @@ import java.sql.Statement;
 
 /**
  * This class contains static utility methods to help manage various aspects of JDBC programming.
- *
+ * <br>
  * You usually don't need to call these method directly. Instead you would use an instance of the
  * {@link DBAccess} or the {@link DBTransaction} class (which call these function internally).
  */
-public class DBUtils {
+public final class DBUtils {
 
     /**
      * Close a PreparedStatement discarding any thrown SQLException.
