@@ -1,9 +1,9 @@
-package org.beanmaker.v2.runtime;
+package org.beanmaker.v2.database.sql;
 
 import java.util.stream.Stream;
 
-import static org.beanmaker.v2.runtime.StrictSqlIdentifierPolicy.requireQualifiedSqlIdentifier;
-import static org.beanmaker.v2.runtime.StrictSqlIdentifierPolicy.requireSqlIdentifier;
+import static org.beanmaker.v2.database.sql.StrictSqlIdentifierPolicy.requireQualifiedSqlIdentifier;
+import static org.beanmaker.v2.database.sql.StrictSqlIdentifierPolicy.requireSqlIdentifier;
 
 public final class MySqlIdentifierPolicy implements SqlIdentifierPolicy {
 

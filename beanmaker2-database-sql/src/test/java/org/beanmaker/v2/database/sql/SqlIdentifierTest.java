@@ -1,4 +1,4 @@
-package org.beanmaker.v2.runtime;
+package org.beanmaker.v2.database.sql;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ public class SqlIdentifierTest {
 
     @Test
     public void testMySql() {
-        var identifierPolicy = new MySqlIdentifierPolicy();
+        var identifierPolicy = new org.beanmaker.v2.database.sql.MySqlIdentifierPolicy();
         assertEquals("`my_table`", identifierPolicy.table("my_table"));
         assertEquals("`the_field`", identifierPolicy.column("the_field"));
         assertEquals("`schema`.`table`", identifierPolicy.table("schema.table"));
