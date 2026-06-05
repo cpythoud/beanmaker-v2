@@ -101,7 +101,7 @@ public class DefaultBeanDuplicator implements BeanDuplicator {
     @Override
     public int getNextBeanVersion(VersionedBean bean) {
         long id = getOriginalBeanId(bean);
-        return transaction.addQuery(
+        return transaction.processQuery(
                 "SELECT MAX(bean_version) FROM %s WHERE id=? OR id_original_bean=?"
                         .formatted(parameters.getDatabaseTableName()),
                 stat -> {

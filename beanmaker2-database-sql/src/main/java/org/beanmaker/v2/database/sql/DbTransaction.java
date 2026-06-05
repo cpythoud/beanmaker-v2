@@ -6,7 +6,7 @@ import java.sql.SQLException;
 /**
  * This class is used to encapsulate JDBC transactions.
  */
-public class DbTransaction {
+public class DbTransaction implements DbExecutor {
 
     final Db db;
     final Connection conn;
@@ -33,9 +33,10 @@ public class DbTransaction {
      * @return the number of database rows affected by the update.
      * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown
      * as a SqlRuntimeException.
-     * @see DbTransaction#addRecordCreation(String, DbQuerySetup)
+     * @see DbTransaction#createRecord(String, DbQuerySetup)
      */
-    public int addUpdate(String query, DbQuerySetup querySetup) {
+    @Override
+    public int processUpdate(String query, DbQuerySetup querySetup) {
         int count;
 
         try {
@@ -45,6 +46,11 @@ public class DbTransaction {
         }
 
         return count;
+    }
+
+    @Deprecated
+    public int addUpdate(String query, DbQuerySetup querySetup) {
+        return processUpdate(query, querySetup);
     }
 
     /**
@@ -57,9 +63,10 @@ public class DbTransaction {
      * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown
      * as a SqlRuntimeException.
      * @throws IllegalArgumentException if the number of rows affected in the database is not strictly one.
-     * @see DbTransaction#addUpdate(String, DbQuerySetup)
+     * @see DbTransaction#processUpdate(String, DbQuerySetup)
      */
-    public long addRecordCreation(String query, DbQuerySetup querySetup) {
+    @Override
+    public long createRecord(String query, DbQuerySetup querySetup) {
         long id;
 
         try {
@@ -71,6 +78,11 @@ public class DbTransaction {
         return id;
     }
 
+    @Deprecated
+    public long addRecordCreation(String query, DbQuerySetup querySetup) {
+        return createRecord(query, querySetup);
+    }
+
     /**
      * Use this method to query the database.
      * @param query SQL query.
@@ -79,9 +91,10 @@ public class DbTransaction {
      *                     the query results.
      * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown
      * as a SqlRuntimeException.
-     * @see DbTransaction#addQuery(String, DbQueryProcess)
+     * @see DbTransaction#processQuery(String, DbQueryProcess)
      */
-    public void addQuery(String query, DbQuerySetup querySetup, DbQueryProcess queryProcess) {
+    @Override
+    public void processQuery(String query, DbQuerySetup querySetup, DbQueryProcess queryProcess) {
         try {
             DbUtils.processQuery(conn, query, querySetup, queryProcess);
         } catch (SQLException ex) {
@@ -89,19 +102,30 @@ public class DbTransaction {
         }
     }
 
+    @Deprecated
+    public void addQuery(String query, DbQuerySetup querySetup, DbQueryProcess queryProcess) {
+        processQuery(query, querySetup, queryProcess);
+    }
+
     /**
      * Use this method to query the database.
      * @param query SQL query.
      * @param queryProcess an object implementing the {@link DbQueryProcess} interface, used to process the query
      *                     results.
-     * @see DbTransaction#addQuery(String, DbQuerySetup, DbQueryProcess)
+     * @see DbTransaction#processQuery(String, DbQuerySetup, DbQueryProcess)
      */
-    public void addQuery(String query, DbQueryProcess queryProcess) {
+    @Override
+    public void processQuery(String query, DbQueryProcess queryProcess) {
         try {
             DbUtils.processQuery(conn, query, queryProcess);
         } catch (SQLException ex) {
             throw new SqlRuntimeException(ex);
         }
+    }
+
+    @Deprecated
+    public void addQuery(String query, DbQueryProcess queryProcess) {
+        processQuery(query, queryProcess);
     }
 
     /**
@@ -112,9 +136,10 @@ public class DbTransaction {
      *                          the query results.
      * @param <T> type of query result.
      * @return result of the query.
-     * @see DbTransaction#addQuery(String, DbQueryRetrieveData)
+     * @see DbTransaction#processQuery(String, DbQueryRetrieveData)
      */
-    public <T> T addQuery(String query, DbQuerySetup querySetup, DbQueryRetrieveData<T> queryRetrieveData) {
+    @Override
+    public <T> T processQuery(String query, DbQuerySetup querySetup, DbQueryRetrieveData<T> queryRetrieveData) {
         T data;
 
         try {
@@ -126,6 +151,11 @@ public class DbTransaction {
         return data;
     }
 
+    @Deprecated
+    public <T> T addQuery(String query, DbQuerySetup querySetup, DbQueryRetrieveData<T> queryRetrieveData) {
+        return processQuery(query, querySetup, queryRetrieveData);
+    }
+
     /**
      * Use this method to query the database.
      * @param query SQL query.
@@ -133,9 +163,10 @@ public class DbTransaction {
      *                          the query results.
      * @param <T> type of query result.
      * @return result of the query.
-     * @see DbTransaction#addQuery(String, DbQuerySetup, DbQueryRetrieveData)
+     * @see DbTransaction#processQuery(String, DbQuerySetup, DbQueryRetrieveData)
      */
-    public <T> T addQuery(String query, DbQueryRetrieveData<T> queryRetrieveData) {
+    @Override
+    public <T> T processQuery(String query, DbQueryRetrieveData<T> queryRetrieveData) {
         T data;
 
         try {
@@ -147,17 +178,28 @@ public class DbTransaction {
         return data;
     }
 
+    @Deprecated
+    public <T> T addQuery(String query, DbQueryRetrieveData<T> queryRetrieveData) {
+        return processQuery(query, queryRetrieveData);
+    }
+
     /**
      * Use this method to update the database by processing multiple updates.
      * @param query SQL query.
      * @param updates an object implementing the {@link DbUpdates} interface, used to execute the updates.
      */
-    public void addUpdates(String query, DbUpdates updates) {
+    @Override
+    public void processUpdates(String query, DbUpdates updates) {
         try {
             DbUtils.processUpdates(conn, query, updates);
         } catch (SQLException ex) {
             throw new SqlRuntimeException(ex);
         }
+    }
+
+    @Deprecated
+    public void addUpdates(String query, DbUpdates updates) {
+        processUpdates(query, updates);
     }
 
     /**
@@ -166,9 +208,10 @@ public class DbTransaction {
      * @param queries an object implementing the {@link DbQueries} interface, used to process the queries result.
      * @param <T> type of queries result.
      * @return result of the queries.
-     * @see DbTransaction#addQueries(String, DbQueriesNoReturn)
+     * @see DbTransaction#processQueries(String, DbQueriesNoReturn)
      */
-    public <T> T addQueries(String query, DbQueries<T> queries) {
+    @Override
+    public <T> T processQueries(String query, DbQueries<T> queries) {
         T data;
 
         try {
@@ -180,19 +223,30 @@ public class DbTransaction {
         return data;
     }
 
+    @Deprecated
+    public <T> T addQueries(String query, DbQueries<T> queries) {
+        return processQueries(query, queries);
+    }
+
     /**
      * Use this method to process multiple queries on the database without returning results to the caller.
      * @param query SQL query.
      * @param queries an object implementing the {@link DbQueriesNoReturn} interface, used to process the queries
      *                result.
-     * @see  DbTransaction#addQueries(String, DbQueries)
+     * @see  DbTransaction#processQueries(String, DbQueries)
      */
-    public void addQueries(String query, DbQueriesNoReturn queries) {
+    @Override
+    public void processQueries(String query, DbQueriesNoReturn queries) {
         try {
             DbUtils.processQueries(conn, query, queries);
         } catch (SQLException ex) {
             throw new SqlRuntimeException(ex);
         }
+    }
+
+    @Deprecated
+    public void addQueries(String query, DbQueriesNoReturn queries) {
+        processQueries(query, queries);
     }
 
     /**

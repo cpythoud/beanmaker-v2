@@ -89,7 +89,7 @@ public abstract class DbBeanEditorWithItemOrder extends DbBeanEditor implements 
             curItemOrder = 0;
         else
             curItemOrder = itemOrder;
-        transaction.addUpdate("DELETE FROM " + tableName + " WHERE id=?", stat -> stat.setLong(1, id));
+        transaction.processUpdate("DELETE FROM " + tableName + " WHERE id=?", stat -> stat.setLong(1, id));
         if (curItemOrder > 0)
             dbBeanItemOrderManager.updateItemOrdersAbove(dbBeanItemOrderManager.getUpdateItemOrdersAboveQuery(), transaction, curItemOrder);
         deleteLabels(transaction);

@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbExecutor;
 import org.beanmaker.v2.database.sql.DbQuerySetup;
 import org.beanmaker.v2.database.sql.DbTransaction;
 
@@ -20,14 +20,14 @@ public final class SingleElements {
             String query,
             DbQuerySetup querySetup,
             Class<? extends DbBeanInterface> beanClass,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         return Optional.ofNullable(
-                dbAccess.processQuery(
+                dbExecutor.processQuery(
                         query,
                         querySetup,
                         rs -> {
-                            return getSingleBean(beanClass, rs);
+                            return getSingleBean(beanClass, rs, dbExecutor);
                         }
                 )
         );
@@ -36,57 +36,13 @@ public final class SingleElements {
     public static <B extends DbBeanInterface> Optional<B> getBean(
             String query,
             Class<? extends DbBeanInterface> beanClass,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         return Optional.ofNullable(
-                dbAccess.processQuery(
+                dbExecutor.processQuery(
                         query,
                         rs -> {
-                            return getSingleBean(beanClass, rs);
-                        }
-                )
-        );
-    }
-
-    private static <B extends DbBeanInterface> B getSingleBean(
-            Class<? extends DbBeanInterface> beanClass,
-            ResultSet rs)
-            throws SQLException
-    {
-        long id = getSingleID(rs);
-        if (id == 0)
-            return null;
-
-        return Beans.createBean(beanClass, id);
-    }
-
-    public static <B extends DbBeanInterface> Optional<B> getBean(
-            String query,
-            DbQuerySetup querySetup,
-            Class<? extends DbBeanInterface> beanClass,
-            DbTransaction transaction)
-    {
-        return Optional.ofNullable(
-                transaction.addQuery(
-                        query,
-                        querySetup,
-                        rs -> {
-                            return getSingleBean(beanClass, rs, transaction);
-                        }
-                )
-        );
-    }
-
-    public static <B extends DbBeanInterface> Optional<B> getBean(
-            String query,
-            Class<? extends DbBeanInterface> beanClass,
-            DbTransaction transaction)
-    {
-        return Optional.ofNullable(
-                transaction.addQuery(
-                        query,
-                        rs -> {
-                            return getSingleBean(beanClass, rs, transaction);
+                            return getSingleBean(beanClass, rs, dbExecutor);
                         }
                 )
         );
@@ -95,39 +51,51 @@ public final class SingleElements {
     private static <B extends DbBeanInterface> B getSingleBean(
             Class<? extends DbBeanInterface> beanClass,
             ResultSet rs,
-            DbTransaction transaction)
+            DbExecutor dbExecutor)
             throws SQLException
     {
         long id = getSingleID(rs);
         if (id == 0)
             return null;
 
-        return Beans.createBean(beanClass, id, transaction);
+        if (dbExecutor instanceof DbTransaction transaction)
+            return Beans.createBean(beanClass, id, transaction);
+
+        return Beans.createBean(beanClass, id);
     }
 
     public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             String query,
             DbQuerySetup querySetup,
             E returnedEditor,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         return Optional.ofNullable(
-                dbAccess.processQuery(
+                dbExecutor.processQuery(
                         query,
                         querySetup,
                         rs -> {
-                            return getSingleEditor(returnedEditor, rs);
+                            return getSingleEditor(returnedEditor, rs, dbExecutor);
                         }
                 )
         );
     }
 
-    private static <E extends DbBeanEditorInterface> E getSingleEditor(E returnedEditor, ResultSet rs) throws SQLException {
+    private static <E extends DbBeanEditorInterface> E getSingleEditor(
+            E returnedEditor,
+            ResultSet rs,
+            DbExecutor dbExecutor
+    ) throws SQLException
+    {
         long id = getSingleID(rs);
         if (id == 0)
             return null;
-        
-        returnedEditor.setId(id);
+
+        if (dbExecutor instanceof DbTransaction transaction)
+            returnedEditor.setId(id, transaction);
+        else
+            returnedEditor.setId(id);
+
         return returnedEditor;
     }
 
@@ -145,47 +113,8 @@ public final class SingleElements {
         return id;
     }
 
-    public static long getID(String query, DbQuerySetup querySetup, DbAccess dbAccess) {
-        return dbAccess.processQuery(
-                query,
-                querySetup,
-                SingleElements::getSingleID
-        );
-    }
-
-    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
-            String query,
-            DbQuerySetup querySetup,
-            E returnedEditor,
-            DbTransaction transaction)
-    {
-        return Optional.ofNullable(
-                transaction.addQuery(
-                        query,
-                        querySetup,
-                        rs -> {
-                            return getSingleEditor(returnedEditor, rs, transaction);
-                        }
-                )
-        );
-    }
-
-    private static <E extends DbBeanEditorInterface> E getSingleEditor(
-            E returnedEditor,
-            ResultSet rs,
-            DbTransaction transaction)
-            throws SQLException
-    {
-        long id = getSingleID(rs);
-        if (id == 0)
-            return null;
-
-        returnedEditor.setId(id, transaction);
-        return returnedEditor;
-    }
-
-    public static long getID(String query, DbQuerySetup querySetup, DbTransaction transaction) {
-        return transaction.addQuery(
+    public static long getID(String query, DbQuerySetup querySetup, DbExecutor dbExecutor) {
+        return dbExecutor.processQuery(
                 query,
                 querySetup,
                 SingleElements::getSingleID

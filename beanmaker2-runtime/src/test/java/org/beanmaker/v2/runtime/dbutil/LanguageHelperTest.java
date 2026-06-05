@@ -2,6 +2,7 @@ package org.beanmaker.v2.runtime.dbutil;
 
 import org.beanmaker.v2.database.sql.Db;
 import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbType;
 
 import org.beanmaker.v2.runtime.DbBeanLanguage;
 
@@ -21,6 +22,11 @@ public class LanguageHelperTest {
     private static final Db DB = new Db() {
         @Override
         public Connection getConnection() throws SQLException {
+            throw new UnsupportedOperationException("Not supported. Test instance.");
+        }
+
+        @Override
+        public DbType getType() {
             throw new UnsupportedOperationException("Not supported. Test instance.");
         }
     };

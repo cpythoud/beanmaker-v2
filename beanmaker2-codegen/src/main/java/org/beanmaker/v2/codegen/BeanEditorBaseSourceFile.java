@@ -1914,7 +1914,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         function.addContent(new VarDeclaration(
                 "long",
                 "id",
-                new FunctionCall("addRecordCreation", "transaction")
+                new FunctionCall("createRecord", "transaction")
                         .addArgument(getBeanCreationQuery())
                         .addArgument(new ObjectCreation("RecordCreationSetup"))));
 
@@ -1959,7 +1959,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 ));
         });
 
-        codeBlock.addContent(new FunctionCall("addUpdate", "transaction")
+        codeBlock.addContent(new FunctionCall("processUpdate", "transaction")
                 .byItself()
                 .addArgument(getBeanUpdateQuery())
                 .addArgument(new ObjectCreation("RecordUpdateSetup")));

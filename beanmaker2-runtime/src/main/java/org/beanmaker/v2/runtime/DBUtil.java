@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbExecutor;
 import org.beanmaker.v2.database.sql.DbQuerySetup;
 import org.beanmaker.v2.database.sql.DbTransaction;
 import org.beanmaker.v2.database.sql.SqlRuntimeException;
@@ -236,7 +236,7 @@ public final class DBUtil {
             String orderBy,
             DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         return getSelection(
                 parameters.getDatabaseTableName(),
@@ -245,7 +245,7 @@ public final class DBUtil {
                 orderBy,
                 setup,
                 listFunction,
-                dbAccess
+                dbExecutor
         );
     }
 
@@ -256,7 +256,7 @@ public final class DBUtil {
             String orderBy,
             DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         if (whereClause == null && setup != null)
             throw new IllegalArgumentException("Cannot accept setup code without a WHERE clause.");
@@ -269,36 +269,36 @@ public final class DBUtil {
             query.append(" ORDER BY ").append(orderBy);
 
         if (whereClause == null || setup == null)
-            return dbAccess.processQuery(query.toString(), listFunction::apply);
+            return dbExecutor.processQuery(query.toString(), listFunction::apply);
 
-        return dbAccess.processQuery(query.toString(), setup, listFunction::apply);
+        return dbExecutor.processQuery(query.toString(), setup, listFunction::apply);
     }
 
     public static long getSelectionCount(
             DbBeanParameters parameters,
             String whereClause,
             DbQuerySetup setup,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
-        return getSelectionCount(parameters.getDatabaseTableName(), whereClause, setup, dbAccess);
+        return getSelectionCount(parameters.getDatabaseTableName(), whereClause, setup, dbExecutor);
     }
 
     public static long getSelectionCount(
             String databaseTableName,
             String whereClause,
             DbQuerySetup setup,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         String query = "SELECT COUNT(id) FROM " + databaseTableName + " WHERE " + whereClause;
 
         if (setup == null)
-            return dbAccess.processQuery(query, DBUtil::getCount);
+            return dbExecutor.processQuery(query, DBUtil::getCount);
 
-        return dbAccess.processQuery(query, setup, DBUtil::getCount);
+        return dbExecutor.processQuery(query, setup, DBUtil::getCount);
     }
 
-    public static long getFullCount(DbBeanParameters parameters, DbAccess dbAccess) {
-        return dbAccess.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
+    public static long getFullCount(DbBeanParameters parameters, DbExecutor dbExecutor) {
+        return dbExecutor.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
     }
 
     public static <B> List<B> getVersionedSelection(
@@ -307,7 +307,7 @@ public final class DBUtil {
             String orderBy,
             DbQuerySetup setup,
             Function<ResultSet, List<B>> listFunction,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         return getSelection(
                 parameters.getVersionedDatabaseViewName(),
@@ -316,7 +316,7 @@ public final class DBUtil {
                 orderBy,
                 setup,
                 listFunction,
-                dbAccess
+                dbExecutor
         );
     }
 
@@ -324,118 +324,13 @@ public final class DBUtil {
             DbBeanParameters parameters,
             String whereClause,
             DbQuerySetup setup,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
-        return getSelectionCount(parameters.getVersionedDatabaseViewName(), whereClause, setup, dbAccess);
+        return getSelectionCount(parameters.getVersionedDatabaseViewName(), whereClause, setup, dbExecutor);
     }
 
-    public static long getVersionedFullCount(DbBeanParameters parameters, DbAccess dbAccess) {
-        return dbAccess.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
-    }
-
-    // ------------
-
-    public static <B> List<B> getSelection(
-            DbBeanParameters parameters,
-            String whereClause,
-            String orderBy,
-            DbQuerySetup setup,
-            Function<ResultSet, List<B>> listFunction,
-            DbTransaction transaction)
-    {
-        return getSelection(
-                parameters.getDatabaseTableName(),
-                parameters.getDatabaseFieldList(),
-                whereClause,
-                orderBy,
-                setup,
-                listFunction,
-                transaction
-        );
-    }
-
-    public static <B> List<B> getSelection(
-            String databaseTableName,
-            String databaseFieldList,
-            String whereClause,
-            String orderBy,
-            DbQuerySetup setup,
-            Function<ResultSet, List<B>> listFunction,
-            DbTransaction transaction)
-    {
-        if (whereClause == null && setup != null)
-            throw new IllegalArgumentException("Cannot accept setup code without a WHERE clause.");
-
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT ").append(databaseFieldList).append(" FROM ").append(databaseTableName);
-        if (whereClause != null)
-            query.append(" WHERE ").append(whereClause);
-        if (orderBy != null)
-            query.append(" ORDER BY ").append(orderBy);
-
-        if (whereClause == null || setup == null)
-            return transaction.addQuery(query.toString(), listFunction::apply);
-
-        return transaction.addQuery(query.toString(), setup, listFunction::apply);
-    }
-
-    public static long getSelectionCount(
-            DbBeanParameters parameters,
-            String whereClause,
-            DbQuerySetup setup,
-            DbTransaction transaction)
-    {
-        return getSelectionCount(parameters.getDatabaseTableName(), whereClause, setup, transaction);
-    }
-
-    public static long getSelectionCount(
-            String databaseTableName,
-            String whereClause,
-            DbQuerySetup setup,
-            DbTransaction transaction)
-    {
-        String query = "SELECT COUNT(id) FROM " + databaseTableName + " WHERE " + whereClause;
-
-        if (setup == null)
-            return transaction.addQuery(query, DBUtil::getCount);
-
-        return transaction.addQuery(query, setup, DBUtil::getCount);
-    }
-
-    public static long getFullCount(DbBeanParameters parameters, DbTransaction transaction) {
-        return transaction.addQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
-    }
-
-    public static <B> List<B> getVersionedSelection(
-            DbBeanParameters parameters,
-            String whereClause,
-            String orderBy,
-            DbQuerySetup setup,
-            Function<ResultSet, List<B>> listFunction,
-            DbTransaction transaction)
-    {
-        return getSelection(
-                parameters.getVersionedDatabaseViewName(),
-                parameters.getVersionedDatabaseFieldList(),
-                whereClause,
-                orderBy,
-                setup,
-                listFunction,
-                transaction
-        );
-    }
-
-    public static long getVersionedSelectionCount(
-            DbBeanParameters parameters,
-            String whereClause,
-            DbQuerySetup setup,
-            DbTransaction transaction)
-    {
-        return getSelectionCount(parameters.getVersionedDatabaseViewName(), whereClause, setup, transaction);
-    }
-
-    public static long getVersionedFullCount(DbBeanParameters parameters, DbTransaction transaction) {
-        return transaction.addQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
+    public static long getVersionedFullCount(DbBeanParameters parameters, DbExecutor dbExecutor) {
+        return dbExecutor.processQuery("SELECT COUNT(id) FROM " + parameters.getDatabaseTableName(), DBUtil::getCount);
     }
 
     // ------------
@@ -445,9 +340,9 @@ public final class DBUtil {
             String fieldName,
             long id,
             Function<ResultSet, List<B>> collector,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
-        return dbAccess.processQuery(
+        return dbExecutor.processQuery(
                 "SELECT " + parameters.getDatabaseFieldList() + " FROM " + parameters.getDatabaseTableName()
                         + " WHERE " + fieldName + "=? ORDER BY " + parameters.getOrderByFields(),
                 stat -> stat.setLong(1, id),
@@ -455,8 +350,8 @@ public final class DBUtil {
         );
     }
 
-    public static long getInventorySize(DbBeanParameters parameters, String fieldName, long id, DbAccess dbAccess) {
-        return dbAccess.processQuery(
+    public static long getInventorySize(DbBeanParameters parameters, String fieldName, long id, DbExecutor dbExecutor) {
+        return dbExecutor.processQuery(
                 "SELECT COUNT(id) FROM " + parameters.getDatabaseTableName() + " WHERE " + fieldName + "=?",
                 stat -> stat.setLong(1, id),
                 DBUtil::getCount
@@ -465,19 +360,14 @@ public final class DBUtil {
 
     // ------------
 
-    public static boolean checkUnicity(DbBeanParameters parameters, String fieldName, Object value, long id, DbAccess dbAccess) {
-        return !dbAccess.processQuery(
-                getUnicityQuery(parameters, fieldName),
-                stat -> {
-                    setValueForUnicityCheck(stat, value);
-                    stat.setLong(2, id);
-                },
-                ResultSet::next
-        );
-    }
-
-    public static boolean checkUnicity(DbBeanParameters parameters, String fieldName, Object value, long id, DbTransaction transaction) {
-        return !transaction.addQuery(
+    public static boolean checkUnicity(
+            DbBeanParameters parameters,
+            String fieldName,
+            Object value,
+            long id,
+            DbExecutor dbExecutor)
+    {
+        return !dbExecutor.processQuery(
                 getUnicityQuery(parameters, fieldName),
                 stat -> {
                     setValueForUnicityCheck(stat, value);
@@ -533,29 +423,9 @@ public final class DBUtil {
             long id,
             String associatedBeanFieldName,
             long idAssociatedBean,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
-        return !dbAccess.processQuery(
-                getQualifiedUnicityQuery(parameters, fieldName, associatedBeanFieldName),
-                stat -> {
-                    setValueForUnicityCheck(stat, value);
-                    stat.setLong(2, idAssociatedBean);
-                    stat.setLong(3, id);
-                },
-                ResultSet::next
-        );
-    }
-
-    public static boolean checkQualifiedUnicity(
-            DbBeanParameters parameters,
-            String fieldName,
-            Object value,
-            long id,
-            String associatedBeanFieldName,
-            long idAssociatedBean,
-            DbTransaction transaction)
-    {
-        return !transaction.addQuery(
+        return !dbExecutor.processQuery(
                 getQualifiedUnicityQuery(parameters, fieldName, associatedBeanFieldName),
                 stat -> {
                     setValueForUnicityCheck(stat, value);
@@ -577,21 +447,31 @@ public final class DBUtil {
 
     // ------------
 
-    public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, DbAccess dbAccess) {
-        return getIdNamePairs(parameters, null, dbAccess);
+    public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, DbExecutor dbExecutor) {
+        return getIdNamePairs(parameters, null, dbExecutor);
     }
 
-    public static List<IdNamePair> getIdNamePairs(DbBeanParameters parameters, String whereClause, DbAccess dbAccess) {
-        return getIdNamePairs(parameters, whereClause, parameters.getNamingFields(), parameters.getOrderingFields(), dbAccess);
+    public static List<IdNamePair> getIdNamePairs(
+            DbBeanParameters parameters,
+            String whereClause,
+            DbExecutor dbExecutor)
+    {
+        return getIdNamePairs(
+                parameters,
+                whereClause,
+                parameters.getNamingFields(),
+                parameters.getOrderingFields(),
+                dbExecutor
+        );
     }
 
     public static List<IdNamePair> getIdNamePairs(
             DbBeanParameters parameters,
             List<String> dataFields,
             List<String> orderingFields,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
-        return getIdNamePairs(parameters, null,dataFields, orderingFields, dbAccess);
+        return getIdNamePairs(parameters, null,dataFields, orderingFields, dbExecutor);
     }
 
     public static List<IdNamePair> getIdNamePairs(
@@ -599,7 +479,7 @@ public final class DBUtil {
             String whereClause,
             List<String> dataFields,
             List<String> orderingFields,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
         var pairs = new ArrayList<IdNamePair>();
 
@@ -623,7 +503,7 @@ public final class DBUtil {
         }
         query.delete(query.length() - 2, query.length());
 
-        dbAccess.processQuery(
+        dbExecutor.processQuery(
                 query.toString(),
                 rs -> {
                     while (rs.next()) {
@@ -642,16 +522,8 @@ public final class DBUtil {
 
     // ------------
 
-    public static boolean isIdOK(DbBeanParameters parameters, long id, DbAccess dbAccess) {
-        return dbAccess.processQuery(
-                "SELECT id FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
-                stat -> stat.setLong(1, id),
-                ResultSet::next
-        );
-    }
-
-    public static boolean isIdOK(DbBeanParameters parameters, long id, DbTransaction transaction) {
-        return transaction.addQuery(
+    public static boolean isIdOK(DbBeanParameters parameters, long id, DbExecutor dbExecutor) {
+        return dbExecutor.processQuery(
                 "SELECT id FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id),
                 ResultSet::next
@@ -663,19 +535,19 @@ public final class DBUtil {
     public static String getHumanReadableTitle(
             DbBeanParameters parameters,
             long id,
-            DbAccess dbAccess,
+            DbExecutor dbExecutor,
             DbBeanLabelBasicFunctions labelFunctions,
             DbBeanLanguage language)
     {
-        if (!isIdOK(parameters, id, dbAccess))
+        if (!isIdOK(parameters, id, dbExecutor))
             throw new IllegalArgumentException("No such id (" + id + ") in database for table " + parameters.getDatabaseTableName());
 
         var name = new StringBuilder();
         for (String field: parameters.getNamingFields()) {
             if (isLabelField(field))
-                name.append(getBeanNamingLabelValue(field, parameters, id, dbAccess, labelFunctions, language));
+                name.append(getBeanNamingLabelValue(field, parameters, id, dbExecutor, labelFunctions, language));
             else
-                name.append(getBeanNamingFieldValue(field, parameters, id, dbAccess));
+                name.append(getBeanNamingFieldValue(field, parameters, id, dbExecutor));
             name.append(" ");
         }
         name.delete(name.length() - 1, name.length());
@@ -690,9 +562,9 @@ public final class DBUtil {
             String field,
             DbBeanParameters parameters,
             long id,
-            DbAccess dbAccess)
+            DbExecutor dbExecutor)
     {
-        return dbAccess.processQuery(
+        return dbExecutor.processQuery(
                 "SELECT " + field + " FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id),
                 rs -> {
@@ -707,11 +579,11 @@ public final class DBUtil {
             String field,
             DbBeanParameters parameters,
             long id,
-            DbAccess dbAccess,
+            DbExecutor dbExecutor,
             DbBeanLabelBasicFunctions labelFunctions,
             DbBeanLanguage language)
     {
-        return dbAccess.processQuery(
+        return dbExecutor.processQuery(
                 "SELECT " + field + " FROM " + parameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id),
                 rs -> {
@@ -744,194 +616,5 @@ public final class DBUtil {
 
         return new Timestamp(timestamp.getTime());
     }
-
-    // ------------
-
-    /*public static long getMaxItemOrder(DbAccess dbAccess, String query) {
-        return dbAccess.processQuery(
-                query,
-                rs -> {
-                    rs.next();
-                    return rs.getLong(1);
-                });
-    }
-
-    public static long getMaxItemOrder(DbAccess dbAccess, String query, long... parameters) {
-        return dbAccess.processQuery(
-                query,
-                 stat -> setupParameters(stat, 1, toList(parameters)),
-                 rs -> {
-                     rs.next();
-                     return rs.getLong(1);
-                 });
-    }
-
-    private static void setupParameters(PreparedStatement stat, int startIndex, List<Long> parameters) throws SQLException {
-        int index = startIndex - 1;
-        for (long parameter: parameters)
-            stat.setLong(++index, parameter);
-    }
-
-    private static List<Long> toList(long... parameters) {
-        List<Long> list = new ArrayList<Long>();
-        for (long parameter: parameters)
-            list.add(parameter);
-        return list;
-    }
-
-    public static long getMaxItemOrder(DbTransaction transaction, String query) {
-        return transaction.addQuery(
-                query,
-                rs -> {
-                    rs.next();
-                    return rs.getLong(1);
-                });
-    }
-
-    public static long getMaxItemOrder(DbTransaction transaction, String query, long... parameters) {
-        return transaction.addQuery(
-                query,
-                stat -> setupParameters(stat, 1, toList(parameters)),
-                rs -> {
-                    rs.next();
-                    return rs.getLong(1);
-                });
-    }
-
-    private static long getItemOrderSwapValue(long itemOrder, boolean moveUp) {
-        if (moveUp)
-            return itemOrder - 1;
-
-        return itemOrder + 1;
-    }
-
-    public static void itemOrderMoveUp(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder) {
-        itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, null, true);
-    }
-
-    private static void itemOrderMove(
-            Db db,
-            String idFromItemOrderQuery,
-            String table,
-            long id,
-            long itemOrder,
-            List<Long> parameters,
-            boolean moveUp)
-    {
-        DbTransaction transaction = new DbTransaction(db);
-
-        final long swapPositionWithBeanId = transaction.addQuery(
-                idFromItemOrderQuery,
-                stat -> {
-                    stat.setLong(1, getItemOrderSwapValue(itemOrder, moveUp));
-                    if (parameters != null)
-                        setupParameters(stat, 2, parameters);
-                },
-                rs -> {
-                    if (rs.next())
-                        return rs.getLong(1);
-
-                    throw new IllegalArgumentException("No such item order # " + composeIdForException(id, parameters) + ". Cannot effect change.  Please check database integrity.");
-                });
-
-        if (moveUp) {
-            incItemOrder(transaction, swapPositionWithBeanId, table);
-            decItemOrder(transaction, id, table);
-        } else {
-            decItemOrder(transaction, swapPositionWithBeanId, table);
-            incItemOrder(transaction, id, table);
-        }
-
-        transaction.commit();
-    }
-
-    private static String composeIdForException(long id, List<Long> parameters) {
-        if (parameters == null)
-            return "[" + id + "]";
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("[").append(id).append(", ");
-        for (long parameter: parameters)
-            buf.append(parameter).append(", ");
-        buf.delete(buf.length() - 2, buf.length());
-        buf.append("]");
-
-        return buf.toString();
-    }
-
-    private static void incItemOrder(DbTransaction transaction, long id, String table) {
-        setItemOrder(transaction, id, table, getItemOrder(transaction, id, table) + 1);
-    }
-
-    private static void decItemOrder(DbTransaction transaction, long id, String table) {
-        setItemOrder(transaction, id, table, getItemOrder(transaction, id, table) - 1);
-    }
-
-    private static long getItemOrder(DbTransaction transaction, long id, String table) {
-        return transaction.addQuery(
-                "SELECT item_order FROM " + table + " WHERE id=?",
-                stat ->  stat.setLong(1, id),
-                rs -> {
-                    if (rs.next())
-                        return rs.getLong(1);
-
-                    throw new IllegalArgumentException("No such ID #" + id);
-                });
-    }
-
-    private static void setItemOrder(DbTransaction transaction, long id, String table, long itemOrder) {
-        transaction.addUpdate(
-                "UPDATE " + table + " SET item_order=? WHERE id=?",
-                stat -> {
-                    stat.setLong(1, itemOrder);
-                    stat.setLong(2, id);
-                });
-    }
-
-    public static void itemOrderMoveUp(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder, long... parameters) {
-        itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, toList(parameters), true);
-    }
-
-    public static void itemOrderMoveDown(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder) {
-        itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, null, false);
-    }
-
-    public static void itemOrderMoveDown(Db db, String idFromItemOrderQuery, String table, long id, long itemOrder, long... parameters) {
-        itemOrderMove(db, idFromItemOrderQuery, table, id, itemOrder, toList(parameters), false);
-    }
-
-    public static void updateItemOrdersAbove(String query, DbTransaction transaction, long threshold) {
-        updateItemOrdersAbove(query, transaction, threshold, null);
-    }
-
-    public static void updateItemOrdersAbove(String query, DbTransaction transaction, long threshold, long... parameters) {
-        transaction.addUpdate(
-                query,
-                stat -> {
-                    stat.setLong(1, threshold);
-                    if (parameters != null) {
-                        int index = 1;
-                        for (long parameter: parameters)
-                            stat.setLong(++index, parameter);
-                    }
-                });
-    }
-
-    public static void updateItemOrdersInBetween(String query, DbTransaction transaction, long lowerBound, long upperBound) {
-        updateItemOrdersInBetween(query, transaction, lowerBound, upperBound, null);
-    }
-
-    public static void updateItemOrdersInBetween(String query, DbTransaction transaction, long lowerBound, long upperBound, long... parameters) {
-        transaction.addUpdate(
-                query,
-                stat -> {
-                    stat.setLong(1, lowerBound);
-                    stat.setLong(2, upperBound);
-                    if (parameters != null) {
-                        int index = 2;
-                        for (long parameter: parameters)
-                            stat.setLong(++index, parameter);
-                    }
-                });
-    }*/
+    
 }

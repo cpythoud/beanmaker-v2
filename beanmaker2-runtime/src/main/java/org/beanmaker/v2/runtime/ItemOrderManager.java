@@ -2,6 +2,7 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.database.sql.Db;
 import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbExecutor;
 import org.beanmaker.v2.database.sql.DbTransaction;
 
 import java.sql.PreparedStatement;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: this class needs to be refactor to eliminate the direct use of sql.Db
 public class ItemOrderManager {
 
     private final String table;
@@ -105,18 +107,8 @@ public class ItemOrderManager {
 
     // * Database operations
 
-    private long getMaxItemOrder(DbAccess dbAccess, String query, long... parameters) {
-        return dbAccess.processQuery(
-                query,
-                stat -> setupParameters(stat, 1, toList(parameters)),
-                rs -> {
-                    rs.next();
-                    return rs.getLong(1);
-                });
-    }
-
-    public long getMaxItemOrder(DbTransaction transaction, String query, long... parameters) {
-        return transaction.addQuery(
+    public long getMaxItemOrder(DbExecutor dbExecutor, String query, long... parameters) {
+        return dbExecutor.processQuery(
                 query,
                 stat -> setupParameters(stat, 1, toList(parameters)),
                 rs -> {
@@ -132,7 +124,7 @@ public class ItemOrderManager {
     }
 
     private List<Long> toList(long... parameters) {
-        List<Long> list = new ArrayList<Long>();
+        var list = new ArrayList<Long>();
         for (long parameter: parameters)
             list.add(parameter);
         return list;
@@ -157,7 +149,7 @@ public class ItemOrderManager {
     {
         DbTransaction transaction = new DbTransaction(db);
 
-        long swapPositionWithBeanId = transaction.addQuery(
+        long swapPositionWithBeanId = transaction.processQuery(
                 getIdFromItemOrderQuery(),
                 stat -> {
                     stat.setLong(1, getItemOrderSwapValue(editor.getItemOrder(), moveUp));
@@ -207,7 +199,7 @@ public class ItemOrderManager {
     }
 
     private long getItemOrder(DbTransaction transaction, long id, String table) {
-        return transaction.addQuery(
+        return transaction.processQuery(
                 "SELECT item_order FROM " + table + " WHERE id=?",
                 stat ->  stat.setLong(1, id),
                 rs -> {
@@ -219,7 +211,7 @@ public class ItemOrderManager {
     }
 
     private void setItemOrder(DbTransaction transaction, long id, String table, long itemOrder) {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "UPDATE " + table + " SET item_order=? WHERE id=?",
                 stat -> {
                     stat.setLong(1, itemOrder);
@@ -240,7 +232,7 @@ public class ItemOrderManager {
     }
 
     public void updateItemOrdersAbove(String query, DbTransaction transaction, long threshold, long... parameters) {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 query,
                 stat -> {
                     stat.setLong(1, threshold);
@@ -259,7 +251,7 @@ public class ItemOrderManager {
             long upperBound,
             long... parameters)
     {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 query,
                 stat -> {
                     stat.setLong(1, lowerBound);
@@ -282,21 +274,21 @@ public class ItemOrderManager {
         return itemOrderEntity.getItemOrder() == 1;
     }
 
-    public boolean isLastInItemOrder(BasicItemOrderOperations itemOrderEntity, DbAccess dbAccess) {
+    public boolean isLastInItemOrder(BasicItemOrderOperations itemOrderEntity, DbExecutor dbExecutor) {
         if (itemOrderEntity.getId() == 0)
             throw new IllegalArgumentException(
                     "Item Order operations not allowed on beans that have not been saved to the database");
 
         if (secondaryField == null)
-            return itemOrderEntity.getItemOrder() == getMaxItemOrder(dbAccess, getItemOrderMaxQuery());
+            return itemOrderEntity.getItemOrder() == getMaxItemOrder(dbExecutor, getItemOrderMaxQuery());
 
         if (itemOrderEntity.getItemOrderSecondaryFieldID() == 0) {
             return itemOrderEntity.getItemOrder() ==
-                    getMaxItemOrder(dbAccess, getItemOrderMaxQueryWithNullSecondaryField());
+                    getMaxItemOrder(dbExecutor, getItemOrderMaxQueryWithNullSecondaryField());
 
         }
         return itemOrderEntity.getItemOrder() ==
-                getMaxItemOrder(dbAccess, getItemOrderMaxQuery(), itemOrderEntity.getItemOrderSecondaryFieldID());
+                getMaxItemOrder(dbExecutor, getItemOrderMaxQuery(), itemOrderEntity.getItemOrderSecondaryFieldID());
     }
 
     public void itemOrderMoveUp(DbBeanEditorWithItemOrder editor, Db db) {
@@ -594,7 +586,7 @@ public class ItemOrderManager {
             long itemOrder,
             DbTransaction transaction)
     {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 getUpdateItemOrdersAboveQuery(),
                 stat -> {
                     stat.setLong(1, itemOrder);

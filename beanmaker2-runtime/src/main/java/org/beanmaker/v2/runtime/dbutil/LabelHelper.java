@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
-import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbExecutor;
 import org.beanmaker.v2.database.sql.DbQueryRetrieveData;
 import org.beanmaker.v2.database.sql.DbQuerySetup;
 import org.beanmaker.v2.database.sql.DbTransaction;
@@ -69,17 +69,17 @@ public class LabelHelper {
         autoLabelDeleteUpdate = "DELETE FROM " + labelTable + " WHERE id=? AND `name` LIKE ?";
     }
 
-    public String get(DbAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
+    public String get(DbExecutor dbExecutor, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
         if (parameters == null || parameters.length == 0)
-            return get(dbAccess, id, dbBeanLanguage, Collections.emptyList());
+            return get(dbExecutor, id, dbBeanLanguage, Collections.emptyList());
 
-        return get(dbAccess, id, dbBeanLanguage, Arrays.asList(parameters));
+        return get(dbExecutor, id, dbBeanLanguage, Arrays.asList(parameters));
     }
 
-    public String get(DbAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
+    public String get(DbExecutor dbExecutor, long id, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
         return processParameters(
                 processResult(
-                        dbAccess.processQuery(
+                        dbExecutor.processQuery(
                                 labelDataQuery,
                                 setProcessingParameters(id, dbBeanLanguage),
                                 getResult()),
@@ -138,10 +138,10 @@ public class LabelHelper {
         };
     }
 
-    public String get(DbAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
+    public String get(DbExecutor dbExecutor, long id, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
         return processParameters(
                 processResult(
-                        dbAccess.processQuery(
+                        dbExecutor.processQuery(
                                 labelDataQuery,
                                 setProcessingParameters(id, dbBeanLanguage),
                                 getResult()),
@@ -161,108 +161,44 @@ public class LabelHelper {
         return Strings.replaceWithParameters(text, parameters);
     }
 
-    public boolean hasDataFor(DbAccess dbAccess, long id, DbBeanLanguage dbBeanLanguage) {
-        return dbAccess.processQuery(
+    public boolean hasDataFor(DbExecutor dbExecutor, long id, DbBeanLanguage dbBeanLanguage) {
+        return dbExecutor.processQuery(
                 labelDataQuery,
                 setProcessingParameters(id, dbBeanLanguage),
                 ResultSet::next
         );
     }
 
-    public String get(DbTransaction transaction, long id, DbBeanLanguage dbBeanLanguage, Object... parameters) {
-        if (parameters == null || parameters.length == 0)
-            return get(transaction, id, dbBeanLanguage, Collections.emptyList());
-
-        return get(transaction, id, dbBeanLanguage, Arrays.asList(parameters));
-    }
-
-    public String get(DbTransaction transaction, long id, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
-        return processParameters(
-                processResult(
-                        transaction.addQuery(
-                                labelDataQuery,
-                                setProcessingParameters(id, dbBeanLanguage),
-                                getResult()),
-                        id,
-                        dbBeanLanguage
-                ),
-                parameters
-        );
-    }
-
-    public String get(
-            DbTransaction transaction,
-            long id,
-            DbBeanLanguage dbBeanLanguage,
-            Map<String, Object> parameters)
-    {
-        return processParameters(
-                processResult(
-                        transaction.addQuery(
-                                labelDataQuery,
-                                setProcessingParameters(id, dbBeanLanguage),
-                                getResult()),
-                        id,
-                        dbBeanLanguage
-                ),
-                parameters
-        );
-    }
-
-    public boolean hasDataFor(DbTransaction transaction, long id, DbBeanLanguage dbBeanLanguage) {
-        return transaction.addQuery(
-                labelDataQuery,
-                setProcessingParameters(id, dbBeanLanguage),
-                ResultSet::next
-        );
-    }
-
-    public boolean isIdOK(DbAccess dbAccess, long id) {
-        return dbAccess.processQuery(
+    public boolean isIdOK(DbExecutor dbExecutor, long id) {
+        return dbExecutor.processQuery(
                 idCheckQuery,
                 stat -> stat.setLong(1, id),
                 ResultSet::next
         );
     }
 
-    public boolean isIdOK(DbTransaction transaction, long id) {
-        return transaction.addQuery(
-                idCheckQuery,
-                stat -> stat.setLong(1, id),
-                ResultSet::next
-        );
-    }
-
-    public boolean isNameOK(DbAccess dbAccess, String name) {
-        return dbAccess.processQuery(
+    public boolean isNameOK(DbExecutor dbExecutor, String name) {
+        return dbExecutor.processQuery(
                 idFromNameQuery,
                 stat -> stat.setString(1, name),
                 ResultSet::next
         );
     }
 
-    public boolean isNameOK(DbTransaction transaction, String name) {
-        return transaction.addQuery(
-                idFromNameQuery,
-                stat -> stat.setString(1, name),
-                ResultSet::next
-        );
+    public String get(DbExecutor dbExecutor, String name, DbBeanLanguage dbBeanLanguage, Object... parameters) {
+        return get(dbExecutor, getLabelID(dbExecutor, name), dbBeanLanguage, parameters);
     }
 
-    public String get(DbAccess dbAccess, String name, DbBeanLanguage dbBeanLanguage, Object... parameters) {
-        return get(dbAccess, getLabelID(dbAccess, name), dbBeanLanguage, parameters);
+    public String get(DbExecutor dbExecutor, String name, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
+        return get(dbExecutor, getLabelID(dbExecutor, name), dbBeanLanguage, parameters);
     }
 
-    public String get(DbAccess dbAccess, String name, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
-        return get(dbAccess, getLabelID(dbAccess, name), dbBeanLanguage, parameters);
+    public String get(DbExecutor dbExecutor, String name, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
+        return get(dbExecutor, getLabelID(dbExecutor, name), dbBeanLanguage, parameters);
     }
 
-    public String get(DbAccess dbAccess, String name, DbBeanLanguage dbBeanLanguage, Map<String, Object> parameters) {
-        return get(dbAccess, getLabelID(dbAccess, name), dbBeanLanguage, parameters);
-    }
-
-    public long getLabelID(DbAccess dbAccess, String name) {
-        return dbAccess.processQuery(
+    public long getLabelID(DbExecutor dbExecutor, String name) {
+        return dbExecutor.processQuery(
                 idFromNameQuery,
                 stat -> stat.setString(1, name),
                 getIdOrThrow(name)
@@ -278,34 +214,9 @@ public class LabelHelper {
         };
     }
 
-    public String get(DbTransaction transaction, String name, DbBeanLanguage dbBeanLanguage, Object... parameters) {
-        return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
-    }
-
-    public String get(DbTransaction transaction, String name, DbBeanLanguage dbBeanLanguage, List<Object> parameters) {
-        return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
-    }
-
-    public String get(
-            DbTransaction transaction,
-            String name,
-            DbBeanLanguage dbBeanLanguage,
-            Map<String, Object> parameters)
-    {
-        return get(transaction, getLabelID(transaction, name), dbBeanLanguage, parameters);
-    }
-
-    public long getLabelID(DbTransaction transaction, String name) {
-        return transaction.addQuery(
-                idFromNameQuery,
-                stat -> stat.setString(1, name),
-                getIdOrThrow(name)
-        );
-    }
-
     public void updateValues(DbTransaction transaction, DbBeanLabel label, Map<DbBeanLanguage, String> values) {
         for (var value: values.entrySet())
-            transaction.addUpdate(
+            transaction.processUpdate(
                     "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
                     stat -> {
                         stat.setLong(1, label.getId());
@@ -316,12 +227,12 @@ public class LabelHelper {
     }
 
     public long createLabel(DbTransaction transaction, Map<DbBeanLanguage, String> values) {
-        long id = transaction.addRecordCreation(
+        long id = transaction.createRecord(
                 "INSERT INTO " + labelTable + " (name) VALUES (?)",
                 stat -> stat.setString(1, createUniqueLabelName())
         );
         for (var value: values.entrySet()) {
-            transaction.addUpdate(
+            transaction.processUpdate(
                     "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
                     stat -> {
                         stat.setLong(1, id);
@@ -333,8 +244,8 @@ public class LabelHelper {
         return id;
     }
 
-    public void quickUpdate(DbAccess dbAccess, DbBeanLabel label, DbBeanLanguage language, String value) {
-        int count = dbAccess.processUpdate(
+    public void quickUpdate(DbExecutor dbExecutor, DbBeanLabel label, DbBeanLanguage language, String value) {
+        int count = dbExecutor.processUpdate(
                 "UPDATE " + labelDataTable + " SET data=? WHERE id_label=? AND id_language=?",
                 stat -> {
                     stat.setString(1, value);
@@ -344,28 +255,7 @@ public class LabelHelper {
         );
 
         if (count == 0)
-            dbAccess.processUpdate(
-                    "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
-                    stat -> {
-                        stat.setLong(1, label.getId());
-                        stat.setLong(2, language.getId());
-                        stat.setString(3, value);
-                    }
-            );
-    }
-
-    public void quickUpdate(DbTransaction transaction, DbBeanLabel label, DbBeanLanguage language, String value) {
-        int count = transaction.addUpdate(
-                "UPDATE " + labelDataTable + " SET data=? WHERE id_label=? AND id_language=?",
-                stat -> {
-                    stat.setString(1, value);
-                    stat.setLong(2, label.getId());
-                    stat.setLong(3, language.getId());
-                }
-        );
-
-        if (count == 0)
-            transaction.addUpdate(
+            dbExecutor.processUpdate(
                     "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
                     stat -> {
                         stat.setLong(1, label.getId());
@@ -376,11 +266,11 @@ public class LabelHelper {
     }
 
     public long quickCreate(DbTransaction transaction, DbBeanLanguage language, String value) {
-        long id = transaction.addRecordCreation(
+        long id = transaction.createRecord(
                 "INSERT INTO " + labelTable + " (name) VALUES (?)",
                 stat -> stat.setString(1, createUniqueLabelName())
         );
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "INSERT INTO " + labelDataTable + " (id_label, id_language, data) VALUES (?, ?, ?)",
                 stat -> {
                     stat.setLong(1, id);
@@ -409,7 +299,7 @@ public class LabelHelper {
     }
 
     public void cacheLabelsFromDB(
-            DbAccess dbAccess,
+            DbExecutor dbExecutor,
             DbBeanLabelEditor labelEditor,
             List<DbBeanLanguage> languages,
             Map<DbBeanLanguage,String> cache)
@@ -419,25 +309,7 @@ public class LabelHelper {
 
         cache.clear();
 
-        dbAccess.processQueries(
-                labelDataQuery,
-                stat -> {
-                    updateCache(stat, labelEditor, languages, cache);
-                });
-    }
-
-    public void cacheLabelsFromDB(
-            DbTransaction transaction,
-            DbBeanLabelEditor labelEditor,
-            List<DbBeanLanguage> languages,
-            Map<DbBeanLanguage,String> cache)
-    {
-        if (labelEditor.getId() == 0)
-            throw new IllegalArgumentException("Cannot cache labels for a record not yet in the database.");
-
-        cache.clear();
-
-        transaction.addQueries(
+        dbExecutor.processQueries(
                 labelDataQuery,
                 stat -> {
                     updateCache(stat, labelEditor, languages, cache);
@@ -461,13 +333,13 @@ public class LabelHelper {
     }
 
     public void updateTextValues(DbTransaction transaction, long idLabel, Map<DbBeanLanguage, String> values) {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "DELETE FROM " + labelDataTable + " WHERE id_label=?",
                 stat -> stat.setLong(1, idLabel)
         );
 
         if (!values.isEmpty()) {
-            transaction.addUpdates(
+            transaction.processUpdates(
                     "INSERT INTO " + labelDataTable + " (id_label, id_language, `data`) VALUES (?, ?, ?)",
                     stat -> {
                         stat.setLong(1, idLabel);
@@ -487,14 +359,14 @@ public class LabelHelper {
             WHERE id_language=? AND %s.id_label <> ? AND `data`=?""";
 
     public boolean labelExistsInContext(
-            DbAccess dbAccess,
+            DbExecutor dbExecutor,
             String table,
             String field,
             long idLabel,
             DbBeanLanguage language,
             String text)
     {
-        return dbAccess.processQuery(
+        return dbExecutor.processQuery(
                 UNIQUE_LABEL_TEST_REQUEST.formatted(
                         labelDataTable,
                         table,
@@ -513,26 +385,12 @@ public class LabelHelper {
         );
     }
 
-    public void deleteLabel(DbAccess dbAccess, long id) {
-        dbAccess.processUpdate(deleteUpdate, stat -> stat.setLong(1, id));
+    public void deleteLabel(DbExecutor dbExecutor, long id) {
+        dbExecutor.processUpdate(deleteUpdate, stat -> stat.setLong(1, id));
     }
 
-    public void deleteLabel(DbTransaction transaction, long id) {
-        transaction.addUpdate(deleteUpdate, stat -> stat.setLong(1, id));
-    }
-
-    public void deleteAutoLabel(DbAccess dbAccess, long id) {
-        dbAccess.processUpdate(
-                autoLabelDeleteUpdate,
-                stat -> {
-                    stat.setLong(1, id);
-                    stat.setString(2, labelAutoNamePrefix + "%");
-                }
-        );
-    }
-
-    public void deleteAutoLabel(DbTransaction transaction, long id) {
-        transaction.addUpdate(
+    public void deleteAutoLabel(DbExecutor dbExecutor, long id) {
+        dbExecutor.processUpdate(
                 autoLabelDeleteUpdate,
                 stat -> {
                     stat.setLong(1, id);

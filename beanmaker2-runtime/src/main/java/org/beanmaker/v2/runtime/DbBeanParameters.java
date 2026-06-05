@@ -1,6 +1,6 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.database.sql.DbAccess;
+import org.beanmaker.v2.database.sql.DbExecutor;
 import org.beanmaker.v2.database.sql.DbTransaction;
 
 import org.beanmaker.v2.util.Strings;
@@ -58,20 +58,9 @@ public interface DbBeanParameters {
         return "SELECT * FROM %s WHERE %s=?".formatted(reference.table(), reference.field());
     }
 
-    default boolean isReferenced(IdBasedReference bean, DbAccess dbAccess) {
+    default boolean isReferenced(IdBasedReference bean, DbExecutor dbExecutor) {
         for (var reference: getDatabaseReferences()) {
-            if (dbAccess.processQuery(
-                    getReferenceQuery(reference),
-                    stat -> stat.setLong(1, bean.getId()),
-                    ResultSet::next
-            )) return true;
-        }
-        return false;
-    }
-
-    default boolean isReferenced(IdBasedReference bean, DbTransaction transaction) {
-        for (var reference: getDatabaseReferences()) {
-            if (transaction.addQuery(
+            if (dbExecutor.processQuery(
                     getReferenceQuery(reference),
                     stat -> stat.setLong(1, bean.getId()),
                     ResultSet::next

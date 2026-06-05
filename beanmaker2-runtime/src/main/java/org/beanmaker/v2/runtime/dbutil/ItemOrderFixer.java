@@ -39,7 +39,7 @@ public class ItemOrderFixer {
     }
 
     private List<Long> getAllIdsInOrder() {
-        return transaction.addQuery(
+        return transaction.processQuery(
                 "SELECT id FROM " + tableName + " ORDER BY item_order",
                 ListOf::longs
         );
@@ -47,7 +47,7 @@ public class ItemOrderFixer {
 
     private Set<Long> getSecondaryIds() {
         var secondaryIds = new HashSet<Long>();
-        transaction.addQuery(
+        transaction.processQuery(
                 "SELECT DISTINCT " + secondaryField + " FROM " + tableName,
                 rs -> {
                     while (rs.next()) {
@@ -67,7 +67,7 @@ public class ItemOrderFixer {
                 "SELECT id FROM " + tableName + " WHERE " + secondaryField + " IS NULL ORDER BY item_order" :
                 "SELECT id FROM " + tableName + " WHERE " + secondaryField + " = ? ORDER BY item_order";
 
-        return transaction.addQuery(
+        return transaction.processQuery(
                 query,
                 stat -> {
                     if (id > 0)
@@ -87,7 +87,7 @@ public class ItemOrderFixer {
     private void fixOrder(List<Long> idList) {
         long[] itemOrder = { 0 };
         for (long id: idList) {
-            transaction.addUpdate(
+            transaction.processUpdate(
                     "UPDATE " + tableName + " SET item_order = ? WHERE id = ?",
                     stat -> {
                         stat.setLong(1, ++itemOrder[0]);

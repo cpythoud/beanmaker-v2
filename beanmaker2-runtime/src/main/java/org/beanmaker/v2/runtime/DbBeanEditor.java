@@ -122,7 +122,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
         checkReferenced(transaction);
         checkVersionedBean();
         preDeleteExtraDbActions(transaction);
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "DELETE FROM " + dbBeanParameters.getDatabaseTableName() + " WHERE id=?",
                 stat -> stat.setLong(1, id)
         );

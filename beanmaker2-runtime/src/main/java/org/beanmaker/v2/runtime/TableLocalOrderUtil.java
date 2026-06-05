@@ -54,7 +54,7 @@ public class TableLocalOrderUtil {
             String orderingTable,
             long idContext)
     {
-        return transaction.addQuery(
+        return transaction.processQuery(
                 "SELECT id_bean FROM " + orderingTable + " WHERE id_context=? ORDER BY item_order",
                 new DbQuerySetup() {
                     @Override
@@ -82,7 +82,7 @@ public class TableLocalOrderUtil {
             long idContext,
             Set<Long> ids)
     {
-        transaction.addUpdates(
+        transaction.processUpdates(
                 "DELETE FROM " + orderingTable + " WHERE id_context=? AND id_bean=?",
                 new DbUpdates() {
                     @Override
@@ -105,7 +105,7 @@ public class TableLocalOrderUtil {
     {
         long lastItemOrder = getLastItemOrder(transaction, orderingTable, idContext);
 
-        transaction.addUpdates(
+        transaction.processUpdates(
                 "INSERT INTO " + orderingTable + " (id_context, id_bean, item_order) " +
                         "VALUES (?, ?, ?)",
                 new DbUpdates() {
@@ -128,7 +128,7 @@ public class TableLocalOrderUtil {
             String orderingTable,
             long idContext)
     {
-        return transaction.addQuery(
+        return transaction.processQuery(
                 "SELECT MAX(item_order) FROM " + orderingTable + " WHERE id_context=?",
                 new DbQuerySetup() {
                     @Override
@@ -155,7 +155,7 @@ public class TableLocalOrderUtil {
     {
         TreeMap<Long, Long> itemOrderMap = getOldNewItemOrderMap(transaction, orderingTable, idContext);
 
-        transaction.addUpdates(
+        transaction.processUpdates(
                 "UPDATE " + orderingTable + " SET item_order=? " +
                         "WHERE id_context=? AND item_order=?",
                 new DbUpdates() {
@@ -180,7 +180,7 @@ public class TableLocalOrderUtil {
             String orderingTable,
             long idContext)
     {
-        return transaction.addQuery(
+        return transaction.processQuery(
                 "SELECT item_order FROM " + orderingTable +
                         " WHERE id_context=? ORDER BY item_order",
                 new DbQuerySetup() {
@@ -226,7 +226,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        return transaction.addQuery(
+        return transaction.processQuery(
                 "SELECT id_bean FROM " + orderingTable +
                         " WHERE id_context=? AND id_bean=? AND item_order=1",
                 new DbQuerySetup() {
@@ -361,7 +361,7 @@ public class TableLocalOrderUtil {
             String orderingTable,
             long value)
     {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "UPDATE " + orderingTable + " SET item_order=? WHERE id_context=? AND item_order=?",
                 new DbQuerySetup() {
                     @Override
@@ -381,7 +381,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "UPDATE " + orderingTable + " SET item_order=item_order + 1 " +
                         "WHERE id_context=? AND item_order > ? AND item_order < ?",
                 new DbQuerySetup() {
@@ -402,7 +402,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "UPDATE " + orderingTable + " SET item_order=item_order - 1 " +
                         "WHERE id_context=? AND item_order > ? AND item_order <= ?",
                 new DbQuerySetup() {
@@ -449,7 +449,7 @@ public class TableLocalOrderUtil {
             TableLocalOrderContext context,
             String orderingTable)
     {
-        transaction.addUpdate(
+        transaction.processUpdate(
                 "UPDATE " + orderingTable + " SET item_order=item_order + 1 " +
                         "WHERE id_context=? AND item_order < ?",
                 new DbQuerySetup() {

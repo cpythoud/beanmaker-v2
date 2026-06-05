@@ -6,7 +6,7 @@ import java.sql.SQLException;
 /**
  * This class is used to encapsulate JDBC database access.
  */
-public class DbAccess {
+public class DbAccess implements DbExecutor {
 
     private final Db db;
 
@@ -26,6 +26,7 @@ public class DbAccess {
      * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SqlRuntimeException.
      * @see DbAccess#createRecord(String, DbQuerySetup)
      */
+    @Override
     public int processUpdate(String query, DbQuerySetup querySetup) {
         int count;
 
@@ -53,6 +54,7 @@ public class DbAccess {
      * @throws IllegalArgumentException if the number of rows affected in the database is not strictly one.
      * @see DbAccess#processUpdate(String, DbQuerySetup)
      */
+    @Override
     public long createRecord(String query, DbQuerySetup querySetup) {
         long id;
 
@@ -78,6 +80,7 @@ public class DbAccess {
      * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown as a SqlRuntimeException.
      * @see DbAccess#processQuery(String, DbQueryProcess)
      */
+    @Override
     public void processQuery(String query, DbQuerySetup querySetup, DbQueryProcess queryProcess) {
         Connection conn = null;
         try {
@@ -97,6 +100,7 @@ public class DbAccess {
      * @param queryProcess an object implementing the {@link DbQueryProcess} interface, used to process the query results.
      * @see DbAccess#processQuery(String, DbQuerySetup, DbQueryProcess)
      */
+    @Override
     public void processQuery(String query, DbQueryProcess queryProcess) {
         Connection conn = null;
         try {
@@ -119,6 +123,7 @@ public class DbAccess {
      * @return result of the query.
      * @see DbAccess#processQuery(String, DbQueryRetrieveData)
      */
+    @Override
     public <T> T processQuery(String query, DbQuerySetup querySetup, DbQueryRetrieveData<T> queryRetrieveData) {
         T data;
 
@@ -144,6 +149,7 @@ public class DbAccess {
      * @return result of the query.
      * @see DbAccess#processQuery(String, DbQuerySetup, DbQueryRetrieveData)
      */
+    @Override
     public <T> T processQuery(String query, DbQueryRetrieveData<T> retrieveData) {
         T data;
 
@@ -166,6 +172,7 @@ public class DbAccess {
      * @param query SQL query.
      * @param updates an object implementing the {@link DbUpdates} interface, used to execute the updates.
      */
+    @Override
     public void processUpdates(String query, DbUpdates updates) {
         Connection conn = null;
         try {
@@ -187,6 +194,7 @@ public class DbAccess {
      * @return result of the queries.
      * @see DbAccess#processQueries(String, DbQueriesNoReturn)
      */
+    @Override
     public <T> T processQueries(String query, DbQueries<T> queries) {
         T data;
 
@@ -210,6 +218,7 @@ public class DbAccess {
      * @param queries an object implementing the {@link DbQueriesNoReturn} interface, used to process the queries result.
      * @see  DbAccess#processQueries(String, DbQueries)
      */
+    @Override
     public void processQueries(String query, DbQueriesNoReturn queries) {
         Connection conn = null;
         try {

@@ -15,3 +15,26 @@ TODO:
 - deprecate Money, associated classes and functions in libraries
 - cleanup util library (deprecate, rename, make utility classes final, etc.)
 - complete documentation for SQL lib
+- DbBeanInitializer, use SecureQuery (?)
+- deprecate TableLocalOrderUtil and methods/fields in BaseMasterTable that still refer to it
+
+
+
+
+
+REPLACE LIBRARY IMPORTS:
+
+check:
+grep -RIn --include='*.java' 'org\.dbbeans\.sql' .
+grep -RIn --include='*.java' 'sql\.DBTransaction' .
+grep -RIn --include='*.java' 'DBTransaction transaction' .
+grep -RIn --include='*.java' 'org\.jcodegen\.html' .
+
+
+
+replace:
+find . -type f -name '*.java' -print0 | xargs -0 perl -pi -e 's/org\.dbbeans\.sql/org.beanmaker.v2.database.sql/g'
+find . -type f -name '*.java' -print0 | xargs -0 perl -pi -e 's/sql\.DBTransaction/sql.DbTransaction/g'
+find . -type f -name '*.java' -print0 | xargs -0 perl -pi -e 's/DBTransaction transaction/DbTransaction transaction/g'
+find . -type f -name '*.java' -print0 | xargs -0 perl -pi -e 's/org\.jcodegen\.html/org.beanmaker.v2.codegen.html/g'
+
