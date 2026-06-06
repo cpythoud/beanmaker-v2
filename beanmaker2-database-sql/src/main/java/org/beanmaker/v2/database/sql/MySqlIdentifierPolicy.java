@@ -9,12 +9,12 @@ public final class MySqlIdentifierPolicy implements SqlIdentifierPolicy {
 
     @Override
     public String table(String table) {
-        return quoteQualifiedSqlIdentifier(requireQualifiedSqlIdentifier(table, "table"));
+        return quoteSqlIdentifier(requireSqlIdentifier(table, "table"));
     }
 
     @Override
     public String column(String column) {
-        return quoteSqlIdentifier(requireSqlIdentifier(column, "column"));
+        return quoteQualifiedSqlIdentifier(requireQualifiedSqlIdentifier(column, "column"));
     }
 
     public static String quoteSqlIdentifier(String identifier) {

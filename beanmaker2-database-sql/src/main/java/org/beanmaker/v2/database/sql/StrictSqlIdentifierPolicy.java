@@ -11,12 +11,12 @@ public final class StrictSqlIdentifierPolicy implements SqlIdentifierPolicy {
 
     @Override
     public String table(String table) {
-        return requireQualifiedSqlIdentifier(table, "table");
+        return requireSqlIdentifier(table, "table");
     }
 
     @Override
     public String column(String column) {
-        return requireSqlIdentifier(column, "column");
+        return requireQualifiedSqlIdentifier(column, "column");
     }
 
     public static String requireSqlIdentifier(String identifier, String description) {
