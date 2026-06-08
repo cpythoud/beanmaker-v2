@@ -18,4 +18,21 @@ public interface DbExecutor {
     void processQueries(String query, DbQueriesNoReturn queries);
     <T> T processQueries(String query, DbQueries<T> queries);
 
+
+    long createRecord(SecureQuery query, DbQuerySetup querySetup);
+
+    int processUpdate(SecureQuery query, DbQuerySetup querySetup);
+    int processUpdate(SecureQuery query);
+
+    void processQuery(SecureQuery query, DbQuerySetup querySetup, DbQueryProcess queryProcess);
+    void processQuery(SecureQuery query, DbQueryProcess queryProcess);
+
+    <T> T processQuery(SecureQuery query, DbQuerySetup querySetup, DbQueryRetrieveData<T> queryRetrieveData);
+    <T> T processQuery(SecureQuery query, DbQueryRetrieveData<T> retrieveData);
+
+    void processUpdates(SecureQuery query, DbUpdates updates);
+
+    void processQueries(SecureQuery query, DbQueriesNoReturn queries);
+    <T> T processQueries(SecureQuery query, DbQueries<T> queries);
+
 }

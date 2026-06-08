@@ -258,4 +258,54 @@ public class DbAccess implements DbExecutor {
         }
     }
 
+    @Override
+    public long createRecord(SecureQuery query, DbQuerySetup querySetup) {
+        return createRecord(query.parse(db.getType()), querySetup);
+    }
+
+    @Override
+    public int processUpdate(SecureQuery query, DbQuerySetup querySetup) {
+        return processUpdate(query.parse(db.getType()), querySetup);
+    }
+
+    @Override
+    public int processUpdate(SecureQuery query) {
+        return processUpdate(query.parse(db.getType()));
+    }
+
+    @Override
+    public void processQuery(SecureQuery query, DbQuerySetup querySetup, DbQueryProcess queryProcess) {
+        processQuery(query.parse(db.getType()), querySetup, queryProcess);
+    }
+
+    @Override
+    public void processQuery(SecureQuery query, DbQueryProcess queryProcess) {
+        processQuery(query.parse(db.getType()), queryProcess);
+    }
+
+    @Override
+    public <T> T processQuery(SecureQuery query, DbQuerySetup querySetup, DbQueryRetrieveData<T> queryRetrieveData) {
+        return processQuery(query.parse(db.getType()), querySetup, queryRetrieveData);
+    }
+
+    @Override
+    public <T> T processQuery(SecureQuery query, DbQueryRetrieveData<T> retrieveData) {
+        return processQuery(query.parse(db.getType()), retrieveData);
+    }
+
+    @Override
+    public void processUpdates(SecureQuery query, DbUpdates updates) {
+        processUpdates(query.parse(db.getType()), updates);
+    }
+
+    @Override
+    public void processQueries(SecureQuery query, DbQueriesNoReturn queries) {
+        processQueries(query.parse(db.getType()), queries);
+    }
+
+    @Override
+    public <T> T processQueries(SecureQuery query, DbQueries<T> queries) {
+        return processQueries(query.parse(db.getType()), queries);
+    }
+
 }
