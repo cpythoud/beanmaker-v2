@@ -5,6 +5,7 @@ public interface DbExecutor {
     long createRecord(String query, DbQuerySetup querySetup);
 
     int processUpdate(String query, DbQuerySetup querySetup);
+    int processUpdate(String query);
 
     void processQuery(String query, DbQuerySetup querySetup, DbQueryProcess queryProcess);
     void processQuery(String query, DbQueryProcess queryProcess);

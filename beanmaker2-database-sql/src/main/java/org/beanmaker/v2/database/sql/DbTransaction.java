@@ -54,6 +54,28 @@ public class DbTransaction implements DbExecutor {
     }
 
     /**
+     * Use this method to update the database.
+     * If you need to get the id of a newly created row, use the createRecord function.
+     * @param query SQL query.
+     * @return the number of database rows affected by the update.
+     * @throws SqlRuntimeException if an SQLException is thrown during database access, it will be rethrown
+     * as a SqlRuntimeException.
+     * @see DbTransaction#createRecord(String, DbQuerySetup)
+     */
+    @Override
+    public int processUpdate(String query) {
+        int count;
+
+        try {
+            count = DbUtils.processUpdate(conn, query);
+        } catch (SQLException ex) {
+            throw new SqlRuntimeException(ex);
+        }
+
+        return count;
+    }
+
+    /**
      * Use this method to insert a single new row in the database and obtain its ID.
      * If you need to insert more than one row at a time, use the processUpdate function instead.
      * @param query SQL query used to insert the row.

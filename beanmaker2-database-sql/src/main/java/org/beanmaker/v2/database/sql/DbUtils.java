@@ -61,6 +61,27 @@ public final class DbUtils {
     }
 
     /**
+     * Process a database update.
+     * @param conn database connection to use.
+     * @param query SQL query.
+     * @return how many table rows were affected by the update.
+     * @throws SQLException if a database error occurs
+     */
+    public static int processUpdate(Connection conn, String query) throws SQLException {
+        int count;
+
+        PreparedStatement stat = conn.prepareStatement(query);
+        try {
+            count = stat.executeUpdate();
+            stat.close();
+        } finally {
+            preparedStatementSilentClose(stat);
+        }
+
+        return count;
+    }
+
+    /**
      * Creates a new record in the database.
      * @param conn database connection to use.
      * @param query SQL query.
