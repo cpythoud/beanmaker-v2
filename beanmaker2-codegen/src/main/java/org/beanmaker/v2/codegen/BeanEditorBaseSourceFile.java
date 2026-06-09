@@ -2056,16 +2056,14 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     private String getBeanCreationQuery() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("\"INSERT INTO \" + ");
-        buf.append(beanName);
-        buf.append("Parameters.INSTANCE.getDatabaseTableName() + \" (");
+        buf.append("INSERT INTO ").append(columns.getTable()).append(" (");
 
         int count = 0;
-        for (Column column: columns.getList()) {
-            final String name = column.getSqlName();
+        for (var column: columns) {
+            String name = column.getSqlName();
             if (!name.equals("id")) {
                 count++;
-                buf.append(backquote(name));
+                buf.append(backquote(name));  // ! MySQL specific,  TODO: adjust for other databases
                 buf.append(", ");
             }
         }
@@ -2073,25 +2071,23 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         buf.append(") VALUES (");
 
-        buf.append("?, ".repeat(count));
+        buf.repeat("?, ", count);
         buf.delete(buf.length() - 2, buf.length());
 
-        buf.append(")\"");
+        buf.append(")");
 
-        return buf.toString();
+        return quickQuote(buf.toString());
     }
 
     private String getBeanUpdateQuery() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("\"UPDATE \" + ");
-        buf.append(beanName);
-        buf.append("Parameters.INSTANCE.getDatabaseTableName() + \" SET ");
+        buf.append("UPDATE ").append(columns.getTable()).append(" SET ");
 
-        for (Column column: columns.getList()) {
-            final String name = column.getSqlName();
+        for (var column: columns) {
+            String name = column.getSqlName();
             if (!name.equals("id")) {
-                buf.append(backquote(name));
+                buf.append(backquote(name));  // ! MySQL specific,  TODO: adjust for other databases
                 buf.append("=?, ");
             }
         }
@@ -2102,9 +2098,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.hasLastUpdate())  // TODO: to be actually reimplemented or removed
             buf.append(" AND last_update=?");
 
-        buf.append("\"");
-
-        return buf.toString();
+        return quickQuote(buf.toString());
     }
 
     private String backquote(String fieldName) {
