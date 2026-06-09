@@ -25,11 +25,17 @@ public interface DbBeanParameters {
 
     String getDatabaseFieldList();
 
+    List<String> getDatabaseFields();
+
     default String getVersionedDatabaseViewName() {
         throw new UnsupportedOperationException("Not a versioned bean");
     }
 
     default String getVersionedDatabaseFieldList() {
+        throw new UnsupportedOperationException("Not a versioned bean");
+    }
+
+    default List<String> getVersionedDatabaseFields() {
         throw new UnsupportedOperationException("Not a versioned bean");
     }
 

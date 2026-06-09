@@ -131,6 +131,9 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                 .addContent(EMPTY_LINE)
                 .addContent(getFunctionDeclaration("String", "getDatabaseFieldList")
                         .addContent(new ReturnStatement(quickQuote(getTableFieldList(false)))))
+                .addContent(EMPTY_LINE)
+                .addContent(getFunctionDeclaration("List<String>", "getDatabaseFields")
+                        .addContent(new ReturnStatement(getListOfFields(false))))
                 .addContent(EMPTY_LINE);
 
         if (columns.isVersioned()) {
@@ -140,6 +143,9 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
                     .addContent(EMPTY_LINE)
                     .addContent(getFunctionDeclaration("String", "getVersionedDatabaseFieldList")
                             .addContent(new ReturnStatement(quickQuote(getTableFieldList(true)))))
+                    .addContent(EMPTY_LINE)
+                    .addContent(getFunctionDeclaration("List<String>", "getVersionedDatabaseFields")
+                            .addContent(new ReturnStatement(getListOfFields(true))))
                     .addContent(EMPTY_LINE);
         }
     }
@@ -147,7 +153,7 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
     private String getTableFieldList(boolean versioned) {
         var list = new StringBuilder();
 
-        for (Column column: columns.getList()) {
+        for (var column: columns) {
             if (versioned)
                 list.append("versioned_");
             list.append(columns.getTable()).append(".").append(column.getSqlName()).append(", ");
@@ -155,6 +161,16 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
         list.delete(list.length() - 2, list.length());
 
         return list.toString();
+    }
+
+    private FunctionCall getListOfFields(boolean versioned) {
+        var functionCall = new FunctionCall("of", "List");
+        String table = columns.getTable();
+
+        for (var column: columns)
+            functionCall.addArgument(quickQuote((versioned ? "versioned_" : "") + table + "." + column.getSqlName()));
+
+        return functionCall;
     }
 
     private void addNamingFunction() {
