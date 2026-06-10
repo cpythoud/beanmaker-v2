@@ -2,12 +2,18 @@ THIS IS A WORK FILE THAT CHANGES FREQUENTLY AND SHOULD NOT BE USED AS DOCUMENTAT
 THIS FILE CONTAINS NOTES REGARDING CHANGES THAT WILL NEED AN ENTRY IN THE NEXT RELEASE NOTES
 LAST UPDATE: 2026-06-03
 
+/!\ = incompatible change, requires changes to user code
+(^) = requires code regeneration
+
 - moved libraries (sql, java, html) under the beanmaker umbrella
 - modernize code in libraries (remove unnecessary final modifiers, replace raw types with the appropriate type
 definition with <?>, etc.)
-- rename all classes in SQL library (needs regeneration of code and adjusting of classes: <Bean>, <Bean>Editor,
+- /!\ rename all classes in SQL library (needs regeneration of code and adjusting of classes: <Bean>, <Bean>Editor,
 DbBeans and LocalFileManager)
-
+- (^) add function that returns a List<String> of database field in <Bean>Parameter
+- SecureQuery (elaborate on benefits and usage)
+- introduce DbExecutor to harmonize interface between DbAccess and DbTransaction, might require user code adjustments,
+at a minimum to remove deprecation warnings for DbTransaction add...() functions
 
 
 TODO:
@@ -15,7 +21,6 @@ TODO:
 - deprecate Money, associated classes and functions in libraries
 - cleanup util library (deprecate, rename, make utility classes final, etc.)
 - complete documentation for SQL lib
-- DbBeanInitializer, use SecureQuery (?)
 - deprecate TableLocalOrderUtil and methods/fields in BaseMasterTable that still refer to it
 
 
