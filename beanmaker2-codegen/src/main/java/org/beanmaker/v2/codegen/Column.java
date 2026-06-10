@@ -7,11 +7,9 @@ import java.util.Map;
 
 public class Column {
 
-    // TODO: established a distinction between java types in use, and authorized java types
-    // ! int and long are automatic and specific, but should not be allowed as user types
-    public static final List<String> JAVA_TYPES =
-            List.of("int", "long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money",
-                    "DecimalValue");
+    // * int and long are used internally but are not allowed as user types
+    public static final List<String> SUPPORTED_JAVA_TYPES =
+            List.of("Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money", "DecimalValue");
 
     public static final String ID_FIELD = "id";
     public static final String UPDATE_FIELD = "last_update";
@@ -213,7 +211,7 @@ public class Column {
     }
 
     public void setJavaType(String javaType) {
-        if (!JAVA_TYPES.contains(javaType))
+        if (!SUPPORTED_JAVA_TYPES.contains(javaType))
             throw new IllegalArgumentException(javaType + " type cannot be used with BeanMaker");
 
         this.javaType = javaType;
