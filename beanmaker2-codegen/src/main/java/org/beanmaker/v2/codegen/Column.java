@@ -1,37 +1,23 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.database.sql.DbType;
+
 import org.beanmaker.v2.util.Strings;
 
 import java.util.List;
-import java.util.Map;
 
 public class Column {
 
     // * int and long are used internally but are not allowed as user types
     public static final List<String> SUPPORTED_JAVA_TYPES =
-            List.of("Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money", "DecimalValue");
-
-    public static final String ID_FIELD = "id";
-    public static final String UPDATE_FIELD = "last_update";
-    public static final String MODIFIER_FIELD = "modified_by";  // TODO: implement or remove...
-    public static final String ORDERING_FIELD = "item_order";  // TODO: implement or remove...
-    public static final String VERSION_FIELD = "bean_version";
-    public static final String ID_FIRST_VERSION_FIELD = "id_original_bean";
-
-    public static final List<String> SPECIAL_CASE_FIELDS =
-            List.of(ID_FIELD, UPDATE_FIELD, MODIFIER_FIELD, ORDERING_FIELD, VERSION_FIELD, ID_FIRST_VERSION_FIELD);
-
-    public static final Map<String, List<String>> SPECIAL_CASE_FIELD_TYPES = Map.of(
-            ID_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
-            UPDATE_FIELD, List.of("BIGINT UNSIGNED"),
-            MODIFIER_FIELD, List.of("CHAR", "VARCHAR"),
-            ORDERING_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED"),
-            VERSION_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED"),
-            ID_FIRST_VERSION_FIELD, List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED")
-    );
+            List.of("long", "Boolean", "Integer", "Long", "String", "Date", "Time", "Timestamp", "Money",
+                    "DecimalValue");
 
     private static final String DEFAULT_LABEL_CLASS = "DbBeanLabel";
     private static final String DEFAULT_FILE_CLASS  = "DbBeanFile";
+
+    private final ReservedDatabaseFieldManager fieldManager;
+    private final DbType dbType;
 
     private final String sqlTypeName;
     private final String sqlName;
@@ -64,6 +50,8 @@ public class Column {
     private boolean negativeAllowed = true;
 
     public Column(
+            ReservedDatabaseFieldManager fieldManager,
+            DbType dbType,
             String sqlTypeName,
             String sqlName,
             int displaySize,
@@ -72,6 +60,8 @@ public class Column {
             boolean autoincrement,
             boolean required
     ) {
+        this.fieldManager = fieldManager;
+        this.dbType = dbType;
         this.sqlTypeName = sqlTypeName;
         this.sqlName = sqlName;
         this.displaySize = displaySize;
@@ -81,25 +71,29 @@ public class Column {
         this.required = required;
         shouldBeRequired = required;
 
-        if (SPECIAL_CASE_FIELDS.contains(sqlName)) {
+        var specialFields = fieldManager.allFieldNames();
+        var specialFieldTypes = ReservedDatabaseFieldTypeMappings.getSqlTypeMap(dbType);
+
+        if (specialFields.contains(sqlName)) {
             special = true;
-            incompatibleSqlType = !SPECIAL_CASE_FIELD_TYPES.get(sqlName).contains(sqlTypeName);
-            if (sqlName.equals(ID_FIELD)) {
+            var fieldType = fieldManager.fieldType(sqlName);
+            incompatibleSqlType = !specialFieldTypes.get(fieldType).contains(sqlTypeName);
+            if (fieldType.equals(ReservedDatabaseField.ID)) {
                 id = true;
                 unique = true;
             } else {
                 id = false;
             }
-            lastUpdate = sqlName.equals(UPDATE_FIELD);
-            modifiedBy = sqlName.equals(MODIFIER_FIELD);
-            if (sqlName.equals(ORDERING_FIELD)) {
+            lastUpdate = fieldType.equals(ReservedDatabaseField.LAST_UPDATE);
+            modifiedBy = fieldType.equals(ReservedDatabaseField.MODIFIED_BY);
+            if (fieldType.equals(ReservedDatabaseField.ITEM_ORDER)) {
                 itemOrder = true;
                 unique = true;  // * on first detection, will be changed to false when secondary field is specified
             } else {
                 itemOrder = false;
             }
-            versionField = sqlName.equals(VERSION_FIELD);
-            originalBeanId = sqlName.equals(ID_FIRST_VERSION_FIELD);
+            versionField = fieldType.equals(ReservedDatabaseField.VERSION);
+            originalBeanId = fieldType.equals(ReservedDatabaseField.ID_ORIGINAL_BEAN);
         } else {
             special = false;
             incompatibleSqlType = false;
@@ -117,6 +111,8 @@ public class Column {
     }
 
     public Column(Column col) {
+        this.fieldManager = col.fieldManager;
+        this.dbType = col.dbType;
         this.sqlTypeName = col.sqlTypeName;
         this.sqlName = col.sqlName;
         this.displaySize = col.displaySize;
@@ -300,7 +296,8 @@ public class Column {
     @Override
     public String toString() {
         return "Column{" +
-                "incompatibleTypes=" + incompatibleSqlType +
+                "reservedDatabaseFieldManager=" + fieldManager +
+                ", dbType=" + dbType +
                 ", sqlTypeName='" + sqlTypeName + '\'' +
                 ", sqlName='" + sqlName + '\'' +
                 ", displaySize=" + displaySize +
@@ -318,12 +315,13 @@ public class Column {
                 ", lastUpdate=" + lastUpdate +
                 ", modifiedBy=" + modifiedBy +
                 ", itemOrder=" + itemOrder +
-                ", special=" + special +
-                ", decimals=" + decimals +
-                ", negativeAllowed=" + negativeAllowed +
                 ", versionField=" + versionField +
                 ", originalBeanId=" + originalBeanId +
-                "}";
+                ", special=" + special +
+                ", incompatibleSqlType=" + incompatibleSqlType +
+                ", decimals=" + decimals +
+                ", negativeAllowed=" + negativeAllowed +
+                '}';
     }
 
     private void suggestType() {
@@ -336,30 +334,7 @@ public class Column {
         if (versionField)
             return "int";
 
-        return getSuggestedType(sqlTypeName, precision);
-    }
-
-    public static String getSuggestedType(String sqlTypeName, int precision) {
-        String type = sqlTypeName.split(" ")[0];
-
-        if (type.endsWith("INT")) {
-            if (type.equals("BIGINT") || (type.equals("INT") && (sqlTypeName.contains("UNSIGNED"))))
-                return "Long";
-            if (sqlTypeName.equals("TINYINT UNSIGNED") && precision == 1)
-                return "Boolean";
-            return "Integer";
-        }
-
-        if (type.equals("DATE"))
-            return "Date";
-
-        if (type.equals("TIME"))
-            return "Time";
-
-        if (type.equals("DATETIME") || type.equals("TIMESTAMP"))
-            return "Timestamp";
-
-        return "String";
+        return ReservedDatabaseFieldTypeMappings.suggestJavaType(dbType, sqlTypeName, precision);
     }
 
     public String getSuggestedName() {

@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import java.util.List;
-
 public abstract class AbstractDatabaseServer implements DatabaseServer {
 
     private final String serverFQDN;
@@ -25,14 +23,6 @@ public abstract class AbstractDatabaseServer implements DatabaseServer {
         this.engineName = engineName;
         this.driverName = driverName;
     }
-
-    public abstract List<String> getAvailableDatabases();
-
-    public abstract List<String> getTables(String dbName);
-
-    public abstract List<Column> getColumns(String dbName, String tableName);
-
-    public abstract List<OneToManyRelationship> getDetectedOneToManyRelationship(String dbName, String tableName);
 
 
     protected Connection getConnection(String databaseName) {

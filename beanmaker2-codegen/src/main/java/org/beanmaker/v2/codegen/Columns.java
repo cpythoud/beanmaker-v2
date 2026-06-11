@@ -11,21 +11,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.beanmaker.v2.codegen.Column.ID_FIELD;
-import static org.beanmaker.v2.codegen.Column.ID_FIRST_VERSION_FIELD;
-import static org.beanmaker.v2.codegen.Column.ORDERING_FIELD;
-import static org.beanmaker.v2.codegen.Column.VERSION_FIELD;
-
 public class Columns implements Iterable<Column> {
 
     private static final List<String> NAMING_CANDIDATE_FIELDS =
             List.of("name", "id_name_label", "id_label", "description", "id_description_label", "code");
-    private static final List<String> ORDER_BY_CANDIDATE_FIELDS =
-            List.of(ORDERING_FIELD, "name", "description", "code");
 
     private final DatabaseServer server;
     private final String db;
     private final String table;
+    private final ReservedDatabaseFieldManager fieldManager;
 
     private final List<Column> columns;
     private final List<OneToManyRelationship> detectedOneToManyRelationships;
@@ -33,9 +27,14 @@ public class Columns implements Iterable<Column> {
     private final List<ExtraField> extraFields = new ArrayList<>();
 
     public Columns(DatabaseServer server, String db, String table) {
+        this(server, db, table, ReservedDatabaseFieldManager.DEFAULT);
+    }
+
+    public Columns(DatabaseServer server, String db, String table, ReservedDatabaseFieldManager fieldManager) {
         this.server = server;
         this.db = db;
         this.table = table;
+        this.fieldManager = fieldManager;
         columns = server.getColumns(db, table);
         // ! For now, we deactivate detection of possible one-to-many relationship
         // ! because the feature is a nuisance on large table sets and should probably be abandoned
@@ -59,12 +58,7 @@ public class Columns implements Iterable<Column> {
     }
 
     public List<Column> getList() {
-        List<Column> copy = new ArrayList<>();
-
-        for (Column column: columns)
-            copy.add(new Column(column));
-
-        return copy;
+        return List.copyOf(columns);
     }
 
     public int getCount() {
@@ -107,6 +101,7 @@ public class Columns implements Iterable<Column> {
         columns.get(index - 1).setRequired(required);
     }
 
+    @Deprecated
     public void resetRequired() {
         for (Column column: columns)
             if (!column.isSpecial())
@@ -120,6 +115,7 @@ public class Columns implements Iterable<Column> {
         columns.get(index - 1).setUnique(unique);
     }
 
+    @Deprecated
     public void resetUnique() {
         for (Column column: columns)
             if (!column.isSpecial())
@@ -279,7 +275,7 @@ public class Columns implements Iterable<Column> {
     }
 
     public Set<String> getJavaTypes() {
-        Set<String> types = new HashSet<String>();
+        var types = new HashSet<String>();
 
         for (Column column: columns)
             types.add(column.getJavaType());
@@ -287,7 +283,7 @@ public class Columns implements Iterable<Column> {
         return types;
     }
 
-    // ?? utility ??
+    @Deprecated
     public boolean containsNumericalData() {
         for (Column column: columns)
             if (column.getJavaType().equals("Integer") || column.getJavaType().equals("Long"))
@@ -372,7 +368,7 @@ public class Columns implements Iterable<Column> {
     }
 
     private Set<String> getOneToManyRelationshipTableNames(List<OneToManyRelationship> relationships) {
-        Set<String> tableNames = new HashSet<String>();
+        var tableNames = new HashSet<String>();
         for (OneToManyRelationship relationship: relationships)
             tableNames.add(relationship.getTable());
         return tableNames;
@@ -388,7 +384,7 @@ public class Columns implements Iterable<Column> {
                 if (col.getSqlName().equalsIgnoreCase(candidate))
                     return candidate;
 
-        return ID_FIELD;
+        return fieldManager.fieldName(ReservedDatabaseField.ID);
     }
 
     public List<String> getOrderByFields() {
@@ -398,9 +394,11 @@ public class Columns implements Iterable<Column> {
             var itemOrder = getItemOrderField();
             if (!itemOrder.isUnique())
                 list.add(itemOrder.getItemOrderAssociatedField());
-            list.add(ORDERING_FIELD);
+            list.add(fieldManager.fieldName(ReservedDatabaseField.ITEM_ORDER));
         } else {
-            for (String candidate: ORDER_BY_CANDIDATE_FIELDS) {
+            var candidateList = List.of(fieldManager.fieldName(ReservedDatabaseField.ITEM_ORDER),
+                    "name", "description", "code");
+            for (String candidate: candidateList) {
                 for (Column col: columns)
                     if (col.getSqlName().equalsIgnoreCase(candidate)) {
                         list.add(candidate);
@@ -410,7 +408,7 @@ public class Columns implements Iterable<Column> {
         }
 
         if (list.isEmpty())
-            list.add(ID_FIELD);
+            list.add(fieldManager.fieldName(ReservedDatabaseField.ID));
         return list;
     }
 
@@ -441,7 +439,12 @@ public class Columns implements Iterable<Column> {
         return false;
     }
 
+    @Deprecated  // * typo in function name
     public void removeExtrafield(String name) {
+        removeExtraField(name);
+    }
+
+    public void removeExtraField(String name) {
         int index = getExtraFieldIndex(name);
         if (index > -1)
             extraFields.remove(index);
@@ -461,7 +464,7 @@ public class Columns implements Iterable<Column> {
     }
 
     public void removeExtraField(ExtraField extraField) {
-        removeExtrafield(extraField.getName());
+        removeExtraField(extraField.getName());
     }
 
     public void removeExtraField(int index) {
@@ -584,7 +587,9 @@ public class Columns implements Iterable<Column> {
 
     private List<FieldFormatError.FieldAssociatedError> checkIdPresent() {
         if (!hasId())
-            return List.of(FieldFormatError.MISSING_ID.associateField(ID_FIELD));
+            return List.of(
+                    FieldFormatError.MISSING_ID.associateField(fieldManager.fieldName(ReservedDatabaseField.ID))
+            );
 
         return List.of();
     }
@@ -601,7 +606,7 @@ public class Columns implements Iterable<Column> {
 
     private List<FieldFormatError.FieldAssociatedError> checkDuplicatedSpecialFields() {
         var errors = new ArrayList<FieldFormatError.FieldAssociatedError>();
-        for (String field: Column.SPECIAL_CASE_FIELDS) {
+        for (String field: fieldManager.allFieldNames()) {
             int count = 0;
             for (Column column: columns) {
                 if (column.getSqlName().equals(field))
@@ -618,9 +623,11 @@ public class Columns implements Iterable<Column> {
         var status = getVersionedStatus();
 
         if (status.versionField && !status.originalBeanIdField)
-            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField(ID_FIRST_VERSION_FIELD));
+            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField(
+                    fieldManager.fieldName(ReservedDatabaseField.ID_ORIGINAL_BEAN)));
         if (status.originalBeanIdField && !status.versionField)
-            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField(VERSION_FIELD));
+            return List.of(FieldFormatError.MISSING_VERSIONING_COUNTERPART.associateField(
+                    fieldManager.fieldName(ReservedDatabaseField.VERSION)));
 
         return List.of();
     }

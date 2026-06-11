@@ -1,6 +1,8 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.database.sql.DbType;
 import org.beanmaker.v2.database.sql.DbUtils;
+import org.beanmaker.v2.database.sql.SecureQuery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,12 +21,19 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
 
     private static final List<String> OFF_LIMIT_DBS = Arrays.asList("information_schema", "mysql");
 
+    private static final SecureQuery.Builder META_DATA_QUERY = SecureQuery.builder("SELECT * FROM [TABLE_1]");
+
     public MySQLDatabaseServer(String serverFQDN, int serverPort, String username, String password) {
         super(serverFQDN, serverPort, username, password, "mysql", DRIVER_NAME);
     }
 
     public MySQLDatabaseServer(String serverFQDN, String username, String password) {
         super(serverFQDN, DEFAULT_PORT, username, password, "mysql", DRIVER_NAME);
+    }
+
+    @Override
+    public DbType getDbType() {
+        return DbType.MYSQL;
     }
 
     @Override
@@ -87,6 +96,11 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
 
     @Override
     public List<Column> getColumns(String dbName, String tableName) {
+        return getColumns(dbName, tableName, new DefaultReservedDatabaseFieldManager());
+    }
+
+    @Override
+    public List<Column> getColumns(String dbName, String tableName, ReservedDatabaseFieldManager fields) {
         if (!getAvailableDatabases().contains(dbName))
             throw new IllegalArgumentException("No " + dbName + " database available on this server");
 
@@ -98,13 +112,23 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
         Connection conn = null;
         try {
             conn = getConnection(dbName);
-            PreparedStatement stat = conn.prepareStatement("SELECT * FROM " + tableName);
+            PreparedStatement stat = conn.prepareStatement(
+                    META_DATA_QUERY.table(1, tableName).build().parse(DbType.MYSQL)
+            );
             try {
                 ResultSetMetaData md = stat.executeQuery().getMetaData();
                 for (int i = 1; i <= md.getColumnCount(); i++)
                     cols.add(new Column(
-                            md.getColumnTypeName(i), md.getColumnName(i), md.getColumnDisplaySize(i), md.getPrecision(i), md.getScale(i),
-                            md.isAutoIncrement(i), md.isNullable(i) == ResultSetMetaData.columnNoNulls));
+                            fields,
+                            getDbType(),
+                            md.getColumnTypeName(i),
+                            md.getColumnName(i),
+                            md.getColumnDisplaySize(i),
+                            md.getPrecision(i),
+                            md.getScale(i),
+                            md.isAutoIncrement(i),
+                            md.isNullable(i) == ResultSetMetaData.columnNoNulls
+                    ));
                 stat.close();
             } finally {
                 DbUtils.preparedStatementSilentClose(stat);
@@ -138,7 +162,9 @@ public class MySQLDatabaseServer extends AbstractDatabaseServer {
         try {
             conn = getConnection(dbName);
             for (String table: tables) {
-                PreparedStatement stat = conn.prepareStatement("SELECT * FROM " + table);
+                PreparedStatement stat = conn.prepareStatement(
+                        META_DATA_QUERY.table(1, tableName).build().parse(DbType.MYSQL)
+                );
                 try {
                     ResultSetMetaData md = stat.executeQuery().getMetaData();
                     for (int i = 1; i <= md.getColumnCount(); i++) {
