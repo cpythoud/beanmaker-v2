@@ -16,8 +16,18 @@ public abstract class BeanCode extends BaseCode {
     protected final String itemManagerRetrievalCall;
     protected final String formatterInstanceExpression;
 
-    public BeanCode(String beanName, String packageName, String namePrefix, String nameSuffix, ProjectParameters projectParameters) {
-        super((namePrefix == null ? "" : namePrefix) + beanName + (nameSuffix == null ? "" : nameSuffix),  packageName, projectParameters);
+    public BeanCode(
+            String beanName,
+            String packageName,
+            String namePrefix,
+            String nameSuffix,
+            ProjectParameters projectParameters)
+    {
+        super(
+                (namePrefix == null ? "" : namePrefix) + beanName + (nameSuffix == null ? "" : nameSuffix),
+                packageName,
+                projectParameters
+        );
         this.beanName = beanName;
         this.packageName = packageName;
         beanVarName = getBeanVarName(beanName);
