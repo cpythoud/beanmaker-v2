@@ -2,6 +2,7 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.database.sql.DbTransaction;
 
+import org.beanmaker.v2.runtime.dbutil.SidManager;
 import org.beanmaker.v2.runtime.dbutil.Transactions;
 
 import org.beanmaker.v2.util.SecurityTokenGenerator;
@@ -167,10 +168,7 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
     ) { }
 
     protected String createSid() {
-        String token = SecurityTokenGenerator.create();
-        while (token.contains("_"))
-            token = SecurityTokenGenerator.create();
-        return token;
+        return SidManager.createSid();
     }
 
 }
