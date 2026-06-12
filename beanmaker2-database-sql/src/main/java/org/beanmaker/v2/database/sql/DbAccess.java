@@ -308,4 +308,104 @@ public class DbAccess implements DbExecutor {
         return processQueries(query.parse(db.getType()), queries);
     }
 
+    @Override
+    public long createRecord(DbQuery query, DbQuerySetup querySetup) {
+        if (query.stringBased())
+            return createRecord(query.string(), querySetup);
+        if (query.secureQueryBased())
+            return createRecord(query.secureQuery(), querySetup);
+
+        throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public int processUpdate(DbQuery query, DbQuerySetup querySetup) {
+        if (query.stringBased())
+            return processUpdate(query.string(), querySetup);
+        if (query.secureQueryBased())
+            return processUpdate(query.secureQuery(), querySetup);
+
+        throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public int processUpdate(DbQuery query) {
+        if (query.stringBased())
+            return processUpdate(query.string());
+        if (query.secureQueryBased())
+            return processUpdate(query.secureQuery());
+
+        throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public void processQuery(DbQuery query, DbQuerySetup querySetup, DbQueryProcess queryProcess) {
+        if (query.stringBased())
+            processQuery(query.string(), querySetup, queryProcess);
+        else if (query.secureQueryBased())
+            processQuery(query.secureQuery(), querySetup, queryProcess);
+        else
+            throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public void processQuery(DbQuery query, DbQueryProcess queryProcess) {
+        if (query.stringBased())
+            processQuery(query.string(), queryProcess);
+        else if (query.secureQueryBased())
+            processQuery(query.secureQuery(), queryProcess);
+        else
+            throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public <T> T processQuery(DbQuery query, DbQuerySetup querySetup, DbQueryRetrieveData<T> queryRetrieveData) {
+        if (query.stringBased())
+            return processQuery(query.string(), querySetup, queryRetrieveData);
+        if (query.secureQueryBased())
+            return processQuery(query.secureQuery(), querySetup, queryRetrieveData);
+
+        throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public <T> T processQuery(DbQuery query, DbQueryRetrieveData<T> retrieveData) {
+        if (query.stringBased())
+            return processQuery(query.string(), retrieveData);
+        if (query.secureQueryBased())
+            return processQuery(query.secureQuery(), retrieveData);
+
+        throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public void processUpdates(DbQuery query, DbUpdates updates) {
+        if (query.stringBased())
+            processUpdates(query.string(), updates);
+        else if (query.secureQueryBased())
+            processUpdates(query.secureQuery(), updates);
+        else
+            throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public void processQueries(DbQuery query, DbQueriesNoReturn queries) {
+        if (query.stringBased())
+            processQueries(query.string(), queries);
+        else if (query.secureQueryBased())
+            processQueries(query.secureQuery(), queries);
+        else
+            throw new AssertionError("Incomplete query type inventory!");
+    }
+
+    @Override
+    public <T> T processQueries(DbQuery query, DbQueries<T> queries) {
+        if (query.stringBased())
+            return processQueries(query.string(), queries);
+        if (query.secureQueryBased())
+            return processQueries(query.secureQuery(), queries);
+
+        throw new AssertionError("Incomplete query type inventory!");
+    }
+
 }
