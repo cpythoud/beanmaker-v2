@@ -1,8 +1,10 @@
 package org.beanmaker.v2.runtime.dbutil;
 
 import org.beanmaker.v2.database.sql.DbExecutor;
+import org.beanmaker.v2.database.sql.DbQuery;
 import org.beanmaker.v2.database.sql.DbQuerySetup;
 import org.beanmaker.v2.database.sql.DbTransaction;
+import org.beanmaker.v2.database.sql.SecureQuery;
 
 import org.beanmaker.v2.runtime.DbBeanEditorInterface;
 import org.beanmaker.v2.runtime.DbBeanInterface;
@@ -38,6 +40,22 @@ public final class SingleElements {
             Class<? extends DbBeanInterface> beanClass,
             DbExecutor dbExecutor)
     {
+        return getBean(DbQuery.of(query), beanClass, dbExecutor);
+    }
+
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            SecureQuery query,
+            Class<? extends DbBeanInterface> beanClass,
+            DbExecutor dbExecutor)
+    {
+        return getBean(DbQuery.of(query), beanClass, dbExecutor);
+    }
+
+    public static <B extends DbBeanInterface> Optional<B> getBean(
+            DbQuery query,
+            Class<? extends DbBeanInterface> beanClass,
+            DbExecutor dbExecutor)
+    {
         return Optional.ofNullable(
                 dbExecutor.processQuery(
                         query,
@@ -66,6 +84,24 @@ public final class SingleElements {
 
     public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
             String query,
+            DbQuerySetup querySetup,
+            E returnedEditor,
+            DbExecutor dbExecutor)
+    {
+        return getEditor(DbQuery.of(query), querySetup, returnedEditor, dbExecutor);
+    }
+
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
+            SecureQuery query,
+            DbQuerySetup querySetup,
+            E returnedEditor,
+            DbExecutor dbExecutor)
+    {
+        return getEditor(DbQuery.of(query), querySetup, returnedEditor, dbExecutor);
+    }
+
+    public static <E extends DbBeanEditorInterface> Optional<E> getEditor(
+            DbQuery query,
             DbQuerySetup querySetup,
             E returnedEditor,
             DbExecutor dbExecutor)
@@ -114,6 +150,14 @@ public final class SingleElements {
     }
 
     public static long getID(String query, DbQuerySetup querySetup, DbExecutor dbExecutor) {
+        return getID(DbQuery.of(query), querySetup, dbExecutor);
+    }
+
+    public static long getID(SecureQuery query, DbQuerySetup querySetup, DbExecutor dbExecutor) {
+        return getID(DbQuery.of(query), querySetup, dbExecutor);
+    }
+
+    public static long getID(DbQuery query, DbQuerySetup querySetup, DbExecutor dbExecutor) {
         return dbExecutor.processQuery(
                 query,
                 querySetup,

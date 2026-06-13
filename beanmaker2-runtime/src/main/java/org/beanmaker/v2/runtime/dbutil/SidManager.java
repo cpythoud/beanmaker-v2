@@ -1,5 +1,6 @@
 package org.beanmaker.v2.runtime.dbutil;
 
+import org.beanmaker.v2.database.sql.DbExecutor;
 import org.beanmaker.v2.database.sql.DbTransaction;
 import org.beanmaker.v2.database.sql.SecureQuery;
 
@@ -58,6 +59,15 @@ public final class SidManager {
                     stat.setString(1, sid);
                     newSids.add(sid);
                 }
+        );
+    }
+
+    public static long getId(DbExecutor dbExecutor, String table, String sid) {
+        var query = SecureQuery.builder("SELECT id FROM [TABLE_1] WHERE sid=?").table(1, table).build();
+        return SingleElements.getID(
+                query,
+                stat -> stat.setString(1, sid),
+                dbExecutor
         );
     }
 
