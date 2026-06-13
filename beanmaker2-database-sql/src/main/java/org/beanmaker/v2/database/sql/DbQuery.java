@@ -2,38 +2,38 @@ package org.beanmaker.v2.database.sql;
 
 import java.util.Objects;
 
-public class DbQuery {
+public sealed interface DbQuery permits DbQuery.Raw, DbQuery.Secure {
 
-    private final String queryString;
-    private final SecureQuery secureQuery;
+    String parse(DbType dbType);
 
-    private DbQuery(String queryString, SecureQuery secureQuery) {
-        this.queryString = queryString;
-        this.secureQuery = secureQuery;
+    static DbQuery of(String query) {
+        return new Raw(query);
     }
 
-    public static DbQuery of(String query) {
-        return new DbQuery(query, null);
+    static DbQuery of(SecureQuery query) {
+        return new Secure(query);
     }
 
-    public static DbQuery of(SecureQuery query) {
-        return new DbQuery(null, query);
+    record Raw(String query) implements DbQuery {
+        public Raw {
+            Objects.requireNonNull(query);
+        }
+
+        @Override
+        public String parse(DbType dbType) {
+            return query;
+        }
     }
 
-    boolean stringBased() {
-        return queryString != null;
-    }
+    record Secure(SecureQuery query) implements DbQuery {
+        public Secure {
+            Objects.requireNonNull(query);
+        }
 
-    boolean secureQueryBased() {
-        return secureQuery != null;
-    }
-
-    String string() {
-        return Objects.requireNonNull(queryString);
-    }
-
-    SecureQuery secureQuery() {
-        return Objects.requireNonNull(secureQuery);
+        @Override
+        public String parse(DbType dbType) {
+            return query.parse(dbType);
+        }
     }
 
 }
