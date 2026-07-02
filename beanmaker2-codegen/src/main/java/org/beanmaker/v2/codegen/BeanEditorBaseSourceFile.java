@@ -125,6 +125,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         if (columns.isVersioned())
             importsManager.addImport("org.beanmaker.v2.runtime.VersionedBeanEditor");
 
+        if (columns.hasSidField())
+            importsManager.addImport("org.beanmaker.v2.runtime.SidManager");
+
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
 
@@ -209,10 +212,12 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         addBeanConstructor();
         addFieldsConstructor();
         addRSConstructor();
+        addRetrievalFromIdOrSidStaticFunctions(true);
         addCopyDataFunction();
         addFieldsInitFunction();
         addBeanInitFunction();
-        addSetIDFunction();
+        addSetIdFunction();
+        addSetIdOrSidFunctions();
     }
 
     private void addNoParamConstructor() {
@@ -373,7 +378,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
-    private void addSetIDFunction() {
+    private void addSetIdFunction() {
         javaClass
                 .addContent(new FunctionDeclaration("setId")
                         .annotate("@Override")
@@ -387,11 +392,45 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(EMPTY_LINE);
     }
 
+    private void addSetIdOrSidFunctions() {
+        javaClass
+                .addContent(getSetIdOrSidFunctionStart(false).addContent(getSetIdCallFromSid(false)))
+                .addContent(EMPTY_LINE)
+                .addContent(getSetIdOrSidFunctionStart(true).addContent(getSetIdCallFromSid(true)))
+                .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getSetIdOrSidFunctionStart(boolean transacted) {
+        var function = new FunctionDeclaration("setIdOrSid")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC)
+                .addArgument(new FunctionArgument("String", "idOrSid"));
+
+        if (transacted)
+            function.addArgument(new FunctionArgument("DbTransaction", "transaction"));
+
+        return function;
+    }
+
+    private FunctionCall getSetIdCallFromSid(boolean transacted) {
+        var getIdCall = new FunctionCall("getId", beanName).addArgument("idOrSid");
+        if (transacted)
+            getIdCall.addArgument("transaction");
+
+        var setIdCall = new FunctionCall("setId").byItself().addArgument(getIdCall);
+        if (transacted)
+            setIdCall.addArgument("transaction");
+
+        return setIdCall;
+    }
+
     @Override
     protected void addCoreFunctionality() {
         addToBeanFunctions();
         addToStringFunction();
         addSetters();
+        if (columns.hasSidField())
+            addGetIdOrSidFunction();
         addGetters();
         addLabelGetters();
         addRequiredTestFunctions();
@@ -469,7 +508,7 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addSetters() {
         for (Column column: columns.getList())
-            if (!column.isId() && !column.isVersionField() && !column.isOriginalBeanId())
+            if (!column.isId() && !column.isSid() && !column.isVersionField() && !column.isOriginalBeanId())
                 addSetterFunctions(column);
     }
 
@@ -574,10 +613,20 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
                             .addContent(new Assignment("old" + capitalize(fieldVar), fieldVar)));
         beanAssignmentFunction.addContent(new Assignment(fieldVar, new FunctionCall("getId", beanVar)));
 
+        var idOrSidFunction = new FunctionDeclaration("set" + capitalize(beanVar) + "IdOrSid")
+                .visibility(Visibility.PUBLIC)
+                .addArgument(new FunctionArgument("String", "idOrSid"))
+                .addContent(new FunctionCall("set" + capitalize(fieldVar))
+                        .byItself()
+                        .addArgument(new FunctionCall("getId", column.getAssociatedBeanClass())
+                                .addArgument("idOrSid")));
+
         javaClass
                 .addContent(idAssignmentFunction)
                 .addContent(EMPTY_LINE)
                 .addContent(beanAssignmentFunction)
+                .addContent(EMPTY_LINE)
+                .addContent(idOrSidFunction)
                 .addContent(EMPTY_LINE);
     }
 
@@ -1695,11 +1744,14 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         javaClass.addContent(getResetFunction(labels)).addContent(EMPTY_LINE);
 
-        if (columns.hasItemOrder() || !labels.isEmpty() || columns.isVersioned()) {
+        if (columns.hasSidField() || columns.hasItemOrder() || !labels.isEmpty() || columns.isVersioned()) {
             var fullResetFunction = new FunctionDeclaration("fullReset")
                     .annotate("@Override")
                     .visibility(Visibility.PUBLIC)
                     .addContent(new FunctionCall("fullReset", "super").byItself());
+
+            if (columns.hasSidField())
+                fullResetFunction.addContent(new Assignment("sid", "\"\""));
 
             if (columns.isVersioned()) {
                 fullResetFunction.addContent(new Assignment("beanVersion", "1"));
@@ -1744,7 +1796,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         }
 
         for (Column column: columns.getList()) {
-            if (!column.isId() && !column.isItemOrder() && !column.isVersionField() && !column.isOriginalBeanId()) {
+            if (!column.isId() && !column.isSid() && !column.isItemOrder()
+                    && !column.isVersionField() && !column.isOriginalBeanId())
+            {
                 String type = column.getJavaType();
                 String name = column.getJavaName();
                 switch (type) {
@@ -1808,15 +1862,57 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
     }
 
     private void addDBUpdateInnerClasses() {
-        var function = getOverrideSetupStatementFunction();
+        var setupClass = new JavaClass("RecordCreationSetup")
+                .visibility(Visibility.PRIVATE)
+                .implementsInterface("DbQuerySetup");
+
+        if (columns.hasSidField()) {
+            setupClass
+                    .addContent(new VarDeclaration("String", "sid")
+                            .markAsFinal()
+                            .visibility(Visibility.PRIVATE))
+                    .addContent(EMPTY_LINE)
+                    .addContent(new ConstructorDeclaration("RecordCreationSetup")
+                            .addArgument(new FunctionArgument("DbTransaction", "transaction"))
+                            .addContent(new Assignment(
+                                    "sid",
+                                    new FunctionCall("createUniqueSid", "SidManager")
+                                            .addArguments("transaction", quickQuote(tableName))
+                            )))
+                    .addContent(EMPTY_LINE);
+        }
+
+        setupClass.addContent(getOverrideSetupStatementFunction(false));
+
+        javaClass
+                .addContent(setupClass)
+                .addContent(EMPTY_LINE)
+                .addContent(new JavaClass("RecordUpdateSetup")
+                        .visibility(Visibility.PRIVATE)
+                        .implementsInterface("DbQuerySetup")
+                        .addContent(getOverrideSetupStatementFunction(true)))
+                .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getOverrideSetupStatementFunction(boolean update) {
+        var function = getOverrideSetupStatementFunctionStart();
 
         int index = 0;
         for (Column column: columns.getList()) {
             if (!column.isId()) {
+                if (column.isSid() && update)
+                    continue;
+
                 String name = column.getJavaName();
                 String type = column.getJavaType();
                 ++index;
-                if (column.isLabelReference() || column.isFileReference() || column.isBeanReference())
+                if (column.isSid())
+                    function.addContent(new FunctionCall("setString", "DBUtil")
+                            .byItself()
+                            .addArgument("stat")
+                            .addArgument(index + "")
+                            .addArgument("sid"));
+                else if (column.isLabelReference() || column.isFileReference() || column.isBeanReference())
                     function.addContent(getFieldDBUpdateDBUtilFunction("ID", name, index));
                 else if (column.isItemOrder())
                     function.addContent(getFieldDBUpdateStatFunction("Long", name, index));
@@ -1833,24 +1929,13 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             }
         }
 
-        javaClass
-                .addContent(new JavaClass("RecordCreationSetup")
-                        .visibility(Visibility.PRIVATE)
-                        .implementsInterface("DbQuerySetup")
-                        .addContent(function))
-                .addContent(EMPTY_LINE)
-                .addContent(new JavaClass("RecordUpdateSetup")
-                        .visibility(Visibility.PRIVATE)
-                        .extendsClass("RecordCreationSetup")
-                        .addContent(getOverrideSetupStatementFunction()
-                                .addContent(new FunctionCall("setupPreparedStatement", "super")
-                                        .byItself()
-                                        .addArgument("stat"))
-                                .addContent(getFieldDBUpdateStatFunction("Long", "id", index + 1))))
-                .addContent(EMPTY_LINE);
+        if (update)
+            function.addContent(getFieldDBUpdateStatFunction("Long", "id", ++index));
+
+        return function;
     }
 
-    private FunctionDeclaration getOverrideSetupStatementFunction() {
+    private FunctionDeclaration getOverrideSetupStatementFunctionStart() {
         return new FunctionDeclaration("setupPreparedStatement")
                 .annotate("@Override")
                 .visibility(Visibility.PUBLIC)
@@ -1911,12 +1996,20 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
             }
         });
 
-        function.addContent(new VarDeclaration(
-                "long",
-                "id",
-                new FunctionCall("createRecord", "transaction")
-                        .addArgument(getBeanCreationQuery())
-                        .addArgument(new ObjectCreation("RecordCreationSetup"))));
+        var setupObjectCreation = new ObjectCreation("RecordCreationSetup");
+        if (columns.hasSidField())
+            setupObjectCreation.addArgument("transaction");
+        function
+                .addContent(new VarDeclaration("var", "setup", setupObjectCreation))
+                .addContent(new VarDeclaration(
+                        "long",
+                        "id",
+                        new FunctionCall("createRecord", "transaction")
+                                .addArgument(getBeanCreationQuery())
+                                .addArgument("setup")));
+
+        if (columns.hasSidField())
+            function.addContent(new Assignment("sid", "setup.sid"));
 
         if (!labels.isEmpty())
             function.addContent(new FunctionCall("updateLabels").byItself().addArgument("transaction"));
@@ -2060,11 +2153,9 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
 
         int count = 0;
         for (var column: columns) {
-            String name = column.getSqlName();
-            if (!name.equals("id")) {
+            if (!column.isId()) {
                 count++;
-                buf.append(backquote(name));  // ! MySQL specific,  TODO: adjust for other databases
-                buf.append(", ");
+                buf.append(backquote(column.getSqlName())).append(", ");  // ! MySQL specific,  TODO: adjust for other databases
             }
         }
         buf.delete(buf.length() - 2, buf.length());
@@ -2085,11 +2176,8 @@ public class BeanEditorBaseSourceFile extends BeanCodeWithDBInfo {
         buf.append("UPDATE ").append(columns.getTable()).append(" SET ");
 
         for (var column: columns) {
-            String name = column.getSqlName();
-            if (!name.equals("id")) {
-                buf.append(backquote(name));  // ! MySQL specific,  TODO: adjust for other databases
-                buf.append("=?, ");
-            }
+            if (!column.isId() && !column.isSid())
+                buf.append(backquote(column.getSqlName())).append("=?, ");  // ! MySQL specific,  TODO: adjust for other databases
         }
         buf.delete(buf.length() - 2, buf.length());
 

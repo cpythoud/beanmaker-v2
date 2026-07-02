@@ -172,39 +172,19 @@ public class Columns implements Iterable<Column> {
     }
 
     public boolean hasId() {
-        for (Column column: columns) {
-            if (column.isId())
-                return true;
-        }
-
-        return false;
+        return columns.stream().anyMatch(Column::isId);
     }
 
     public boolean hasLastUpdate() {
-        for (Column column: columns) {
-            if (column.isLastUpdate())
-                return true;
-        }
-
-        return false;
+        return columns.stream().anyMatch(Column::isLastUpdate);
     }
 
     public boolean hasModifiedBy() {
-        for (Column column: columns) {
-            if (column.isModifiedBy())
-                return true;
-        }
-
-        return false;
+        return columns.stream().anyMatch(Column::isModifiedBy);
     }
 
     public boolean hasItemOrder() {
-        for (Column column: columns) {
-            if (column.isItemOrder())
-                return true;
-        }
-
-        return false;
+        return columns.stream().anyMatch(Column::isItemOrder);
     }
 
     public Optional<Column> getItemOrderColumn() {
@@ -222,51 +202,27 @@ public class Columns implements Iterable<Column> {
     }
 
     public boolean hasLabels() {
-        for (Column column: columns)
-            if (column.isLabelReference())
-                return true;
-
-        return false;
+        return columns.stream().anyMatch(Column::isLabelReference);
     }
 
     public boolean hasLabelField() {
-        for (Column column: columns)
-            if (column.getJavaName().equals("idLabel"))
-                return true;
-
-        return false;
+        return hasJavaField("idLabel");
     }
 
     public boolean hasFiles() {
-        for (Column column: columns)
-            if (column.isFileReference())
-                return true;
-
-        return false;
+        return columns.stream().anyMatch(Column::isFileReference);
     }
 
     public boolean hasFileField() {
-        for (Column column: columns)
-            if (column.getJavaName().equals("idFile"))
-                return true;
-
-        return false;
+        return hasJavaField("idFile");
     }
 
     public boolean hasOtherBeanReference() {
-        for (Column column: columns)
-            if (column.isOtherBeanReference())
-                return true;
-
-        return false;
+        return columns.stream().anyMatch(Column::isOtherBeanReference);
     }
 
     public boolean hasDecimalValue() {
-        for (Column column: columns)
-            if (column.isDecimalValue())
-                return true;
-
-        return false;
+        return columns.stream().anyMatch(Column::isDecimalValue);
     }
 
     @Deprecated
@@ -487,65 +443,36 @@ public class Columns implements Iterable<Column> {
     }
 
     public boolean hasCodeField() {
-        for (Column column: columns)
-            if (column.getJavaName().equals("code"))
-                return true;
-
-        return false;
+        return hasSQLField("code");
     }
 
     public boolean hasUniqueCodeField() {
-        for (Column column: columns)
-            if (column.getJavaName().equals("code") && column.isUnique())
-                return true;
-
-        return false;
+        return columns.stream().anyMatch(column -> column.getJavaName().equals("code") && column.isUnique());
     }
 
     public boolean hasVersionedCodeField() {
-        if (isVersioned()) {
-            for (Column column: columns)
-                if (column.getJavaName().equals("code"))
-                    return true;
-        }
-
-        return false;
+        return isVersioned() && hasJavaField("code");
     }
 
     public boolean hasActiveField() {
-        for (Column column: columns)
-            if (column.getJavaName().equals("active") && column.getJavaType().equals("Boolean"))
-                return true;
-
-        return false;
+        return columns.stream()
+                .anyMatch(column -> column.getJavaName().equals("active") && column.getJavaType().equals("Boolean"));
     }
 
     public List<Column> getLabels() {
-        var columns = new ArrayList<Column>();
-
-        for (Column column: getList())
-            if (column.isLabelReference())
-                columns.add(column);
-
-        return columns;
+        return columns.stream().filter(Column::isLabelReference).toList();
     }
 
     public List<Column> getDecimalValues() {
-        var columns = new ArrayList<Column>();
-
-        for (Column column: getList())
-            if (column.isDecimalValue())
-                columns.add(column);
-
-        return columns;
+        return columns.stream().filter(Column::isDecimalValue).toList();
     }
 
     public boolean hasSQLField(String sqlField) {
-        for (Column column: columns)
-            if (column.getSqlName().equals(sqlField))
-                return true;
+        return columns.stream().anyMatch(column -> column.getSqlName().equals(sqlField));
+    }
 
-        return false;
+    public boolean hasJavaField(String javaField) {
+        return columns.stream().anyMatch(column -> column.getJavaName().equals(javaField));
     }
 
     @Override
@@ -658,6 +585,10 @@ public class Columns implements Iterable<Column> {
         }
 
         return Optional.empty();
+    }
+
+    public boolean hasSidField() {
+        return hasSQLField(fieldManager.fieldName(ReservedDatabaseField.SID));
     }
 
 }

@@ -20,6 +20,7 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     protected boolean horizontal = false;
     protected boolean readonly = false;
     protected boolean displayButtonsSeparately = false;
+    protected boolean useSid = false;
 
     protected int uploadedFileSizeThreshold = HttpRequestParameters.DEFAULT_UPLOADED_FILE_SIZE_THRESHOLD;
 
@@ -52,8 +53,23 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     }
 
     @Override
+    public void setIdOrSid(String idOrSid) {
+        editor.setIdOrSid(idOrSid);
+    }
+
+    @Override
     public long getId() {
         return editor.getId();
+    }
+
+    @Override
+    public String getSid() {
+        return editor.getSid();
+    }
+
+    @Override
+    public String getIdOrSid() {
+        return editor.getIdOrSid();
     }
 
     public void setFormName(String formName) {
@@ -72,16 +88,21 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
         this.displayButtonsSeparately = displayButtonsSeparately;
     }
 
+    public void useSid(boolean useSid) {
+        this.useSid = useSid;
+    }
+
     @Override
     public String getHtmlForm() {
         return getHtmlFormTag().toString();
     }
 
     protected FormTag getFormStart() {
+        String idOrSid = SidManager.zeroOrSid(useSid ? editor.getSid() : editor.getId() + "");
         if (horizontal)
-            return htmlFormHelper.getHorizontalForm(formName, editor.getId());
+            return htmlFormHelper.getHorizontalForm(formName, idOrSid);
 
-        return htmlFormHelper.getForm(formName, editor.getId());
+        return htmlFormHelper.getForm(formName, idOrSid);
     }
 
     protected Tag<?> getFormElementsContainer(Tag<?> form) {
@@ -89,11 +110,13 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     }
 
     protected void composeErrorContainer(Tag<?> form) {
-        htmlFormHelper.addErrorMessagesContainer(form, formName, editor.getId());
+        String idOrSid = useSid ? editor.getSid() : editor.getId() + "";
+        htmlFormHelper.addErrorMessagesContainer(form, formName, SidManager.zeroOrSid(idOrSid));
     }
 
     protected void composeHiddenSubmitField(Tag<?> form) {
-        form.child(htmlFormHelper.getHiddenSubmitInput(formName, editor.getId()));
+        String idOrSid = SidManager.zeroOrSid(useSid ? editor.getSid() : editor.getId() + "");
+        form.child(htmlFormHelper.getHiddenSubmitInput(formName, idOrSid));
     }
 
     protected void composeAdditionalHtmlFormFields(Tag<?> form) { }
@@ -110,7 +133,7 @@ public abstract class BaseHTMLView extends BaseEditableView implements DbBeanHTM
     protected HFHParameters getSubmitButtonParameters() {
         HFHParameters params = new HFHParameters();
         params.setBeanName(formName);
-        params.setIdBean(editor.getId());
+        params.setBeanIdOrSid(useSid ? editor.getSid() : editor.getId() + "");
         params.setButtonLabel(dbBeanLocalization.getLabel("submit_button"));
         return params;
     }

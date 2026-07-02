@@ -61,6 +61,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     }
 
     protected boolean displayId = false;
+    protected boolean displaySid = false;
     protected boolean displayAllLanguages = true;
     protected boolean useSafeLabels = false;
 
@@ -108,6 +109,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     }
 
     protected boolean showBeanIdInRowId = true;
+    protected boolean useSids = false;
 
     protected String editIcon = "edit";
     protected String deleteIcon = "bin";
@@ -447,7 +449,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         for (IdNamePair pair: pairs)
             select.child(new OptionTag(
                     pair.getName(),
-                    Strings.zeroFill(Long.parseLong(pair.getId()), zeroFilledMaxDigits)));
+                    Strings.zeroFill(Long.parseLong(pair.getIdOrSid()), zeroFilledMaxDigits)));
 
         return getTableFilterCell().child(select);
     }
@@ -513,9 +515,9 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     public <B extends DbBeanInterface> TrTag getTableLine(B bean) {
         TrTag line;
         if (showEditLink(bean) || showDetailLink(bean))
-            line = getTrTag(bean.getId());
+            line = getTrTag(bean);
         else
-            line = getTableLine(bean.getId());
+            line = getTableLineTag(bean);
 
         if (showEditLink(bean) || showDetailLink(bean))
             line.child(getEditCell(bean));
@@ -531,9 +533,9 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     public <B extends DbBeanWithItemOrder> TrTag getItemOrderTableLine(B bean) {
         TrTag line;
         if (showEditLink(bean) || showOrderingLinks || enableDragNDrop || showDetailLink(bean))
-            line = getTrTag(bean.getId());
+            line = getTrTag(bean);
         else
-            line = getTableLine(bean.getId());
+            line = getTableLineTag(bean);
 
         if (showEditLink(bean) || showOrderingLinks || enableDragNDrop || showDetailLink(bean))
             line.child(getOperationCell(bean));
@@ -555,7 +557,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     }
 
     protected TdTag getIdTableCell(DbBeanInterface bean) {
-        return getTableCell("id", bean.getId());
+        return getBasicTableCell("id", bean.getId());
     }
 
     protected abstract <B extends DbBeanInterface> void addDataToLine(TrTag line, B bean);
@@ -566,6 +568,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return getDeleteCell(bean, dbBeanLocalization.getBeanVarName(), deleteLabel());
     }
 
+    @Deprecated
     protected TrTag getTableLine(long id) {
         TrTag line = getTrTag(id);
 
@@ -574,6 +577,11 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return line;
     }
 
+    protected TrTag getTableLineTag(DbBeanInterface bean) {
+        return getTrTag(bean).child(getTableCellForRemoveFilteringPlaceholder());
+    }
+
+    @Deprecated
     protected TrTag getTrTag(long id) {
         TrTag line = new TrTag();
 
@@ -583,6 +591,20 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return line;
     }
 
+    protected TrTag getTrTag(DbBeanInterface bean) {
+        TrTag line = new TrTag();
+
+        if (showBeanIdInRowId) {
+            if (useSids)
+                line.id(tableId + "_row_" + bean.getSid());
+            else
+                line.id(tableId + "_row_" + bean.getId());
+        }
+
+        return line;
+    }
+
+    @Deprecated
     protected TrTag getTableLine(String code) {
         TrTag line = getTrTag(code);
 
@@ -591,6 +613,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return line;
     }
 
+    @Deprecated
     protected TrTag getTrTag(String code) {
         return new TrTag().id(tableId + "_row_" + code);
     }
@@ -778,7 +801,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     @Deprecated
     protected TdTag getTableCell(String name, IdNamePair pair, String extraCssClasses) {
         return getTableCell(name, pair.getName(), extraCssClasses)
-                .attribute("data-filter-value", Strings.zeroFill(Long.parseLong(pair.getId()), zeroFilledMaxDigits));
+                .attribute("data-filter-value", Strings.zeroFill(Long.parseLong(pair.getIdOrSid()), zeroFilledMaxDigits));
     }
 
     @Deprecated
@@ -814,8 +837,8 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         String sortValue = null;
         for (IdNamePair pair: pairs) {
             OptionTag option =
-                    new OptionTag(pair.getName(), Strings.zeroFill(Long.parseLong(pair.getId()), zeroFilledMaxDigits));
-            if (pair.getId().equals(Long.toString(idSelected))) {
+                    new OptionTag(pair.getName(), Strings.zeroFill(Long.parseLong(pair.getIdOrSid()), zeroFilledMaxDigits));
+            if (pair.getIdOrSid().equals(Long.toString(idSelected))) {
                 option.selected();
                 sortValue = pair.getName();
             }
@@ -966,45 +989,81 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
     }
 
     protected ATag getEditLineLink(DbBeanInterface bean, String idPrefix, String cssClass, String tooltip) {
-        return getEditLineLink(bean.getId(), idPrefix, cssClass, tooltip);
+        return getEditLineLink(useSids ? bean.getSid() : bean.getId() + "", idPrefix, cssClass, tooltip);
     }
 
+    protected ATag getEditLineLink(String idOrSid, String idPrefix, String cssClass, String tooltip) {
+        return getOperationLink(idOrSid, idPrefix, cssClass, editIcon, tooltip);
+    }
+
+    @Deprecated
     protected ATag getEditLineLink(long id, String idPrefix, String cssClass, String tooltip) {
         return getOperationLink(id, idPrefix, cssClass, editIcon, tooltip);
     }
 
     protected ATag getGotoDetailLink(DbBeanInterface bean, String idPrefix, String cssClass, String tooltip) {
-        return getGotoDetailLink(bean.getId(), idPrefix, cssClass, tooltip);
+        return getGotoDetailLink(useSids ? bean.getSid() : bean.getId() + "", idPrefix, cssClass, tooltip);
     }
 
+    protected ATag getGotoDetailLink(String idOrSid, String idPrefix, String cssClass, String tooltip) {
+        return getOperationLink(idOrSid, idPrefix, cssClass, detailIcon, tooltip);
+    }
+
+    @Deprecated
     protected ATag getGotoDetailLink(long id, String idPrefix, String cssClass, String tooltip) {
         return getOperationLink(id, idPrefix, cssClass, detailIcon, tooltip);
     }
 
     protected ATag getDeleteLineLink(DbBeanInterface bean, String idPrefix, String cssClass, String tooltip) {
-        return getDeleteLineLink(bean.getId(), idPrefix, cssClass, tooltip);
+        return getDeleteLineLink(useSids ? bean.getSid() : bean.getId() + "", idPrefix, cssClass, tooltip);
     }
 
+    protected ATag getDeleteLineLink(String idOrSid, String idPrefix, String cssClass, String tooltip) {
+        return getOperationLink(idOrSid, idPrefix, cssClass, deleteIcon, tooltip);
+    }
+
+    @Deprecated
     protected ATag getDeleteLineLink(long id, String idPrefix, String cssClass, String tooltip) {
         return getOperationLink(id, idPrefix, cssClass, deleteIcon, tooltip);
     }
 
     protected ATag getMoveUpLink(DbBeanInterface bean, String idPrefix, String cssClass) {
-        return getMoveUpLink(bean.getId(), idPrefix, cssClass);
+        return getMoveUpLink(useSids ? bean.getSid() : bean.getId() + "", idPrefix, cssClass);
     }
 
+    protected ATag getMoveUpLink(String idOrSid, String idPrefix, String cssClass) {
+        return getOperationLink(idOrSid, idPrefix, cssClass, moveUpIcon, moveUpLabel());
+    }
+
+    @Deprecated
     protected ATag getMoveUpLink(long id, String idPrefix, String cssClass) {
         return getOperationLink(id, idPrefix, cssClass, moveUpIcon, moveUpLabel());
     }
 
     protected ATag getMoveDownLink(DbBeanInterface bean, String idPrefix, String cssClass) {
-        return getMoveDownLink(bean.getId(), idPrefix, cssClass);
+        return getMoveDownLink(useSids ? bean.getSid() : bean.getId() + "", idPrefix, cssClass);
     }
 
+    protected ATag getMoveDownLink(String idOrSid, String idPrefix, String cssClass) {
+        return getOperationLink(idOrSid, idPrefix, cssClass, moveDownIcon, moveDownLabel());
+    }
+
+    @Deprecated
     protected ATag getMoveDownLink(long id, String idPrefix, String cssClass) {
         return getOperationLink(id, idPrefix, cssClass, moveDownIcon, moveDownLabel());
     }
 
+    protected ATag getOperationLink(
+            String idOrSid,
+            String idPrefix,
+            String cssClass,
+            String icon,
+            String tooltip)
+    {
+        return getOperFileLink(idOrSid, idPrefix, cssClass, iconLibrary + icon, tooltip);
+    }
+
+    @Deprecated
     protected ATag getOperationLink(
             long id,
             String idPrefix,
@@ -1015,6 +1074,23 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return getOperFileLink(id, idPrefix, cssClass, iconLibrary + icon, tooltip);
     }
 
+    private ATag getOperFileLink(
+            String idOrString,
+            String idPrefix,
+            String cssClass,
+            String icon,
+            String tooltip)
+    {
+        return new ATag()
+                .id(idPrefix + "_" + idOrString)
+                .cssClass("tb-operation " + cssClass)
+                .child(
+                        new SpanTag()
+                                .cssClass(icon)
+                                .title(tooltip));
+    }
+
+    @Deprecated
     private ATag getOperFileLink(
             long id,
             String idPrefix,
@@ -1092,7 +1168,7 @@ public abstract class BaseMasterTableView extends BaseView implements MasterTabl
         return new TdTag()
                 .cssClass(CssClasses.start(tdResetCssClass).add(tdOperationCssClass).get())
                 .child(getDeleteLineLink(
-                        bean.getId(),
+                        bean,
                         beanName + deleteIdSuffix,
                         deleteCssClassPrefix + beanName,
                         tooltip));

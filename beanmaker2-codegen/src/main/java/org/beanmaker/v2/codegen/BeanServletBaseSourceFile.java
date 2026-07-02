@@ -53,7 +53,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
     protected void addCoreFunctionality() {
         addGetHTMLViewFunction();
         addGetSubmitBeanIdFunction();
-        addGetInstanceFunction();
+        addGetInstanceFunctions();
         addChangeOrderFunction();
         addDisplayTableFunction();
         if (columns.isVersioned())
@@ -69,15 +69,15 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                         new FunctionDeclaration("getHTMLView", "DbBeanHTMLViewInterface")
                                 .annotate("@Override")
                                 .visibility(Visibility.PROTECTED)
-                                .addArgument(new FunctionArgument("long", "id"))
+                                .addArgument(new FunctionArgument("String", "idOrSid"))
                                 .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"))
                                 .addException("ServletException")
                                 .addContent(VarDeclaration.declareAndInit(editorClass, editorObject))
                                 .addContent(EMPTY_LINE)
-                                .addContent(new IfBlock(new Condition("id > 0"))
-                                        .addContent(new FunctionCall("setId", editorObject)
+                                .addContent(new IfBlock(new Condition("!idOrSid.equals(\"0\")"))
+                                        .addContent(new FunctionCall("setIdOrSid", editorObject)
                                                         .byItself()
-                                                .addArgument("id")))
+                                                .addArgument("idOrSid")))
                                 .addContent(EMPTY_LINE)
                                 .addContent(new ReturnStatement(
                                         new ObjectCreation(beanName + "HTMLView")
@@ -90,34 +90,53 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
     private void addGetSubmitBeanIdFunction() {
         javaClass
                 .addContent(
-                        new FunctionDeclaration("getSubmitBeanId", "long")
+                        new FunctionDeclaration("getSubmitBeanIdOrSid", "String")
                                 .annotate("@Override")
                                 .visibility(Visibility.PROTECTED)
                                 .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"))
-                                .addContent(new ReturnStatement(new FunctionCall("getBeanId")
+                                .addContent(new ReturnStatement(new FunctionCall("getBeanIdOrSid")
                                         .addArguments("requestParameters", quickQuote("submitted" + beanName)))))
                 .addContent(EMPTY_LINE);
     }
 
-    private void addGetInstanceFunction() {
+    private void addGetInstanceFunctions() {
+        javaClass
+                .addContent(getInstanceFunction()
+                        .addArgument(new FunctionArgument("long", "id"))
+                        .addContent(new ReturnStatement(new ObjectCreation(beanName + "Editor").addArgument("id"))))
+                .addContent(EMPTY_LINE)
+                .addContent(getInstanceFunction()
+                        .addArgument(new FunctionArgument("String", "idOrSid"))
+                        .addContent(new ReturnStatement(
+                                new FunctionCall("fromIdOrSid", beanName + "Editor").addArgument("idOrSid"))))
+                .addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getInstanceFunction() {
+        return new FunctionDeclaration("getInstance", "DbBeanEditor")
+                .annotate("@Override")
+                .visibility(Visibility.PROTECTED);
+    }
+
+    /*private void addGetInstanceFunction() {
         javaClass
                 .addContent(
                         new FunctionDeclaration("getInstance", "DbBeanEditor")
                                 .annotate("@Override")
                                 .visibility(Visibility.PROTECTED)
-                                .addArgument(new FunctionArgument("long", "id"))
-                                .addContent(new ReturnStatement(new ObjectCreation(beanName + "Editor")
-                                        .addArgument("id"))))
+                                .addArgument(new FunctionArgument("String", "idOrSid"))
+                                .addContent(new ReturnStatement(
+                                        new FunctionCall("fromIdOrSid", beanName + "Editor").addArgument("idOrSid"))))
                 .addContent(EMPTY_LINE);
-    }
+    }*/
 
     private void addChangeOrderFunction() {
         var functionDeclaration = new FunctionDeclaration("changeOrder", "String")
                 .annotate("@Override")
                 .visibility(Visibility.PROTECTED)
-                .addArgument(new FunctionArgument("long", "id"))
+                .addArgument(new FunctionArgument("String", "idOrSid"))
                 .addArgument(new FunctionArgument("ChangeOrderDirection", "direction"))
-                .addArgument(new FunctionArgument("long", "companionId"))
+                .addArgument(new FunctionArgument("String", "companionIdOrSid"))
                 .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"));
 
         if (columns.hasItemOrder())
@@ -125,7 +144,7 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                     .addContent(new VarDeclaration(
                             "var",
                             "editor",
-                            new ObjectCreation(beanName + "Editor").addArgument("id")))
+                            new FunctionCall("fromIdOrSid", beanName + "Editor").addArgument("idOrSid")))
                     .addContent(new FunctionCall("setCurrentDbBeanLanguage", "editor")
                             .byItself()
                             .addArgument(new FunctionCall("getLanguage")
@@ -134,8 +153,8 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                             .addArgument("editor")
                             .addArgument("direction")
                             .addArgument(new TernaryOperator(
-                                    new Condition("companionId > 0"),
-                                    new ObjectCreation(beanName).addArgument("companionId"),
+                                    new Condition("!companionIdOrSid.equals(\"0\")"),
+                                    new FunctionCall("fromIdOrSid", beanName).addArgument("companionIdOrSid"),
                                     "null"))));
 
         else
@@ -165,11 +184,13 @@ public class BeanServletBaseSourceFile extends BeanCodeWithDBInfo {
                         new FunctionDeclaration("getVersionedBeanEditor", "VersionedBeanEditor")
                                 .annotate("@Override")
                                 .visibility(Visibility.PROTECTED)
-                                .addArgument(new FunctionArgument("long", "id"))
+                                .addArgument(new FunctionArgument("String", "idOrSid"))
                                 .addArgument(new FunctionArgument("HttpRequestParameters", "requestParameters"))
                                 .addException("ServletException")
                                 .addContent(
-                                        new ReturnStatement(new ObjectCreation(beanName + "Editor").addArgument("id"))
+                                        new ReturnStatement(
+                                                new FunctionCall("fromIdOrSid", beanName + "Editor")
+                                                        .addArgument("idOrSid"))
                                 )
                 )
                 .addContent(EMPTY_LINE);

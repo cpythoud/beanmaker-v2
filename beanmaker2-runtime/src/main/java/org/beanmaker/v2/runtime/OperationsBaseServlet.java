@@ -1,6 +1,5 @@
 package org.beanmaker.v2.runtime;
 
-import org.beanmaker.v2.util.Strings;
 import org.beanmaker.v2.util.Types;
 
 import javax.servlet.ServletException;
@@ -53,7 +52,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
 
     protected String getForm(HttpRequestParameters requestParameters) throws ServletException {
         return getFormPrefix(requestParameters) +
-                getHTMLView(getBeanId(requestParameters, "id"), requestParameters).getHtmlForm() +
+                getHTMLView(getBeanIdOrSid(requestParameters, "id"), requestParameters).getHtmlForm() +
                 getFormSuffix(requestParameters);
     }
 
@@ -65,15 +64,15 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
         return "";
     }
 
-    protected abstract DbBeanHTMLViewInterface getHTMLView(long id, HttpRequestParameters requestParameters)
+    protected abstract DbBeanHTMLViewInterface getHTMLView(String idOrSid, HttpRequestParameters requestParameters)
             throws ServletException;
 
-    protected abstract long getSubmitBeanId(HttpRequestParameters requestParameters);
+    protected abstract String getSubmitBeanIdOrSid(HttpRequestParameters requestParameters);
 
     protected abstract DbBeanLanguage getLanguage(HttpSession session);
 
     protected String submitForm(HttpRequestParameters requestParameters) throws ServletException {
-        return processBean(requestParameters, getHTMLView(getSubmitBeanId(requestParameters), requestParameters));
+        return processBean(requestParameters, getHTMLView(getSubmitBeanIdOrSid(requestParameters), requestParameters));
     }
 
     protected String processBean(HttpRequestParameters parameters, DbBeanHTMLViewInterface htmlView) {
@@ -81,7 +80,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
 
         if (htmlView.isDataOK()) {
             htmlView.updateDB();
-            return getJsonStatusObject("ok").put("id", htmlView.getId()).toString();
+            return getJsonStatusObject("ok").put("id", htmlView.getIdOrSid()).toString();
         }
 
         return getJsonStatusObject("errors")
@@ -99,24 +98,26 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
     }
 
     protected String deleteBean(HttpRequestParameters requestParameters) {
-        return deleteBean(getInstance(getBeanId(requestParameters, "id")));
+        return deleteBean(getInstance(getBeanIdOrSid(requestParameters, "id")));
     }
 
     protected abstract DbBeanEditor getInstance(long id);
 
+    protected abstract DbBeanEditor getInstance(String idOrSid);
+
     protected String changeOrder(HttpRequestParameters requestParameters) throws ServletException {
-        long id = getBeanId(requestParameters, "id");
+        String idOrSid = getBeanIdOrSid(requestParameters, "id");
 
         ChangeOrderDirection direction = getChangeOrderDirection(requestParameters);
-        long companionId = Strings.getLongVal(requestParameters.getValue("companionId"));
+        String companionIdOrSid = requestParameters.getValue("companionId");
 
-        return changeOrder(id, direction, companionId, requestParameters);
+        return changeOrder(idOrSid, direction, companionIdOrSid, requestParameters);
     }
 
     protected abstract String changeOrder(
-            long id,
+            String idOrSid,
             ChangeOrderDirection direction,
-            long companionId,
+            String companionIdOrSid,
             HttpRequestParameters requestParameters
     );
 
@@ -146,7 +147,7 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
 
     protected String getFormButtons(HttpRequestParameters requestParameters) throws ServletException {
         return getFormButtonsPrefix(requestParameters) +
-                getHTMLView(getBeanId(requestParameters, "id"), requestParameters).getStandaloneFormButtons() +
+                getHTMLView(getBeanIdOrSid(requestParameters, "id"), requestParameters).getStandaloneFormButtons() +
                 getFormButtonsSuffix(requestParameters);
     }
 
@@ -159,19 +160,22 @@ public abstract class OperationsBaseServlet extends BeanMakerBaseServlet {
     }
 
     protected String newVersion(HttpRequestParameters requestParameters) throws ServletException {
-        long id = getBeanId(requestParameters, "id");
+        String idOrSid = getBeanIdOrSid(requestParameters, "id");
 
-        var editor = getVersionedBeanEditor(id, requestParameters);
+        var editor = getVersionedBeanEditor(idOrSid, requestParameters);
+        System.out.println(editor);
         if (!editor.isLatestVersionedBean())
             throw new ServletException("New version can only be created from the latest version of the bean");
         if (!editor.needsNewBeanVersion())
             throw new ServletException("Creating a new version is not required at this time");
 
         var newVersion = editor.newVersionedEditor();
-        return getJsonStatusObject("ok").put("id", newVersion.getId()).toString();
+        System.out.println(newVersion);
+        System.out.println("ID = " + newVersion.getId() + ", SID = " + newVersion.getSid() + ", idOrSid = " + newVersion.getIdOrSid());
+        return getJsonStatusObject("ok").put("id", newVersion.getIdOrSid()).toString();
     }
 
-    protected VersionedBeanEditor getVersionedBeanEditor(long id, HttpRequestParameters requestParameters)
+    protected VersionedBeanEditor getVersionedBeanEditor(String idOrSid, HttpRequestParameters requestParameters)
             throws ServletException
     {
         throw new ServletException(

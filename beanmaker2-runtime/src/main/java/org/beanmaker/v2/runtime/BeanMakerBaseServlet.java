@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class BeanMakerBaseServlet extends HttpServlet {
 
@@ -98,8 +99,12 @@ public abstract class BeanMakerBaseServlet extends HttpServlet {
         return jsonObject.toString();
     }
 
-    protected long getBeanId(HttpRequestParameters requestParameters, String parameterName) {
-        return Strings.getLongVal(requestParameters.getValue(parameterName));
+    protected String getBeanIdOrSid(HttpRequestParameters requestParameters, String parameterName) {
+        return requestParameters.getValue(parameterName);
+    }
+
+    protected String getBeanIdOrSid(HttpServletRequest request, String parameterName) {
+        return Objects.requireNonNull(request.getParameter(parameterName), "Missing ID or SID");
     }
 
     protected long getBeanId(HttpServletRequest request, String parameterName) {

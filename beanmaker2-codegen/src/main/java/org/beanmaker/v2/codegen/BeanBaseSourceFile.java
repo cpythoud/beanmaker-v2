@@ -83,6 +83,8 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         }
         if (columns.isVersioned())
             importsManager.addImport("org.beanmaker.v2.runtime.VersionedBean");
+        if (columns.hasSidField())
+            importsManager.addImport("org.beanmaker.v2.runtime.SidManager");
 
         importsManager.addStaticImport(packageName + ".DbBeans.dbAccess");
     }
@@ -258,10 +260,14 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addCoreFunctionality() {
+        addGetIdFromSidFunctions();
+        addRetrievalFromIdOrSidStaticFunctions(false);
         addRefreshFromDatabaseFunction();
         addEqualsFunction();
         addHashCodeFunction();
         addToStringFunction();
+        if (columns.hasSidField())
+            addGetIdOrSidFunction();
         addGetters();
         addEmptyChecks();
         addListAndCountOfBeansInRelationshipFunctions(Visibility.PUBLIC);
@@ -275,6 +281,51 @@ public class BeanBaseSourceFile extends BeanCodeWithDBInfo {
         addIDCheckFunctions();
         addListFunction();
         addUniqueCodeFunction();
+    }
+
+    private void addGetIdFromSidFunctions() {
+        if (columns.hasSidField()) {
+            javaClass
+                    .addContent(
+                            getGetIdFromSidFunctionDeclaration(false)
+                                    .addContent(getIdFromSidRetrievalFunctionCall(false))
+                    )
+                    .addContent(EMPTY_LINE)
+                    .addContent(
+                            getGetIdFromSidFunctionDeclaration(true)
+                                    .addContent(getIdFromSidRetrievalFunctionCall(true))
+                    )
+                    .addContent(EMPTY_LINE);
+        } else {
+            javaClass
+                    .addContent(getNoSidGetIdFunction(false))
+                    .addContent(EMPTY_LINE)
+                    .addContent(getNoSidGetIdFunction(true))
+                    .addContent(EMPTY_LINE);
+        }
+    }
+
+    private FunctionDeclaration getGetIdFromSidFunctionDeclaration(boolean transacted) {
+        var function = new FunctionDeclaration("getId", "long")
+                .visibility(Visibility.PUBLIC)
+                .markAsStatic()
+                .addArgument(new FunctionArgument("String", "idOrSid"));
+
+        if (transacted)
+            function.addArgument(new FunctionArgument("DbTransaction", "transaction"));
+
+        return function;
+    }
+
+    private ReturnStatement getIdFromSidRetrievalFunctionCall(boolean transacted) {
+        String dbExecutor = transacted ? "transaction" : "dbAccess";
+        return new ReturnStatement(new FunctionCall("getId", "SidManager")
+                .addArguments(dbExecutor, "idOrSid", beanName + "Parameters.INSTANCE"));
+    }
+
+    private FunctionDeclaration getNoSidGetIdFunction(boolean transacted) {
+        return getGetIdFromSidFunctionDeclaration(transacted)
+                .addContent(new ReturnStatement(new FunctionCall("parseLong", "Long").addArgument("idOrSid")));
     }
 
     private void addRefreshFromDatabaseFunction() {

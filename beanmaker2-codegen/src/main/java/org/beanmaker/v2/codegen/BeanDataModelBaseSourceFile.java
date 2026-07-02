@@ -94,8 +94,11 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
                 addLabelSpecificGetterFunctions(column);
             else if (column.isFileReference())
                 addFileGetterFunction(column);
-            else if (!column.isId())
+            else if (!column.isId()) {
                 addBeanGetterFunction(column);
+                if (!column.isOriginalBeanId())
+                    addBeanIdOrSidGetterFunction(column);
+            }
         }
     }
 
@@ -129,6 +132,12 @@ public class BeanDataModelBaseSourceFile extends BaseInterfaceCode {
         String type = column.isOriginalBeanId() ? beanName : column.getAssociatedBeanClass();
         String name = column.getJavaName();
         javaInterface.addContent(new FunctionDeclaration("get" + chopID(name), type).emptyBody());
+    }
+
+    private void addBeanIdOrSidGetterFunction(Column column) {
+        javaInterface.addContent(
+                new FunctionDeclaration("get" + chopID(column.getJavaName()) + "IdOrSid", "String").emptyBody()
+        );
     }
 
     private void addEmptyCheckFunctions() {

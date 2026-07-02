@@ -2,10 +2,8 @@ package org.beanmaker.v2.runtime;
 
 import org.beanmaker.v2.database.sql.DbTransaction;
 
-import org.beanmaker.v2.runtime.dbutil.SidManager;
 import org.beanmaker.v2.runtime.dbutil.Transactions;
 
-import org.beanmaker.v2.util.SecurityTokenGenerator;
 import org.beanmaker.v2.util.Types;
 
 import java.util.Collections;
@@ -28,6 +26,12 @@ public abstract class DbBeanEditor implements DbBeanEditorInterface {
     }
 
     public abstract void setId(long id,  DbTransaction transaction);
+
+    public void setIdOrSid(String idOrSid) {
+        setIdOrSid(idOrSid, null);
+    }
+
+    public abstract void setIdOrSid(String idOrSid,  DbTransaction transaction);
 
     public void resetId() {
         id = 0;

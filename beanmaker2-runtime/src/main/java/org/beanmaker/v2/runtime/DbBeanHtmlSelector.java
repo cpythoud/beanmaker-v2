@@ -115,8 +115,8 @@ public class DbBeanHtmlSelector {
     private void addOptions(SelectTag tag) {
         String selectedOptionId = Long.toString(selectedId);
         for (var idNamePair : getIdNamePairs()) {
-            var option = new OptionTag(idNamePair.getName(), idNamePair.getId());
-            if (selectedOptionId.equals(idNamePair.getId()))
+            var option = new OptionTag(idNamePair.getName(), idNamePair.getIdOrSid());
+            if (selectedOptionId.equals(idNamePair.getIdOrSid()))
                 option.selected();
             tag.child(option);
         }

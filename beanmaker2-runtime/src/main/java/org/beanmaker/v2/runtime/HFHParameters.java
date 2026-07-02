@@ -20,7 +20,8 @@ public class HFHParameters {
 
     // Base: inputs & textareas
     private String field;
-    private long idBean = -1;
+    //private long idBean = -1;
+    private String beanIdOrSid;
     private String value;
     private String fieldLabel;
     private InputTag.InputType inputType;
@@ -84,7 +85,8 @@ public class HFHParameters {
 
     public HFHParameters(HFHParameters params) {
         field = params.field;
-        idBean = params.idBean;
+        //idBean = params.idBean;
+        beanIdOrSid = params.beanIdOrSid;
         value = params.value;
         fieldLabel = params.fieldLabel;
         inputType = params.inputType;
@@ -187,15 +189,37 @@ public class HFHParameters {
         return this;
     }
 
+    @Deprecated
     public long getIdBean() {
-        if (idBean == -1)
+        if (beanIdOrSid == null)
             throw new HFHParameterMissingException("idBean");
+
+        long idBean;
+        try {
+            idBean = Long.parseLong(beanIdOrSid);
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("SID cannot be converted to ID: " + beanIdOrSid);
+        }
 
         return idBean;
     }
 
+    @Deprecated
     public HFHParameters setIdBean(long idBean) {
-        this.idBean = idBean;
+        beanIdOrSid = Long.toString(idBean);
+
+        return this;
+    }
+
+    public String getBeanIdOrSid() {
+        if (beanIdOrSid == null)
+            throw new HFHParameterMissingException("beanIdOrSid");
+
+        return beanIdOrSid;
+    }
+
+    public HFHParameters setBeanIdOrSid(String beanIdOrSid) {
+        this.beanIdOrSid = beanIdOrSid;
 
         return this;
     }

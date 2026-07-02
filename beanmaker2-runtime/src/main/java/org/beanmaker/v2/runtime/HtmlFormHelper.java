@@ -10,9 +10,16 @@ public interface HtmlFormHelper {
 
     String SELECT_OFF_GROUP_MAP_KEY = "__ROOT__";
 
+    @Deprecated
     FormTag getForm(String beanName, long id);
+    @Deprecated
     FormTag getHorizontalForm(String beanName, long id);
+    @Deprecated
     FormTag getInlineForm(String beanName, long id);
+
+    FormTag getForm(String beanName, String idOrSid);
+    FormTag getHorizontalForm(String beanName, String idOrSid);
+    FormTag getInlineForm(String beanName, String idOrSid);
 
     void setInline(boolean inline);
     boolean isInline();
@@ -57,7 +64,10 @@ public interface HtmlFormHelper {
     void setCssClassForFileFields(String cssClassForFileFields);
     String getCssClassForFileFields();
 
+    @Deprecated
     Tag<?> getHiddenSubmitInput(String beanName, long id);
+
+    Tag<?> getHiddenSubmitInput(String beanName, String idOrSid);
 
     Tag<?> getCheckboxField(HFHParameters params);
     Tag<?> getSelectField(HFHParameters params);
@@ -80,10 +90,19 @@ public interface HtmlFormHelper {
     ButtonTag getSubmitButtonTag(HFHParameters params, String extraCssClasses);
     ButtonTag getButtonTag(HFHParameters params);
 
-    Tag<?> getHiddenInfo(String field, long idBean, String value);
-    default Tag<?> getHiddenInfo(String field, long idBean, long idOtherBean) {
-        return getHiddenInfo(field, idBean, Long.toString(idOtherBean));
+    default Tag<?> getHiddenInfo(String field, long idBean, String value) {
+        return getHiddenInfo(field, Long.toString(idBean), value);
     }
+
+    default Tag<?> getHiddenInfo(String field, long idBean, long idOtherBean) {
+        return getHiddenInfo(field, Long.toString(idBean), Long.toString(idOtherBean));
+    }
+
+    default Tag<?> getHiddenInfo(String field, String beanIdOrSid, long idOtherBean) {
+        return getHiddenInfo(field, beanIdOrSid, Long.toString(idOtherBean));
+    }
+
+    Tag<?> getHiddenInfo(String field, String beanIdOrSid, String value);
 
     default Tag<?> getFormElementsContainer(Tag<?> form) {
         return form;
@@ -93,10 +112,19 @@ public interface HtmlFormHelper {
         return form;
     }
 
+    @Deprecated
     default void addErrorMessagesContainer(Tag<?> form, String formName, long idBean) { }
 
+    default void addErrorMessagesContainer(Tag<?> form, String formName, String beanIdOrSid) { }
+
+    @Deprecated
     static Tag<?> getDefaultErrorMessageContainer(String formName, long idBean) {
         return new DivTag().id("error_messages_" + formName + "_" + idBean).cssClass("form_error_messages");
+    }
+
+    static Tag<?> getDefaultErrorMessageContainer(String formName, String beanIdOrSid) {
+        return new DivTag().id("error_messages_" + formName + "_" + SidManager.zeroOrSid(beanIdOrSid))
+                .cssClass("form_error_messages");
     }
 
     default Tag<?> getStandaloneFormButtonsContainer() {

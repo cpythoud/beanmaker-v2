@@ -17,8 +17,14 @@ import org.beanmaker.v2.util.Strings;
 public class W3CssHtmlFormHelper extends AbstractHtmlFormHelper {
 
     @Override
+    @Deprecated
     public FormTag getForm(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getForm(beanName, Long.toString(id));
+    }
+
+    @Override
+    public FormTag getForm(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
 
@@ -26,13 +32,25 @@ public class W3CssHtmlFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public FormTag getHorizontalForm(String beanName, long id) {
         return getForm(beanName, id);
     }
 
     @Override
+    @Deprecated
     public FormTag getInlineForm(String beanName, long id) {
         return getForm(beanName, id);
+    }
+
+    @Override
+    public FormTag getHorizontalForm(String beanName, String idOrSid) {
+        return getForm(beanName, idOrSid);
+    }
+
+    @Override
+    public FormTag getInlineForm(String beanName, String idOrSid) {
+        return getForm(beanName, idOrSid);
     }
 
     public DivTag getFormGroup(LabelTag label, Tag<?> field, String helpText, String extraCssClasses) {
@@ -72,7 +90,7 @@ public class W3CssHtmlFormHelper extends AbstractHtmlFormHelper {
 
     @Override
     public DivTag getSelectField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
         FormElement<?> formElement;

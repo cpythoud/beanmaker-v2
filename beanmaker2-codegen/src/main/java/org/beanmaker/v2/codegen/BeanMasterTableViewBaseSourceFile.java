@@ -1,5 +1,6 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.codegen.java.Assignment;
 import org.beanmaker.v2.codegen.java.Condition;
 import org.beanmaker.v2.codegen.java.ElseBlock;
 import org.beanmaker.v2.codegen.java.ForEach;
@@ -55,13 +56,17 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
     @Override
     protected void addConstructors() {
         String parametersInstance = beanName + "Parameters.INSTANCE";
-        javaClass
-                .addContent(javaClass.createConstructor()
-                        .addContent(new FunctionCall("super")
-                                .byItself()
-                                .addArgument(new FunctionCall("getDatabaseTableName", parametersInstance))
-                                .addArgument(new FunctionCall("getLocalization", parametersInstance))))
-                .addContent(EMPTY_LINE);
+        var constructor = javaClass.createConstructor()
+                .addContent(new FunctionCall("super")
+                        .byItself()
+                        .addArgument(new FunctionCall("getDatabaseTableName", parametersInstance))
+                        .addArgument(new FunctionCall("getLocalization", parametersInstance))
+                );
+
+        if (columns.hasSidField())
+            constructor.addContent(new Assignment("useSids", new FunctionCall("useSids", parametersInstance)));
+
+        javaClass.addContent(constructor).addContent(EMPTY_LINE);
     }
 
     @Override
@@ -129,7 +134,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addFilterCellFunctions() {
         for (Column column: columns.getList())
-            if (!column.isItemOrder()) {
+            if (!column.isSid() && !column.isItemOrder()) {
                 if (column.isLabelReference())
                     addLabelFilterFunctions(column);
                 else
@@ -222,7 +227,7 @@ public class BeanMasterTableViewBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addTitleCellFunctions() {
         for (Column column: columns.getList())
-            if (!column.isItemOrder()) {
+            if (!column.isSid() && !column.isItemOrder()) {
                 if (column.isLabelReference())
                     addLabelTitleFunctions(column);
                 else

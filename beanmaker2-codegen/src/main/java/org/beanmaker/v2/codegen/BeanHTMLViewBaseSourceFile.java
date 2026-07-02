@@ -5,6 +5,7 @@ import org.beanmaker.v2.codegen.java.Comparison;
 import org.beanmaker.v2.codegen.java.Condition;
 import org.beanmaker.v2.codegen.java.ElseBlock;
 import org.beanmaker.v2.codegen.java.ElseIfBlock;
+import org.beanmaker.v2.codegen.java.Expression;
 import org.beanmaker.v2.codegen.java.ForEach;
 import org.beanmaker.v2.codegen.java.FunctionArgument;
 import org.beanmaker.v2.codegen.java.FunctionCall;
@@ -88,20 +89,24 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
 
     @Override
     protected void addConstructors() {
-        javaClass
-                .addContent(javaClass.createConstructor()
-                        .addArgument(new FunctionArgument(editorClass, editorObject))
-                        .addArgument(getLanguageArgument())
-                        .addContent(new FunctionCall("super")
-                                .byItself()
-                                .addArgument(editorObject)
-                                .addArgument(new FunctionCall("getLocalization", beanName + "Parameters.INSTANCE")
-                                        .addArgument("dbBeanLanguage")))
-                        .addContent(new FunctionCall("setCurrentDbBeanLanguage", editorObject)
-                                .byItself()
-                                .addArgument("dbBeanLanguage"))
-                        .addContent(new Assignment("this." + editorObject, editorObject)))
-                .addContent(EMPTY_LINE);
+        String parametersInstance = beanName + "Parameters.INSTANCE";
+        var constructor = javaClass.createConstructor()
+                .addArgument(new FunctionArgument(editorClass, editorObject))
+                .addArgument(getLanguageArgument())
+                .addContent(new FunctionCall("super")
+                        .byItself()
+                        .addArgument(editorObject)
+                        .addArgument(new FunctionCall("getLocalization", parametersInstance)
+                                .addArgument("dbBeanLanguage")))
+                .addContent(new FunctionCall("setCurrentDbBeanLanguage", editorObject)
+                        .byItself()
+                        .addArgument("dbBeanLanguage"))
+                .addContent(new Assignment("this." + editorObject, editorObject));
+
+        if (columns.hasSidField())
+            constructor.addContent(new Assignment("useSid", new FunctionCall("useSids", parametersInstance)));
+
+        javaClass.addContent(constructor).addContent(EMPTY_LINE);
     }
 
     private FunctionArgument getLanguageArgument() {
@@ -238,7 +243,10 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                 new FunctionDeclaration("get" + capName + "FormElementParameters", "HFHParameters")
                         .addContent(VarDeclaration.declareAndInit("HFHParameters", "params"))
                         .addContent(getParamSetterExpression("Field", quickQuote(name)))
-                        .addContent(getParamSetterExpression("IdBean", new FunctionCall("getId", editorObject)));
+                        .addContent(getParamSetterExpression(
+                                "BeanIdOrSid",
+                                new FunctionCall("getIdOrSid", editorObject)
+                        ));
 
         if (type.equals("String"))
             parametersFunction.addContent(getParamSetterExpressionFromEditor("Value", capName));
@@ -249,7 +257,10 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                     new Condition(new FunctionCall("is" + capName + "Empty", "!" + editorObject))
                             .andCondition(new Condition(new FunctionCall("is" + capName, editorObject)))));
         else if (column.isBeanReference() && !column.isFileReference() && !column.isLabelReference())
-            parametersFunction.addContent(getParamSetterExpressionFromEditor("Selected", capName));
+            parametersFunction.addContent(getParamSetterExpressionFromEditor(
+                    "Selected",
+                    chopID(column.getJavaName()) + "IdOrSid"
+            ));
 
         if (column.isFileReference())
             parametersFunction.addContent(getParamSetterExpression(
@@ -340,7 +351,7 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
         return new FunctionCall("set" + paramName, "params").byItself().addArgument(value);
     }
 
-    private FunctionCall getParamSetterExpression(String paramName, FunctionCall value) {
+    private FunctionCall getParamSetterExpression(String paramName, Expression<?> value) {
         return new FunctionCall("set" + paramName, "params").byItself().addArgument(value);
     }
 
@@ -426,7 +437,6 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                                                             .byItself()
                                                             .addArgument("idFile"))));
                 else if (column.isBeanReference()) {
-                    importsManager.addImport("org.beanmaker.v2.util.Strings");
                     String nameParamStr = name + "ParamStr";
                     allFieldsSetterFunction
                             .addContent(new VarDeclaration(
@@ -435,10 +445,9 @@ public class BeanHTMLViewBaseSourceFile extends BeanCodeWithDBInfo {
                                     new FunctionCall("getValue", "parameters")
                                             .addArgument(quickQuote(name))))
                             .addContent(new IfBlock(new Condition(new Comparison(nameParamStr, "null", Comparison.Comparator.NEQ)))
-                                    .addContent(new FunctionCall("set" + capName, editorObject)
+                                    .addContent(new FunctionCall("set" + choppedIdName + "IdOrSid", editorObject)
                                             .byItself()
-                                            .addArgument(new FunctionCall("getLongVal", "Strings")
-                                                    .addArgument(nameParamStr)))
+                                            .addArgument(nameParamStr))
                                     .elseClause(new ElseBlock().addContent(
                                             new FunctionCall("set" + capName, editorObject)
                                                     .byItself()

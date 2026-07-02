@@ -8,7 +8,7 @@ import java.util.List;
 
 public class IdNamePair implements Comparable<IdNamePair> {
 
-	private final String id;
+	private final String idOrSid;
 	private final String name;
 	private final boolean disabled;
 
@@ -20,15 +20,15 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		this(id, name, false);
 	}
 
-	public IdNamePair(String id, String name) {
-		this(id, name, false);
+	public IdNamePair(String idOrSid, String name) {
+		this(idOrSid, name, false);
 	}
 	
 	public IdNamePair(int id, String name, boolean disabled) {
 		if (id < 0)
 			throw new IllegalArgumentException("id must be zero or positive");
 		
-		this.id = Integer.toString(id);
+		this.idOrSid = Integer.toString(id);
 		this.name = name;
 		this.disabled = disabled;
 	}
@@ -37,19 +37,24 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		if (id < 0)
 			throw new IllegalArgumentException("id must be zero or positive");
 		
-		this.id = Long.toString(id);
+		this.idOrSid = Long.toString(id);
 		this.name = name;
 		this.disabled = disabled;
 	}
 	
-	public IdNamePair(String id, String name, boolean disabled) {
-		this.id = id;
+	public IdNamePair(String idOrSid, String name, boolean disabled) {
+		this.idOrSid = idOrSid;
 		this.name = name;
 		this.disabled = disabled;
 	}
-	
+
+	@Deprecated
 	public String getId() {
-		return id;
+		return getIdOrSid();
+	}
+	
+	public String getIdOrSid() {
+		return idOrSid;
 	}
 	
 	public String getName() {
@@ -60,19 +65,20 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		return disabled;
 	}
 
+	@Deprecated
 	public long getIdAsLong() {
-		return Long.parseLong(id);
+		return Long.parseLong(idOrSid);
 	}
 
 	// ! Assumes only one "please select ..." element with id "0", throws an IllegalStateException otherwise.
 	@Override
 	public int compareTo(IdNamePair idNamePair) {
-		if (id.equals("0") && idNamePair.id.equals("0"))
+		if (idOrSid.equals("0") && idNamePair.idOrSid.equals("0"))
 			throw new IllegalStateException("More than one 'please select' field in IdNamePair collection.");
 
-		if (id.equals("0"))
+		if (idOrSid.equals("0"))
 			return -1;
-		if (idNamePair.id.equals("0"))
+		if (idNamePair.idOrSid.equals("0"))
 			return 1;
 
 		return name.compareTo(idNamePair.name);
@@ -133,13 +139,13 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		List<IdNamePair> pairs = new ArrayList<>();
 
 		for (DbBeanInterface bean: beans)
-			pairs.add(new IdNamePair(bean.getId(), bean.getNameForIdNamePairsAndTitles(dbBeanLanguage)));
+			pairs.add(new IdNamePair(bean.getIdOrSid(), bean.getNameForIdNamePairsAndTitles(dbBeanLanguage)));
 
 		if (sortOnName)
 			pairs.sort(new IdNamePairLocalizedComparator(dbBeanLanguage));
 
 		if (noSelectionText != null)
-			pairs.add(0, new IdNamePair(0, noSelectionText));
+			pairs.addFirst(new IdNamePair("0", noSelectionText));
 
 		return pairs;
 	}
@@ -159,12 +165,12 @@ public class IdNamePair implements Comparable<IdNamePair> {
 			if (pair1 == pair2)
 				return 0;
 
-			if (pair1.id.equals("0") && pair2.id.equals("0"))
+			if (pair1.idOrSid.equals("0") && pair2.idOrSid.equals("0"))
 				throw new IllegalStateException("More than one 'please select' field in IdNamePair collection.");
 
-			if (pair1.id.equals("0"))
+			if (pair1.idOrSid.equals("0"))
 				return -1;
-			if (pair2.id.equals("0"))
+			if (pair2.idOrSid.equals("0"))
 				return 1;
 
 			return collator.compare(pair1.name, pair2.name);

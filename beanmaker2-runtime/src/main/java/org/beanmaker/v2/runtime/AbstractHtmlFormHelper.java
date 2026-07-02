@@ -75,11 +75,16 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         return formCssClasses.toString();
     }
 
+    @Deprecated
     protected FormTag getFormTag(String beanName, long id) {
+        return getFormTag(beanName, Long.toString(id));
+    }
+
+    protected FormTag getFormTag(String beanName, String idOrSid) {
         FormTag form =
                 new FormTag()
                         .role("form")
-                        .id(getHtmlId(beanName, id))
+                        .id(getHtmlId(beanName, idOrSid))
                         .name(beanName + (readonly ? readonlyExtension : ""))
                         .method(FormTag.Method.POST);
 
@@ -89,8 +94,13 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         return form;
     }
 
+    @Deprecated
     protected String getHtmlId(String beanName, long id) {
-        return beanName + (readonly ? readonlyExtension : "") + "_" + id;
+        return getHtmlId(beanName, Long.toString(id));
+    }
+
+    protected String getHtmlId(String beanName, String idOrSid) {
+        return beanName + (readonly ? readonlyExtension : "") + "_" + SidManager.zeroOrSid(idOrSid);
     }
 
     @Override
@@ -174,8 +184,14 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public Tag<?> getHiddenSubmitInput(String beanName, long id) {
-        return new InputTag(InputTag.InputType.HIDDEN).name("submitted" + beanName).value(Long.toString(id));
+        return getHiddenSubmitInput(beanName, Long.toString(id));
+    }
+
+    @Override
+    public Tag<?> getHiddenSubmitInput(String beanName, String idOrSid) {
+        return new InputTag(InputTag.InputType.HIDDEN).name("submitted" + beanName).value(idOrSid);
     }
 
     @Override
@@ -294,7 +310,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         InputTag checkbox =
                 new InputTag(InputTag.InputType.CHECKBOX)
                         .name(params.getField())
-                        .id(getFieldId(params.getField(), params.getIdBean(), params.getIdNameSuffix(), params.isReadonly()));
+                        .id(getFieldId(params.getField(), params.getBeanIdOrSid(), params.getIdNameSuffix(), params.isReadonly()));
 
         setCheckboxParameters(checkbox, params);
 
@@ -318,17 +334,27 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
             checkbox.value(params.getCheckboxValue());
     }
 
+    @Deprecated
     protected String getFieldId(String field, long idBean, boolean readonly) {
         return getFieldId(field, idBean, null, readonly);
     }
 
+    @Deprecated
     protected String getFieldId(String field, long idBean, String idNamePostfix, boolean readonly) {
+        return getFieldId(field, Long.toString(idBean), idNamePostfix, readonly);
+    }
+
+    protected String getFieldId(String field, String beanIdOrSid, boolean readonly) {
+        return getFieldId(field, beanIdOrSid, null, readonly);
+    }
+
+    protected String getFieldId(String field, String beanIdOrSid, String idNamePostfix, boolean readonly) {
         String readonlyIndication = readonly ? readonlyPostfix : "";
 
         if (Strings.isEmpty(idNamePostfix))
-            return field + "_" + idBean + readonlyIndication;
+            return field + "_" + beanIdOrSid + readonlyIndication;
 
-        return field + "_" + idNamePostfix + "_" + idBean + readonlyIndication;
+        return field + "_" + idNamePostfix + "_" + beanIdOrSid + readonlyIndication;
     }
 
     protected LabelTag getLabel(
@@ -366,7 +392,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
         String value = "";
         if (!params.getSelected().equals("0"))
             for (IdNamePair pair: params.getSelectPairs())
-                if (pair.getId().equals(params.getSelected()))
+                if (pair.getIdOrSid().equals(params.getSelected()))
                     value = pair.getName();
 
         return getInputTag(InputTag.InputType.TEXT, fieldId, params.getField(), value, true, params.getTagExtraCssClasses())
@@ -395,10 +421,10 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
 
     protected void addPairs(Tag<?> selectOrGroup, List<IdNamePair> pairs, String selected) {
         for (IdNamePair pair: pairs) {
-            OptionTag optionTag = new OptionTag(pair.getName(), pair.getId());
+            OptionTag optionTag = new OptionTag(pair.getName(), pair.getIdOrSid());
             if (pair.isDisabled())
                 optionTag.disabled();
-            if (pair.getId().equals(selected))
+            if (pair.getIdOrSid().equals(selected))
                 optionTag.selected();
             selectOrGroup.child(optionTag);
         }
@@ -504,7 +530,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
 
     @Override
     public DivTag getTextAreaField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
         TextareaTag textarea = getTextAreaTag(fieldId, params.getField(), params.getValue(), params.getTagExtraCssClasses());
@@ -535,7 +561,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
 
     @Override
     public DivTag getTextField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label =
                 getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
@@ -639,7 +665,7 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
     @Override
     public ButtonTag getButtonTag(HFHParameters params) {
         var button = new ButtonTag(params.getButtonType())
-                .id(getHtmlId(params.getBeanName() + "_" + params.getFunctionName(), params.getIdBean()))
+                .id(getHtmlId(params.getBeanName() + "_" + params.getFunctionName(), params.getBeanIdOrSid()))
                 .cssClass(params.getCssClasses());
 
         params.getButtonActionSpan().ifPresent(button::child);
@@ -649,10 +675,10 @@ public abstract class AbstractHtmlFormHelper implements HtmlFormHelper {
     }
 
     @Override
-    public Tag<?> getHiddenInfo(String field, long idBean, String value) {
+    public Tag<?> getHiddenInfo(String field, String beanIdOrSid, String value) {
         return new InputTag(InputTag.InputType.HIDDEN)
                 .name(field)
-                .id(getFieldId(field, idBean, false))
+                .id(getFieldId(field, beanIdOrSid, false))
                 .value(value);
     }
 

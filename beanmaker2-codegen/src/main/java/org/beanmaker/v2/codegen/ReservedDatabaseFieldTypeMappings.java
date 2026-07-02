@@ -20,7 +20,7 @@ public final class ReservedDatabaseFieldTypeMappings {
         );
         mysql.put(
                 ReservedDatabaseField.SID,
-                List.of("TINYINT UNSIGNED", "SMALLINT UNSIGNED", "MEDIUMINT UNSIGNED", "INT UNSIGNED")
+                List.of("CHAR", "VARCHAR")
         );
         mysql.put(
                 ReservedDatabaseField.LAST_UPDATE,

@@ -37,6 +37,7 @@ public class Column {
     private String itemOrderAssociatedField;
 
     private final boolean id;
+    private final boolean sid;
     private final boolean lastUpdate;
     private final boolean modifiedBy;
     private final boolean itemOrder;
@@ -84,6 +85,12 @@ public class Column {
             } else {
                 id = false;
             }
+            if (fieldType.equals(ReservedDatabaseField.SID)) {
+                sid = true;
+                unique = true;
+            } else {
+                sid = false;
+            }
             lastUpdate = fieldType.equals(ReservedDatabaseField.LAST_UPDATE);
             modifiedBy = fieldType.equals(ReservedDatabaseField.MODIFIED_BY);
             if (fieldType.equals(ReservedDatabaseField.ITEM_ORDER)) {
@@ -98,6 +105,7 @@ public class Column {
             special = false;
             incompatibleSqlType = false;
             id = false;
+            sid = false;
             lastUpdate = false;
             modifiedBy = false;
             itemOrder = false;
@@ -122,6 +130,7 @@ public class Column {
         this.special = col.special;
         this.incompatibleSqlType = col.incompatibleSqlType;
         this.id = col.id;
+        this.sid = col.sid;
         this.lastUpdate = col.lastUpdate;
         this.modifiedBy = col.modifiedBy;
         this.itemOrder = col.itemOrder;
@@ -252,6 +261,10 @@ public class Column {
         return id;
     }
 
+    public boolean isSid() {
+        return sid;
+    }
+
     public boolean isLastUpdate() {
         return lastUpdate;
     }
@@ -312,6 +325,7 @@ public class Column {
                 ", associatedBeanClass='" + associatedBeanClass + '\'' +
                 ", itemOrderAssociatedField='" + itemOrderAssociatedField + '\'' +
                 ", id=" + id +
+                ", sid=" + sid +
                 ", lastUpdate=" + lastUpdate +
                 ", modifiedBy=" + modifiedBy +
                 ", itemOrder=" + itemOrder +

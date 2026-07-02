@@ -74,7 +74,8 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
                 .byItself();
 
         for (var column: columns)
-            superCall.addArgument(Strings.quickQuote(column.getJavaName()));
+            if (!column.isSid())
+                superCall.addArgument(Strings.quickQuote(column.getJavaName()));
 
         javaClass
                 .addContent(startConstructor()
@@ -105,7 +106,7 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
                 .addContent(new VarDeclaration("var", "editor", "(" + beanName + "Editor) getEditor()"));
 
         for (var column: columns) {
-            if (!column.isId()) {
+            if (!column.isId() && !column.isSid()) {
                 String fieldName = column.getCapitalizedJavaName();
                 function.addContent(
                         new FunctionCall("set" + fieldName)
@@ -120,7 +121,7 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
 
     void addSetters() {
         for (var column: columns) {
-            if (!column.isId()) {
+            if (!column.isId() && !column.isSid()) {
                 String fieldName = column.getCapitalizedJavaName();
                 javaClass.addContent(
                         new FunctionDeclaration("set" + fieldName)
@@ -139,7 +140,7 @@ public class BeanCsvImportBaseSourceFile extends BeanCodeWithDBInfo {
 
     private void addFieldGetters() {
         for (var column: columns) {
-            if (!column.isId()) {
+            if (!column.isId() && !column.isSid()) {
                 String type = column.getCapitalizedJavaType();
                 String dataEntryFunctionName = "get" + type + (type.equals("DecimalValue") ? "" : "Value");
                 var dataEntryFunction = new FunctionCall(dataEntryFunctionName)

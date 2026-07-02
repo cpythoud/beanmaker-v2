@@ -79,4 +79,12 @@ public interface DbBeanParameters {
         return new DefaultBeanDuplicator(transaction, labelBasicFunctions, this);
     }
 
+    default boolean useSids() {
+        return false;
+    }
+
+    default boolean requireSid() {
+        return false;
+    }
+
 }

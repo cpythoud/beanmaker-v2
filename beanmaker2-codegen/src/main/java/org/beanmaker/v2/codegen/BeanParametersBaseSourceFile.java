@@ -92,6 +92,10 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
         addDecimalValueFunctions();
         if (columns.isVersioned())
             addVersionFunctions();
+        if (columns.hasSidField()) {
+            addUseSidsFunction();
+            addRequireSidFunction();
+        }
     }
 
     private void addLocalizationFunctions() {
@@ -255,6 +259,22 @@ public class BeanParametersBaseSourceFile extends BaseInterfaceCode {
         if (transaction)
             declaration.addArgument(new FunctionArgument("DbTransaction", "transaction"));
         return declaration;
+    }
+
+    private void addUseSidsFunction() {
+        javaInterface.addContent(
+                new FunctionDeclaration("useSids", "boolean")
+                        .annotate("@Override")
+                        .markAsDefault().addContent(new ReturnStatement("true"))
+        ).addContent(EMPTY_LINE);
+    }
+
+    private void addRequireSidFunction() {
+        javaInterface.addContent(
+                new FunctionDeclaration("requireSid", "boolean")
+                        .annotate("@Override")
+                        .markAsDefault().addContent(new ReturnStatement("true"))
+        ).addContent(EMPTY_LINE);
     }
 
 }

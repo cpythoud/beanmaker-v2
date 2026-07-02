@@ -201,8 +201,14 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public FormTag getForm(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getFormTag(beanName, Long.toString(id));
+    }
+
+    @Override
+    public FormTag getForm(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
 
@@ -210,8 +216,14 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public FormTag getInlineForm(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getInlineForm(beanName, Long.toString(id));
+    }
+
+    @Override
+    public FormTag getInlineForm(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
         setInline(true);
@@ -219,8 +231,13 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         return form.cssClass(getFormCssClasses(beanName));
     }
 
+    @Deprecated
     public FormTag getInlineFormWithoutLabels(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getInlineFormWithoutLabels(beanName, Long.toString(id));
+    }
+
+    public FormTag getInlineFormWithoutLabels(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
         setInline(true);
@@ -230,8 +247,14 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public FormTag getHorizontalForm(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getHorizontalForm(beanName, Long.toString(id));
+    }
+
+    @Override
+    public FormTag getHorizontalForm(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
         setHorizontal(true);
@@ -353,7 +376,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     @Override
     public ButtonTag getButtonTag(HFHParameters params) {
         var button = new ButtonTag(params.getButtonType())
-                .id(getHtmlId(params.getBeanName() + "_" + params.getFunctionName(), params.getIdBean()))
+                .id(getHtmlId(params.getBeanName() + "_" + params.getFunctionName(), params.getBeanIdOrSid()))
                 .cssClass(params.getCssClasses());
 
         params.getButtonActionSpan().ifPresent(button::child);
@@ -384,7 +407,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
 
     @Override
     public DivTag getSelectField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
         FormElement<?> formElement;
@@ -456,7 +479,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         if (params.isReadonly())
             return getReadOnlyFileField(params);
 
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
         LabelTag uploadButton = new LabelTag(uploadButtonLabel, fieldId).cssClass(uploadButtonCssClasses);
@@ -493,7 +516,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     protected DivTag getReadOnlyFileField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), true);
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), true);
         LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
         Tag<?> input;
@@ -594,7 +617,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     public DivTag getTextLabelField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
 
         return getFormGroup(
                 getLabel(params.getFieldLabel(), fieldId, params.isRequired()),
@@ -602,7 +625,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     public DivTag getTextLabelField(HFHParameters params, Tag<?> adHocRepresentation) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
 
         return getFormGroup(
                 getLabel(params.getFieldLabel(), fieldId, params.isRequired()),
@@ -622,7 +645,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         DivTag wrapper = new DivTag();
         wrapper.child(getInputTag(
                 InputTag.InputType.NUMBER,
-                getFieldId(numeratorParams.getField(), numeratorParams.getIdBean(), numeratorParams.isReadonly()),
+                getFieldId(numeratorParams.getField(), numeratorParams.getBeanIdOrSid(), numeratorParams.isReadonly()),
                 numeratorParams.getField(),
                 numeratorParams.getValue(),
                 numeratorParams.isReadonly())
@@ -631,7 +654,7 @@ public class Bootstrap3HTMLFormHelper extends AbstractHtmlFormHelper {
         wrapper.child(new CData("&nbsp;/&nbsp;"));
         wrapper.child(getInputTag(
                 InputTag.InputType.NUMBER,
-                getFieldId(denominatorParams.getField(), denominatorParams.getIdBean(), denominatorParams.isReadonly()),
+                getFieldId(denominatorParams.getField(), denominatorParams.getBeanIdOrSid(), denominatorParams.isReadonly()),
                 denominatorParams.getField(),
                 denominatorParams.getValue(),
                 denominatorParams.isReadonly())

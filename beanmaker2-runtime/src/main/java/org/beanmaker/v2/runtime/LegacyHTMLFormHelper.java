@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class LegacyHTMLFormHelper implements HtmlFormHelper {
 
     public static final String SELECT_OFF_GROUP_MAP_KEY = "__ROOT__";
@@ -418,6 +419,21 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         return form.cssClass(getFormCssClasses(beanName));
     }
 
+    @Override
+    public FormTag getForm(String beanName, String idOrSid) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public FormTag getHorizontalForm(String beanName, String idOrSid) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public FormTag getInlineForm(String beanName, String idOrSid) {
+        throw new UnsupportedOperationException();
+    }
+
     public FormTag getInlineFormWithoutLabels(String beanName, long id) {
         FormTag form = getFormTag(beanName, id);
 
@@ -439,6 +455,11 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
 
     public InputTag getHiddenSubmitInput(String beanName, long id) {
         return new InputTag(InputTag.InputType.HIDDEN).name("submitted" + beanName).value(Long.toString(id));
+    }
+
+    @Override
+    public Tag<?> getHiddenSubmitInput(String beanName, String idOrSid) {
+        throw new UnsupportedOperationException();
     }
 
     public DivTag getTextField(
@@ -900,7 +921,7 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
         String value = "";
         if (!params.getSelected().equals("0"))
             for (IdNamePair pair: params.getSelectPairs())
-                if (pair.getId().equals(params.getSelected()))
+                if (pair.getIdOrSid().equals(params.getSelected()))
                     value = pair.getName();
 
         return getInputTag(InputTag.InputType.TEXT, fieldId, params.getField(), value, true, params.getTagExtraCssClasses())
@@ -929,10 +950,10 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
 
     private void addPairs(Tag<?> selectOrGroup, List<IdNamePair> pairs, String selected) {
         for (IdNamePair pair: pairs) {
-            OptionTag optionTag = new OptionTag(pair.getName(), pair.getId());
+            OptionTag optionTag = new OptionTag(pair.getName(), pair.getIdOrSid());
             if (pair.isDisabled())
                 optionTag.disabled();
-            if (pair.getId().equals(selected))
+            if (pair.getIdOrSid().equals(selected))
                 optionTag.selected();
             selectOrGroup.child(optionTag);
         }
@@ -1337,6 +1358,11 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
                 .value(value);
     }
 
+    @Override
+    public Tag<?> getHiddenInfo(String field, String beanIdOrSid, String value) {
+        throw new UnsupportedOperationException();
+    }
+
     public DivTag getBooleanRadiosField(HFHParameters params) {
         LabelTag label = getLabel(params.getFieldLabel(), null, params.isRequired(), params.getLabelExtraCssClasses());
 
@@ -1461,4 +1487,5 @@ public class LegacyHTMLFormHelper implements HtmlFormHelper {
 
         return getFormGroup(label, wrapper, null, params.getGroupExtraCssClasses());
     }
+
 }

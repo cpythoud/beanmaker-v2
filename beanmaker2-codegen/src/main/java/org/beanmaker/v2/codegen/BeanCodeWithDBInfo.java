@@ -1,8 +1,11 @@
 package org.beanmaker.v2.codegen;
 
+import org.beanmaker.v2.codegen.java.Comparison;
+import org.beanmaker.v2.codegen.java.Condition;
 import org.beanmaker.v2.codegen.java.FunctionArgument;
 import org.beanmaker.v2.codegen.java.FunctionCall;
 import org.beanmaker.v2.codegen.java.FunctionDeclaration;
+import org.beanmaker.v2.codegen.java.IfBlock;
 import org.beanmaker.v2.codegen.java.ObjectCreation;
 import org.beanmaker.v2.codegen.java.ReturnStatement;
 import org.beanmaker.v2.codegen.java.StringOrCode;
@@ -65,6 +68,57 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
         javaClass.addContent(varDeclaration.visibility(Visibility.PRIVATE));
     }
 
+    void addRetrievalFromIdOrSidStaticFunctions(boolean editor) {
+        var function = getFromIdOrSidFunction(editor);
+        var transactedFunction =
+                getFromIdOrSidFunction(editor).addArgument(new FunctionArgument("DbTransaction", "transaction"));
+
+        function.addContent(getBeanCreationFromBeanGetIdCall(editor, false));
+        transactedFunction.addContent(getBeanCreationFromBeanGetIdCall(editor, true));
+
+        javaClass.addContent(function).addContent(EMPTY_LINE).addContent(transactedFunction).addContent(EMPTY_LINE);
+    }
+
+    private FunctionDeclaration getFromIdOrSidFunction(boolean editor) {
+        return new FunctionDeclaration("fromIdOrSid", beanName + (editor ? "Editor" : ""))
+                .visibility(Visibility.PUBLIC)
+                .markAsStatic()
+                .addArgument(new FunctionArgument("String", "idOrSid"));
+    }
+
+    private ReturnStatement getBeanCreationFromBeanGetIdCall(boolean editor, boolean transacted) {
+        var objectCreation = new ObjectCreation(beanName + (editor ? "Editor" : ""))
+                .addArgument(getBeanGetIdCall(editor, transacted));
+        if (transacted)
+            objectCreation.addArgument("transaction");
+        return new ReturnStatement(objectCreation);
+    }
+
+    private FunctionCall getBeanGetIdCall(boolean editor, boolean transacted) {
+        var functionCall = editor ? new FunctionCall("getId", beanName) : new FunctionCall("getId");
+        functionCall.addArgument("idOrSid");
+        if (transacted)
+            functionCall.addArgument("transaction");
+        return functionCall;
+    }
+
+    private FunctionCall getSidManagerCall(String dbArgument) {
+        return new FunctionCall("getId", "SidManager")
+                .addArguments(dbArgument, quickQuote(tableName), "idOrSid", beanName + "Parameters.INSTANCE");
+    }
+
+    void addGetIdOrSidFunction() {
+        var function = new FunctionDeclaration("getIdOrSid", "String")
+                .annotate("@Override")
+                .visibility(Visibility.PUBLIC)
+                .addContent(new IfBlock(new Condition(new FunctionCall("useSids", beanName + "Parameters.INSTANCE")))
+                        .addContent(new ReturnStatement(new FunctionCall("getSid"))))
+                .addContent(new ReturnStatement(new FunctionCall("toString", "Long")
+                        .addArgument(new FunctionCall("getId"))));
+
+        javaClass.addContent(function).addContent(EMPTY_LINE);
+    }
+
     protected void addGetter(Column column, boolean editor) {
         String type = column.getJavaType();
         String name = column.getJavaName();
@@ -91,8 +145,11 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                 addLabelSpecificGetterFunctions(column);
             else if (column.isFileReference())
                 addFileGetterFunction(column);
-            else if (!column.isId())
+            else if (!column.isId()) {
                 addBeanGetterFunction(column);
+                if (!column.isOriginalBeanId())
+                    addBeanIdOrSidGetterFunction(column);
+            }
         }
 
         if (column.isItemOrder()) {
@@ -156,6 +213,24 @@ public abstract class BeanCodeWithDBInfo extends BeanCode {
                         .annotate("@Override")
                         .visibility(Visibility.PUBLIC)
                         .addContent(new ReturnStatement(new ObjectCreation(type).addArgument(name))))
+                .addContent(EMPTY_LINE);
+    }
+
+    void addBeanIdOrSidGetterFunction(Column column) {
+        String otherBeanReference = chopID(column.getJavaName());
+        javaClass
+                .addContent(
+                        new FunctionDeclaration("get" + otherBeanReference + "IdOrSid", "String")
+                                .annotate("@Override")
+                                .visibility(Visibility.PUBLIC)
+                                .addContent(new IfBlock(new Condition(
+                                        new Comparison(new FunctionCall("getId" + otherBeanReference), "0")
+                                )).addContent(new ReturnStatement(quickQuote("0"))))
+                                .addContent(EMPTY_LINE)
+                                .addContent(new ReturnStatement(
+                                        new FunctionCall("getIdOrSid", "get" + otherBeanReference + "()")
+                                ))
+                )
                 .addContent(EMPTY_LINE);
     }
 

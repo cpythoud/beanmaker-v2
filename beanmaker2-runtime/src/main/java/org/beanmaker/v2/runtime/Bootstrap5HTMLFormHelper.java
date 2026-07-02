@@ -54,8 +54,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public FormTag getForm(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getForm(beanName, Long.toString(id));
+    }
+
+    @Override
+    public FormTag getForm(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
 
@@ -63,8 +69,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public FormTag getHorizontalForm(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getHorizontalForm(beanName, Long.toString(id));
+    }
+
+    @Override
+    public FormTag getHorizontalForm(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
         setHorizontal(true);
@@ -73,8 +85,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public FormTag getInlineForm(String beanName, long id) {
-        FormTag form = getFormTag(beanName, id);
+        return getInlineForm(beanName, Long.toString(id));
+    }
+
+    @Override
+    public FormTag getInlineForm(String beanName, String idOrSid) {
+        FormTag form = getFormTag(beanName, idOrSid);
 
         resetFormTypeFlags();
         setInline(true);
@@ -107,7 +125,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     protected DivTag getCheckbox(HFHParameters params) {
         var labelTag = new LabelTag(
                 params.getFieldLabel(),
-                getFieldId(params.getField(), params.getIdBean(), params.getIdNameSuffix(), params.isReadonly())
+                getFieldId(params.getField(), params.getBeanIdOrSid(), params.getIdNameSuffix(), params.isReadonly())
         ).cssClass("form-check-label");
 
         if (params.hasLabelExtraCssClasses())
@@ -126,7 +144,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
                         .name(params.getField())
                         .cssClass("form-check-input")
                         .id(getFieldId(
-                                params.getField(), params.getIdBean(), params.getIdNameSuffix(), params.isReadonly()));
+                                params.getField(), params.getBeanIdOrSid(), params.getIdNameSuffix(), params.isReadonly()));
 
         setCheckboxParameters(checkbox, params);
 
@@ -135,7 +153,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     @Override
     public Tag<?> getSelectField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
         FormElement<?> formElement;
@@ -208,7 +226,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     @Override
     public DivTag getTextAreaField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label = getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
         TextareaTag textarea = getTextAreaTag(fieldId, params.getField(), params.getValue(), params.getTagExtraCssClasses());
@@ -245,7 +263,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
 
     @Override
     public DivTag getTextField(HFHParameters params) {
-        String fieldId = getFieldId(params.getField(), params.getIdBean(), params.isReadonly());
+        String fieldId = getFieldId(params.getField(), params.getBeanIdOrSid(), params.isReadonly());
         LabelTag label =
                 getLabel(params.getFieldLabel(), fieldId, params.isRequired(), params.getLabelExtraCssClasses());
 
@@ -311,8 +329,14 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
     }
 
     @Override
+    @Deprecated
     public void addErrorMessagesContainer(Tag<?> form, String formName, long idBean) {
-        form.child(HtmlFormHelper.getDefaultErrorMessageContainer(formName, idBean));
+        addErrorMessagesContainer(form, formName, Long.toString(idBean));
+    }
+
+    @Override
+    public void addErrorMessagesContainer(Tag<?> form, String formName, String beanIdOrSid) {
+        form.child(HtmlFormHelper.getDefaultErrorMessageContainer(formName, beanIdOrSid));
     }
 
     @Override
@@ -320,7 +344,7 @@ public class Bootstrap5HTMLFormHelper extends AbstractHtmlFormHelper {
         var button = super.getButtonTag(params);
         button.appendCssClasses("btn btn-primary");
         if (buttonsSeparated)
-            button.form(getHtmlId(params.getBeanName(), params.getIdBean()));
+            button.form(getHtmlId(params.getBeanName(), params.getBeanIdOrSid()));
         return button;
     }
 

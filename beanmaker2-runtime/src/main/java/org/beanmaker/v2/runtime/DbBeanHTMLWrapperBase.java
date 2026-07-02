@@ -13,6 +13,16 @@ public abstract class DbBeanHTMLWrapperBase {
         this.language = language;
     }
 
+    public abstract void setId(long id);
+
+    public void setSid(String sid) {
+        throw new UnsupportedOperationException("No SID field in bean");
+    }
+
+    public void setIdOrSid(String idOrSid) {
+        setId(Long.parseLong(idOrSid));
+    }
+
     public void setCode(String code) {
         throw new UnsupportedOperationException("Bean identification through code is unsupported");
     }
@@ -32,6 +42,21 @@ public abstract class DbBeanHTMLWrapperBase {
             return 0;
 
         return bean.getId();
+    }
+
+    public String getSid() {
+        throw new UnsupportedOperationException("No SID field in bean");
+    }
+
+    public String getIdOrSid() {
+        return Long.toString(getId());
+    }
+
+    protected String getIdOrSid(DbBeanParameters parameters) {
+        if (parameters.useSids())
+            return getSid();
+
+        return Long.toString(getId());
     }
 
     protected boolean noBeanYet() {

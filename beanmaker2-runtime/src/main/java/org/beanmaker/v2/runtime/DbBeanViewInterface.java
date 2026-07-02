@@ -6,6 +6,12 @@ public interface DbBeanViewInterface {
 
     void setId(long id);
 
+    void setIdOrSid(String idOrSid);
+
     long getId();
+
+    String getSid();
+
+    String getIdOrSid();
 
 }

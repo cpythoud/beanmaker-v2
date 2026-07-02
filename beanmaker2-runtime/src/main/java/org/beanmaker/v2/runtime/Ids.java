@@ -31,6 +31,14 @@ public class Ids {
         return Long.parseLong(getProtectionCodeFromParameterName(parameterName, separatorRegex));
     }
 
+    public static String getIdOrSidFromParameterName(String parameterName) {
+        return getProtectionCodeFromParameterName(parameterName);
+    }
+
+    public static String getIdOrSidFromParameterName(String parameterName, String separatorRegex) {
+        return getProtectionCodeFromParameterName(parameterName, separatorRegex);
+    }
+
     public static <T extends DbBeanInterface> Set<Long> getIdSet(Collection<T> beans) {
         return getIdSet(beans, new HashSet<>());
     }
