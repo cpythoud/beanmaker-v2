@@ -8,13 +8,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Ids {
+public final class Ids {
 
-    public static String getProtectionCodeFromParameterName(String parameterName) {
-        return getProtectionCodeFromParameterName(parameterName, "_");
+    public static String getCodeFromParameterName(String parameterName) {
+        return getCodeFromParameterName(parameterName, "_");
     }
 
-    public static String getProtectionCodeFromParameterName(String parameterName, String separatorRegex) {
+    public static String getCodeFromParameterName(String parameterName, String separatorRegex) {
         String[] elements = parameterName.split(separatorRegex);
         if (elements.length < 2)
             throw new IllegalArgumentException("Could not separate id/code from name based on regex: "
@@ -24,19 +24,29 @@ public class Ids {
     }
 
     public static long getIdFromParameterName(String parameterName) {
-        return Long.parseLong(getProtectionCodeFromParameterName(parameterName));
+        return Long.parseLong(getCodeFromParameterName(parameterName));
     }
 
     public static long getIdFromParameterName(String parameterName, String separatorRegex) {
-        return Long.parseLong(getProtectionCodeFromParameterName(parameterName, separatorRegex));
+        return Long.parseLong(getCodeFromParameterName(parameterName, separatorRegex));
     }
 
     public static String getIdOrSidFromParameterName(String parameterName) {
-        return getProtectionCodeFromParameterName(parameterName);
+        return getCodeFromParameterName(parameterName);
     }
 
     public static String getIdOrSidFromParameterName(String parameterName, String separatorRegex) {
-        return getProtectionCodeFromParameterName(parameterName, separatorRegex);
+        return getCodeFromParameterName(parameterName, separatorRegex);
+    }
+
+    @Deprecated
+    public static String getProtectionCodeFromParameterName(String parameterName) {
+        return getCodeFromParameterName(parameterName);
+    }
+
+    @Deprecated
+    public static String getProtectionCodeFromParameterName(String parameterName, String separatorRegex) {
+        return getCodeFromParameterName(parameterName, separatorRegex);
     }
 
     public static <T extends DbBeanInterface> Set<Long> getIdSet(Collection<T> beans) {
