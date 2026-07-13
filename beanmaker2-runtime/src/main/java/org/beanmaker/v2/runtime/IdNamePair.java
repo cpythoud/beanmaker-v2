@@ -1,5 +1,7 @@
 package org.beanmaker.v2.runtime;
 
+import org.beanmaker.v2.util.Strings;
+
 import java.text.Collator;
 
 import java.util.ArrayList;
@@ -65,9 +67,15 @@ public class IdNamePair implements Comparable<IdNamePair> {
 		return disabled;
 	}
 
-	@Deprecated
 	public long getIdAsLong() {
-		return Long.parseLong(idOrSid);
+		if (idOrSid.equals("0"))
+			return 0L;
+
+		long id = Strings.getLongVal(idOrSid);
+		if (id == 0)
+			throw new IllegalStateException("SID " + idOrSid + " cannot be converted to an ID");
+
+		return id;
 	}
 
 	// ! Assumes only one "please select ..." element with id "0", throws an IllegalStateException otherwise.
